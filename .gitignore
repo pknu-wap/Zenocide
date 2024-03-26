@@ -70,3 +70,7 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Resources of out game, it won't share.
+/[Aa]ssets/NoShare2024-1/
+/[Aa]ssets/NoShare2024-1.meta
