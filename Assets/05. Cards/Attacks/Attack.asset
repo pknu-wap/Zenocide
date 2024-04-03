@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee4e1de6682e5bb448d13b0b62311c21, type: 3}
   m_Name: Attack
   m_EditorClassIdentifier: 
-  name: "\uACF5\uACA9"
-  description: "\uC801\uC744 \uACF5\uACA9\uD574 {0}\uC758 \uB370\uBBF8\uC9C0\uB97C
-    \uC785\uD799\uB2C8\uB2E4."
+  name: Attack
+  description: Your base is under Attack!
+  sprite: {fileID: 0}
   cost: 1
   attack: 4
   defense: 0
