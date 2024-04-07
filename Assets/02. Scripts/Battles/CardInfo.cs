@@ -1,10 +1,10 @@
+// 김민철
 using UnityEngine;
 
 public class CardInfo : MonoBehaviour
 {
     #region 싱글톤
-    private static CardInfo instance;
-    public static CardInfo Instance;
+    public static CardInfo instance;
 
     public void Awake()
     {
@@ -37,7 +37,7 @@ public class CardInfo : MonoBehaviour
     // 카드 효과 함수들을 담아둘 델리게이트
     public delegate void CardEffects(int amount, GameObject target);
     // 델리게이트 배열, EffectType에 맞는 함수를 매칭한다.
-    CardEffects[] effects = new CardEffects[7];
+    public CardEffects[] effects = new CardEffects[7];
 
     public void Attack(int amount, GameObject target)
     {

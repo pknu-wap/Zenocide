@@ -1,10 +1,12 @@
 // 김민철
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class Card : MonoBehaviour
 {
+    #region 변수
     [Header("카드 정보")]
     public CardData cardData;
 
@@ -13,6 +15,7 @@ public class Card : MonoBehaviour
     private TextMeshProUGUI descriptionText;
     private TextMeshProUGUI nameText;
     private TextMeshProUGUI costText;
+    #endregion 변수
 
     #region 라이프사이클
     private void Awake()
@@ -42,7 +45,7 @@ public class Card : MonoBehaviour
     #region 카드 효과
     public virtual void ActivateCard()
     {
-        //cardEffects[cardData.effect].Invoke();
+        CardInfo.instance.effects[(int)cardData.effect](cardData.amount, gameObject);
     }
     #endregion 카드 효과
 
