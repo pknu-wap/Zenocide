@@ -1,5 +1,8 @@
+// 김민철
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class CardInfoUpdater : MonoBehaviour
@@ -25,7 +28,7 @@ public class CardInfoUpdater : MonoBehaviour
     }
     #endregion 라이프사이클
 
-    #region 정보 변경 함수
+    #region 정보 변경
     public void UpdateCardInfo(CardData data)
     {
         if (data != null)
@@ -36,5 +39,10 @@ public class CardInfoUpdater : MonoBehaviour
             costText.text = data.cost.ToString();
         }
     }
-    #endregion 정보 변경 함수
+    #endregion 정보 변경
+
+    public virtual void RemoveCard()
+    {
+        // 카드를 묘지로 보낸다.
+    }
 }
