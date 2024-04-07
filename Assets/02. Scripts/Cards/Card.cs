@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Card : MonoBehaviour
+public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     #region 변수
     [Header("카드 정보")]
@@ -28,6 +28,33 @@ public class Card : MonoBehaviour
         UpdateCardInfo(cardData);
     }
     #endregion 라이프사이클
+
+    #region 마우스 오버(Mouse Hover)
+    // 마우스가 카드 위에 올라올 때 실행된다.
+    public void OnPointerEnter(PointerEventData pointerEventData)
+    {
+        // 카드의 크기를 키운다. (1.2배로)
+        UpscaleCard();
+    }
+
+    // 마우스가 카드 위에서 벗어날 때 실행된다.
+    public void OnPointerExit(PointerEventData pointerEventData)
+    {
+        // 카드의 크기를 줄인다. (1배로)
+        DownscaleCard();
+    }
+
+    void UpscaleCard()
+    {
+        transform.localScale = new Vector2(1.2f, 1.2f);
+    }
+
+    // 카드의 크기를 줄인다. (1배로)
+    void DownscaleCard()
+    {
+        transform.localScale = new Vector2(1f, 1f);
+    }
+    #endregion 마우스 오버(Mouse Hover)
 
     #region 정보 변경
     public void UpdateCardInfo(CardData data)
