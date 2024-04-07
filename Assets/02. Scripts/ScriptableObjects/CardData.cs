@@ -23,7 +23,6 @@ public class CardData : ScriptableObject
 
     [Header("카드 성능")]
     public int cost;
-    public int attack;
-    public int defense;
+    public int amount;
     public EffectType effect;
 }
