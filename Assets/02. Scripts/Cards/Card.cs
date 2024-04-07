@@ -1,11 +1,9 @@
 // 김민철
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class CardInfoUpdater : MonoBehaviour
+public class Card : MonoBehaviour
 {
     [Header("카드 정보")]
     public CardData cardData;
@@ -40,6 +38,13 @@ public class CardInfoUpdater : MonoBehaviour
         }
     }
     #endregion 정보 변경
+
+    #region 카드 효과
+    public virtual void ActivateCard()
+    {
+        //cardEffects[cardData.effect].Invoke();
+    }
+    #endregion 카드 효과
 
     public virtual void RemoveCard()
     {
