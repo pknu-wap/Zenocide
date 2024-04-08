@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 
 public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -57,7 +58,8 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IB
     }
     #endregion 마우스 오버(Mouse Hover)
 
-    #region 마우스 클릭
+    #region 마우스 클릭 및 드래그
+    // 드래그가 시작될 때 호출된다.
     public void OnBeginDrag(PointerEventData eventData)
     {
         // 공격 카드일 경우 화살표를 표시한다.
@@ -65,6 +67,7 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IB
         // 공격 카드가 아닐 경우, 아무 일도 하지 않는다.
     }
 
+    // 드래그 중일 때 계속 호출된다.
     public void OnDrag(PointerEventData eventData)
     {
         // 공격 카드일 경우, 화살표의 끝이 마우스를 향한다.
@@ -73,43 +76,34 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IB
     // 카드 발동 후 선택된 오브젝트
     public GameObject selectedObject;
 
+    // 드래그가 끝날 때 호출된다.
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (cardData.effect == EffectType.Attack)
+        // 기본 레이어마스크는 Field이며
+        LayerMask layer = LayerMask.GetMask("Field");
+
+        // 공격 카드일 경우 레이어마스크를 Enemy로 변경한다.
+        if (cardData.type == EffectType.Attack)
         {
-            // 선택된 적 오브젝트를 가져온다.
-            selectedObject = GetClickedObject(LayerMask.GetMask("Enemy"));
-
-            // 적 오브젝트가 선택되지 않았다면
-            if (selectedObject == null)
-            {
-                // 카드 발동을 취소한다.
-            }
-
-            // 선택된 적에게 공격을 실행한다.
-            CardInfo.instance.effects[(int)cardData.effect](cardData.amount, selectedObject);
-
-            Debug.Log(selectedObject);
+            layer = LayerMask.GetMask("Enemy");
         }
 
-        else
+        // layer가 일치하는, 선택된 오브젝트를 가져온다.
+        selectedObject = GetClickedObject(layer);
+
+        // 오브젝트가 선택되지 않았다면
+        if (selectedObject == null)
         {
-            // 선택된 적 오브젝트를 가져온다.
-            selectedObject = GetClickedObject(LayerMask.GetMask("Field"));
-            Debug.Log(selectedObject);
+            // 카드 발동을 취소한다.
 
-            if (selectedObject == null)
-            {
-                // 카드 발동을 취소한다.
-            }
-
-            // 카드를 발동한다.
-            CardInfo.instance.effects[(int)cardData.effect](cardData.amount, selectedObject);
-
-            Debug.Log(selectedObject);
+            return;
         }
+
+        // 카드를 발동한다. 공격 카드일 경우 선택된 적에게 발동한다.
+        CardInfo.instance.effects[(int)cardData.type](cardData.amount, selectedObject);
     }
 
+    // 클릭된(드래그 후 마우스를 뗀 순간) 오브젝트를 가져온다.
     GameObject GetClickedObject(LayerMask layer)
     {
         // 마우스 위치를 받아온다.
@@ -127,9 +121,10 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IB
         // 아니라면 null을 반환한다.
         return null;
     }
-    #endregion 마우스 클릭
+    #endregion 마우스 클릭 및 드래그
 
     #region 정보 변경
+    // 카드의 정보를 갱신한다.
     public void UpdateCardInfo(CardData data)
     {
         if (data != null)
@@ -141,13 +136,6 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IB
         }
     }
     #endregion 정보 변경
-
-    #region 카드 효과
-    public virtual void ActivateCard()
-    {
-        CardInfo.instance.effects[(int)cardData.effect](cardData.amount, gameObject);
-    }
-    #endregion 카드 효과
 
     #region 카드 정리
     public virtual void RemoveCard()

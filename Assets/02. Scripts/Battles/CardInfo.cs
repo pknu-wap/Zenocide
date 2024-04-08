@@ -33,6 +33,7 @@ public class CardInfo : MonoBehaviour
     // 델리게이트 배열, EffectType에 맞는 함수를 매칭한다.
     public CardEffects[] effects = new CardEffects[7];
 
+    // 모든 효과를 effects 배열에 등록한다.
     void EnrollAllEffect()
     {
         // 카드 효과를 배열에 등록
@@ -45,9 +46,13 @@ public class CardInfo : MonoBehaviour
         effects[(int)EffectType.Buff] += Buff;
     }
 
+    // target이 null인 경우는 Card의 OnEndDrag에서 검사했으므로, 검사하지 않는다.
     public void Attack(int amount, GameObject target)
     {
-        Debug.Log("Attack");
+        Enemy enemy = target.GetComponent<Enemy>();
+
+        enemy.DecreaseHP(amount);
+        Debug.Log(enemy.GetHP());
     }
 
     public void Shield(int amount, GameObject target)
