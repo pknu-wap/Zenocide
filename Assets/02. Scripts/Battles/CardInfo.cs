@@ -18,14 +18,8 @@ public class CardInfo : MonoBehaviour
             Destroy(gameObject);
         }
 
-        // 카드 효과를 배열에 등록
-        effects[(int)EffectType.Attack] += Attack;
-        effects[(int)EffectType.Shield] += Shield;
-        effects[(int)EffectType.Heal] += Heal;
-        effects[(int)EffectType.Cleanse] += Cleanse;
-        effects[(int)EffectType.RestoreCost] += RestoreCost;
-        effects[(int)EffectType.Draw] += Draw;
-        effects[(int)EffectType.Buff] += Buff;
+        // 카드 효과를 델리게이트에 모두 등록
+        EnrollAllEffect();
 
         // 사용 예시
         // CardInfo.Instance.effects[(int)효과 종류](효과량, 대상);
@@ -38,6 +32,18 @@ public class CardInfo : MonoBehaviour
     public delegate void CardEffects(int amount, GameObject target);
     // 델리게이트 배열, EffectType에 맞는 함수를 매칭한다.
     public CardEffects[] effects = new CardEffects[7];
+
+    void EnrollAllEffect()
+    {
+        // 카드 효과를 배열에 등록
+        effects[(int)EffectType.Attack] += Attack;
+        effects[(int)EffectType.Shield] += Shield;
+        effects[(int)EffectType.Heal] += Heal;
+        effects[(int)EffectType.Cleanse] += Cleanse;
+        effects[(int)EffectType.RestoreCost] += RestoreCost;
+        effects[(int)EffectType.Draw] += Draw;
+        effects[(int)EffectType.Buff] += Buff;
+    }
 
     public void Attack(int amount, GameObject target)
     {
