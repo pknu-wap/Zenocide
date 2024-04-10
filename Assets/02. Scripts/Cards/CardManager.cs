@@ -62,9 +62,9 @@ public class CardManager : MonoBehaviour
         var cardObject = Instantiate(cardPrefab, Vector3.zero, Quaternion.identity);
         var card = cardObject.GetComponent<CardInfoUpdater>();
         card.UpdateCardInfo(DrawCard());
-        //(isMine ? myCards : otherCards).Add(card);
+        hand.Add(card.cardData);
 
-        /*SetOriginOrder(isMine);
-        CardAlignment(isMine);*/
+        //SetOriginOrder();
+        //CardAlignment(isMine);
     }
 }
