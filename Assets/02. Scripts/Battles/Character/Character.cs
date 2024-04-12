@@ -1,13 +1,13 @@
-using JetBrains.Annotations;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Character : MonoBehaviour
 {
-    // 적의 HP(체력)
+    [Header("데이터")]
+    // HP(체력)
     protected int hp;
-    protected int attack;
+
+    [Header("컴포넌트")]
+    protected int a;
 
     // 이 오브젝트의 hp를 반환한다.
     public int GetHP()
@@ -22,7 +22,7 @@ public class Enemy : MonoBehaviour
         hp -= damage;
 
         // hp가 0 이하가 될 경우
-        if(hp <= 0)
+        if (hp <= 0)
         {
             // 죽음 이벤트 실행
             Die();
