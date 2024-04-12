@@ -2,9 +2,10 @@ using UnityEngine;
 
 public class Zombie : Enemy
 {
-
+/*
     private void Awake()
     {
-        hp = 30;
-    }
+        base.Awake();
+        currentHp = 30;
+    }*/
 }
