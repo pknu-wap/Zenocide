@@ -56,7 +56,7 @@ public class CardManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Keypad1))
+        if (Input.GetKeyDown(KeyCode.S))
             AddCardToHand();
     }
 
