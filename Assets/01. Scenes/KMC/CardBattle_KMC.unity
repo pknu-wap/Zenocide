@@ -1841,6 +1841,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1357034097}
   - component: {fileID: 1357034096}
+  - component: {fileID: 1357034099}
+  - component: {fileID: 1357034098}
   m_Layer: 0
   m_Name: Card
   m_TagString: Untagged
@@ -1919,6 +1921,33 @@ Transform:
   - {fileID: 958198453}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1357034098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357034095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1914112d1d6d394992566e9ad485e68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardData: {fileID: 11400000, guid: c3c3d44ffc5234447a5356639efddd63, type: 2}
+--- !u!114 &1357034099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357034095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7e1cfd11adec6842b401f791b9be162, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardData: {fileID: 11400000, guid: c3c3d44ffc5234447a5356639efddd63, type: 2}
+  selectedObject: {fileID: 0}
 --- !u!1 &1433678691
 GameObject:
   m_ObjectHideFlags: 0
@@ -3246,8 +3275,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85ccd4648b5e6e4458c6a7bd77ccc27d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardData: {fileID: 11400000, guid: c3c3d44ffc5234447a5356639efddd63, type: 2}
-  selectedObject: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
