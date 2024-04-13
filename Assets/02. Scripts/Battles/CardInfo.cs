@@ -24,6 +24,10 @@ public class CardInfo : MonoBehaviour
     }
     #endregion 싱글톤
 
+    #region 카드 UI 데이터
+    public Sprite[] Icons;
+    #endregion 카드 UI 데이터
+
     #region 카드 효과
     // 카드 효과 함수들을 담아둘 델리게이트
     public delegate void CardEffects(int amount, GameObject target);

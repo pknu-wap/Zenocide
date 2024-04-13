@@ -1,6 +1,5 @@
 // 김민철
-using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +20,9 @@ public class Enemy : Character
 
         behaviorIcon = transform.GetChild(1).GetChild(0).GetChild(1).GetComponent<Image>();
         behaviorAmount = transform.GetChild(1).GetChild(0).GetChild(1).GetChild(0).GetComponent<TMP_Text>();
+
+        // 테스트는 Awake가 제맛
+        ReadySkill();
     }
 
     public void Update()
@@ -38,11 +40,15 @@ public class Enemy : Character
     // 스킬 사용을 준비한다.
     public void ReadySkill()
     {
+        int i = Random.Range(0, skillData.skills.Length);
         // 1. 랜덤한 스킬들 중 하나를 선택한다.
-        currentSkill = skillData.skills[0];
+        currentSkill = skillData.skills[i];
 
         // 2.UI를 갱신한다.
         // 2-1. 자신이 고른 스킬을 체력바 위에 표시한다.
+        behaviorIcon.sprite = CardInfo.Instance.Icons[(int)currentSkill.type];
+        behaviorAmount.text = currentSkill.amount.ToString();
+
         // 2-2. 상세정보창을 스킬의 설명으로 갱신한다.
     }
 
