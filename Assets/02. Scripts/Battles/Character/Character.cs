@@ -1,3 +1,4 @@
+// 김민철
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,14 +7,12 @@ public class Character : MonoBehaviour
 {
     [Header("데이터")]
     // HP(체력)
-    protected int currentHp = 100;
-    protected int maxHp = 100;
+    [SerializeField] protected int currentHp = 100;
+    [SerializeField] protected int maxHp = 100;
 
     [Header("컴포넌트")]
-    [SerializeField]
-    protected Image hpBar;
-    [SerializeField]
-    protected TMP_Text hpText;
+    [SerializeField] protected Image hpBar;
+    [SerializeField] protected TMP_Text hpText;
 
     public void Awake()
     {
@@ -51,12 +50,9 @@ public class Character : MonoBehaviour
         }
     }
 
-    public void Die()
+    public virtual void Die()
     {
         // 죽음과 관련된 효과 처리
         // 죽음 애니메이션
-        // 오브젝트 비활성화
-        gameObject.SetActive(false);
-        // Battle Info에 남은 적 -1
     }
 }
