@@ -10,14 +10,18 @@ public class Character : MonoBehaviour
     [SerializeField] protected int currentHp = 100;
     [SerializeField] protected int maxHp = 100;
 
+    // 디버그용, 추후 삭제
     [Header("컴포넌트")]
     [SerializeField] protected Image hpBar;
     [SerializeField] protected TMP_Text hpText;
+    //[SerializeField] protected BuffIconSpawner buffer;
+    // 버프 아이콘 생성기 구현 예정
 
-    public void Awake()
+    public virtual void Awake()
     {
         hpBar = transform.GetChild(1).GetChild(0).GetChild(0).GetChild(0).GetComponent<Image>();
         hpText = transform.GetChild(1).GetChild(0).GetChild(0).GetChild(1).GetComponent<TMP_Text>();
+        //buffer = transform.GetChild(1).GetChild(0).GetChild(1).GetComponent<BuffIconSpawner>();
 
         UpdateCurrentHP();
     }

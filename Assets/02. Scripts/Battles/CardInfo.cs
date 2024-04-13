@@ -4,13 +4,14 @@ using UnityEngine;
 public class CardInfo : MonoBehaviour
 {
     #region 싱글톤
-    public static CardInfo instance;
+    public static CardInfo Instance { get; set; }
+    private static CardInfo instance;
 
     public void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
         }
 
         else
@@ -20,10 +21,6 @@ public class CardInfo : MonoBehaviour
 
         // 카드 효과를 델리게이트에 모두 등록
         EnrollAllEffect();
-
-        // 사용 예시
-        // CardInfo.Instance.effects[(int)효과 종류](효과량, 대상);
-        // CardInfo.Instance.effects[(int)EffectType.Buff](5, gameObject);
     }
     #endregion 싱글톤
 
@@ -32,6 +29,10 @@ public class CardInfo : MonoBehaviour
     public delegate void CardEffects(int amount, GameObject target);
     // 델리게이트 배열, EffectType에 맞는 함수를 매칭한다.
     public CardEffects[] effects = new CardEffects[7];
+
+    // 사용 예시
+    // CardInfo.Instance.effects[(int)효과 종류](효과량, 대상);
+    // CardInfo.Instance.effects[(int)EffectType.Buff](5, gameObject);
 
     // 모든 효과를 effects 배열에 등록한다.
     void EnrollAllEffect()

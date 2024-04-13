@@ -85,7 +85,7 @@ public class CardActivator : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
 
         // 카드를 발동한다. 공격 카드일 경우 선택된 적에게 발동한다.
-        CardInfo.instance.effects[(int)cardData.type](cardData.amount, selectedObject);
+        CardInfo.Instance.effects[(int)cardData.type](cardData.amount, selectedObject);
     }
 
     // 클릭된(드래그 후 마우스를 뗀 순간) 오브젝트를 가져온다.
