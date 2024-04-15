@@ -11,15 +11,25 @@ public class Enemy : Character
     public SkillData skillData;
 
     [Header("컴포넌트")]
-    public Image behaviorIcon;
-    public TMP_Text behaviorAmount;
+    // 행동 정보 아이콘
+    [SerializeField] protected Image behaviorIcon;
+    [SerializeField] protected TMP_Text behaviorAmount;
+
+    // 상제정보창
+    [SerializeField] protected TMP_Text behaviorName;
+    [SerializeField] protected TMP_Text behaviorDescription;
 
     public override void Awake()
     {
         base.Awake();
 
+        // 행동 정보 아이콘
         behaviorIcon = transform.GetChild(1).GetChild(0).GetChild(1).GetComponent<Image>();
         behaviorAmount = transform.GetChild(1).GetChild(0).GetChild(1).GetChild(0).GetComponent<TMP_Text>();
+
+        // 상제정보창
+        behaviorName = transform.GetChild(1).GetChild(1).GetChild(0).GetChild(0).GetComponent<TMP_Text>();
+        behaviorDescription = transform.GetChild(1).GetChild(1).GetChild(0).GetChild(1).GetComponent<TMP_Text>();
 
         // 테스트는 Awake가 제맛
         ReadySkill();
@@ -50,6 +60,8 @@ public class Enemy : Character
         behaviorAmount.text = currentSkill.amount.ToString();
 
         // 2-2. 상세정보창을 스킬의 설명으로 갱신한다.
+        behaviorName.text = currentSkill.skillName;
+        behaviorDescription.text = currentSkill.description;
     }
 
     // 스킬을 사용한다.

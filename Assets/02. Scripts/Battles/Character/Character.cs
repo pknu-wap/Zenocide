@@ -12,6 +12,7 @@ public class Character : MonoBehaviour
 
     // 디버그용, 추후 삭제
     [Header("컴포넌트")]
+    // HP 바
     [SerializeField] protected Image hpBar;
     [SerializeField] protected TMP_Text hpText;
     //[SerializeField] protected BuffIconSpawner buffer;
@@ -19,6 +20,7 @@ public class Character : MonoBehaviour
 
     public virtual void Awake()
     {
+        // HP 바
         hpBar = transform.GetChild(1).GetChild(0).GetChild(0).GetChild(0).GetComponent<Image>();
         hpText = transform.GetChild(1).GetChild(0).GetChild(0).GetChild(1).GetComponent<TMP_Text>();
         //buffer = transform.GetChild(1).GetChild(0).GetChild(1).GetComponent<BuffIconSpawner>();
