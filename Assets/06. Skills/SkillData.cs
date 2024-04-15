@@ -8,7 +8,7 @@ public class Skill
     public string skillName;
     public string description;
 
-    public EffectType type;
+    public EnemySkillType type;
     public int amount;
 }
 

@@ -30,9 +30,16 @@ public class Enemy : Character
         // 상제정보창
         behaviorName = transform.GetChild(1).GetChild(1).GetChild(0).GetChild(0).GetComponent<TMP_Text>();
         behaviorDescription = transform.GetChild(1).GetChild(1).GetChild(0).GetChild(1).GetComponent<TMP_Text>();
+    }
 
-        // 테스트는 Awake가 제맛
+    private void Start()
+    {
+        // 테스트는 Start가 제맛
         ReadySkill();
+
+        // BattleManager에 이벤트 등록
+        BattleManager.Instance.onEndEnemyTurn.AddListener(CastSkill);
+        BattleManager.Instance.onStartPlayerTurn.AddListener(ReadySkill);
     }
 
     public void Update()
@@ -41,6 +48,16 @@ public class Enemy : Character
         {
             DecreaseHP(6);
         }
+    }
+
+    public void StartEnemyTurn()
+    {
+        ReadySkill();
+    }
+
+    public void EndEnemyTurn()
+    {
+        CastSkill();
     }
 
     [Header("런타임 변수")]
@@ -67,20 +84,10 @@ public class Enemy : Character
     // 스킬을 사용한다.
     public void CastSkill()
     {
-        GameObject target;
-
-        // 공격 스킬이면 Player를, 그 외는 자신을 타겟으로 한다.
-        if (currentSkill.type == EffectType.Attack)
-        {
-            target = Player.Instance.gameObject;
-        }
-        else
-        {
-            target = gameObject;
-        }
+        Character target = EnemySkillInfo.Instance.ReturnTarget(currentSkill.type, this);
 
         // 준비한 스킬을 사용한다.
-        CardInfo.Instance.effects[(int)currentSkill.type](currentSkill.amount, target);
+        EnemySkillInfo.Instance.effects[(int)currentSkill.type](currentSkill.amount, target);
     }
 
     // 죽는다.
@@ -90,6 +97,8 @@ public class Enemy : Character
 
         // 오브젝트 비활성화
         gameObject.SetActive(false);
+        // BattleManager에서 자기 자신 제거
+        BattleManager.Instance.onEndEnemyTurn.RemoveListener(CastSkill);
         // Battle Info에 남은 적 -1
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -58,23 +59,27 @@ public class CardActivator : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         // 공격 카드일 경우, 화살표의 끝이 마우스를 향한다.
     }
 
-    // 카드 발동 후 선택된 오브젝트
-    public GameObject selectedObject;
-
     // 드래그가 끝날 때 호출된다.
     public void OnEndDrag(PointerEventData eventData)
     {
-        // 기본 레이어마스크는 Field이며
-        LayerMask layer = LayerMask.GetMask("Field");
+        // 카드를 사용한다.
+        UseCard();
+    }
+    #endregion 마우스 클릭 및 드래그
 
-        // 공격 카드일 경우 레이어마스크를 Enemy로 변경한다.
-        if (cardData.type == EffectType.Attack)
-        {
-            layer = LayerMask.GetMask("Enemy");
-        }
+    #region 카드 사용
+
+    // 카드 발동 후 선택된 오브젝트
+    public Character selectedCharacter;
+
+    // 카드를 사용한다.
+    private void UseCard()
+    {
+        // 카드 종류에 따라 Enemy 또는 Field 레이어를 선택한다.
+        LayerMask layer = CardInfo.Instance.ReturnLayer(cardData.type);
 
         // layer가 일치하는, 선택된 오브젝트를 가져온다.
-        selectedObject = GetClickedObject(layer);
+        GameObject selectedObject = GetClickedObject(layer);
 
         // 오브젝트가 선택되지 않았다면
         if (selectedObject == null)
@@ -84,8 +89,22 @@ public class CardActivator : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             return;
         }
 
+        // 이제 공격 타겟을 정해야 한다.
+        // 적 오브젝트를 선택하는 카드라면
+        if (layer == LayerMask.GetMask("Enemy"))
+        {
+            // 적 오브젝트의 Character 스크립트를 가져오고
+            selectedCharacter = selectedObject.GetComponent<Character>();
+        }
+        // 그 외는
+        else
+        {
+            // Player를 가져온다.
+            selectedCharacter = Player.Instance;
+        }
+
         // 카드를 발동한다. 공격 카드일 경우 선택된 적에게 발동한다.
-        CardInfo.Instance.effects[(int)cardData.type](cardData.amount, selectedObject);
+        CardInfo.Instance.effects[(int)cardData.type](cardData.amount, selectedCharacter);
     }
 
     // 클릭된(드래그 후 마우스를 뗀 순간) 오브젝트를 가져온다.
@@ -106,8 +125,7 @@ public class CardActivator : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         // 아니라면 null을 반환한다.
         return null;
     }
-    #endregion 마우스 클릭 및 드래그
-
+    #endregion 카드 사용
 
     #region 카드 정리
     public virtual void RemoveCard()

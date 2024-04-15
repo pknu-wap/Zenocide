@@ -10,7 +10,8 @@ public enum EffectType
     Cleanse,        // 디버프 제거
     RestoreCost,    // 코스트 회복
     Draw,           // 카드 드로우
-    Buff            // 버프
+    Buff,           // 버프
+    Debuff          // 버프
 }
 
 // 유니티 에디터, Project 뷰의 Create 메뉴에 아래 항목을 추가한다.

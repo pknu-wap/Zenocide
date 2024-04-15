@@ -10,8 +10,6 @@ public class StatePanel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     [SerializeField] GameObject statePanel;
     [SerializeField] Image statePanelImage;
 
-    [SerializeField] float duration = 0.1f;
-
     private void Awake()
     {
         statePanel = transform.parent.GetChild(1).gameObject;

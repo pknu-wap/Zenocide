@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 // 턴 관리, 게임 오버, 게임 중단 등을 다루는 클래스
 public class BattleManager : MonoBehaviour
@@ -26,9 +27,31 @@ public class BattleManager : MonoBehaviour
     #region 턴 관리
     public bool isPlayerTurn = true;
 
+    public UnityEvent onStartPlayerTurn;    // 플레이어 턴이 시작할 때
+    public UnityEvent onStartEnemyTurn;     // 적 턴이 시작할 때
+    public UnityEvent onEndPlayerTurn;      // 플레이어 턴이 끝날 때
+    public UnityEvent onEndEnemyTurn;       // 적 턴이 끝날 때
+
     public void ToggleTurn()
     {
         // 턴을 변경한다.
+        if (isPlayerTurn)
+        {
+            onEndPlayerTurn.Invoke();
+            onStartEnemyTurn.Invoke();
+            isPlayerTurn = false;
+            Debug.Log("적 턴");
+
+            // 적 턴이 끝나면 자동으로 플레이어 턴으로 바꾼다.
+            ToggleTurn();
+        }
+        else
+        {
+            onEndEnemyTurn.Invoke();
+            onStartPlayerTurn.Invoke();
+            isPlayerTurn = true;
+            Debug.Log("플레이어 턴");
+        }
     }
 
     public void StartTurn(bool isPlayerTurn)
