@@ -62,6 +62,10 @@ public class TurnManager : MonoBehaviour
         if (myTurn)
             GameManager.Inst.Notification("나의 턴");
 
+        // 덱이 없으면 묘지를 셔플해서 새로 생성
+        if(CardManager.Inst.deck.Count == 0)
+            CardManager.Inst.ResetDeck();
+
         // 드로우 카드 수만큼 드로우
         for (int i = 0; i < drawCardCount; i++)
         {
@@ -75,8 +79,9 @@ public class TurnManager : MonoBehaviour
 
     public void EndTurn()
     {
+        if(myTurn)
+            StartCoroutine(CardManager.Inst.DiscardHandCo());
         myTurn = !myTurn;
-        CardManager.Inst.DiscardHand();
         StartCoroutine(StartTurnCo());
     }
 }

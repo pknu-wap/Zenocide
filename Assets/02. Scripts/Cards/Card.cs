@@ -63,7 +63,7 @@ public class Card : MonoBehaviour
     {
         Sequence sequence = DOTween.Sequence()
             .Append(transform.DOLocalMoveY(10, 0.5f).SetEase(Ease.OutQuart))
-            .AppendInterval(0.9f);
+            .AppendInterval(1f);
         //.Join(card.DoFade())
     }
 }

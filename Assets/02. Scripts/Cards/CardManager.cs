@@ -17,15 +17,12 @@ public class CardManager : MonoBehaviour
     [SerializeField] Transform handRight;
     [SerializeField] Transform cardSpawnPoint;
 
-    List<Item> deck;
+    public List<Item> deck;
     List<Item> dump;
     Card selectCard;
 
     public Item DrawCard()
     {
-        if (deck.Count == 0)
-            ResetDeck();
-
         Item card = deck[0];
         deck.RemoveAt(0);
         return card;
@@ -67,7 +64,7 @@ public class CardManager : MonoBehaviour
 
     void AddCardToHand(bool isMine)
     {
-        if (!isMine || hand.Count >= 10) return;
+        if (!isMine || hand.Count >= 10 || deck.Count == 0) return;
         var cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI);
         var card = cardObject.GetComponent<Card>();
         card.Setup(DrawCard());
@@ -135,19 +132,11 @@ public class CardManager : MonoBehaviour
         return results;
     }
 
-    public void DiscardCard(Card card, bool motion)
+    public void DiscardCard(Card card)
     {
 
         hand.Remove(card);
         dump.Add(card.item);
-
-        // 사라지는 모션 만들고 싶다..
-        /*if (motion)
-        {
-            Sequence sequence = DOTween.Sequence()
-            .Append(card.transform.DOLocalMoveY(10, 0.5f).SetEase(Ease.OutQuart))
-            .Join(card.DoFade(0, 1))
-        }*/
 
         card.transform.DOKill();
 
@@ -157,10 +146,9 @@ public class CardManager : MonoBehaviour
         CardAlignment();
     }
 
-    void ResetDeck()
+    public void ResetDeck()
     {
         deck = new List<Item>(100);
-        Debug.Log("Run out of card!");
 
         // dump의 카드들을 deck에 추가
         for (int i = 0; i < dump.Count; i++)
@@ -177,13 +165,34 @@ public class CardManager : MonoBehaviour
             deck[i] = deck[rand];
             deck[rand] = temp;
         }
+
+        // dump 비우기
+        dump = new List<Item>(100);
     }
 
-    public void DiscardHand()
+    public IEnumerator DiscardHandCo()
     {
-        int handCnt = hand.Count;
-        for (int i = 0; i < handCnt; i++)
-            DiscardCard(hand[0], true);
+        for (int i = 0; i < hand.Count; i++)
+        {
+            Sequence sequence = DOTween.Sequence()
+            .Append(hand[i].transform.DOLocalMoveY(0.5f, 0.9f).SetEase(Ease.OutQuad))
+            .Join(hand[i].GetComponent<SpriteRenderer>().DOFade(0, 0.9f).SetEase(Ease.InExpo));
+        }
+
+        // sequence 끝나기 전까지 기다리기
+        yield return new WaitForSeconds(0.9f);
+
+        // sequence가 끝나면 모든 오브젝트 파괴
+        for (int i = 0; i < hand.Count; i++)
+        {
+            Card card = hand[i];
+            dump.Add(card.item);
+
+            DestroyImmediate(card.gameObject);
+        }
+
+        hand = new List<Card>(100);
+        selectCard = null;
     }
 
     #region MyCard
@@ -202,7 +211,7 @@ public class CardManager : MonoBehaviour
     public void CardMouseDown()
     {
         if(TurnManager.Inst.myTurn)
-            DiscardCard(selectCard, false);
+            DiscardCard(selectCard);
     }
 
     void EnlargeCard(bool isEnlarge, Card card)
