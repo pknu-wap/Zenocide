@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.IO;
 using TMPro;
+using System.Collections.Generic;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -10,6 +11,9 @@ public class DialogueManager : MonoBehaviour
     public TMP_Text dialogueName;        //Story Name
       
     public GameObject dialogueBox;       //전체 Canvas
+
+    public GameObject ChoiceBox;         //선택지 오브젝트
+
     public GameObject WaitCursor;        //다음 Text 대기 표시 커서
       
     public Image dialogueImage;          //일러스트
@@ -33,6 +37,10 @@ public class DialogueManager : MonoBehaviour
 
     void Update()
     {
+        var IllustTable = new Dictionary<string,int>(){
+            {"김똘똘",0},
+            {"김똘순",1}   
+        };
         if (dialogueBox.activeInHierarchy)
         {
             if(Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)){
@@ -41,12 +49,15 @@ public class DialogueManager : MonoBehaviour
                     currentLine++;
                     if (currentLine < StoryText.Length)
                     {
-                        StartCoroutine(TypeSentence(StoryText[currentLine]));
-                        dialogueName.text = StoryName[currentLine];
-                        // 이미지 변경
-                        if (currentLine < dialogueImages.Length)
-                        {
-                            dialogueImage.sprite = dialogueImages[currentLine];
+                        //선택지 표시가 필요한 경우
+                        if(dialogueName.text == "*"){
+
+                        }
+                        else{
+                            StartCoroutine(TypeSentence(StoryText[currentLine]));
+                            dialogueName.text = StoryName[currentLine];
+                            // 이미지 변경
+                            dialogueImage.sprite = dialogueImages[IllustTable[dialogueName.text]];
                         }
                     }
                     else
@@ -69,11 +80,8 @@ public class DialogueManager : MonoBehaviour
         WaitCursor.SetActive(false);
         cancelTyping = false;
         dialogueText.text = "";
-        int posX = 0;
-        int posY = 0;
         foreach (char letter in sentence.ToCharArray())
         {
-            posX += 1;
             dialogueText.text += letter;
             yield return new WaitForSeconds(0.03f);
             if (cancelTyping)
@@ -83,14 +91,8 @@ public class DialogueManager : MonoBehaviour
             }
         }
         isTyping = false;
-        if(posX >= 110){
-            posY = posX / 110;
-            posX %= 110;
-            posX += 2;
-        }
-        float textWidth = 33 * posX;
-        Debug.Log(textWidth);
-        Vector3 newPosition = dialogueText.transform.position + new Vector3(textWidth,-(5 + 60 * posY),0);
+        float textWidth = dialogueText.preferredWidth;
+        Vector3 newPosition = dialogueText.transform.position + new Vector3(textWidth,0,0);
         WaitCursor.transform.position = newPosition;
         WaitCursor.SetActive(true);
         cancelTyping = false;
