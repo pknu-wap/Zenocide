@@ -354,6 +354,7 @@ GameObject:
   - component: {fileID: 1749230287968358950}
   - component: {fileID: 773888522509502075}
   - component: {fileID: 7177031091550664183}
+  - component: {fileID: 2181337692842076171}
   m_Layer: 0
   m_Name: Card
   m_TagString: Untagged
@@ -371,7 +372,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2, y: 1.2, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7026756014054075543}
@@ -479,6 +480,60 @@ MonoBehaviour:
     pos: {x: 0, y: 0, z: 0}
     rot: {x: 0, y: 0, z: 0, w: 0}
     scale: {x: 0, y: 0, z: 0}
+--- !u!60 &2181337692842076171
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5837761484913439074}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.5666667, y: 2.0666666}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -0.78333336, y: 1.0333334}
+      - {x: -0.78333336, y: -1.0333334}
+      - {x: -0.40020952, y: -1.0333333}
+      - {x: -0.34191343, y: -1.327796}
+      - {x: 0.39422214, y: -1.3319322}
+      - {x: 0.40049696, y: -1.2991272}
+      - {x: 0.4513376, y: -1.0333333}
+      - {x: 0.78333336, y: -1.0333334}
+      - {x: 0.78333336, y: 1.0333334}
+  m_UseDelaunayMesh: 0
 --- !u!1 &8083769171295276251
 GameObject:
   m_ObjectHideFlags: 0
@@ -560,7 +615,7 @@ SpriteRenderer:
   m_Size: {x: 0.47, y: 0.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &8329304778378384545

@@ -27,6 +27,20 @@ public class Card : MonoBehaviour
         descriptionTMP.text = this.item.description;
     }
 
+    void OnMouseOver()
+    {
+        CardManager.Inst.CardMouseOver(this);
+    }
+
+    void OnMouseDown()
+    {
+        CardManager.Inst.CardMouseDown();
+    }
+
+    void OnMouseExit()
+    {
+        CardManager.Inst.CardMouseExit(this);
+    }
     public void MoveTransform(PRS prs, bool useDotween, float dotweenTime = 0)
     {
         if (useDotween)
@@ -43,5 +57,13 @@ public class Card : MonoBehaviour
                 transform.localScale = prs.scale;
             }
         }
+    }
+
+    public void SlowDisappear()
+    {
+        Sequence sequence = DOTween.Sequence()
+            .Append(transform.DOLocalMoveY(10, 0.5f).SetEase(Ease.OutQuart))
+            .AppendInterval(1f);
+        //.Join(card.DoFade())
     }
 }
