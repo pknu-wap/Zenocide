@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Player : Character
 {
@@ -25,6 +26,11 @@ public class Player : Character
     }
     #endregion ΩÃ±€≈Ê
 
+    private void Start()
+    {
+        BattleManager.Instance.onEndPlayerTurn.AddListener(EndPlayerTurn);
+    }
+
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))
@@ -32,6 +38,12 @@ public class Player : Character
             DecreaseHP(10);
         }
     }
+
+    public void EndPlayerTurn()
+    {
+        GetBleedAll();
+    }
+
     public override void Die()
     {
         // «√∑π¿ÃæÓ¿« ªÁ∏¡¿ª æÀ∏≤

@@ -27,7 +27,9 @@ public class CardInfo : MonoBehaviour
     #endregion 싱글톤
 
     #region 카드 UI 데이터
-    public Sprite[] Icons;
+    // 통합하고 싶다...
+    public Sprite[] skillIcons;
+    public Sprite[] debuffIcons;
     #endregion 카드 UI 데이터
 
     #region 정보 검색
@@ -47,6 +49,7 @@ public class CardInfo : MonoBehaviour
         layerDict[(int)EffectType.Draw] = LayerMask.GetMask("Field");
         layerDict[(int)EffectType.Buff] = LayerMask.GetMask("Field");
         layerDict[(int)EffectType.Debuff] = LayerMask.GetMask("Enemy");
+        layerDict[(int)EffectType.Bleed] = LayerMask.GetMask("Enemy");
     }
 
     // 타입에 맞는 레이어를 반환한다.
@@ -58,7 +61,9 @@ public class CardInfo : MonoBehaviour
 
     #region 카드 효과
     // 카드 효과 함수들을 담아둘 델리게이트
-    public delegate void CardEffects(int amount, Character target);
+    // amount는 카드의 효과량, turnCount는 지속될 턴의 수, target은 적용 대상이다.
+    // 예를 들어 Bleed의 변수가 6, 3, Player.Instance라면, 플레이어에게 3턴간, 매 턴 6의 데미지를 준다.
+    public delegate void CardEffects(int amount, int turnCount, Character target);
     // 델리게이트 배열, EffectType에 맞는 함수를 매칭한다.
     public CardEffects[] effects;
 
@@ -80,48 +85,53 @@ public class CardInfo : MonoBehaviour
         effects[(int)EffectType.Draw] += Draw;
         effects[(int)EffectType.Buff] += Buff;
         effects[(int)EffectType.Debuff] += Debuff;
+        effects[(int)EffectType.Bleed] += Bleed;
     }
 
     // target이 null인 경우는 Card의 OnEndDrag에서 검사했으므로, 검사하지 않는다.
-    public void Attack(int amount, Character target)
+    public void Attack(int amount, int turnCount, Character target)
     {
         target.DecreaseHP(amount);
-        Debug.Log(target.GetHP());
     }
 
-    public void Shield(int amount, Character target)
+    public void Shield(int amount, int turnCount, Character target)
     {
         Debug.Log("Shield");
     }
 
-    public void Heal(int amount, Character target)
+    public void Heal(int amount, int turnCount, Character target)
     {
         Debug.Log("Heal");
     }
 
-    public void Cleanse(int amount, Character target)
+    public void Cleanse(int amount, int turnCount, Character target)
     {
         Debug.Log("Cleanse");
     }
 
-    public void RestoreCost(int amount, Character target)
+    public void RestoreCost(int amount, int turnCount, Character target)
     {
         Debug.Log("RestoreCost");
     }
 
-    public void Draw(int amount, Character target)
+    public void Draw(int amount, int turnCount, Character target)
     {
         Debug.Log("Draw");
     }
 
-    public void Buff(int amount, Character target)
+    public void Buff(int amount, int turnCount, Character target)
     {
         Debug.Log("Buff");
     }
 
-    public void Debuff(int amount, Character target)
+    public void Debuff(int amount, int turnCount, Character target)
     {
-        Debug.Log("Buff");
+        Debug.Log("Debuff");
+    }
+
+    public void Bleed(int amount, int turnCount, Character target)
+    {
+        Debug.Log("Bleed");
     }
     #endregion 카드 효과
 }

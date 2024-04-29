@@ -10,7 +10,8 @@ public enum EnemySkillType
     Heal,           // 체력 회복
     Cleanse,        // 디버프 제거
     Buff,           // 버프
-    Debuff          // 디버프
+    Debuff,         // 디버프
+    Bleed,          // 출혈
 };
 
 public enum EnemyTarget
@@ -44,9 +45,9 @@ public class EnemySkillInfo : MonoBehaviour
     }
     #endregion 싱글톤
 
+    #region 정보 검색
     private EnemyTarget[] targetDict;
 
-    #region 정보 검색
     private void EnrollTargetDict()
     {
         targetDict = new EnemyTarget[Enum.GetValues(typeof(EnemySkillType)).Length];
@@ -57,6 +58,7 @@ public class EnemySkillInfo : MonoBehaviour
         targetDict[(int)EnemySkillType.Cleanse] = EnemyTarget.Self;
         targetDict[(int)EnemySkillType.Buff] = EnemyTarget.Self;
         targetDict[(int)EnemySkillType.Debuff] = EnemyTarget.Player;
+        targetDict[(int)EnemySkillType.Bleed] = EnemyTarget.Player;
     }
 
     public Character ReturnTarget(EnemySkillType type, Character caller)
@@ -74,7 +76,7 @@ public class EnemySkillInfo : MonoBehaviour
 
     #region 스킬 효과
     // 카드 효과 함수들을 담아둘 델리게이트
-    public delegate void EnemySkillEffects(int amount, Character target);
+    public delegate void EnemySkillEffects(int amount, int turnCount, Character target);
     // 델리게이트 배열, EnemySkillType에 맞는 함수를 매칭한다.
     public EnemySkillEffects[] effects;
 
@@ -94,48 +96,62 @@ public class EnemySkillInfo : MonoBehaviour
         effects[(int)EnemySkillType.Cleanse] += Cleanse;
         effects[(int)EnemySkillType.Buff] += Buff;
         effects[(int)EnemySkillType.Debuff] += Debuff;
+        effects[(int)EnemySkillType.Bleed] += Bleed;
     }
 
     // target이 null인 경우는 Card의 OnEndDrag에서 검사했으므로, 검사하지 않는다.
-    public void Attack(int amount, Character target)
+    // {target}에게 {amount}만큼 데미지를 입힌다.
+    public void Attack(int amount, int turnCount, Character target)
     {
         target.DecreaseHP(amount);
-        Debug.Log(target.GetHP());
     }
 
-    public void Shield(int amount, Character target)
+    // {Shield}만큼 보호막을 얻는다. 보호막은 체력 대신 소모된다.
+    public void Shield(int amount, int turnCount, Character target)
     {
         Debug.Log("Shield");
     }
 
-    public void Heal(int amount, Character target)
+    // {amount}만큼 체력을 회복한다.
+    public void Heal(int amount, int turnCount, Character target)
     {
         Debug.Log("Heal");
     }
 
-    public void Cleanse(int amount, Character target)
+    // 모든 디버프를 정화한다.
+    public void Cleanse(int amount, int turnCount, Character target)
     {
         Debug.Log("Cleanse");
     }
 
-    public void RestoreCost(int amount, Character target)
+    // 코스트를 {amount} 회복한다.
+    public void RestoreCost(int amount, int turnCount, Character target)
     {
         Debug.Log("RestoreCost");
     }
 
-    public void Draw(int amount, Character target)
+    // 카드를 {amount} 개 뽑는다.
+    public void Draw(int amount, int turnCount, Character target)
     {
         Debug.Log("Draw");
     }
 
-    public void Buff(int amount, Character target)
+    // 버프(삭제 예정)
+    public void Buff(int amount, int turnCount, Character target)
     {
         Debug.Log("Buff");
     }
 
-    public void Debuff(int amount, Character target)
+    // 디버프(삭제 예정)
+    public void Debuff(int amount, int turnCount, Character target)
     {
         Debug.Log("Debuff");
+    }
+
+    // {turnCount} 턴 간 {amount}의 데미지를 입힌다.
+    public void Bleed(int damagePerTurn, int remainingsTurn, Character target)
+    {
+        target.EnrollBleed(new BleedEffect(damagePerTurn, remainingsTurn));
     }
     #endregion 카드 효과
 }

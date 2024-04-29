@@ -24,8 +24,8 @@ public class Enemy : Character
         base.Awake();
 
         // 행동 정보 아이콘
-        behaviorIcon = transform.GetChild(1).GetChild(0).GetChild(1).GetComponent<Image>();
-        behaviorAmount = transform.GetChild(1).GetChild(0).GetChild(1).GetChild(0).GetComponent<TMP_Text>();
+        behaviorIcon = transform.GetChild(1).GetChild(0).GetChild(2).GetComponent<Image>();
+        behaviorAmount = transform.GetChild(1).GetChild(0).GetChild(2).GetChild(0).GetComponent<TMP_Text>();
 
         // 상제정보창
         behaviorName = transform.GetChild(1).GetChild(1).GetChild(0).GetChild(0).GetComponent<TMP_Text>();
@@ -57,7 +57,11 @@ public class Enemy : Character
 
     public void EndEnemyTurn()
     {
+        // 플레이어에게 스킬을 사용한다.
         CastSkill();
+
+        // 디버프(출혈 등)가 전부 적용된다.
+        GetBleedAll();
     }
 
     [Header("런타임 변수")]
@@ -68,12 +72,13 @@ public class Enemy : Character
     public void ReadySkill()
     {
         int i = Random.Range(0, skillData.skills.Length);
+
         // 1. 랜덤한 스킬들 중 하나를 선택한다.
         currentSkill = skillData.skills[i];
 
         // 2.UI를 갱신한다.
         // 2-1. 자신이 고른 스킬을 체력바 위에 표시한다.
-        behaviorIcon.sprite = CardInfo.Instance.Icons[(int)currentSkill.type];
+        behaviorIcon.sprite = CardInfo.Instance.skillIcons[(int)currentSkill.type];
         behaviorAmount.text = currentSkill.amount.ToString();
 
         // 2-2. 상세정보창을 스킬의 설명으로 갱신한다.
@@ -87,7 +92,7 @@ public class Enemy : Character
         Character target = EnemySkillInfo.Instance.ReturnTarget(currentSkill.type, this);
 
         // 준비한 스킬을 사용한다.
-        EnemySkillInfo.Instance.effects[(int)currentSkill.type](currentSkill.amount, target);
+        EnemySkillInfo.Instance.effects[(int)currentSkill.type](currentSkill.amount, currentSkill.turnCount, target);
     }
 
     // 죽는다.
