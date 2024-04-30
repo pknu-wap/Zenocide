@@ -5773,7 +5773,6 @@ MonoBehaviour:
   onTurnStarted:
     m_PersistentCalls:
       m_Calls: []
-  transforms: []
   debuffIconContainer: {fileID: 0}
   skillData: {fileID: 11400000, guid: ded25edf89430224ebfe434bb04430e1, type: 2}
   behaviorIcon: {fileID: 0}
@@ -6320,7 +6319,6 @@ MonoBehaviour:
   onTurnStarted:
     m_PersistentCalls:
       m_Calls: []
-  transforms: []
   debuffIconContainer: {fileID: 0}
 --- !u!1 &1462060324
 GameObject:
@@ -9609,7 +9607,6 @@ MonoBehaviour:
   onTurnStarted:
     m_PersistentCalls:
       m_Calls: []
-  transforms: []
   debuffIconContainer: {fileID: 0}
   skillData: {fileID: 11400000, guid: ded25edf89430224ebfe434bb04430e1, type: 2}
   behaviorIcon: {fileID: 0}
