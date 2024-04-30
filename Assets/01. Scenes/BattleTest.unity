@@ -872,8 +872,8 @@ RectTransform:
   - {fileID: 1380955940}
   m_Father: {fileID: 1681374048}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 2, y: 0}
   m_SizeDelta: {x: 4, y: 0}
   m_Pivot: {x: 0.5, y: 1}
@@ -2818,7 +2818,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 844ef349caa03a348a97191daadd7d52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eTurnMode: 0
+  eTurnMode: 1
   drawCardCount: 5
   isLoading: 0
   myTurn: 0
@@ -5037,6 +5037,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statePanel: {fileID: 0}
   statePanelImage: {fileID: 0}
+  uiCanvas: {fileID: 0}
 --- !u!114 &1127601543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9025,8 +9026,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 2, y: 0}
-  m_SizeDelta: {x: 4, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1925501641
 MonoBehaviour:
@@ -9656,6 +9657,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statePanel: {fileID: 0}
   statePanelImage: {fileID: 0}
+  uiCanvas: {fileID: 0}
 --- !u!114 &1987863881
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10107,7 +10109,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 2, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 2, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &2084137667
