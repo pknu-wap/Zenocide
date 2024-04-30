@@ -2352,8 +2352,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 436648807}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: -0.13052624, w: 0.9914449}
-  m_LocalPosition: {x: 400, y: -200, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0.13052624, w: 0.9914449}
+  m_LocalPosition: {x: 300, y: -200, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2932,7 +2932,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &666836979
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3445,7 +3445,7 @@ Transform:
   m_GameObject: {fileID: 725029575}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.13052616, w: 0.9914449}
-  m_LocalPosition: {x: -400, y: -200, z: 0}
+  m_LocalPosition: {x: -300, y: -200, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4798,6 +4798,7 @@ MonoBehaviour:
   handRight: {fileID: 436648808}
   cardSpawnPoint: {fileID: 1253124001}
   deck: []
+  h: 1.5
 --- !u!4 &1114143845
 Transform:
   m_ObjectHideFlags: 0
@@ -10310,7 +10311,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2465514467480115656, guid: 5cc6a70698541f240ae1f8d3a39b87c7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 2465514467480115656, guid: 5cc6a70698541f240ae1f8d3a39b87c7, type: 3}
       propertyPath: m_LocalPosition.y
@@ -10377,6 +10378,6 @@ SceneRoots:
   - {fileID: 515998850}
   - {fileID: 2007522562}
   - {fileID: 725029576}
-  - {fileID: 1253124001}
   - {fileID: 436648808}
+  - {fileID: 1253124001}
   - {fileID: 3712680080723713857}

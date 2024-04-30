@@ -27,7 +27,7 @@ public class Card : MonoBehaviour
         descriptionTMP.text = this.item.description;
     }
 
-    void OnMouseOver()
+    void OnMouseEnter()
     {
         CardManager.Inst.CardMouseOver(this);
     }

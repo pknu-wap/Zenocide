@@ -23,6 +23,7 @@ public class CardManager : MonoBehaviour
 
     public Item DrawCard()
     {
+        // queue나 dequeue를 쓰는 게 더 나을 듯
         Item card = deck[0];
         deck.RemoveAt(0);
         return card;
@@ -35,6 +36,7 @@ public class CardManager : MonoBehaviour
         // itemSO의 카드들을 deck에 추가
         for (int i = 0; i < itemSO.items.Length; i++) 
         {
+            // 한 줄로 줄이면 Item을 선언하는 비용이 들지 않는다.
             Item card = itemSO.items[i];
             deck.Add(card);
         }
@@ -84,10 +86,12 @@ public class CardManager : MonoBehaviour
         }
     }
 
+    public float h = 1000f;
+
     void CardAlignment()
     {
         List<PRS> originCardPRSs = new List<PRS>();
-        originCardPRSs = RoundAlignment(handLeft, handRight, hand.Count, 0.5f, Vector3.one * 10f);
+        originCardPRSs = RoundAlignment(handLeft, handRight, hand.Count, h, Vector3.one * 10f);
 
         for (int i = 0; i < hand.Count; i++)
         {
@@ -218,8 +222,8 @@ public class CardManager : MonoBehaviour
     {
         if (isEnlarge)
         {
-            Vector3 enlargePos = new Vector3(card.originPRS.pos.x, -1.7f, -10f);
-            card.MoveTransform(new PRS(enlargePos, Utils.QI, Vector3.one * 2.7f), false);
+            Vector3 enlargePos = new Vector3(card.originPRS.pos.x, card.originPRS.pos.y + h, -3f);
+            card.MoveTransform(new PRS(enlargePos, Utils.QI, card.originPRS.scale * 1.2f), false);
         }
         else
             card.MoveTransform(card.originPRS, false);
