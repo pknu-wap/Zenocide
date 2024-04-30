@@ -37,6 +37,10 @@ public class TurnManager : MonoBehaviour
                 myTurn = false;
                 break;
         }
+
+        // 턴 매니저의 턴 종료를 실행한다.
+        Debug.Log("적 턴 종료 호출");
+        BattleManager.Instance.onEndEnemyTurn.AddListener(EndTurn);
     }
 
     public IEnumerator StartGameCo()

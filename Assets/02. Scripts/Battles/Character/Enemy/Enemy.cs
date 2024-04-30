@@ -38,7 +38,7 @@ public class Enemy : Character
         ReadySkill();
 
         // BattleManager에 이벤트 등록
-        BattleManager.Instance.onEndEnemyTurn.AddListener(CastSkill);
+        BattleManager.Instance.onEndEnemyTurn.AddListener(EndEnemyTurn);
         BattleManager.Instance.onStartPlayerTurn.AddListener(ReadySkill);
     }
 
@@ -57,7 +57,7 @@ public class Enemy : Character
 
     public void EndEnemyTurn()
     {
-        // 플레이어에게 스킬을 사용한다.
+        // 플레이어에게 스킬을 사용한다. 이때, 애니메이션이 모두 끝나야 이후 명령들을 시작한다.
         CastSkill();
 
         // 디버프(출혈 등)가 전부 적용된다.
@@ -103,7 +103,7 @@ public class Enemy : Character
         // 오브젝트 비활성화
         gameObject.SetActive(false);
         // BattleManager에서 자기 자신 제거
-        BattleManager.Instance.onEndEnemyTurn.RemoveListener(CastSkill);
+        BattleManager.Instance.onEndEnemyTurn.RemoveListener(EndEnemyTurn);
         // Battle Info에 남은 적 -1
     }
 }
