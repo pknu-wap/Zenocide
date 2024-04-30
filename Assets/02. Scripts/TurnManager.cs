@@ -51,6 +51,7 @@ public class TurnManager : MonoBehaviour
     {
         // 게임 세팅
         GameSetup();
+        isLoading = true;
 
         // 드로우 카드 수만큼 드로우
         for (int i = 0; i < drawCardCount; i++)
@@ -60,6 +61,9 @@ public class TurnManager : MonoBehaviour
             yield return delay03;
             OnAddCard?.Invoke(true);
         }
+
+        yield return delay03;
+        isLoading = false;
     }
 
     IEnumerator StartPlayerTurnCo()
