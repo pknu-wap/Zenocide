@@ -238,8 +238,10 @@ public class CardManager : MonoBehaviour
             card.MoveTransform(new PRS(enlargePos, Utils.QI, card.originPRS.scale * 1.2f), false);
         }
         else
+        {
             card.MoveTransform(card.originPRS, false);
-
+        }
+        
         card.GetComponent<CardOrder>().SetMostFrontOrder(isEnlarge);
     }
 

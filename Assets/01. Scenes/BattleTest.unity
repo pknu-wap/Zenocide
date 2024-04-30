@@ -4797,7 +4797,6 @@ MonoBehaviour:
   handLeft: {fileID: 725029576}
   handRight: {fileID: 436648808}
   cardSpawnPoint: {fileID: 1253124001}
-  height: 400
   deck: []
   focusOffset: 100
 --- !u!4 &1114143845
@@ -10349,6 +10348,10 @@ PrefabInstance:
     - target: {fileID: 2465514467480115656, guid: 5cc6a70698541f240ae1f8d3a39b87c7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7611533847881201877, guid: 5cc6a70698541f240ae1f8d3a39b87c7, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
