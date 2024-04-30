@@ -86,12 +86,11 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    public float h = 1000f;
-
     void CardAlignment()
     {
         List<PRS> originCardPRSs = new List<PRS>();
-        originCardPRSs = RoundAlignment(handLeft, handRight, hand.Count, h, Vector3.one * 10f);
+        float radius = handRight.position.x - handLeft.position.x;
+        originCardPRSs = RoundAlignment(handLeft, handRight, hand.Count, radius, Vector3.one * 10f);
 
         for (int i = 0; i < hand.Count; i++)
         {
@@ -103,7 +102,7 @@ public class CardManager : MonoBehaviour
     }
 
     // 이해하기를 포기함...
-    List<PRS> RoundAlignment(Transform leftTr, Transform rightTr, int objCount, float height, Vector3 scale)
+    List<PRS> RoundAlignment(Transform leftTr, Transform rightTr, int objCount, float radius, Vector3 scale)
     {
         float[] objLerps = new float[objCount];
         List<PRS> results = new List<PRS>(objCount);
@@ -120,15 +119,26 @@ public class CardManager : MonoBehaviour
                 break;
         }
 
+        Vector3 circleCenter = Vector3.Lerp(leftTr.position, rightTr.position, 0.5f) + Vector3.down * radius;
+
         for (int i = 0; i < objCount; i++)
         {
-            var targetPos = Vector3.Lerp(leftTr.position, rightTr.position, objLerps[i]);
-            var targetRot = Utils.QI;
+            // 타겟 위치는 leftTr과 rightTr 사이, i번째 카드의 위치
+            Vector3 targetPos = Vector3.Lerp(leftTr.position, rightTr.position, objLerps[i]);
+            // targetRot은 우선 기본값으로.
+            Quaternion targetRot = Utils.QI;
+
+
+            // 카드가 4개 이상일 때만 회전을 적용한다.
             if (objCount >= 4)
             {
-                float curve = Mathf.Sqrt(Mathf.Pow(height, 2) - Mathf.Pow(objLerps[i] - 0.5f, 2));
-                curve = height >= 0 ? curve : -curve;
-                targetPos.y += curve;
+                // 원의 방정식, (x-a)^2 + (y-b)^2 = r^2의 변형.
+                // x = targetPos.x, a = circleCenter.x, y = curve, b = circleCenter.y, r = height                
+                float curve = Mathf.Sqrt(Mathf.Pow(radius, 2) - Mathf.Pow(targetPos.x - circleCenter.x, 2));
+                //curve = radius >= 0 ? curve : -curve;
+                // 절댓값으로 변환
+                curve = Mathf.Abs(curve);
+                targetPos.y = targetPos.y - radius + curve;
                 targetRot = Quaternion.Slerp(leftTr.rotation, rightTr.rotation, objLerps[i]);
             }
             results.Add(new PRS(targetPos, targetRot, scale));
@@ -218,11 +228,13 @@ public class CardManager : MonoBehaviour
             DiscardCard(selectCard);
     }
 
+    [SerializeField] float focusOffset;
+
     void EnlargeCard(bool isEnlarge, Card card)
     {
         if (isEnlarge)
         {
-            Vector3 enlargePos = new Vector3(card.originPRS.pos.x, card.originPRS.pos.y + h, -3f);
+            Vector3 enlargePos = new Vector3(card.originPRS.pos.x, handLeft.position.y + focusOffset, -3f);
             card.MoveTransform(new PRS(enlargePos, Utils.QI, card.originPRS.scale * 1.2f), false);
         }
         else

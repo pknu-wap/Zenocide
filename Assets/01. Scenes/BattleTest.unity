@@ -2353,7 +2353,7 @@ Transform:
   m_GameObject: {fileID: 436648807}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.13052624, w: 0.9914449}
-  m_LocalPosition: {x: 300, y: -200, z: 0}
+  m_LocalPosition: {x: 250, y: -300, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3445,7 +3445,7 @@ Transform:
   m_GameObject: {fileID: 725029575}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.13052616, w: 0.9914449}
-  m_LocalPosition: {x: -300, y: -200, z: 0}
+  m_LocalPosition: {x: -250, y: -300, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4797,8 +4797,9 @@ MonoBehaviour:
   handLeft: {fileID: 725029576}
   handRight: {fileID: 436648808}
   cardSpawnPoint: {fileID: 1253124001}
+  height: 400
   deck: []
-  h: 1.5
+  focusOffset: 100
 --- !u!4 &1114143845
 Transform:
   m_ObjectHideFlags: 0
