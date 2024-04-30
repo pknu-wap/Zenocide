@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 using static UnityEditor.Progress;
 
 public class CardManager : MonoBehaviour
@@ -16,13 +17,12 @@ public class CardManager : MonoBehaviour
     [SerializeField] Transform handRight;
     [SerializeField] Transform cardSpawnPoint;
 
-    List<Item> deck;
+    public List<Item> deck;
+    List<Item> dump;
+    Card selectCard;
 
     public Item DrawCard()
     {
-        if (deck.Count == 0)
-            SetUpDeck();
-
         Item card = deck[0];
         deck.RemoveAt(0);
         return card;
@@ -30,7 +30,7 @@ public class CardManager : MonoBehaviour
 
     void SetUpDeck()
     {
-        deck = new List<Item>(30);
+        deck = new List<Item>(100);
 
         // itemSO의 카드들을 deck에 추가
         for (int i = 0; i < itemSO.items.Length; i++) 
@@ -52,16 +52,19 @@ public class CardManager : MonoBehaviour
     void Start()
     {
         SetUpDeck();
+        dump = new List<Item>(100);
+        // 왜 싱글톤에서 호출하지 않고 Action으로 호출할까,,,,
+        TurnManager.OnAddCard += AddCardToHand;
     }
 
-    void Update()
+    void OnDestroy()
     {
-        if (Input.GetKeyDown(KeyCode.S))
-            AddCardToHand();
+        TurnManager.OnAddCard -= AddCardToHand;
     }
 
-    void AddCardToHand()
+    void AddCardToHand(bool isMine)
     {
+        if (!isMine || hand.Count >= 10 || deck.Count == 0) return;
         var cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI);
         var card = cardObject.GetComponent<Card>();
         card.Setup(DrawCard());
@@ -128,4 +131,101 @@ public class CardManager : MonoBehaviour
         }
         return results;
     }
+
+    public void DiscardCard(Card card)
+    {
+
+        hand.Remove(card);
+        dump.Add(card.item);
+
+        card.transform.DOKill();
+
+        DestroyImmediate(card.gameObject);
+        selectCard = null;
+
+        CardAlignment();
+    }
+
+    public void ResetDeck()
+    {
+        deck = new List<Item>(100);
+
+        // dump의 카드들을 deck에 추가
+        for (int i = 0; i < dump.Count; i++)
+        {
+            Item card = dump[i];
+            deck.Add(card);
+        }
+
+        // deck 셔플
+        for (int i = 0; i < deck.Count; i++)
+        {
+            int rand = Random.Range(i, deck.Count);
+            Item temp = deck[i];
+            deck[i] = deck[rand];
+            deck[rand] = temp;
+        }
+
+        // dump 비우기
+        dump = new List<Item>(100);
+    }
+
+    public IEnumerator DiscardHandCo()
+    {
+        for (int i = 0; i < hand.Count; i++)
+        {
+            Sequence sequence = DOTween.Sequence()
+            .Append(hand[i].transform.DOLocalMoveY(0.5f, 0.9f).SetEase(Ease.OutQuad))
+            .Join(hand[i].GetComponent<SpriteRenderer>().DOFade(0, 0.9f).SetEase(Ease.InExpo));
+        }
+
+        // sequence 끝나기 전까지 기다리기
+        yield return new WaitForSeconds(0.9f);
+
+        // sequence가 끝나면 모든 오브젝트 파괴
+        for (int i = 0; i < hand.Count; i++)
+        {
+            Card card = hand[i];
+            dump.Add(card.item);
+
+            DestroyImmediate(card.gameObject);
+        }
+
+        hand = new List<Card>(100);
+        selectCard = null;
+    }
+
+    #region MyCard
+
+    public void CardMouseOver(Card card)
+    {
+        selectCard = card;
+        EnlargeCard(true, card);
+    }
+
+    public void CardMouseExit(Card card)
+    {
+        EnlargeCard(false, card);
+    }
+
+    public void CardMouseDown()
+    {
+        if(TurnManager.Inst.myTurn)
+            DiscardCard(selectCard);
+    }
+
+    void EnlargeCard(bool isEnlarge, Card card)
+    {
+        if (isEnlarge)
+        {
+            Vector3 enlargePos = new Vector3(card.originPRS.pos.x, -1.7f, -10f);
+            card.MoveTransform(new PRS(enlargePos, Utils.QI, Vector3.one * 2.7f), false);
+        }
+        else
+            card.MoveTransform(card.originPRS, false);
+
+        card.GetComponent<CardOrder>().SetMostFrontOrder(isEnlarge);
+    }
+
+    #endregion
 }
