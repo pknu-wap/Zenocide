@@ -15,5 +15,5 @@ public class Item
 [CreateAssetMenu(fileName = "ItemSO", menuName = "Scriptable Object/ItemSO")]
 public class ItemSO : ScriptableObject
 {
-    public Item[] items;
+    public CardData[] items;
 }

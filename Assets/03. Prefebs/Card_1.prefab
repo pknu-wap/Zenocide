@@ -71,6 +71,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0e8b99fbae59754c80c4ca051270667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardData: {fileID: 11400000, guid: c3c3d44ffc5234447a5356639efddd63, type: 2}
   card: {fileID: 6275775775052699086}
   illust: {fileID: 1702075633805280213}
   nameTMP: {fileID: 669179268076390324}
@@ -86,6 +87,7 @@ MonoBehaviour:
     pos: {x: 0, y: 0, z: 0}
     rot: {x: 0, y: 0, z: 0, w: 0}
     scale: {x: 0, y: 0, z: 0}
+  selectedCharacter: {fileID: 0}
 --- !u!61 &3530566994814086251
 BoxCollider2D:
   m_ObjectHideFlags: 0

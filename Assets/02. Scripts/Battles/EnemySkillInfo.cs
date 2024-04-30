@@ -149,9 +149,9 @@ public class EnemySkillInfo : MonoBehaviour
     }
 
     // {turnCount} 턴 간 {amount}의 데미지를 입힌다.
-    public void Bleed(int damagePerTurn, int remainingsTurn, Character target)
+    public void Bleed(int amount, int turnCount, Character target)
     {
-        target.EnrollBleed(new BleedEffect(damagePerTurn, remainingsTurn));
+        target.EnrollBleed(new BleedEffect(amount, turnCount));
     }
     #endregion 카드 효과
 }

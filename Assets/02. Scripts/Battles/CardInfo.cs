@@ -131,7 +131,7 @@ public class CardInfo : MonoBehaviour
 
     public void Bleed(int amount, int turnCount, Character target)
     {
-        Debug.Log("Bleed");
+        target.EnrollBleed(new BleedEffect(amount, turnCount));
     }
     #endregion 카드 효과
 }

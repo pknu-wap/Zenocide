@@ -14,32 +14,31 @@ public class CardManager : MonoBehaviour
     [SerializeField] List<Card> hand;
     [SerializeField] Transform handLeft;
     [SerializeField] Transform handRight;
-    [SerializeField] Transform cardSpawnPoint;
+    [SerializeField] public Transform cardSpawnPoint;
 
-    public List<Item> deck;
-    List<Item> dump;
+    public List<CardData> deck;
+    List<CardData> dump;
     Card selectCard;
 
     [SerializeField] float dotweenTime = 0.5f;
     [SerializeField] float focusOffset;
 
-    public Item DrawCard()
+    public CardData DrawCard()
     {
         // queue나 dequeue를 쓰는 게 더 나을 듯
-        Item card = deck[0];
+        CardData card = deck[0];
         deck.RemoveAt(0);
         return card;
     }
 
     void SetUpDeck()
     {
-        deck = new List<Item>(100);
+        deck = new List<CardData>(100);
 
         // itemSO의 카드들을 deck에 추가
         for (int i = 0; i < itemSO.items.Length; i++) 
         {
-            // 한 줄로 줄이면 Item을 선언하는 비용이 들지 않는다.
-            Item card = itemSO.items[i];
+            CardData card = itemSO.items[i];
             deck.Add(card);
         }
 
@@ -47,7 +46,7 @@ public class CardManager : MonoBehaviour
         for (int i = 0; i < deck.Count; i++)
         {
             int rand = Random.Range(i, deck.Count);
-            Item temp = deck[i];
+            CardData temp = deck[i];
             deck[i] = deck[rand];
             deck[rand] = temp;
         }
@@ -56,7 +55,7 @@ public class CardManager : MonoBehaviour
     void Start()
     {
         SetUpDeck();
-        dump = new List<Item>(100);
+        dump = new List<CardData>(100);
         // 왜 싱글톤에서 호출하지 않고 Action으로 호출할까,,,,
         TurnManager.OnAddCard += AddCardToHand;
     }
@@ -151,7 +150,7 @@ public class CardManager : MonoBehaviour
     public void DiscardCard(Card card)
     {
         hand.Remove(card);
-        dump.Add(card.item);
+        dump.Add(card.cardData);
 
         card.transform.DOKill();
 
@@ -163,12 +162,12 @@ public class CardManager : MonoBehaviour
 
     public void ResetDeck()
     {
-        deck = new List<Item>(100);
+        deck = new List<CardData>(100);
 
         // dump의 카드들을 deck에 추가
         for (int i = 0; i < dump.Count; i++)
         {
-            Item card = dump[i];
+            CardData card = dump[i];
             deck.Add(card);
         }
 
@@ -176,13 +175,13 @@ public class CardManager : MonoBehaviour
         for (int i = 0; i < deck.Count; i++)
         {
             int rand = Random.Range(i, deck.Count);
-            Item temp = deck[i];
+            CardData temp = deck[i];
             deck[i] = deck[rand];
             deck[rand] = temp;
         }
 
-        // dump 비우기
-        dump = new List<Item>(100);
+        // dump 비우기 (Clear 함수도 있음)
+        dump = new List<CardData>(100);
     }
 
     public IEnumerator DiscardHandCo()
@@ -207,7 +206,7 @@ public class CardManager : MonoBehaviour
         for (int i = 0; i < hand.Count; i++)
         {
             Card card = hand[i];
-            dump.Add(card.item);
+            dump.Add(card.cardData);
 
             DestroyImmediate(card.gameObject);
         }

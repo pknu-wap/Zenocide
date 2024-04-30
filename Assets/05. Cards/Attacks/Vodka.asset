@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee4e1de6682e5bb448d13b0b62311c21, type: 3}
+  m_Name: Vodka
+  m_EditorClassIdentifier: 
+  name: "\uD654\uC5FC\uBCD1"
+  description: "\uC801 \uC804\uCCB4\uC5D0\uAC8C 3\uD134 \uAC04 3\uC758 \uD53C\uD574\uB97C
+    \uC785\uD799\uB2C8\uB2E4."
+  sprite: {fileID: 21300000, guid: ffb746d25b7ee9641874cffae4fb5f18, type: 3}
+  type: 8
+  cost: 2
+  amount: 3
+  turnCount: 3
