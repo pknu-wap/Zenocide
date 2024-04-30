@@ -180,7 +180,6 @@ public class Character : MonoBehaviour
 
         // 체력을 감소시킨다.
         DecreaseHP(totalDamage);
-        Debug.Log(totalDamage);
 
         // 아이콘을 업데이트 한다.
         UpdateDebuffIcon();

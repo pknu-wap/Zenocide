@@ -28,7 +28,7 @@ public class Player : Character
 
     private void Start()
     {
-        BattleManager.Instance.onEndPlayerTurn.AddListener(EndPlayerTurn);
+        TurnManager.Inst.onEndPlayerTurn.AddListener(EndPlayerTurn);
     }
 
     public void Update()
@@ -47,6 +47,5 @@ public class Player : Character
     public override void Die()
     {
         // 플레이어의 사망을 알림
-        BattleManager.Instance.GameOver();
     }
 }

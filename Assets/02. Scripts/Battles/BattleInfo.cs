@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class BattleInfo : MonoBehaviour
 {
-
     [Header("전투 정보")]
     // 남은 적 숫자
     public static int remainingEnemies;

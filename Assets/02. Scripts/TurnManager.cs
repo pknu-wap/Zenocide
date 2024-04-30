@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Search;
 using UnityEngine;
+using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 public class TurnManager : MonoBehaviour
@@ -23,6 +25,12 @@ public class TurnManager : MonoBehaviour
 
     public static Action<bool> OnAddCard;
 
+    // 턴 이벤트
+    public UnityEvent onStartPlayerTurn;    // 플레이어 턴이 시작할 때
+    public UnityEvent onStartEnemyTurn;     // 적 턴이 시작할 때
+    public UnityEvent onEndPlayerTurn;      // 플레이어 턴이 끝날 때
+    public UnityEvent onEndEnemyTurn;       // 적 턴이 끝날 때
+
     void GameSetup()
     {
         switch (eTurnMode)
@@ -37,16 +45,12 @@ public class TurnManager : MonoBehaviour
                 myTurn = false;
                 break;
         }
-
-        // 턴 매니저의 턴 종료를 실행한다.
-        Debug.Log("적 턴 종료 호출");
-        BattleManager.Instance.onEndEnemyTurn.AddListener(EndTurn);
     }
 
     public IEnumerator StartGameCo()
     {
+        // 게임 세팅
         GameSetup();
-        isLoading = true;
 
         // 드로우 카드 수만큼 드로우
         for (int i = 0; i < drawCardCount; i++)
@@ -58,34 +62,69 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    IEnumerator StartTurnCo()
+    IEnumerator StartPlayerTurnCo()
     {
-        isLoading = true;
-
-        // 턴 시작 UI 출력
-        if (myTurn)
-            GameManager.Inst.Notification("나의 턴");
+        // 턴 시작 UI 출력, 이 부분도 추후 수정해야 합니다.
+        GameManager.Inst.Notification("나의 턴");
 
         // 덱이 없으면 묘지를 셔플해서 새로 생성
-        if(CardManager.Inst.deck.Count == 0)
+        if (CardManager.Inst.deck.Count == 0)
             CardManager.Inst.ResetDeck();
 
+        // 우리 게임은 오직 플레이어만 드로우합니다.
         // 드로우 카드 수만큼 드로우
         for (int i = 0; i < drawCardCount; i++)
         {
             yield return delay03;
             OnAddCard?.Invoke(myTurn);
         }
-        yield return delay07;
 
-        isLoading = false;
+        yield return delay03;
     }
 
     public void EndTurn()
     {
-        if(myTurn)
-            StartCoroutine(CardManager.Inst.DiscardHandCo());
-        myTurn = !myTurn;
-        StartCoroutine(StartTurnCo());
+        if (isLoading == true)
+        {
+            return;
+        }
+
+        // 상호작용을 막늗나.
+        isLoading = true;
+
+        StartCoroutine(EndTurnCo());
+    }
+
+    public IEnumerator EndTurnCo()
+    {
+        // 내 턴일 때 호출
+        if (myTurn)
+        {
+            // 카드 전부 버리기
+            yield return StartCoroutine(CardManager.Inst.DiscardHandCo());
+
+            onEndPlayerTurn.Invoke();
+            onStartEnemyTurn.Invoke();
+
+            // 적 턴으로 변경
+            myTurn = false;
+
+            // 적 턴 종료
+            yield return StartCoroutine(EndTurnCo());
+
+            // 플레이어 턴 시작
+            yield return StartCoroutine(StartPlayerTurnCo());
+
+            isLoading = false;
+        }
+        // 적 턴일 때 호출
+        else
+        {
+            onEndEnemyTurn.Invoke();
+            onStartPlayerTurn.Invoke();
+
+            // 플레이어 턴으로 변경
+            myTurn = true;
+        }
     }
 }

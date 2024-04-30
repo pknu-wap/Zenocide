@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using static UnityEditor.Progress;
 
 public class CardManager : MonoBehaviour
 {
@@ -20,6 +19,9 @@ public class CardManager : MonoBehaviour
     public List<Item> deck;
     List<Item> dump;
     Card selectCard;
+
+    [SerializeField] float dotweenTime = 0.5f;
+    [SerializeField] float focusOffset;
 
     public Item DrawCard()
     {
@@ -148,7 +150,6 @@ public class CardManager : MonoBehaviour
 
     public void DiscardCard(Card card)
     {
-
         hand.Remove(card);
         dump.Add(card.item);
 
@@ -188,13 +189,19 @@ public class CardManager : MonoBehaviour
     {
         for (int i = 0; i < hand.Count; i++)
         {
+            // 카드 스폰 위치로 날아가게 변경. 나중에 묘지로도 바꿔야 한다.
             Sequence sequence = DOTween.Sequence()
-            .Append(hand[i].transform.DOLocalMoveY(0.5f, 0.9f).SetEase(Ease.OutQuad))
-            .Join(hand[i].GetComponent<SpriteRenderer>().DOFade(0, 0.9f).SetEase(Ease.InExpo));
+                .Append(hand[i].transform.DOMove(cardSpawnPoint.position, dotweenTime))
+                .Join(hand[i].transform.DORotateQuaternion(Utils.QI, dotweenTime))
+                .Join(hand[i].transform.DOScale(Vector3.one, dotweenTime))
+                .SetEase(Ease.OutQuad);
+            /*            Sequence sequence = DOTween.Sequence()
+                        .Append(hand[i].transform.DOLocalMoveY(0.5f, 0.9f).SetEase(Ease.OutQuad))
+                        .Join(hand[i].GetComponent<SpriteRenderer>().DOFade(0, 0.9f).SetEase(Ease.InExpo));*/
         }
 
         // sequence 끝나기 전까지 기다리기
-        yield return new WaitForSeconds(0.9f);
+        yield return new WaitForSeconds(dotweenTime);
 
         // sequence가 끝나면 모든 오브젝트 파괴
         for (int i = 0; i < hand.Count; i++)
@@ -211,7 +218,7 @@ public class CardManager : MonoBehaviour
 
     #region MyCard
 
-    public void CardMouseOver(Card card)
+    public void CardMouseEnter(Card card)
     {
         selectCard = card;
         EnlargeCard(true, card);
@@ -227,8 +234,6 @@ public class CardManager : MonoBehaviour
         if(TurnManager.Inst.myTurn)
             DiscardCard(selectCard);
     }
-
-    [SerializeField] float focusOffset;
 
     void EnlargeCard(bool isEnlarge, Card card)
     {

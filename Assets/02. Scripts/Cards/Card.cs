@@ -17,6 +17,10 @@ public class Card : MonoBehaviour
     public Item item;
     public PRS originPRS;
 
+    // DOTween 시퀀스
+    Sequence moveSequence;
+    Sequence disappearSequence;
+
     public void Setup(Item item)
     {
         this.item = item;
@@ -29,7 +33,7 @@ public class Card : MonoBehaviour
 
     void OnMouseEnter()
     {
-        CardManager.Inst.CardMouseOver(this);
+        CardManager.Inst.CardMouseEnter(this);
     }
 
     void OnMouseDown()
@@ -41,27 +45,29 @@ public class Card : MonoBehaviour
     {
         CardManager.Inst.CardMouseExit(this);
     }
+
     public void MoveTransform(PRS prs, bool useDotween, float dotweenTime = 0)
     {
         if (useDotween)
         {
-            transform.DOMove(prs.pos, dotweenTime);
-            transform.DORotateQuaternion(prs.rot, dotweenTime);
-            transform.DOScale(prs.scale, dotweenTime);
+            // moveSequence에 위치, 회전, 스케일을 조정하는 DOTween을 연결했다.
+            moveSequence = DOTween.Sequence()
+                .Append(transform.DOMove(prs.pos, dotweenTime))
+                .Join(transform.DORotateQuaternion(prs.rot, dotweenTime))
+                .Join(transform.DOScale(prs.scale, dotweenTime));
         }
+
         else
         {
-            {
-                transform.position = prs.pos;
-                transform.rotation = prs.rot;
-                transform.localScale = prs.scale;
-            }
+            transform.position = prs.pos;
+            transform.rotation = prs.rot;
+            transform.localScale = prs.scale;
         }
     }
 
     public void SlowDisappear()
     {
-        Sequence sequence = DOTween.Sequence()
+        disappearSequence = DOTween.Sequence()
             .Append(transform.DOLocalMoveY(10, 0.5f).SetEase(Ease.OutQuart))
             .AppendInterval(1f);
         //.Join(card.DoFade())

@@ -38,8 +38,8 @@ public class Enemy : Character
         ReadySkill();
 
         // BattleManager에 이벤트 등록
-        BattleManager.Instance.onEndEnemyTurn.AddListener(EndEnemyTurn);
-        BattleManager.Instance.onStartPlayerTurn.AddListener(ReadySkill);
+        TurnManager.Inst.onEndEnemyTurn.AddListener(EndEnemyTurn);
+        TurnManager.Inst.onStartPlayerTurn.AddListener(ReadySkill);
     }
 
     public void Update()
@@ -103,7 +103,7 @@ public class Enemy : Character
         // 오브젝트 비활성화
         gameObject.SetActive(false);
         // BattleManager에서 자기 자신 제거
-        BattleManager.Instance.onEndEnemyTurn.RemoveListener(EndEnemyTurn);
+        TurnManager.Inst.onEndEnemyTurn.RemoveListener(EndEnemyTurn);
         // Battle Info에 남은 적 -1
     }
 }
