@@ -87,7 +87,7 @@ public class CardManager : MonoBehaviour
     void CardAlignment()
     {
         List<PRS> originCardPRSs = new List<PRS>();
-        originCardPRSs = RoundAlignment(handLeft, handRight, hand.Count, 0.5f, Vector3.one * 1.9f);
+        originCardPRSs = RoundAlignment(handLeft, handRight, hand.Count, 0.5f, Vector3.one * 10f);
 
         for (int i = 0; i < hand.Count; i++)
         {

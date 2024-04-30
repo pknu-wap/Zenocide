@@ -76,7 +76,7 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1248575243
-  m_SortingLayer: 4
+  m_SortingLayer: 6
   m_SortingOrder: 1
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &8739895580586926440
@@ -247,7 +247,7 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1248575243
-  m_SortingLayer: 4
+  m_SortingLayer: 6
   m_SortingOrder: 1
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &6414920036554542552
@@ -420,7 +420,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1248575243
-  m_SortingLayer: 4
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_Sprite: {fileID: 1540656429, guid: 06047f3f29bdb8247aa96d31bd801f4c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -452,6 +452,7 @@ MonoBehaviour:
   - {fileID: 2403209220768690843}
   - {fileID: 5354466754628588610}
   - {fileID: 5926846593478816397}
+  frontRenderers: []
   sortingLayerName: Card
 --- !u!114 &7177031091550664183
 MonoBehaviour:
@@ -605,7 +606,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1248575243
-  m_SortingLayer: 4
+  m_SortingLayer: 6
   m_SortingOrder: 1
   m_Sprite: {fileID: 446786657, guid: 820d6dff5118f0a44bb597e3ceb7d343, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -615,7 +616,7 @@ SpriteRenderer:
   m_Size: {x: 0.47, y: 0.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &8329304778378384545
@@ -694,7 +695,7 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1248575243
-  m_SortingLayer: 4
+  m_SortingLayer: 6
   m_SortingOrder: 1
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &3093272249734926102

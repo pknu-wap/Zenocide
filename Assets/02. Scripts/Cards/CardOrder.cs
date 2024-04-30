@@ -7,6 +7,7 @@ public class CardOrder : MonoBehaviour
 {
     [SerializeField] Renderer[] backRenderers;
     [SerializeField] Renderer[] middleRenderers;
+    [SerializeField] Renderer[] frontRenderers;
     [SerializeField] string sortingLayerName;
     int originOrder;
 
@@ -35,6 +36,12 @@ public class CardOrder : MonoBehaviour
         {
             renderer.sortingLayerName = sortingLayerName;
             renderer.sortingOrder = mulOrder + 1;
+        }
+
+        foreach (var renderer in frontRenderers)
+        {
+            renderer.sortingLayerName = sortingLayerName;
+            renderer.sortingOrder = mulOrder + 2;
         }
     }
 }
