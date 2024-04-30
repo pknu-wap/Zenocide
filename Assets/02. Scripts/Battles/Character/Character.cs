@@ -1,6 +1,7 @@
 // 김민철
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -41,7 +42,7 @@ public class Character : MonoBehaviour
     [SerializeField] protected Image hpBar;
     [SerializeField] protected TMP_Text hpText;
     //[SerializeField] protected BuffIconSpawner buffer;
-    // 버프 아이콘 생성기 구현 예정
+    // 버프 아이콘 생성기 구현 예정 -> 오브젝트 풀링으로 대체
 
     [Header("상태이상")]
     [SerializeField] public List<BleedEffect> debuffs;
@@ -55,7 +56,7 @@ public class Character : MonoBehaviour
         // HP 바
         hpBar = transform.GetChild(1).GetChild(0).GetChild(0).GetChild(0).GetComponent<Image>();
         hpText = transform.GetChild(1).GetChild(0).GetChild(0).GetChild(1).GetComponent<TMP_Text>();
-        
+
         // 디버프 효과들(내부 데이터)을 담아둘 리스트
         debuffs = new List<BleedEffect>();
         debuffIcons = new List<DebuffIconComponent>();

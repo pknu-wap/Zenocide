@@ -9,11 +9,13 @@ public class StatePanel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 {
     [SerializeField] GameObject statePanel;
     [SerializeField] Image statePanelImage;
+    [SerializeField] protected Canvas uiCanvas;
 
     private void Awake()
     {
         statePanel = transform.parent.GetChild(1).gameObject;
         statePanelImage = statePanel.GetComponent<Image>();
+        uiCanvas = transform.parent.GetComponent<Canvas>();
 
         statePanel.SetActive(false);
     }
@@ -28,6 +30,9 @@ public class StatePanel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         //statePanelImage.DOFade(1, duration)
         //    .OnComplete(() => statePanel.SetActive(true));
 
+        // 강조된 캔버스의 order를 맨 앞으로 변경하고
+        uiCanvas.sortingOrder = 10;
+        // 패널을 활성화 시킨다.
         statePanel.SetActive(true);
     }
 
@@ -41,6 +46,9 @@ public class StatePanel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         //statePanelImage.DOFade(0, duration)
         //    .OnComplete(() => statePanel.SetActive(false));
 
+        // 강조된 캔버스의 order를 뒤쪽으로 변경하고
+        uiCanvas.sortingOrder = 0;
+        // 패널을 비활성화 시킨다.
         statePanel.SetActive(false);
     }
 }
