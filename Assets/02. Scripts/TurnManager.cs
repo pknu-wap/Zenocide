@@ -71,10 +71,6 @@ public class TurnManager : MonoBehaviour
         // 턴 시작 UI 출력, 이 부분도 추후 수정해야 합니다.
         GameManager.Inst.Notification("나의 턴");
 
-        // 덱이 없으면 묘지를 셔플해서 새로 생성
-        if (CardManager.Inst.deck.Count == 0)
-            CardManager.Inst.ResetDeck();
-
         // 우리 게임은 오직 플레이어만 드로우합니다.
         // 드로우 카드 수만큼 드로우
         for (int i = 0; i < drawCardCount; i++)

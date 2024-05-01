@@ -15,6 +15,7 @@ public class CardManager : MonoBehaviour
     [SerializeField] Transform handLeft;
     [SerializeField] Transform handRight;
     [SerializeField] public Transform cardSpawnPoint;
+    [SerializeField] public Transform cardDumpPoint;
 
     public List<CardData> deck;
     List<CardData> dump;
@@ -25,6 +26,9 @@ public class CardManager : MonoBehaviour
 
     public CardData DrawCard()
     {
+        if (deck.Count == 0)
+            ResetDeck();
+
         // queue나 dequeue를 쓰는 게 더 나을 듯
         CardData card = deck[0];
         deck.RemoveAt(0);
@@ -71,6 +75,7 @@ public class CardManager : MonoBehaviour
         var cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI);
         var card = cardObject.GetComponent<Card>();
         card.Setup(DrawCard());
+        card.transform.localScale = Vector3.zero;
         hand.Add(card);
 
         SetOriginOrder();
@@ -189,7 +194,7 @@ public class CardManager : MonoBehaviour
         {
             // 카드 스폰 위치로 날아가게 변경. 나중에 묘지로도 바꿔야 한다.
             Sequence sequence = DOTween.Sequence()
-                .Append(hand[i].transform.DOMove(cardSpawnPoint.position, dotweenTime))
+                .Append(hand[i].transform.DOMove(cardDumpPoint.position, dotweenTime))
                 .Join(hand[i].transform.DORotateQuaternion(Utils.QI, dotweenTime))
                 .Join(hand[i].transform.DOScale(Vector3.one, dotweenTime))
                 .SetEase(Ease.OutQuad);

@@ -115,10 +115,10 @@ public class Card : MonoBehaviour
         CardInfo.Instance.effects[(int)cardData.type](cardData.amount, cardData.turnCount, selectedCharacter);
 
         // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
-        // 카드 스폰 위치로 날아가게 변경. 나중에 묘지로도 바꿔야 한다.
+        // 카드 스폰 위치로 날아가게 변경. 나중에 묘지로도 바꿔야 한다. -> 바꿨다
         // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
         moveSequence = DOTween.Sequence()
-            .Append(transform.DOMove(CardManager.Inst.cardSpawnPoint.position, dotweenTime))
+            .Append(transform.DOMove(CardManager.Inst.cardDumpPoint.position, dotweenTime))
             .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
             .Join(transform.DOScale(Vector3.one, dotweenTime))
             .OnComplete(() => CardManager.Inst.DiscardCard(this)); // 애니메이션 끝나면 패에서 삭제
@@ -145,31 +145,23 @@ public class Card : MonoBehaviour
     #endregion 카드 사용
 
     #region 애니메이션
-    public void MoveTransform(PRS prs, bool useDotween, float dotweenTime = 0)
+    public void MoveTransform(PRS destPRS, bool useDotween, float dotweenTime = 0)
     {
         if (useDotween)
         {
             // moveSequence에 위치, 회전, 스케일을 조정하는 DOTween을 연결했다.
             moveSequence = DOTween.Sequence()
-                .Append(transform.DOMove(prs.pos, dotweenTime))
-                .Join(transform.DORotateQuaternion(prs.rot, dotweenTime))
-                .Join(transform.DOScale(prs.scale, dotweenTime));
+                .Append(transform.DOMove(destPRS.pos, dotweenTime))
+                .Join(transform.DORotateQuaternion(destPRS.rot, dotweenTime))
+                .Join(transform.DOScale(destPRS.scale, dotweenTime));
         }
 
         else
         {
-            transform.position = prs.pos;
-            transform.rotation = prs.rot;
-            transform.localScale = prs.scale;
+            transform.position = destPRS.pos;
+            transform.rotation = destPRS.rot;
+            transform.localScale = destPRS.scale;
         }
-    }
-
-    public void SlowDisappear()
-    {
-        disappearSequence = DOTween.Sequence()
-            .Append(transform.DOLocalMoveY(10, 0.5f).SetEase(Ease.OutQuart))
-            .AppendInterval(1f);
-        //.Join(card.DoFade())
     }
     #endregion 애니메이션
 }
