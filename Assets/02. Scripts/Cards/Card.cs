@@ -107,6 +107,15 @@ public class Card : MonoBehaviour
     // 카드를 사용한다.
     private void UseCard()
     {
+        // 코스트가 모자란 경우
+        if (BattleInfo.Inst.UseCost(cardData.cost) == false)
+        {
+            // 카드 발동을 취소한다.
+            MoveTransform(originPRS, true, 0.5f);
+
+            return;
+        }
+
         // 카드 종류에 따라 Enemy 또는 Field 레이어를 선택한다.
         LayerMask layer = CardInfo.Instance.ReturnLayer(cardData.type);
 
