@@ -108,7 +108,7 @@ public class Card : MonoBehaviour
     private void UseCard()
     {
         // 코스트가 모자란 경우
-        if (BattleInfo.Inst.UseCost(cardData.cost) == false)
+        if (BattleInfo.Inst.CanUseCost(cardData.cost) == false)
         {
             // 카드 발동을 취소한다.
             MoveTransform(originPRS, true, 0.5f);
@@ -147,6 +147,8 @@ public class Card : MonoBehaviour
 
         // 카드를 발동한다. 공격 카드일 경우 선택된 적에게 발동한다.
         CardInfo.Instance.effects[(int)cardData.type](cardData.amount, cardData.turnCount, selectedCharacter);
+        // 코스트를 감소시킨다.
+        BattleInfo.Inst.UseCost(cardData.cost);
 
         // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
         // 카드 스폰 위치로 날아가게 변경. 나중에 묘지로도 바꿔야 한다. -> 바꿨다

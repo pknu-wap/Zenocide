@@ -64,6 +64,13 @@ public class BattleInfo : MonoBehaviour
         }
     }
 
+    // cost로 카드 사용이 가능한지 알려준다.
+    public bool CanUseCost(int cost)
+    {
+        return currentCost - cost >= 0;
+    }
+
+
     // 코스트를 줄인다. 성공 시 true, 실패 시 false를 반환한다.
     public bool UseCost(int cost)
     {
