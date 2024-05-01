@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using static UnityEditor.Progress;
 
 public class CardManager : MonoBehaviour
 {
@@ -15,27 +14,37 @@ public class CardManager : MonoBehaviour
     [SerializeField] List<Card> hand;
     [SerializeField] Transform handLeft;
     [SerializeField] Transform handRight;
-    [SerializeField] Transform cardSpawnPoint;
+    [SerializeField] public Transform cardSpawnPoint;
+    [SerializeField] public Transform cardDumpPoint;
 
-    public List<Item> deck;
-    List<Item> dump;
+    public List<CardData> deck;
+    List<CardData> dump;
     Card selectCard;
 
-    public Item DrawCard()
+    [SerializeField] float dotweenTime = 0.5f;
+    [SerializeField] float focusOffset;
+
+    public CardData DrawCard()
     {
-        Item card = deck[0];
+        if (deck.Count == 0)
+        {
+            ResetDeck();
+        }
+
+        // queue나 dequeue를 쓰는 게 더 나을 듯
+        CardData card = deck[0];
         deck.RemoveAt(0);
         return card;
     }
 
     void SetUpDeck()
     {
-        deck = new List<Item>(100);
+        deck = new List<CardData>(100);
 
         // itemSO의 카드들을 deck에 추가
         for (int i = 0; i < itemSO.items.Length; i++) 
         {
-            Item card = itemSO.items[i];
+            CardData card = itemSO.items[i];
             deck.Add(card);
         }
 
@@ -43,7 +52,7 @@ public class CardManager : MonoBehaviour
         for (int i = 0; i < deck.Count; i++)
         {
             int rand = Random.Range(i, deck.Count);
-            Item temp = deck[i];
+            CardData temp = deck[i];
             deck[i] = deck[rand];
             deck[rand] = temp;
         }
@@ -52,7 +61,7 @@ public class CardManager : MonoBehaviour
     void Start()
     {
         SetUpDeck();
-        dump = new List<Item>(100);
+        dump = new List<CardData>(100);
         // 왜 싱글톤에서 호출하지 않고 Action으로 호출할까,,,,
         TurnManager.OnAddCard += AddCardToHand;
     }
@@ -62,12 +71,19 @@ public class CardManager : MonoBehaviour
         TurnManager.OnAddCard -= AddCardToHand;
     }
 
+    [SerializeField] int maxHand = 10;
+
     void AddCardToHand(bool isMine)
     {
-        if (!isMine || hand.Count >= 10 || deck.Count == 0) return;
+        if (!isMine || hand.Count > maxHand || deck.Count+dump.Count == 0)
+        {
+            return;
+        }
+
         var cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI);
         var card = cardObject.GetComponent<Card>();
         card.Setup(DrawCard());
+        card.transform.localScale = Vector3.zero;
         hand.Add(card);
 
         SetOriginOrder();
@@ -87,7 +103,8 @@ public class CardManager : MonoBehaviour
     void CardAlignment()
     {
         List<PRS> originCardPRSs = new List<PRS>();
-        originCardPRSs = RoundAlignment(handLeft, handRight, hand.Count, 0.5f, Vector3.one * 1.9f);
+        float radius = handRight.position.x - handLeft.position.x;
+        originCardPRSs = RoundAlignment(handLeft, handRight, hand.Count, radius, Vector3.one * 10f);
 
         for (int i = 0; i < hand.Count; i++)
         {
@@ -99,7 +116,7 @@ public class CardManager : MonoBehaviour
     }
 
     // 이해하기를 포기함...
-    List<PRS> RoundAlignment(Transform leftTr, Transform rightTr, int objCount, float height, Vector3 scale)
+    List<PRS> RoundAlignment(Transform leftTr, Transform rightTr, int objCount, float radius, Vector3 scale)
     {
         float[] objLerps = new float[objCount];
         List<PRS> results = new List<PRS>(objCount);
@@ -116,15 +133,25 @@ public class CardManager : MonoBehaviour
                 break;
         }
 
+        Vector3 circleCenter = Vector3.Lerp(leftTr.position, rightTr.position, 0.5f) + Vector3.down * radius;
+
         for (int i = 0; i < objCount; i++)
         {
-            var targetPos = Vector3.Lerp(leftTr.position, rightTr.position, objLerps[i]);
-            var targetRot = Utils.QI;
+            // 타겟 위치는 leftTr과 rightTr 사이, i번째 카드의 위치
+            Vector3 targetPos = Vector3.Lerp(leftTr.position, rightTr.position, objLerps[i]);
+            // targetRot은 우선 기본값으로.
+            Quaternion targetRot = Utils.QI;
+
+
+            // 카드가 4개 이상일 때만 회전을 적용한다.
             if (objCount >= 4)
             {
-                float curve = Mathf.Sqrt(Mathf.Pow(height, 2) - Mathf.Pow(objLerps[i] - 0.5f, 2));
-                curve = height >= 0 ? curve : -curve;
-                targetPos.y += curve;
+                // 원의 방정식, (x-a)^2 + (y-b)^2 = r^2의 변형.
+                // x = targetPos.x, a = circleCenter.x, y = curve, b = circleCenter.y, r = height                
+                float curve = Mathf.Sqrt(Mathf.Pow(radius, 2) - Mathf.Pow(targetPos.x - circleCenter.x, 2));
+                // 절댓값으로 변환
+                curve = Mathf.Abs(curve);
+                targetPos.y = targetPos.y - radius + curve;
                 targetRot = Quaternion.Slerp(leftTr.rotation, rightTr.rotation, objLerps[i]);
             }
             results.Add(new PRS(targetPos, targetRot, scale));
@@ -134,9 +161,8 @@ public class CardManager : MonoBehaviour
 
     public void DiscardCard(Card card)
     {
-
         hand.Remove(card);
-        dump.Add(card.item);
+        dump.Add(card.cardData);
 
         card.transform.DOKill();
 
@@ -148,12 +174,12 @@ public class CardManager : MonoBehaviour
 
     public void ResetDeck()
     {
-        deck = new List<Item>(100);
+        deck.Clear();
 
         // dump의 카드들을 deck에 추가
         for (int i = 0; i < dump.Count; i++)
         {
-            Item card = dump[i];
+            CardData card = dump[i];
             deck.Add(card);
         }
 
@@ -161,32 +187,38 @@ public class CardManager : MonoBehaviour
         for (int i = 0; i < deck.Count; i++)
         {
             int rand = Random.Range(i, deck.Count);
-            Item temp = deck[i];
+            CardData temp = deck[i];
             deck[i] = deck[rand];
             deck[rand] = temp;
         }
 
         // dump 비우기
-        dump = new List<Item>(100);
+        dump.Clear();
     }
 
     public IEnumerator DiscardHandCo()
     {
         for (int i = 0; i < hand.Count; i++)
         {
+            // 카드 스폰 위치로 날아가게 변경. 나중에 묘지로도 바꿔야 한다.
             Sequence sequence = DOTween.Sequence()
-            .Append(hand[i].transform.DOLocalMoveY(0.5f, 0.9f).SetEase(Ease.OutQuad))
-            .Join(hand[i].GetComponent<SpriteRenderer>().DOFade(0, 0.9f).SetEase(Ease.InExpo));
+                .Append(hand[i].transform.DOMove(cardDumpPoint.position, dotweenTime))
+                .Join(hand[i].transform.DORotateQuaternion(Utils.QI, dotweenTime))
+                .Join(hand[i].transform.DOScale(Vector3.one, dotweenTime))
+                .SetEase(Ease.OutQuad);
+            /*            Sequence sequence = DOTween.Sequence()
+                        .Append(hand[i].transform.DOLocalMoveY(0.5f, 0.9f).SetEase(Ease.OutQuad))
+                        .Join(hand[i].GetComponent<SpriteRenderer>().DOFade(0, 0.9f).SetEase(Ease.InExpo));*/
         }
 
         // sequence 끝나기 전까지 기다리기
-        yield return new WaitForSeconds(0.9f);
+        yield return new WaitForSeconds(dotweenTime);
 
         // sequence가 끝나면 모든 오브젝트 파괴
         for (int i = 0; i < hand.Count; i++)
         {
             Card card = hand[i];
-            dump.Add(card.item);
+            dump.Add(card.cardData);
 
             DestroyImmediate(card.gameObject);
         }
@@ -197,7 +229,7 @@ public class CardManager : MonoBehaviour
 
     #region MyCard
 
-    public void CardMouseOver(Card card)
+    public void CardMouseEnter(Card card)
     {
         selectCard = card;
         EnlargeCard(true, card);
@@ -218,12 +250,14 @@ public class CardManager : MonoBehaviour
     {
         if (isEnlarge)
         {
-            Vector3 enlargePos = new Vector3(card.originPRS.pos.x, -1.7f, -10f);
-            card.MoveTransform(new PRS(enlargePos, Utils.QI, Vector3.one * 2.7f), false);
+            Vector3 enlargePos = new Vector3(card.originPRS.pos.x, handLeft.position.y + focusOffset, -3f);
+            card.MoveTransform(new PRS(enlargePos, Utils.QI, card.originPRS.scale * 1.2f), false);
         }
         else
+        {
             card.MoveTransform(card.originPRS, false);
-
+        }
+        
         card.GetComponent<CardOrder>().SetMostFrontOrder(isEnlarge);
     }
 
