@@ -26,8 +26,10 @@ public class Player : Character
     }
     #endregion ΩÃ±€≈Ê
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
+
         TurnManager.Inst.onEndPlayerTurn.AddListener(EndPlayerTurn);
     }
 

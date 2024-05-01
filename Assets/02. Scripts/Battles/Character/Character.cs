@@ -1,18 +1,22 @@
 // 김민철
+using System;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 public class BleedEffect
 {
-    public BleedEffect(int damagePerTurn, int remainingTurns)
+    public BleedEffect(EnemySkillType type, int damagePerTurn, int remainingTurns)
     {
+        this.type = type;
         this.damagePerTurn = damagePerTurn;
         this.remainingTurns = remainingTurns;
     }
 
+    public EnemySkillType type;
     public int damagePerTurn;
     public int remainingTurns;
 }
@@ -41,12 +45,16 @@ public class Character : MonoBehaviour
     // HP 바
     [SerializeField] protected Image hpBar;
     [SerializeField] protected TMP_Text hpText;
-    //[SerializeField] protected BuffIconSpawner buffer;
     // 버프 아이콘 생성기 구현 예정 -> 오브젝트 풀링으로 대체
+    [SerializeField] protected Transform statusPanel;
+    // 디버프창
+    [SerializeField] public List<DebuffIconComponent> debuffIcons;
+    [SerializeField] protected TMP_Text[] debuffName;
+    [SerializeField] protected TMP_Text[] debuffDescription;
 
     [Header("상태이상")]
+    public Transform debuffIconContainer;
     [SerializeField] public List<BleedEffect> debuffs;
-    [SerializeField] public List<DebuffIconComponent> debuffIcons;
 
     [Header("이벤트")]
     [SerializeField] public UnityEvent onTurnStarted;
@@ -72,7 +80,23 @@ public class Character : MonoBehaviour
             icon.gameObject.SetActive(false);
         }
 
+        // 디버프 상세정보창을 불러온다. (더미, 행동정보창 제외)
+        statusPanel = transform.GetChild(1).GetChild(1);
+        debuffName = new TMP_Text[statusPanel.childCount - 1];
+        debuffDescription = new TMP_Text[statusPanel.childCount - 1];
+
+        for (int i = 1; i < statusPanel.childCount; ++i)
+        {
+            debuffName[i - 1] = statusPanel.GetChild(i).GetChild(0).GetComponent<TMP_Text>();
+            debuffDescription[i - 1] = statusPanel.GetChild(i).GetChild(1).GetComponent<TMP_Text>();
+        }
+    }
+
+    protected virtual void Start()
+    {
         UpdateCurrentHP();
+
+        UpdateAllDebuffIcon();
     }
 
     // 이 오브젝트의 hp를 반환한다.
@@ -117,39 +141,47 @@ public class Character : MonoBehaviour
 
         // 출혈 디버프 UI 추가
         int i = debuffs.Count - 1;
-        Transform icon = debuffIconContainer.GetChild(i);
-        /*
-         * 인덱스 수정 필요
-         */
-        debuffIcons[i].image.sprite = CardInfo.Instance.debuffIcons[0];
-        debuffIcons[i].tmp_Text.text = bleedEffect.remainingTurns.ToString();
 
-        icon.gameObject.SetActive(true);
+        UpdateDebuffIcon(i);
     }
 
-    [Header("버프 아이콘")]
-    public Transform debuffIconContainer;
-
-    public void UpdateDebuffIcon()
+    public void UpdateDebuffIcon(int index)
     {
+        /*
+         * 대입하는 값이 현재는 출혈로 고정되어 있다. (그거 밖에 안 그려서...)
+         */
+        // i번째 아이콘와 숫자를 변경하고
+        debuffIcons[index].image.sprite = CardInfo.Instance.debuffIcons[0];
+        debuffIcons[index].tmp_Text.text = debuffs[index].remainingTurns.ToString();
+
+        // i번째 디버프창의 내용을 갱신한다
+        debuffName[index].text = DebuffInfo.debuffNameDict[debuffs[index].type];
+        // 이렇게 $와 {}를 쓰면 변수명과 문자열을 섞어쓸 수 있다.
+        debuffDescription[index].text = $"{debuffs[index].remainingTurns}{DebuffInfo.debuffDescriptionDict[debuffs[index].type]}";
+
+        // 오브젝트 활성화
+        // 이 구문들은 리팩토링이 필요해보인다.
+        debuffIconContainer.GetChild(index).gameObject.SetActive(true);
+        debuffName[index].gameObject.transform.parent.gameObject.SetActive(true);
+    }
+
+    public void UpdateAllDebuffIcon()
+    {
+        Debug.Log("실행은 됨");
         // 모든 현재 디버프에 대해(i번째 디버프에 대해)
         int i = 0;
         for (; i < debuffs.Count; ++i)
         {
-            // i번째 이미지와 텍스트를 변경하고
-            debuffIcons[i].image.sprite = CardInfo.Instance.debuffIcons[0];
-            debuffIcons[i].tmp_Text.text = debuffs[i].remainingTurns.ToString();
-            
-            // 오브젝트 활성화
-            // 이 구문은 리팩토링이 필요해보인다.
-            debuffIconContainer.GetChild(i).gameObject.SetActive(true);
+            UpdateDebuffIcon(i);
         }
 
         // 디버프가 없는 아이콘들은
-        for(;i < debuffIconContainer.childCount; ++i)
+        for (; i < debuffIconContainer.childCount; ++i)
         {
             // 비활성화한다.
+            Debug.Log(debuffName[i].gameObject.transform.parent.gameObject.name);
             debuffIconContainer.GetChild(i).gameObject.SetActive(false);
+            debuffName[i].gameObject.transform.parent.gameObject.SetActive(false);
         }
     }
 
@@ -182,6 +214,6 @@ public class Character : MonoBehaviour
         DecreaseHP(totalDamage);
 
         // 아이콘을 업데이트 한다.
-        UpdateDebuffIcon();
+        UpdateAllDebuffIcon();
     }
 }

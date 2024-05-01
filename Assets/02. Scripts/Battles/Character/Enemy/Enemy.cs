@@ -22,22 +22,24 @@ public class Enemy : Character
     {
         base.Awake();
 
-        // BattleInfo에 자신 추가
-        BattleInfo.Inst.IncreaseEnemyCount();
-
         // 행동 정보 아이콘
         behaviorIcon = transform.GetChild(1).GetChild(0).GetChild(2).GetComponent<Image>();
         behaviorAmount = transform.GetChild(1).GetChild(0).GetChild(2).GetChild(0).GetComponent<TMP_Text>();
 
         // 상제정보창
-        behaviorName = transform.GetChild(1).GetChild(1).GetChild(0).GetChild(0).GetComponent<TMP_Text>();
-        behaviorDescription = transform.GetChild(1).GetChild(1).GetChild(0).GetChild(1).GetComponent<TMP_Text>();
+        behaviorName = statusPanel.GetChild(0).GetChild(0).GetComponent<TMP_Text>();
+        behaviorDescription = statusPanel.GetChild(0).GetChild(1).GetComponent<TMP_Text>();
     }
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
+
         // 테스트는 Start가 제맛
         ReadySkill();
+
+        // BattleInfo에 자신 추가
+        BattleInfo.Inst.IncreaseEnemyCount();
 
         // BattleManager에 이벤트 등록
         TurnManager.Inst.onEndEnemyTurn.AddListener(EndEnemyTurn);
