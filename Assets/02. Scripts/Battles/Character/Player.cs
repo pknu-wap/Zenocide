@@ -47,5 +47,11 @@ public class Player : Character
     public override void Die()
     {
         // 플레이어의 사망을 알림
+        BattleInfo.Inst.isGameOver = true;
+
+        currentHp = 0;
+        UpdateCurrentHP();
+
+        GameManager.Inst.Notification("게임 오버");
     }
 }

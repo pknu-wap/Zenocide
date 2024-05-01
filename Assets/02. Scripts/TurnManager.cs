@@ -88,6 +88,11 @@ public class TurnManager : MonoBehaviour
 
     public void EndTurn()
     {
+        if (BattleInfo.Inst.isGameOver)
+        {
+            return;
+        }
+
         if (isLoading == true)
         {
             return;
@@ -110,11 +115,23 @@ public class TurnManager : MonoBehaviour
             onEndPlayerTurn.Invoke();
             onStartEnemyTurn.Invoke();
 
+            // 적 턴 직전, 플레이어가 죽으면 코루틴을 끝낸다.
+            if (BattleInfo.Inst.isGameOver)
+            {
+                yield break;
+            }
+
             // 적 턴으로 변경
             myTurn = false;
 
             // 적 턴 종료
             yield return StartCoroutine(EndTurnCo());
+
+            // 적 턴 종료 후에도, 플레이어가 죽으면 코루틴을 끝낸다.
+            if (BattleInfo.Inst.isGameOver)
+            {
+                yield break;
+            }
 
             // 플레이어 턴 시작
             yield return StartCoroutine(StartPlayerTurnCo());

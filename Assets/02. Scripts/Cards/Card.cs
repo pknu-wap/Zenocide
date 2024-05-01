@@ -37,18 +37,33 @@ public class Card : MonoBehaviour
     // 마우스를 카드 위에 올릴 떄 실행된다.
     void OnMouseEnter()
     {
+        if (BattleInfo.Inst.isGameOver)
+        {
+            return;
+        }
+
         CardManager.Inst.CardMouseEnter(this);
     }
 
     // 마우스가 카드를 벗어날 떄 실행된다.
     void OnMouseExit()
     {
+        if (BattleInfo.Inst.isGameOver)
+        {
+            return;
+        }
+
         CardManager.Inst.CardMouseExit(this);
     }
 
     // 드래그가 시작될 때 호출된다.
     public void OnMouseDown()
     {
+        if (BattleInfo.Inst.isGameOver)
+        {
+            return;
+        }
+
         // 공격 카드일 경우 화살표를 표시한다.
 
         // 공격 카드가 아닐 경우, 아무 일도 하지 않는다.
@@ -58,6 +73,11 @@ public class Card : MonoBehaviour
     // 드래그 중일 때 계속 호출된다.
     public void OnMouseDrag()
     {
+        if (BattleInfo.Inst.isGameOver)
+        {
+            return;
+        }
+
         // 공격 카드일 경우, 화살표의 끝이 마우스를 향한다.
 
         // 임시로 카드가 마우스를 따라가게 해봤다.
@@ -70,6 +90,11 @@ public class Card : MonoBehaviour
     // 드래그가 끝날 때 호출된다.
     public void OnMouseUp()
     {
+        if (BattleInfo.Inst.isGameOver)
+        {
+            return;
+        }
+
         // 카드를 사용한다.
         UseCard();
     }

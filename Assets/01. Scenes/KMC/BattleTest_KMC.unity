@@ -285,6 +285,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d24acc541c41a274fb4af241d3420fa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  remainingEnemies: 0
+  isGameOver: 0
+  bonusAttackStat: 0
+  bonusDamage: 0
+  bonusArmor: 0
 --- !u!4 &10025636
 Transform:
   m_ObjectHideFlags: 0
@@ -2743,7 +2748,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!224 &730598433
 RectTransform:
@@ -8575,10 +8580,10 @@ SceneRoots:
   - {fileID: 626793735}
   - {fileID: 284056380}
   - {fileID: 114587279}
-  - {fileID: 730598433}
   - {fileID: 515998850}
   - {fileID: 2007522562}
   - {fileID: 725029576}
   - {fileID: 436648808}
   - {fileID: 1253124001}
+  - {fileID: 730598433}
   - {fileID: 3712680080723713857}

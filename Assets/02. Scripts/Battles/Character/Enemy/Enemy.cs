@@ -1,5 +1,4 @@
 // 김민철
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,6 +21,9 @@ public class Enemy : Character
     public override void Awake()
     {
         base.Awake();
+
+        // BattleInfo에 자신 추가
+        BattleInfo.Inst.IncreaseEnemyCount();
 
         // 행동 정보 아이콘
         behaviorIcon = transform.GetChild(1).GetChild(0).GetChild(2).GetComponent<Image>();
@@ -98,12 +100,11 @@ public class Enemy : Character
     // 죽는다.
     public override void Die()
     {
-        base.Die();
-
         // 오브젝트 비활성화
         gameObject.SetActive(false);
         // BattleManager에서 자기 자신 제거
         TurnManager.Inst.onEndEnemyTurn.RemoveListener(EndEnemyTurn);
         // Battle Info에 남은 적 -1
+        BattleInfo.Inst.DecreaseEnemyCount();
     }
 }
