@@ -7,6 +7,9 @@ using Unity.VisualScripting;
 public class Choice : MonoBehaviour, IPointerDownHandler
 {
     public List<string> BackPackItems = new List<string>();
+
+    public bool isClicked = false;
+    public GameObject Obj;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,13 +19,11 @@ public class Choice : MonoBehaviour, IPointerDownHandler
     // Update is called once per frame
     void Update()
     {
-        BackPackItems = Items.Inst.items;
-        Debug.Log(BackPackItems);
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log("Button Clicked");
-        GameObject SelectedObj = EventSystem.current.currentSelectedGameObject;
+        isClicked = true;
+        Obj.SetActive(true);
     }
 }

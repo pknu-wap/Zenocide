@@ -13,12 +13,15 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
 
     public TMP_Text dialogueText;        //Story Text
     public TMP_Text dialogueName;        //Story Name
-      
+    public TMP_Text ChoiceUpText;        //Up Selection Text
+    public TMP_Text ChoiceDownText;      //Down Selection Text
+
     public GameObject dialogueBox;       //전체 Canvas
 
     public GameObject Dialogue;          //대화창
 
-    public GameObject ChoiceBox;          //선택지 표시
+    public GameObject ChoiceUp;          //위 선택지 표시
+    public GameObject ChoiceDown;         //아래 선택지 표시
 
     public GameObject WaitCursor;        //다음 Text 대기 표시 커서
       
@@ -34,29 +37,49 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
     private bool isTyping = false;       //타이핑 효과 진행 여부 확인 변수
     private bool cancelTyping = false;   //
 
+    private bool isSelection = false;    //선택지 진행 여부 확인 변수
+    private bool isEnd = false;          //대화 종료 여부 확인 변수
+
     void Start()
     {
         dialogueBox.SetActive(false);    //시작 시 Canvas 전체 비활성화
-        ChoiceBox.SetActive(false);      //시작 시 선택지 비활성화
+        ChoiceUp.SetActive(false);      //시작 시 선택지 비활성화
+        ChoiceDown.SetActive(false);    
         LoadDialogue();                  //Story Name,Text 불러오기
         ShowDialogue();                  //이미지와 전체 Canvas 표시
     }
 
     void Update()
     {
+        if(!isEnd)
+        {
+            if(ChoiceUp.GetComponent<Choice>().isClicked){
+                    Dialogue.SetActive(true);
+                    ChoiceUp.SetActive(false);
+                    ChoiceDown.SetActive(false);
+                    StartCoroutine(TypeSentence("무사히 좀비를 피해 도망갔다."));
+                    isEnd = true;
+                }
+            if(ChoiceDown.GetComponent<Choice>().isClicked){
+                Dialogue.SetActive(true);
+                ChoiceUp.SetActive(false);
+                ChoiceDown.SetActive(false);
+                StartCoroutine(TypeSentence("좀비와 맞서 싸우게 된다."));
+                isEnd = true;
+                }
+        }
         
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
        NextDialogue();
-       Debug.Log(dialogueName.text);
     }
 
     public void NextDialogue(){
         var IllustTable = new Dictionary<string,int>()
         {
-            {"여주",0},
+            {"???",0},
             {"좀비",1}   
         };
 
@@ -73,19 +96,26 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
             dialogueBox.SetActive(false);
             return;
         }
-    
-        if(StoryName[currentLine] == "*"){
-            dialogueText.text = StoryText[currentLine];
+
+        dialogueName.text = StoryName[currentLine];
+
+        if(StoryName[currentLine][0] == '*'){
+            isSelection = true;
+            dialogueText.text = "....";
+            dialogueName.text = "";
             Dialogue.SetActive(false);
-            ChoiceBox.SetActive(true);
-            
+            ChoiceUp.SetActive(true);
+            ChoiceDown.SetActive(true);
+            ChoiceUpText.text = StoryName[currentLine].Substring(1);
+            ChoiceDownText.text = StoryText[currentLine].Substring(1);
+        }
+        else
+        {
+            // 이미지 변경
+            dialogueImage.sprite = dialogueImages[IllustTable[dialogueName.text]];
+            StartCoroutine(TypeSentence(StoryText[currentLine]));
         }
 
-        StartCoroutine(TypeSentence(StoryText[currentLine]));
-        dialogueName.text = StoryName[currentLine];
-        // 이미지 변경
-        dialogueImage.sprite = dialogueImages[IllustTable[dialogueName.text]];
-    
     }
 
     //Story Text에 타이핑 효과 추가하는 함수
