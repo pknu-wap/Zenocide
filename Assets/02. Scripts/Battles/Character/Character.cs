@@ -167,7 +167,6 @@ public class Character : MonoBehaviour
 
     public void UpdateAllDebuffIcon()
     {
-        Debug.Log("실행은 됨");
         // 모든 현재 디버프에 대해(i번째 디버프에 대해)
         int i = 0;
         for (; i < debuffs.Count; ++i)
@@ -179,7 +178,6 @@ public class Character : MonoBehaviour
         for (; i < debuffIconContainer.childCount; ++i)
         {
             // 비활성화한다.
-            Debug.Log(debuffName[i].gameObject.transform.parent.gameObject.name);
             debuffIconContainer.GetChild(i).gameObject.SetActive(false);
             debuffName[i].gameObject.transform.parent.gameObject.SetActive(false);
         }
