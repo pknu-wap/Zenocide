@@ -33,14 +33,6 @@ public class Player : Character
         TurnManager.Inst.onEndPlayerTurn.AddListener(EndPlayerTurn);
     }
 
-    public void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            DecreaseHP(10);
-        }
-    }
-
     public void EndPlayerTurn()
     {
         GetBleedAll();

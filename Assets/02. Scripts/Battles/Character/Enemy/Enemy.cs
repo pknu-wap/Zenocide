@@ -46,14 +46,6 @@ public class Enemy : Character
         TurnManager.Inst.onStartPlayerTurn.AddListener(ReadySkill);
     }
 
-    public void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            DecreaseHP(6);
-        }
-    }
-
     public void StartEnemyTurn()
     {
         ReadySkill();
