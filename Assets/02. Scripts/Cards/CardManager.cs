@@ -15,6 +15,7 @@ public class CardManager : MonoBehaviour
     [SerializeField] Transform handLeft;
     [SerializeField] Transform handRight;
     [SerializeField] public Transform cardSpawnPoint;
+    [SerializeField] public Transform cardDumpPoint;
 
     public List<CardData> deck;
     List<CardData> dump;
@@ -25,6 +26,11 @@ public class CardManager : MonoBehaviour
 
     public CardData DrawCard()
     {
+        if (deck.Count == 0)
+        {
+            ResetDeck();
+        }
+
         // queue나 dequeue를 쓰는 게 더 나을 듯
         CardData card = deck[0];
         deck.RemoveAt(0);
@@ -65,12 +71,19 @@ public class CardManager : MonoBehaviour
         TurnManager.OnAddCard -= AddCardToHand;
     }
 
+    [SerializeField] int maxHand = 10;
+
     void AddCardToHand(bool isMine)
     {
-        if (!isMine || hand.Count >= 10 || deck.Count == 0) return;
+        if (!isMine || hand.Count > maxHand || deck.Count+dump.Count == 0)
+        {
+            return;
+        }
+
         var cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI);
         var card = cardObject.GetComponent<Card>();
         card.Setup(DrawCard());
+        card.transform.localScale = Vector3.zero;
         hand.Add(card);
 
         SetOriginOrder();
@@ -161,7 +174,7 @@ public class CardManager : MonoBehaviour
 
     public void ResetDeck()
     {
-        deck = new List<CardData>(100);
+        deck.Clear();
 
         // dump의 카드들을 deck에 추가
         for (int i = 0; i < dump.Count; i++)
@@ -179,8 +192,8 @@ public class CardManager : MonoBehaviour
             deck[rand] = temp;
         }
 
-        // dump 비우기 (Clear 함수도 있음)
-        dump = new List<CardData>(100);
+        // dump 비우기
+        dump.Clear();
     }
 
     public IEnumerator DiscardHandCo()
@@ -189,7 +202,7 @@ public class CardManager : MonoBehaviour
         {
             // 카드 스폰 위치로 날아가게 변경. 나중에 묘지로도 바꿔야 한다.
             Sequence sequence = DOTween.Sequence()
-                .Append(hand[i].transform.DOMove(cardSpawnPoint.position, dotweenTime))
+                .Append(hand[i].transform.DOMove(cardDumpPoint.position, dotweenTime))
                 .Join(hand[i].transform.DORotateQuaternion(Utils.QI, dotweenTime))
                 .Join(hand[i].transform.DOScale(Vector3.one, dotweenTime))
                 .SetEase(Ease.OutQuad);
