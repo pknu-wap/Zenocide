@@ -285,6 +285,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d24acc541c41a274fb4af241d3420fa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  remainingEnemies: 0
+  isGameOver: 0
+  bonusAttackStat: 0
+  bonusDamage: 0
+  bonusArmor: 0
 --- !u!4 &10025636
 Transform:
   m_ObjectHideFlags: 0
@@ -3837,9 +3842,11 @@ MonoBehaviour:
   handLeft: {fileID: 725029576}
   handRight: {fileID: 436648808}
   cardSpawnPoint: {fileID: 1253124001}
+  cardDumpPoint: {fileID: 1448441413}
   deck: []
   dotweenTime: 0.5
   focusOffset: 100
+  maxHand: 10
 --- !u!4 &1114143845
 Transform:
   m_ObjectHideFlags: 0
@@ -4467,7 +4474,7 @@ Transform:
   m_GameObject: {fileID: 1253124000}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 700, y: 0, z: 0}
+  m_LocalPosition: {x: -700, y: -300, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5425,6 +5432,37 @@ Canvas:
   m_SortingLayerID: -674751207
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1 &1448441412
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1448441413}
+  m_Layer: 0
+  m_Name: CardDumpPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1448441413
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1448441412}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 700, y: -300, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1457797452
 GameObject:
   m_ObjectHideFlags: 0
@@ -8581,4 +8619,5 @@ SceneRoots:
   - {fileID: 725029576}
   - {fileID: 436648808}
   - {fileID: 1253124001}
+  - {fileID: 1448441413}
   - {fileID: 3712680080723713857}
