@@ -136,7 +136,6 @@ public class CardManager : MonoBehaviour
                 // 원의 방정식, (x-a)^2 + (y-b)^2 = r^2의 변형.
                 // x = targetPos.x, a = circleCenter.x, y = curve, b = circleCenter.y, r = height                
                 float curve = Mathf.Sqrt(Mathf.Pow(radius, 2) - Mathf.Pow(targetPos.x - circleCenter.x, 2));
-                //curve = radius >= 0 ? curve : -curve;
                 // 절댓값으로 변환
                 curve = Mathf.Abs(curve);
                 targetPos.y = targetPos.y - radius + curve;

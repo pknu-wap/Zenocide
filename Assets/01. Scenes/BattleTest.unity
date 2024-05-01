@@ -1006,8 +1006,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: My Turn
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 44919b5cb88103a4eb7f475e8cf5a677, type: 2}
-  m_sharedMaterial: {fileID: -973254085417462611, guid: 44919b5cb88103a4eb7f475e8cf5a677, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4657,7 +4657,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1070, y: 1070}
+  m_SizeDelta: {x: 1070, y: 360}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1262211523
 MonoBehaviour:
@@ -4679,7 +4679,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1070707791, guid: 06047f3f29bdb8247aa96d31bd801f4c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6ee9382efbfb6004484bf6c27292ed27, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8505,7 +8505,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 506362370436929090, guid: 5cc6a70698541f240ae1f8d3a39b87c7, type: 3}
       propertyPath: m_Name
-      value: Card_1
+      value: Card
       objectReference: {fileID: 0}
     - target: {fileID: 2465514467480115656, guid: 5cc6a70698541f240ae1f8d3a39b87c7, type: 3}
       propertyPath: m_LocalPosition.x
