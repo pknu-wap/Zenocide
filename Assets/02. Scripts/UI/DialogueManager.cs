@@ -5,7 +5,6 @@ using System.Collections;
 using System.IO;
 using TMPro;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 
 
 public class DialogueManager : MonoBehaviour, IPointerDownHandler

@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine;
-using Unity.VisualScripting;
 
 public class Choice : MonoBehaviour, IPointerDownHandler
 {

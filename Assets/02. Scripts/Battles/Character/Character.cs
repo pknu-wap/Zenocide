@@ -1,11 +1,8 @@
 // ±ËπŒ√∂
-using System;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 public class BleedEffect
 {

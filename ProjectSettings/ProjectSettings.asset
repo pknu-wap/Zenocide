@@ -917,7 +917,13 @@ PlayerSettings:
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
   cloudServicesEnabled:
+    Build: 0
+    Game Performance: 0
+    Legacy Analytics: 0
+    Purchasing: 0
+    UDP: 0
     UNet: 1
+    Unity Ads: 0
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
@@ -937,11 +943,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: c2a89a1b-c42f-4e81-b3d5-7259eb7e853e
+  cloudProjectId: 85053807-7527-417f-b99e-9c5a893b4454
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: Inventory UI
-  organizationId: woominho4756
+  organizationId: vedellan
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
