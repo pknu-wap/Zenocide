@@ -155,9 +155,11 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
     void LoadDialogue()
     {
         //파일 저장 경로
-        string FilePath = "Assets/Resources/StoryScript.txt";
+        TextAsset asset = Resources.Load ("StoryScript")as TextAsset;
 
-        StreamReader reader = new StreamReader(FilePath);
+        string Story = asset.text;
+
+        StringReader reader = new StringReader(Story);
 
         string fileContent = reader.ReadToEnd();
 
