@@ -13,43 +13,11 @@ MonoBehaviour:
   m_Name: ItemSO
   m_EditorClassIdentifier: 
   items:
-  - sprite: {fileID: 446786657, guid: 820d6dff5118f0a44bb597e3ceb7d343, type: 3}
-    name: "\uACF5\uACA9"
-    cost: 1
-    description: "\uACF5\uACA9\uD569\uB2C8\uB2E4."
-  - sprite: {fileID: 446786657, guid: 820d6dff5118f0a44bb597e3ceb7d343, type: 3}
-    name: "\uACF5\uACA9"
-    cost: 1
-    description: "\uACF5\uACA9\uD569\uB2C8\uB2E4."
-  - sprite: {fileID: 446786657, guid: 820d6dff5118f0a44bb597e3ceb7d343, type: 3}
-    name: "\uACF5\uACA9"
-    cost: 1
-    description: "\uACF5\uACA9\uD569\uB2C8\uB2E4."
-  - sprite: {fileID: 446786657, guid: 820d6dff5118f0a44bb597e3ceb7d343, type: 3}
-    name: "\uACF5\uACA9"
-    cost: 1
-    description: "\uACF5\uACA9\uD569\uB2C8\uB2E4."
-  - sprite: {fileID: 446786657, guid: 820d6dff5118f0a44bb597e3ceb7d343, type: 3}
-    name: "\uACF5\uACA9"
-    cost: 1
-    description: "\uACF5\uACA9\uD569\uB2C8\uB2E4."
-  - sprite: {fileID: 446786657, guid: 820d6dff5118f0a44bb597e3ceb7d343, type: 3}
-    name: "\uBC29\uC5B4"
-    cost: 1
-    description: "\uBC29\uC5B4\uD569\uB2C8\uB2E4."
-  - sprite: {fileID: 446786657, guid: 820d6dff5118f0a44bb597e3ceb7d343, type: 3}
-    name: "\uBC29\uC5B4"
-    cost: 1
-    description: "\uBC29\uC5B4\uD569\uB2C8\uB2E4."
-  - sprite: {fileID: 446786657, guid: 820d6dff5118f0a44bb597e3ceb7d343, type: 3}
-    name: "\uBC29\uC5B4"
-    cost: 1
-    description: "\uBC29\uC5B4\uD569\uB2C8\uB2E4."
-  - sprite: {fileID: 446786657, guid: 820d6dff5118f0a44bb597e3ceb7d343, type: 3}
-    name: "\uBC29\uC5B4"
-    cost: 1
-    description: "\uBC29\uC5B4\uD569\uB2C8\uB2E4."
-  - sprite: {fileID: 446786657, guid: 820d6dff5118f0a44bb597e3ceb7d343, type: 3}
-    name: "\uBC29\uC5B4"
-    cost: 1
-    description: "\uBC29\uC5B4\uD569\uB2C8\uB2E4."
+  - {fileID: 11400000, guid: 5486b1e3e1685b049b28e26db764145f, type: 2}
+  - {fileID: 11400000, guid: 9d2c144da0aa4774e9c3bc7294f55962, type: 2}
+  - {fileID: 11400000, guid: 616050dc92e75b14e82cf5ccf5943a65, type: 2}
+  - {fileID: 11400000, guid: 902cc778acf176046bc96027f5665db0, type: 2}
+  - {fileID: 11400000, guid: b07af47d89774ee49bdcdea07d17c8ef, type: 2}
+  - {fileID: 11400000, guid: f342696b5dfe28c4cb24b29993e1e0bb, type: 2}
+  - {fileID: 11400000, guid: ea49938c693a62143936eb71b7b7478a, type: 2}
+  - {fileID: 11400000, guid: 2b098fed143c4b44fb18fc2423d847b3, type: 2}

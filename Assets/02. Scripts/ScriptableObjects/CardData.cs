@@ -10,11 +10,13 @@ public enum EffectType
     Cleanse,        // 디버프 제거
     RestoreCost,    // 코스트 회복
     Draw,           // 카드 드로우
-    Buff            // 버프
+    Buff,           // 버프
+    Debuff,         // 디버프
+    Bleed,          // 출혈
 }
 
 // 유니티 에디터, Project 뷰의 Create 메뉴에 아래 항목을 추가한다.
-[CreateAssetMenu(fileName = "Card Data", menuName = "Scriptable Objects/Card Data", order = 0)]
+[CreateAssetMenu(fileName = "Card Data", menuName = "Scriptable Object/Card Data", order = 0)]
 public class CardData : ScriptableObject
 {
     [Header("카드 모양")]
@@ -27,10 +29,12 @@ public class CardData : ScriptableObject
     public Sprite sprite;
 
     [Header("카드 성능")]
+    // 카드 효과의 종류
+    public EffectType type;
     // 카드 발동에 필요한 코스트
     public int cost;
     // 카드 효과에 적용되는 수치
     public int amount;
-    // 카드 효과의 종류
-    public EffectType type;
+    // 효과가 지속되는 턴 수
+    public int turnCount;
 }

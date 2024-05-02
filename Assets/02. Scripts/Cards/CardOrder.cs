@@ -1,14 +1,25 @@
-// �赿��
+// 김동건
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CardOrder : MonoBehaviour
 {
-    [SerializeField] Renderer[] backRenderers;
-    [SerializeField] Renderer[] middleRenderers;
+    [SerializeField] Renderer[] renderers;
     [SerializeField] string sortingLayerName;
+    int[] originOrders;
     int originOrder;
+
+    private void Awake()
+    {
+        // 각 렌더러들의 order를 미리 저장해둔다.
+        originOrders = new int[renderers.Length];
+
+        for (int i = 0; i < originOrders.Length; ++i)
+        {
+            originOrders[i] = renderers[i].sortingOrder;
+        }
+    }
 
     public void SetOriginOrder(int originOrder)
     {
@@ -25,16 +36,10 @@ public class CardOrder : MonoBehaviour
     {
         int mulOrder = order * 10;
 
-        foreach (var renderer in backRenderers)
+        for (int i = 0; i < renderers.Length; ++i)
         {
-            renderer.sortingLayerName = sortingLayerName;
-            renderer.sortingOrder = mulOrder;
-        }
-
-        foreach (var renderer in middleRenderers)
-        {
-            renderer.sortingLayerName = sortingLayerName;
-            renderer.sortingOrder = mulOrder + 1;
+            renderers[i].sortingLayerName = sortingLayerName;
+            renderers[i].sortingOrder = mulOrder + originOrders[i];
         }
     }
 }
