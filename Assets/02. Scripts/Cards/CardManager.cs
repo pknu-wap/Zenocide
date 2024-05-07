@@ -15,6 +15,7 @@ public class CardManager : MonoBehaviour
     [SerializeField] Transform handLeft;
     [SerializeField] Transform handRight;
     [SerializeField] public Transform cardSpawnPoint;
+    [SerializeField] public Transform cardDrawPoint;
     [SerializeField] public Transform cardDumpPoint;
 
     public List<CardData> deck;
@@ -84,6 +85,13 @@ public class CardManager : MonoBehaviour
         var card = cardObject.GetComponent<Card>();
         card.Setup(DrawCard());
         card.transform.localScale = Vector3.zero;
+
+        Sequence sequence = DOTween.Sequence()
+                .Append(card.transform.DOMove(cardDrawPoint.position, dotweenTime))
+                .Join(card.transform.DORotateQuaternion(cardDrawPoint.rotation, dotweenTime))
+                .Join(card.transform.DOScale(cardDrawPoint.localScale, dotweenTime))
+                .AppendInterval(dotweenTime);
+
         hand.Add(card);
 
         SetOriginOrder();
