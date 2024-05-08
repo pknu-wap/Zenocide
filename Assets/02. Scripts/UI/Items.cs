@@ -8,7 +8,7 @@ public class Items : MonoBehaviour
     public static Items Inst {get; private set;}
     private void Awake() => Inst = this;
 
-    public List<string> items = new List<string>();
+    public static List<string> items = new List<string>();
     public List<TMP_Text> slots = new List<TMP_Text>();
     void Start()
     {

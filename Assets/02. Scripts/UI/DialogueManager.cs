@@ -12,62 +12,46 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
 
     public TMP_Text dialogueText;        //Story Text
     public TMP_Text dialogueName;        //Story Name
+
     public TMP_Text ChoiceUpText;        //Up Selection Text
     public TMP_Text ChoiceDownText;      //Down Selection Text
 
-    public GameObject dialogueBox;       //ì „ì²´ Canvas
+    public TMP_Text ChoiceUpRequireText;       //Up Selection Text
+    public TMP_Text ChoiceDownRequireText;     //Down Selection Text
 
-    public GameObject Dialogue;          //ëŒ€í™”ì°½
+    public GameObject dialogueBox;       //? „ì²? Canvas
 
-    public GameObject ChoiceUp;          //ìœ„ ì„ íƒì§€ í‘œì‹œ
-    public GameObject ChoiceDown;         //ì•„ë˜ ì„ íƒì§€ í‘œì‹œ
+    public GameObject Dialogue;          //????™”ì°?
 
-    public GameObject WaitCursor;        //ë‹¤ìŒ Text ëŒ€ê¸° í‘œì‹œ ì»¤ì„œ
+    public GameObject ChoiceUp;          //?œ„ ?„ ?ƒì§? ?‘œ?‹œ
+    public GameObject ChoiceDown;         //?•„?˜ ?„ ?ƒì§? ?‘œ?‹œ
+
+    public GameObject WaitCursor;        //?‹¤?Œ Text ???ê¸? ?‘œ?‹œ ì»¤ì„œ
       
-    public Image dialogueImage;          //ì¼ëŸ¬ìŠ¤íŠ¸
+    public Image dialogueImage;          //?¼?Ÿ¬?Š¤?Š¸
           
-    public Sprite[] dialogueImages;      //ì¼ëŸ¬ìŠ¤íŠ¸ ëª©ë¡
+    public Sprite[] dialogueImages;      //?¼?Ÿ¬?Š¤?Š¸ ëª©ë¡
       
     public string[] StoryText;           //Story Text ë°°ì—´
     public string[] StoryName;           //Story Name ë°°ì—´
       
-    public int currentLine;              //í˜„ì¬ ì¶œë ¥ ì¤‘ì¸ ë¬¸ìì—´ ìœ„ì¹˜
+    public int currentLine;              //?˜„?¬ ì¶œë ¥ ì¤‘ì¸ ë¬¸ì?—´ ?œ„ì¹?
       
-    private bool isTyping = false;       //íƒ€ì´í•‘ íš¨ê³¼ ì§„í–‰ ì—¬ë¶€ í™•ì¸ ë³€ìˆ˜
+    private bool isTyping = false;       //????´?•‘ ?š¨ê³? ì§„í–‰ ?—¬ë¶? ?™•?¸ ë³??ˆ˜
     private bool cancelTyping = false;   //
-
-    private bool isSelection = false;    //ì„ íƒì§€ ì§„í–‰ ì—¬ë¶€ í™•ì¸ ë³€ìˆ˜
-    private bool isEnd = false;          //ëŒ€í™” ì¢…ë£Œ ì—¬ë¶€ í™•ì¸ ë³€ìˆ˜
 
     void Start()
     {
-        dialogueBox.SetActive(false);    //ì‹œì‘ ì‹œ Canvas ì „ì²´ ë¹„í™œì„±í™”
-        ChoiceUp.SetActive(false);      //ì‹œì‘ ì‹œ ì„ íƒì§€ ë¹„í™œì„±í™”
+        dialogueBox.SetActive(false);    //?‹œ?‘ ?‹œ Canvas ? „ì²? ë¹„í™œ?„±?™”
+        ChoiceUp.SetActive(false);      //?‹œ?‘ ?‹œ ?„ ?ƒì§? ë¹„í™œ?„±?™”
         ChoiceDown.SetActive(false);    
-        LoadDialogue();                  //Story Name,Text ë¶ˆëŸ¬ì˜¤ê¸°
-        ShowDialogue();                  //ì´ë¯¸ì§€ì™€ ì „ì²´ Canvas í‘œì‹œ
+        LoadDialogue();                  //Story Name,Text ë¶ˆëŸ¬?˜¤ê¸?
+        ShowDialogue();                  //?´ë¯¸ì????? ? „ì²? Canvas ?‘œ?‹œ
     }
 
     void Update()
     {
-        if(!isEnd)
-        {
-            if(ChoiceUp.GetComponent<Choice>().isClicked){
-                    Dialogue.SetActive(true);
-                    ChoiceUp.SetActive(false);
-                    ChoiceDown.SetActive(false);
-                    StartCoroutine(TypeSentence("ë¬´ì‚¬íˆ ì¢€ë¹„ë¥¼ í”¼í•´ ë„ë§ê°”ë‹¤."));
-                    isEnd = true;
-                }
-            if(ChoiceDown.GetComponent<Choice>().isClicked){
-                Dialogue.SetActive(true);
-                ChoiceUp.SetActive(false);
-                ChoiceDown.SetActive(false);
-                StartCoroutine(TypeSentence("ì¢€ë¹„ì™€ ë§ì„œ ì‹¸ìš°ê²Œ ëœë‹¤."));
-                isEnd = true;
-                }
-        }
-        
+   
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -79,7 +63,7 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         var IllustTable = new Dictionary<string,int>()
         {
             {"???",0},
-            {"ì¢€ë¹„",1}   
+            {"Á»ºñ",1}   
         };
 
         if(isTyping && !cancelTyping)
@@ -99,25 +83,18 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         dialogueName.text = StoryName[currentLine];
 
         if(StoryName[currentLine][0] == '*'){
-            isSelection = true;
-            dialogueText.text = "....";
-            dialogueName.text = "";
-            Dialogue.SetActive(false);
-            ChoiceUp.SetActive(true);
-            ChoiceDown.SetActive(true);
-            ChoiceUpText.text = StoryName[currentLine].Substring(1);
-            ChoiceDownText.text = StoryText[currentLine].Substring(1);
+            Selection();
         }
         else
         {
-            // ì´ë¯¸ì§€ ë³€ê²½
+            // ?´ë¯¸ì?? ë³?ê²?
             dialogueImage.sprite = dialogueImages[IllustTable[dialogueName.text]];
             StartCoroutine(TypeSentence(StoryText[currentLine]));
         }
 
     }
 
-    //Story Textì— íƒ€ì´í•‘ íš¨ê³¼ ì¶”ê°€í•˜ëŠ” í•¨ìˆ˜
+    //Story Text?— ????´?•‘ ?š¨ê³? ì¶”ê???•˜?Š” ?•¨?ˆ˜
     IEnumerator TypeSentence(string sentence)
     {
         isTyping = true;
@@ -135,26 +112,44 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
             }
         }
         isTyping = false;
-        float textWidth = dialogueText.preferredWidth;
-        Vector3 newPosition = dialogueText.transform.position + new Vector3(textWidth,0,0);
-        WaitCursor.transform.position = newPosition;
         WaitCursor.SetActive(true);
         cancelTyping = false;
     }
 
-    //ì´ˆê¸° í™”ë©´ í‘œì‹œ
+    void Selection()
+    {
+        dialogueText.text = "....";
+        dialogueName.text = "";
+        Dialogue.SetActive(false);
+        ChoiceUp.SetActive(true);
+        ChoiceDown.SetActive(true);
+        ChoiceUpText.text = StoryName[currentLine].Substring(1);
+        ChoiceDownText.text = StoryText[currentLine].Substring(1);
+        if(Items.items.Find(x => x == "ÃÑ") != null){
+        
+        ChoiceDownRequireText.text = "ÇÊ¿äÇÑ ¾ÆÀÌÅÛ : <color=red>ÃÑ</color>";
+        
+        }
+        else{
+
+        ChoiceDownRequireText.text = "ÇÊ¿äÇÑ ¾ÆÀÌÅÛ : ÃÑ";
+
+        }
+    }
+
+    //ì´ˆê¸° ?™”ë©? ?‘œ?‹œ
     public void ShowDialogue()
     {
         currentLine = -1;
         dialogueBox.SetActive(true);
-        // ì´ë¯¸ì§€ ì´ˆê¸°í™”
+        // ?´ë¯¸ì?? ì´ˆê¸°?™”
         dialogueImage.sprite = dialogueImages[0];
     }
 
-    //TXT íŒŒì¼ì—ì„œ Story Text, Name ë¶ˆëŸ¬ì˜¤ëŠ” í•¨ìˆ˜
+    //TXT ?ŒŒ?¼?—?„œ Story Text, Name ë¶ˆëŸ¬?˜¤?Š” ?•¨?ˆ˜
     void LoadDialogue()
     {
-        //íŒŒì¼ ì €ì¥ ê²½ë¡œ
+        //?ŒŒ?¼ ????¥ ê²½ë¡œ
         TextAsset asset = Resources.Load ("StoryScript")as TextAsset;
 
         string Story = asset.text;
@@ -170,8 +165,8 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         for (int i = 0; i < StoryText.Length; i++)
         {
             string[] Temp = StoryText[i].Split('#');
-            StoryText[i] = Temp[1]; // ëŒ€í™” ë¬¸ì¥ ì €ì¥
-            StoryName[i] = Temp[0]; // ëŒ€í™” ì´ë¦„ ì €ì¥
+            StoryText[i] = Temp[1]; // ????™” ë¬¸ì¥ ????¥
+            StoryName[i] = Temp[0]; // ????™” ?´ë¦? ????¥
         }
 
         reader.Close();
