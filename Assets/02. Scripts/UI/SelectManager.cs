@@ -12,10 +12,10 @@ public class SelectManager : MonoBehaviour
 {
     public static SelectManager instance;
 
-    public GameObject UpSignLeft;            //?쐞 ?꽑?깮 ?몴?떆(?쇊履?)
-    public GameObject UpSignRight;           //?쐞 ?꽑?깮 ?몴?떆(?삤瑜몄そ)
-    public GameObject DownSignLeft;          //?븘?옒 ?꽑?깮 ?몴?떆(?쇊履?)
-    public GameObject DownSignRight;         //?븘?옒 ?꽑?깮 ?몴?떆(?삤瑜몄そ)
+    public GameObject UpSignLeft;            //위 선택지 선택 표시(왼쪽)
+    public GameObject UpSignRight;           //위 선택지 선택 표시(오른쪽)
+    public GameObject DownSignLeft;          //아래 선택지 선택 표시(왼쪽)
+    public GameObject DownSignRight;         //아래 선택지 선택 표시(오른쪽)
 
     public GameObject ChoiceBoxUp;
     public GameObject ChoiceBoxDown;
