@@ -5,11 +5,12 @@ using UnityEngine;
 
 public class Items : MonoBehaviour
 {
-    public static Items Inst {get; private set;}
-    private void Awake() => Inst = this;
+    public static Items instance {get; private set;}
+    private void Awake() => instance = this;
 
     public static List<string> items = new List<string>();
     public List<TMP_Text> slots = new List<TMP_Text>();
+    
     void Start()
     {
         slots = transform.GetChild(1).GetChild(0).GetChild(0).GetComponentsInChildren<TMP_Text>().ToList();
@@ -39,6 +40,7 @@ public class Items : MonoBehaviour
             slot.text = "";
         }
     }
+    
     public void AddItem()
     {
         for (int i = 0; i < slots.Count; i++)
@@ -52,6 +54,7 @@ public class Items : MonoBehaviour
             break;
         }
     }
+
     private string AddAndRemoveItem()
     {
         if (items.Count == 0)

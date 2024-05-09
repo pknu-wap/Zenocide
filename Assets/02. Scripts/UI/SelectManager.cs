@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum ChoiceType
@@ -12,10 +10,10 @@ public class SelectManager : MonoBehaviour
 {
     public static SelectManager instance;
 
-    public GameObject UpSignLeft;            //À§ ¼±ÅÃÁö ¼±ÅÃ Ç¥½Ã(¿ŞÂÊ)
-    public GameObject UpSignRight;           //À§ ¼±ÅÃÁö ¼±ÅÃ Ç¥½Ã(¿À¸¥ÂÊ)
-    public GameObject DownSignLeft;          //¾Æ·¡ ¼±ÅÃÁö ¼±ÅÃ Ç¥½Ã(¿ŞÂÊ)
-    public GameObject DownSignRight;         //¾Æ·¡ ¼±ÅÃÁö ¼±ÅÃ Ç¥½Ã(¿À¸¥ÂÊ)
+    public GameObject UpSignLeft;            //ìœ„ ì„ íƒì§€ ì„ íƒ í‘œì‹œ(ì™¼ìª½)
+    public GameObject UpSignRight;           //ìœ„ ì„ íƒì§€ ì„ íƒ í‘œì‹œ(ì˜¤ë¥¸ìª½)
+    public GameObject DownSignLeft;          //ì•„ë˜ ì„ íƒì§€ ì„ íƒ í‘œì‹œ(ì™¼ìª½)
+    public GameObject DownSignRight;         //ì•„ë˜ ì„ íƒì§€ ì„ íƒ í‘œì‹œ(ì˜¤ë¥¸ìª½)
 
     public GameObject ChoiceBoxUp;
     public GameObject ChoiceBoxDown;

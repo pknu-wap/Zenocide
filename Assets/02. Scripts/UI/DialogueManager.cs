@@ -10,43 +10,43 @@ using System.Collections.Generic;
 public class DialogueManager : MonoBehaviour, IPointerDownHandler
 {
 
-    public TMP_Text dialogueText;        //Story Text
-    public TMP_Text dialogueName;        //Story Name
+    public TMP_Text dialogueText;               //Story Text
+    public TMP_Text dialogueName;               //Story Name
 
-    public TMP_Text ChoiceUpText;        //Up Selection Text
-    public TMP_Text ChoiceDownText;      //Down Selection Text
+    public TMP_Text ChoiceUpText;               //Up Selection Text
+    public TMP_Text ChoiceDownText;             //Down Selection Text
 
-    public TMP_Text ChoiceUpRequireText;       //Up Selection Text
-    public TMP_Text ChoiceDownRequireText;     //Down Selection Text
+    public TMP_Text ChoiceUpRequireText;        //Up Selection Text
+    public TMP_Text ChoiceDownRequireText;      //Down Selection Text
 
-    public GameObject dialogueBox;        //전체 Canvas
+    public GameObject dialogueBox;              //전체 Canvas
 
-    public GameObject Dialogue;           //대화창
+    public GameObject Dialogue;                 //대화창
 
-    public GameObject ChoiceUp;           //위 선택지 표시
-    public GameObject ChoiceDown;         //아래 선택지 표시
+    public GameObject ChoiceUp;                 //위 선택지 표시
+    public GameObject ChoiceDown;               //아래 선택지 표시
 
-    public GameObject WaitCursor;        //다음 대화를 위한 사용자 입력 대기 커서
+    public GameObject WaitCursor;               //다음 대화를 위한 사용자 입력 대기 커서
       
-    public Image dialogueImage;          //일러스트
+    public Image dialogueImage;                 //일러스트
           
-    public Sprite[] dialogueImages;      //일러스트 목록
+    public Sprite[] dialogueImages;             //일러스트 목록
       
-    public string[] StoryText;           //Story Text 배열
-    public string[] StoryName;           //Story Name 배열
+    public string[] StoryText;                  //Story Text 배열
+    public string[] StoryName;                  //Story Name 배열
       
-    public int currentLine;              //현재 출력 중인 문자열 위치
+    public int currentLine;                     //현재 출력 중인 문자열 위치
       
-    private bool isTyping = false;       //타이핑 효과 진행 여부 확인 변수
-    private bool cancelTyping = false;   //사용자의 입력으로 인한 출력 취소 확인 변수
+    private bool isTyping = false;              //타이핑 효과 진행 여부 확인 변수
+    private bool cancelTyping = false;          //사용자의 입력으로 인한 출력 취소 확인 변수
 
     void Start()
     {
-        dialogueBox.SetActive(false);    //시작 시 Canvas 전체 비활성화
-        ChoiceUp.SetActive(false);       //시작 시 선택지 비활성화
+        dialogueBox.SetActive(false);           //시작 시 Canvas 전체 비활성화
+        ChoiceUp.SetActive(false);              //시작 시 선택지 비활성화
         ChoiceDown.SetActive(false);    
-        LoadDialogue();                  //Story Name,Text 불러오기
-        ShowDialogue();                  //이미지와 전체 Canvas 표시
+        LoadDialogue();                         //Story Name,Text 불러오기
+        ShowDialogue();                         //이미지와 전체 Canvas 표시
     }
 
     void Update()
