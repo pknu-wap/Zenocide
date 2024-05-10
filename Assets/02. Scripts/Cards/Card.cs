@@ -65,6 +65,7 @@ public class Card : MonoBehaviour
         }
 
         // 공격 카드일 경우 화살표를 표시한다.
+        CardArrow.Instance.ShowArrow();
 
         // 공격 카드가 아닐 경우, 아무 일도 하지 않는다.
         //CardManager.Inst.CardMouseDown();
@@ -78,13 +79,13 @@ public class Card : MonoBehaviour
             return;
         }
 
-        // 공격 카드일 경우, 화살표의 끝이 마우스를 향한다.
-
-        // 임시로 카드가 마우스를 따라가게 해봤다.
+        // 현재 마우스의 위치를 계산한다.
         Vector3 mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f);
         Vector3 objPos = Camera.main.ScreenToWorldPoint(mousePos);
 
-        transform.position = objPos;
+        // 공격 카드일 경우, 화살표의 끝이 마우스를 향한다.
+        CardArrow.Instance.MoveArrow(objPos);
+        Debug.Log(objPos);
     }
 
     // 드래그가 끝날 때 호출된다.
@@ -95,6 +96,9 @@ public class Card : MonoBehaviour
             return;
         }
 
+        // 화살표를 숨긴다.
+        CardArrow.Instance.HideArrow();
+
         // 카드를 사용한다.
         UseCard();
     }
@@ -104,7 +108,7 @@ public class Card : MonoBehaviour
     // 카드 발동 후 선택된 오브젝트
     public Character selectedCharacter;
 
-    // 카드를 사용한다.
+    // 카드를 사용한다. (마우스가 놓아지는 시점에 호출)
     private void UseCard()
     {
         // 코스트가 모자란 경우
