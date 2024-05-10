@@ -57,8 +57,6 @@ public class TurnManager : MonoBehaviour
         // 드로우 카드 수만큼 드로우
         for (int i = 0; i < drawCardCount; i++)
         {
-/*            yield return delay05;
-            OnAddCard?.Invoke(false);*/
             yield return delay05;
             OnAddCard?.Invoke(true);
         }

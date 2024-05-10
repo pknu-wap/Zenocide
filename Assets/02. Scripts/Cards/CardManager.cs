@@ -17,7 +17,7 @@ public class CardManager : MonoBehaviour
     [SerializeField] GameObject cardPrefab;
 
     // 핸드
-    [SerializeField] List<Card> hand;
+    public List<Card> hand;
     [SerializeField] Transform handLeft;
     [SerializeField] Transform handRight;
 
@@ -28,13 +28,13 @@ public class CardManager : MonoBehaviour
 
     public List<CardData> deck;
     public List<CardData> dump;
-    TMP_Text deckCount;
-    TMP_Text dumpCount;
+    [SerializeField] TMP_Text deckCountTMP;
+    [SerializeField] TMP_Text dumpCountTMP;
 
     Card selectCard;
 
-    [SerializeField] float delay05 = 0.5f;
-    [SerializeField] float focusOffset = 0.5f;
+    float delay03 = 0.3f;
+    float delay05 = 0.5f;
 
     public CardData DrawCard()
     {
@@ -46,6 +46,7 @@ public class CardManager : MonoBehaviour
         // queue나 dequeue를 쓰는 게 더 나을 듯
         CardData card = deck[0];
         deck.RemoveAt(0);
+        UpdateDeckCount();
         return card;
     }
 
@@ -59,6 +60,7 @@ public class CardManager : MonoBehaviour
             CardData card = itemSO.items[i];
             deck.Add(card);
         }
+        UpdateDeckCount();
 
         // deck 셔플
         for (int i = 0; i < deck.Count; i++)
@@ -99,10 +101,10 @@ public class CardManager : MonoBehaviour
         hand.Add(card);
 
         SetOriginOrder();
-        StartCoroutine(DrawAnimation(card));
+        StartCoroutine(DrawAnimationCo(card));
     }
 
-    IEnumerator DrawAnimation(Card card)
+    IEnumerator DrawAnimationCo(Card card)
     {
         Sequence sequence = DOTween.Sequence()
                 .Append(card.transform.DOMove(cardDrawPoint.position, delay05))
@@ -136,7 +138,7 @@ public class CardManager : MonoBehaviour
             var targetCard = hand[i];
 
             targetCard.originPRS = originCardPRSs[hand.Count - i - 1];
-            targetCard.MoveTransform(targetCard.originPRS, true, 0.7f);
+            targetCard.MoveTransform(targetCard.originPRS, true, delay05);
         }
     }
 
@@ -188,6 +190,7 @@ public class CardManager : MonoBehaviour
     {
         hand.Remove(card);
         dump.Add(card.cardData);
+        UpdateDumpCount();
 
         card.transform.DOKill();
 
@@ -207,6 +210,7 @@ public class CardManager : MonoBehaviour
             CardData card = dump[i];
             deck.Add(card);
         }
+        UpdateDeckCount();
 
         // deck 셔플
         for (int i = 0; i < deck.Count; i++)
@@ -219,44 +223,47 @@ public class CardManager : MonoBehaviour
 
         // dump 비우기
         dump.Clear();
+        UpdateDumpCount();
     }
 
     public IEnumerator DiscardHandCo()
     {
-        for (int i = 0; i < hand.Count; i++)
+        int handCount = hand.Count;
+        for (int i = 0; i < handCount; i++)
         {
-            // 카드 스폰 위치로 날아가게 변경. 나중에 묘지로도 바꿔야 한다.
+            Card card = hand[0];
+
+            // 묘지로 카드 이동
             Sequence sequence = DOTween.Sequence()
-                .Append(hand[i].transform.DOMove(cardDumpPoint.position, delay05))
-                .Join(hand[i].transform.DORotateQuaternion(Utils.QI, delay05))
-                .Join(hand[i].transform.DOScale(Vector3.one, delay05))
+                .Append(card.transform.DOMove(cardDumpPoint.position, delay03))
+                .Join(card.transform.DORotateQuaternion(Utils.QI, delay03))
+                .Join(card.transform.DOScale(Vector3.one, delay03))
                 .SetEase(Ease.OutQuad);
-        }
+            
+            hand.RemoveAt(0);
+            CardAlignment();
 
-        // sequence 끝나기 전까지 기다리기
-        yield return new WaitForSeconds(delay05);
+            // sequence 끝나기 전까지 기다리기
+            yield return new WaitForSeconds(delay03);
 
-        // sequence가 끝나면 모든 오브젝트 파괴
-        for (int i = 0; i < hand.Count; i++)
-        {
-            Card card = hand[i];
+            // sequence가 끝나면 오브젝트 파괴
             dump.Add(card.cardData);
-
+            UpdateDumpCount();
             DestroyImmediate(card.gameObject);
         }
 
-        hand = new List<Card>(100);
+        hand.Clear();
         selectCard = null;
     }
 
     public void UpdateDeckCount()
     {
-        deckCount.text = deck.Count.ToString();
+        deckCountTMP.text = deck.Count.ToString();
     }
 
     public void UpdateDumpCount()
     {
-        dumpCount.text = dump.Count.ToString();
+        dumpCountTMP.text = dump.Count.ToString();
     }
 
     #region MyCard
@@ -282,7 +289,7 @@ public class CardManager : MonoBehaviour
     {
         if (isEnlarge)
         {
-            Vector3 enlargePos = new Vector3(card.originPRS.pos.x, handLeft.position.y + focusOffset, -3f);
+            Vector3 enlargePos = new Vector3(card.originPRS.pos.x, handLeft.position.y + delay05, -3f);
             card.MoveTransform(new PRS(enlargePos, Utils.QI, card.originPRS.scale * 1.2f), false);
         }
         else
