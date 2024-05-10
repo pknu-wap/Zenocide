@@ -89,7 +89,7 @@ public class CardManager : MonoBehaviour
 
     void AddCardToHand(bool isMine)
     {
-        if (!isMine || hand.Count > maxHand || deck.Count+dump.Count == 0)
+        if (!isMine || hand.Count > maxHand)
         {
             return;
         }
