@@ -18,6 +18,7 @@ public class CardManager : MonoBehaviour
 
     // ÇÚµå
     public List<Card> hand;
+    [SerializeField] int maxHand = 10;
     [SerializeField] Transform handLeft;
     [SerializeField] Transform handRight;
 
@@ -35,6 +36,7 @@ public class CardManager : MonoBehaviour
 
     float delay03 = 0.3f;
     float delay05 = 0.5f;
+    float focusOffset = 100f;
 
     public CardData DrawCard()
     {
@@ -84,8 +86,6 @@ public class CardManager : MonoBehaviour
     {
         TurnManager.OnAddCard -= AddCardToHand;
     }
-
-    [SerializeField] int maxHand = 10;
 
     void AddCardToHand(bool isMine)
     {
@@ -289,8 +289,8 @@ public class CardManager : MonoBehaviour
     {
         if (isEnlarge)
         {
-            Vector3 enlargePos = new Vector3(card.originPRS.pos.x, handLeft.position.y + delay05, -3f);
-            card.MoveTransform(new PRS(enlargePos, Utils.QI, card.originPRS.scale * 1.2f), false);
+            Vector3 enlargePos = new Vector3(card.originPRS.pos.x, handLeft.position.y + focusOffset, -3f);
+            card.MoveTransform(new PRS(enlargePos, Utils.QI, card.originPRS.scale * 1.5f), false);
         }
         else
         {
