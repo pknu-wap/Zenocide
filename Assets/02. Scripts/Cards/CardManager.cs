@@ -3,27 +3,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using TMPro;
 
 public class CardManager : MonoBehaviour
 {
     public static CardManager Inst { get; private set; }
     void Awake() => Inst = this;
 
+    // 아이템 풀
     [SerializeField] ItemSO itemSO;
+
+    // 카드 프리팹
     [SerializeField] GameObject cardPrefab;
+
+    // 핸드
     [SerializeField] List<Card> hand;
     [SerializeField] Transform handLeft;
     [SerializeField] Transform handRight;
+
+    // 카드 관련 트랜스폼
     [SerializeField] public Transform cardSpawnPoint;
     [SerializeField] public Transform cardDrawPoint;
     [SerializeField] public Transform cardDumpPoint;
 
     public List<CardData> deck;
-    List<CardData> dump;
+    public List<CardData> dump;
+    TMP_Text deckCount;
+    TMP_Text dumpCount;
+
     Card selectCard;
 
-    [SerializeField] float dotweenTime = 0.5f;
-    [SerializeField] float focusOffset;
+    [SerializeField] float delay05 = 0.5f;
+    [SerializeField] float focusOffset = 0.5f;
 
     public CardData DrawCard()
     {
@@ -85,16 +96,22 @@ public class CardManager : MonoBehaviour
         var card = cardObject.GetComponent<Card>();
         card.Setup(DrawCard());
         card.transform.localScale = Vector3.zero;
-
-        Sequence sequence = DOTween.Sequence()
-                .Append(card.transform.DOMove(cardDrawPoint.position, dotweenTime))
-                .Join(card.transform.DORotateQuaternion(cardDrawPoint.rotation, dotweenTime))
-                .Join(card.transform.DOScale(cardDrawPoint.localScale, dotweenTime))
-                .AppendInterval(dotweenTime);
-
         hand.Add(card);
 
         SetOriginOrder();
+        StartCoroutine(DrawAnimation(card));
+    }
+
+    IEnumerator DrawAnimation(Card card)
+    {
+        Sequence sequence = DOTween.Sequence()
+                .Append(card.transform.DOMove(cardDrawPoint.position, delay05))
+                .Join(card.transform.DORotateQuaternion(cardDrawPoint.rotation, delay05))
+                .Join(card.transform.DOScale(Vector3.one * 12f, delay05))
+                .SetEase(Ease.OutCubic);
+
+        yield return new WaitForSeconds(delay05);
+
         CardAlignment();
     }
 
@@ -118,7 +135,7 @@ public class CardManager : MonoBehaviour
         {
             var targetCard = hand[i];
 
-            targetCard.originPRS = originCardPRSs[i];
+            targetCard.originPRS = originCardPRSs[hand.Count - i - 1];
             targetCard.MoveTransform(targetCard.originPRS, true, 0.7f);
         }
     }
@@ -210,17 +227,14 @@ public class CardManager : MonoBehaviour
         {
             // 카드 스폰 위치로 날아가게 변경. 나중에 묘지로도 바꿔야 한다.
             Sequence sequence = DOTween.Sequence()
-                .Append(hand[i].transform.DOMove(cardDumpPoint.position, dotweenTime))
-                .Join(hand[i].transform.DORotateQuaternion(Utils.QI, dotweenTime))
-                .Join(hand[i].transform.DOScale(Vector3.one, dotweenTime))
+                .Append(hand[i].transform.DOMove(cardDumpPoint.position, delay05))
+                .Join(hand[i].transform.DORotateQuaternion(Utils.QI, delay05))
+                .Join(hand[i].transform.DOScale(Vector3.one, delay05))
                 .SetEase(Ease.OutQuad);
-            /*            Sequence sequence = DOTween.Sequence()
-                        .Append(hand[i].transform.DOLocalMoveY(0.5f, 0.9f).SetEase(Ease.OutQuad))
-                        .Join(hand[i].GetComponent<SpriteRenderer>().DOFade(0, 0.9f).SetEase(Ease.InExpo));*/
         }
 
         // sequence 끝나기 전까지 기다리기
-        yield return new WaitForSeconds(dotweenTime);
+        yield return new WaitForSeconds(delay05);
 
         // sequence가 끝나면 모든 오브젝트 파괴
         for (int i = 0; i < hand.Count; i++)
@@ -233,6 +247,16 @@ public class CardManager : MonoBehaviour
 
         hand = new List<Card>(100);
         selectCard = null;
+    }
+
+    public void UpdateDeckCount()
+    {
+        deckCount.text = deck.Count.ToString();
+    }
+
+    public void UpdateDumpCount()
+    {
+        dumpCount.text = dump.Count.ToString();
     }
 
     #region MyCard

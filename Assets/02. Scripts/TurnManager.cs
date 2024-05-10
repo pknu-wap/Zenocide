@@ -21,6 +21,7 @@ public class TurnManager : MonoBehaviour
 
     enum ETurnMode { Random, My, Other }
     WaitForSeconds delay03 = new WaitForSeconds(0.3f);
+    WaitForSeconds delay05 = new WaitForSeconds(0.5f);
     WaitForSeconds delay07 = new WaitForSeconds(0.7f);
 
     public static Action<bool> OnAddCard;
@@ -58,11 +59,11 @@ public class TurnManager : MonoBehaviour
         {
 /*            yield return delay05;
             OnAddCard?.Invoke(false);*/
-            yield return delay03;
+            yield return delay05;
             OnAddCard?.Invoke(true);
         }
 
-        yield return delay03;
+        yield return delay05;
         isLoading = false;
     }
 
@@ -75,11 +76,11 @@ public class TurnManager : MonoBehaviour
         // 드로우 카드 수만큼 드로우
         for (int i = 0; i < drawCardCount; i++)
         {
-            yield return delay03;
+            yield return delay05;
             OnAddCard?.Invoke(myTurn);
         }
 
-        yield return delay03;
+        yield return delay05;
     }
 
     public void EndTurn()
