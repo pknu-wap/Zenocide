@@ -15,6 +15,7 @@ public class CardManager : MonoBehaviour
 
     // 카드 프리팹
     [SerializeField] GameObject cardPrefab;
+    [SerializeField] GameObject cardBackPrefab;
 
     // 핸드
     public List<Card> hand;
@@ -25,6 +26,7 @@ public class CardManager : MonoBehaviour
     // 카드 관련 트랜스폼
     [SerializeField] public Transform cardSpawnPoint;
     [SerializeField] public Transform cardDrawPoint;
+    [SerializeField] public Transform cardResetPoint;
     [SerializeField] public Transform cardDumpPoint;
 
     public List<CardData> deck;
@@ -34,17 +36,16 @@ public class CardManager : MonoBehaviour
 
     Card selectCard;
 
+    // 상수
+    int listSize = 100;
+    float delay01 = 0.1f;
     float delay03 = 0.3f;
     float delay05 = 0.5f;
     float focusOffset = 100f;
 
-    public CardData DrawCard()
+    // 덱 카운트가 0인지 확인하고 사용해야 함
+    CardData DrawCard()
     {
-        if (deck.Count == 0)
-        {
-            ResetDeck();
-        }
-
         // queue나 dequeue를 쓰는 게 더 나을 듯
         CardData card = deck[0];
         deck.RemoveAt(0);
@@ -54,7 +55,7 @@ public class CardManager : MonoBehaviour
 
     void SetUpDeck()
     {
-        deck = new List<CardData>(100);
+        deck = new List<CardData>(listSize);
 
         // itemSO의 카드들을 deck에 추가
         for (int i = 0; i < itemSO.items.Length; i++) 
@@ -77,7 +78,7 @@ public class CardManager : MonoBehaviour
     void Start()
     {
         SetUpDeck();
-        dump = new List<CardData>(100);
+        dump = new List<CardData>(listSize);
         // 왜 싱글톤에서 호출하지 않고 Action으로 호출할까,,,,
         TurnManager.OnAddCard += AddCardToHand;
     }
@@ -96,6 +97,14 @@ public class CardManager : MonoBehaviour
 
         var cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI);
         var card = cardObject.GetComponent<Card>();
+
+        // DrawCard() 호출 전에 덱이 비었는지 확인
+        if(deck.Count == 0)
+        {
+            StartCoroutine(ResetDeckAnimationCo(dump.Count));
+            ResetDeck();
+        }
+
         card.Setup(DrawCard());
         card.transform.localScale = Vector3.zero;
         hand.Add(card);
@@ -226,6 +235,31 @@ public class CardManager : MonoBehaviour
         UpdateDumpCount();
     }
 
+    IEnumerator ResetDeckAnimationCo(int dumpCount)
+    {
+         List<GameObject> cardBacks = new List<GameObject>(dumpCount);
+
+        for(int i = 0; i < dumpCount; i++)
+        {
+            cardBacks.Add(Instantiate(cardBackPrefab, cardDumpPoint.position, Utils.QI));
+
+            Sequence sequence = DOTween.Sequence()
+                .Append(cardBacks[i].transform.DOMoveX(cardResetPoint.position.x, delay05))
+                .Join(cardBacks[i].transform.DOMoveY(cardResetPoint.position.y, delay05)).SetEase(Ease.OutCubic)
+                .Append(cardBacks[i].transform.DOMoveX(cardSpawnPoint.position.x, delay05))
+                .Join(cardBacks[i].transform.DOMoveY(cardSpawnPoint.position.y, delay05)).SetEase(Ease.OutCubic);
+
+            yield return new WaitForSeconds(delay01);
+        }
+
+        yield return new WaitForSeconds(delay05 * 2 + delay01 * dumpCount);
+
+        for (int i = 0; i < dumpCount; i++)
+        {
+            DestroyImmediate(cardBacks[i].gameObject);
+        }
+    }
+
     public IEnumerator DiscardHandCo()
     {
         int handCount = hand.Count;
@@ -256,12 +290,12 @@ public class CardManager : MonoBehaviour
         selectCard = null;
     }
 
-    public void UpdateDeckCount()
+    void UpdateDeckCount()
     {
         deckCountTMP.text = deck.Count.ToString();
     }
 
-    public void UpdateDumpCount()
+    void UpdateDumpCount()
     {
         dumpCountTMP.text = dump.Count.ToString();
     }

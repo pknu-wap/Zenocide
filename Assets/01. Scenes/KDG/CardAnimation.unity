@@ -5843,17 +5843,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemSO: {fileID: 11400000, guid: cc7407feaf5c0954196ac24a8c2d1af4, type: 2}
   cardPrefab: {fileID: 506362370436929090, guid: 5cc6a70698541f240ae1f8d3a39b87c7, type: 3}
+  cardBackPrefab: {fileID: 227734258949264060, guid: 2058b9041a462ae4d87b56575d4d8dbf, type: 3}
   hand: []
+  maxHand: 10
   handLeft: {fileID: 1896546796}
   handRight: {fileID: 1386310833}
   cardSpawnPoint: {fileID: 1804754364}
   cardDrawPoint: {fileID: 176385336}
+  cardResetPoint: {fileID: 1267414512}
   cardDumpPoint: {fileID: 1335278109}
   deck: []
   dump: []
   deckCountTMP: {fileID: 1407330163}
   dumpCountTMP: {fileID: 371742271}
-  maxHand: 10
 --- !u!1001 &710946050
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10614,6 +10616,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1258778928}
   m_CullTransparentMesh: 1
+--- !u!1 &1267414511
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1267414512}
+  m_Layer: 0
+  m_Name: CardResetPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1267414512
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1267414511}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 325, y: 100, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1652509894}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1279341323
 GameObject:
   m_ObjectHideFlags: 0
@@ -13913,6 +13946,7 @@ Transform:
   m_Children:
   - {fileID: 1804754364}
   - {fileID: 176385336}
+  - {fileID: 1267414512}
   - {fileID: 1407330162}
   m_Father: {fileID: 1077171540}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
