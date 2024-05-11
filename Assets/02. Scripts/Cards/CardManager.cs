@@ -29,6 +29,7 @@ public class CardManager : MonoBehaviour
     [SerializeField] public Transform cardResetPoint;
     [SerializeField] public Transform cardDumpPoint;
 
+    // 덱, 묘지
     public List<CardData> deck;
     public List<CardData> dump;
     [SerializeField] TMP_Text deckCountTMP;
@@ -241,19 +242,24 @@ public class CardManager : MonoBehaviour
 
         for(int i = 0; i < dumpCount; i++)
         {
+            // 카드 뒷면 임시 오브젝트 생성해서 리스트에 추가
             cardBacks.Add(Instantiate(cardBackPrefab, cardDumpPoint.position, Utils.QI));
 
+            // 포물선 이동
             Sequence sequence = DOTween.Sequence()
                 .Append(cardBacks[i].transform.DOMoveX(cardResetPoint.position.x, delay05))
                 .Join(cardBacks[i].transform.DOMoveY(cardResetPoint.position.y, delay05)).SetEase(Ease.OutCubic)
                 .Append(cardBacks[i].transform.DOMoveX(cardSpawnPoint.position.x, delay05))
                 .Join(cardBacks[i].transform.DOMoveY(cardSpawnPoint.position.y, delay05)).SetEase(Ease.OutCubic);
 
+            // 각 카드에 딜레이 주기
             yield return new WaitForSeconds(delay01);
         }
 
+        // 전체 애니메이션 종료까지 대기
         yield return new WaitForSeconds(delay05 * 2 + delay01 * dumpCount);
 
+        // 임시 오브젝트 제거
         for (int i = 0; i < dumpCount; i++)
         {
             DestroyImmediate(cardBacks[i].gameObject);
