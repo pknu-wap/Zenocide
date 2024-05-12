@@ -51,15 +51,10 @@ public class CardArrow : MonoBehaviour
 
     public void MoveArrow(Vector2 targetPosition)
     {
-        for(int i = 0; i < numberOfPoints + 1; ++i)
+        for(int i = 1; i < numberOfPoints + 1; ++i)
         {
             // 베지에 곡선 위, 자신의 위치를 찾아 이동한다.
             points[i].transform.position = GetBezierLerp(transform.position, middleTr.position, targetPosition, (float)i / numberOfPoints);
-
-            if(i == 0)
-            {
-                continue;
-            }
 
             // 방향은 자기 자신의 위치 - 이전 포인트의 위치로 결정한다.
             Vector2 delta = points[i].transform.position - points[i - 1].transform.position;

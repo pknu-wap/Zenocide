@@ -80,12 +80,11 @@ public class Card : MonoBehaviour
         }
 
         // 현재 마우스의 위치를 계산한다.
-        Vector3 mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f);
-        Vector3 objPos = Camera.main.ScreenToWorldPoint(mousePos);
+        Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f);
+        Vector3 WorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
 
         // 공격 카드일 경우, 화살표의 끝이 마우스를 향한다.
-        CardArrow.Instance.MoveArrow(objPos);
-        Debug.Log(objPos);
+        CardArrow.Instance.MoveArrow(WorldPosition);
     }
 
     // 드래그가 끝날 때 호출된다.
