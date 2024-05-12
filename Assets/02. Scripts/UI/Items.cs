@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Items : MonoBehaviour
@@ -40,7 +41,6 @@ public class Items : MonoBehaviour
             slot.text = "";
         }
     }
-    
     public void AddItem()
     {
         for (int i = 0; i < slots.Count; i++)
@@ -54,8 +54,7 @@ public class Items : MonoBehaviour
             break;
         }
     }
-
-    private string AddAndRemoveItem()
+    public string AddAndRemoveItem()
     {
         if (items.Count == 0)
             return null;
@@ -63,5 +62,9 @@ public class Items : MonoBehaviour
         string randomItem = items[randomIndex];
         items.RemoveAt(randomIndex);
         return randomItem;
+    }
+    public void DeleteItem()
+    {
+
     }
 }
