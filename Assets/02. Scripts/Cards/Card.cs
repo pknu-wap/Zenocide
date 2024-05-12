@@ -75,6 +75,8 @@ public class Card : MonoBehaviour
         CardManager.Inst.CardMouseExit(this);
     }
 
+    Vector3 arrowOffset = new Vector3(0f, 100f, 3f);
+
     // 드래그가 시작될 때 호출된다.
     public void OnMouseDown()
     {
@@ -92,6 +94,14 @@ public class Card : MonoBehaviour
         // 공격 카드일 경우
         if (isTargetingCard)
         {
+            // 현재 마우스의 위치를 계산한다.
+            Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f);
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+
+            // 표시 전에 위치를 옮겨, 프레임 단위로 이상한 걸 수정
+            CardArrow.Instance.MoveStartPosition(transform.position + arrowOffset);
+            CardArrow.Instance.MoveArrow(worldPosition);
+
             // 화살표를 표시한다.
             CardArrow.Instance.ShowArrow();
 
@@ -118,6 +128,7 @@ public class Card : MonoBehaviour
 
         if (isTargetingCard)
         {
+            CardArrow.Instance.MoveStartPosition(transform.position + arrowOffset);
             // 타겟팅 카드일 경우, 화살표의 끝이 마우스를 향한다.
             CardArrow.Instance.MoveArrow(worldPosition);
         }

@@ -24,7 +24,9 @@ public class CardArrow : MonoBehaviour
     // 끝부분 프리팹
     public GameObject arrow;
     // 베지에 곡선 중간 좌표
-    public Transform middleTr;
+    public Vector3 startPosition;
+    // 베지에 곡선 중간 좌표
+    public Transform middlePosition;
 
     // 마우스 이벤트를 막는 오브젝트
     public GameObject mouseEventBlocker;
@@ -33,6 +35,8 @@ public class CardArrow : MonoBehaviour
 
     public void Start()
     {
+        startPosition = transform.position;
+
         points = new GameObject[numberOfPoints + 1];
 
         // 몸통을 numberOfPoints 개 생성하고
@@ -54,12 +58,20 @@ public class CardArrow : MonoBehaviour
         gameObject.SetActive(true);
     }
 
+    public void MoveStartPosition(Vector2 position)
+    {
+        startPosition = position;
+    }
+
     public void MoveArrow(Vector2 targetPosition)
     {
+        // for문 안에 예외 처리를 하지 않으려 밖으로 뺐다. (회전을 안 주기 위함
+        points[0].transform.position = startPosition;
+
         for(int i = 1; i < numberOfPoints + 1; ++i)
         {
             // 베지에 곡선 위, 자신의 위치를 찾아 이동한다.
-            points[i].transform.position = GetBezierLerp(transform.position, middleTr.position, targetPosition, (float)i / numberOfPoints);
+            points[i].transform.position = GetBezierLerp(startPosition, middlePosition.position, targetPosition, (float)i / numberOfPoints);
 
             // 방향은 자기 자신의 위치 - 이전 포인트의 위치로 결정한다.
             Vector2 delta = points[i].transform.position - points[i - 1].transform.position;

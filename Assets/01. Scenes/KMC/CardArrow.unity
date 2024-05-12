@@ -16617,7 +16617,8 @@ MonoBehaviour:
   space: 0
   point: {fileID: 5461765646220692011, guid: e1d8004099afb354cae0fe71193a1434, type: 3}
   arrow: {fileID: 6675103717197680705, guid: 1970f8f0302e7354d82bbb56f08591ce, type: 3}
-  middleTr: {fileID: 1394622558}
+  startPosition: {x: 0, y: 0, z: 0}
+  middlePosition: {fileID: 1394622558}
   mouseEventBlocker: {fileID: 1045022208}
 --- !u!1001 &2042512022
 PrefabInstance:
