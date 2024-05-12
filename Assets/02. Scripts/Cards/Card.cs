@@ -19,6 +19,7 @@ public class Card : MonoBehaviour
 
     [Header("상태")]
     [SerializeField] bool isDragging = false;
+    [SerializeField] bool isTargetingCard = false;
     public PRS originPRS;
 
     // DOTween 시퀀스
@@ -38,13 +39,14 @@ public class Card : MonoBehaviour
 
         cardOrder = GetComponent<CardOrder>();
         cardCollider = GetComponent<Collider2D>();
+
+        isTargetingCard = CardInfo.Instance.IsTargetingCard(cardData.type);
     }
 
     #region 마우스 상호작용
     // 마우스를 카드 위에 올릴 떄 실행된다.
     void OnMouseEnter()
     {
-        Debug.Log("Enter");
         if (BattleInfo.Inst.isGameOver)
         {
             return;
@@ -59,7 +61,6 @@ public class Card : MonoBehaviour
     // 마우스가 카드를 벗어날 떄 실행된다.
     void OnMouseExit()
     {
-        Debug.Log("Exit");
         if (BattleInfo.Inst.isGameOver)
         {
             return;
@@ -76,33 +77,30 @@ public class Card : MonoBehaviour
     // 드래그가 시작될 때 호출된다.
     public void OnMouseDown()
     {
-        Debug.Log("Down");
         if (BattleInfo.Inst.isGameOver)
         {
             return;
         }
 
-        // 공격 카드일 경우 화살표를 표시한다.
-        CardArrow.Instance.ShowArrow();
-
-        // 공격 카드가 아닐 경우, 아무 일도 하지 않는다.
-
         // 실행 중인 moveSequence가 있다면 종료한다.
         moveSequence.Kill();
 
-        // 중앙에서 포커스시킨다.
-        FocusCardOnCenter();
+        // 다른 카드의 마우스 이벤트를 막는다.
+        CardArrow.Instance.ShowBlocker();
+
+        // 공격 카드일 경우
+        if (isTargetingCard)
+        {
+            // 화살표를 표시한다.
+            CardArrow.Instance.ShowArrow();
+
+            // 중앙에서 포커스시킨다.
+            FocusCardOnCenter();
+        }
+        // 공격 카드가 아닐 경우, 아무 일도 하지 않는다. (카드가 마우스를 따라감)
 
         // 드래그 중임을 표시
         isDragging = true;
-    }
-
-    // 카드를 중앙에서 강조한다.
-    void FocusCardOnCenter()
-    {
-        MoveTransform(new PRS(CardManager.Inst.focusPos, Utils.QI, originPRS.scale * 1.2f), true, dotweenTime);
-
-        cardOrder.SetMostFrontOrder(true);
     }
 
     // 드래그 중일 때 계속 호출된다.
@@ -115,23 +113,37 @@ public class Card : MonoBehaviour
 
         // 현재 마우스의 위치를 계산한다.
         Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f);
-        Vector3 WorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
 
-        // 공격 카드일 경우, 화살표의 끝이 마우스를 향한다.
-        CardArrow.Instance.MoveArrow(WorldPosition);
+        if (isTargetingCard)
+        {
+            // 타겟팅 카드일 경우, 화살표의 끝이 마우스를 향한다.
+            CardArrow.Instance.MoveArrow(worldPosition);
+        }
+        else
+        {
+            // 논타겟팅 카드는 카드가 마우스를 부드럽게 따라다닌다.
+            //transform.position = worldPosition;
+            transform.position = Vector2.Lerp(transform.position, worldPosition, 0.06f);
+        }
     }
 
     // 드래그가 끝날 때 호출된다.
     public void OnMouseUp()
     {
-        Debug.Log("Up");
         if (BattleInfo.Inst.isGameOver)
         {
             return;
         }
 
-        // 화살표를 숨긴다.
-        CardArrow.Instance.HideArrow();
+        if (isTargetingCard)
+        {
+            // 화살표를 숨긴다.
+            CardArrow.Instance.HideArrow();
+        }
+
+        // 다른 카드가 마우스 이벤트를 받게 한다.
+        CardArrow.Instance.HideBlocker();
 
         // 드래그가 끝남을 표시
         isDragging = false;
@@ -174,7 +186,7 @@ public class Card : MonoBehaviour
 
         // 이제 공격 타겟을 정해야 한다.
         // 적 오브젝트를 선택하는 카드라면
-        if (layer == LayerMask.GetMask("Enemy"))
+        if (isTargetingCard)
         {
             // 적 오브젝트의 Character 스크립트를 가져오고
             selectedCharacter = selectedObject.GetComponent<Character>();
@@ -186,14 +198,13 @@ public class Card : MonoBehaviour
             selectedCharacter = Player.Instance;
         }
 
-        // 카드를 발동한다. 공격 카드일 경우 선택된 적에게 발동한다.
+        // 카드를 발동한다.
         CardInfo.Instance.effects[(int)cardData.type](cardData.amount, cardData.turnCount, selectedCharacter);
         // 코스트를 감소시킨다.
         BattleInfo.Inst.UseCost(cardData.cost);
 
         // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
         cardCollider.enabled = false;
-        // 카드 스폰 위치로 날아가게 변경. 나중에 묘지로도 바꿔야 한다. -> 바꿨다
         // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
         moveSequence = DOTween.Sequence()
             .Append(transform.DOMove(CardManager.Inst.cardDumpPoint.position, dotweenTime))
@@ -255,6 +266,14 @@ public class Card : MonoBehaviour
             transform.rotation = destPRS.rot;
             transform.localScale = destPRS.scale;
         }
+    }
+
+    // 카드를 중앙에서 강조한다.
+    void FocusCardOnCenter()
+    {
+        MoveTransform(new PRS(CardManager.Inst.focusPos, Utils.QI, originPRS.scale * 1.2f), true, dotweenTime);
+
+        cardOrder.SetMostFrontOrder(true);
     }
     #endregion 애니메이션
 }

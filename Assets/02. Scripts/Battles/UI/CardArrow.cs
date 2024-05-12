@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -25,6 +26,9 @@ public class CardArrow : MonoBehaviour
     // 베지에 곡선 중간 좌표
     public Transform middleTr;
 
+    // 마우스 이벤트를 막는 오브젝트
+    public GameObject mouseEventBlocker;
+
     // 부모 화살표 오브젝트, 시작 위치는 transform을 기준으로 한다.
 
     public void Start()
@@ -46,6 +50,7 @@ public class CardArrow : MonoBehaviour
 
     public void ShowArrow()
     {
+        ShowBlocker();
         gameObject.SetActive(true);
     }
 
@@ -67,6 +72,7 @@ public class CardArrow : MonoBehaviour
     public void HideArrow()
     {
         gameObject.SetActive(false);
+        HideBlocker();
     }
 
     Vector2 GetBezierLerp(Vector2 start, Vector2 middle, Vector2 end, float t)
@@ -77,4 +83,16 @@ public class CardArrow : MonoBehaviour
             + t * t * end;
     }
     #endregion 화살표 생성
+
+    #region 이벤트 블로커
+    public void ShowBlocker()
+    {
+        mouseEventBlocker.SetActive(true);
+    }
+
+    public void HideBlocker()
+    {
+        mouseEventBlocker.SetActive(false);
+    }
+    #endregion 이벤트 블로커
 }
