@@ -18,7 +18,7 @@ public class Card : MonoBehaviour
     [SerializeField] Collider2D cardCollider;
 
     [Header("상태")]
-    [SerializeField] bool isDragging;
+    [SerializeField] bool isDragging = false;
     public PRS originPRS;
 
     // DOTween 시퀀스
@@ -51,6 +51,9 @@ public class Card : MonoBehaviour
         }
 
         CardManager.Inst.CardMouseEnter(this);
+
+        // 실행 중인 moveSequence가 있다면 종료한다.
+        moveSequence.Kill();
     }
 
     // 마우스가 카드를 벗어날 떄 실행된다.
@@ -84,9 +87,13 @@ public class Card : MonoBehaviour
 
         // 공격 카드가 아닐 경우, 아무 일도 하지 않는다.
 
+        // 실행 중인 moveSequence가 있다면 종료한다.
+        moveSequence.Kill();
+
         // 중앙에서 포커스시킨다.
         FocusCardOnCenter();
 
+        // 드래그 중임을 표시
         isDragging = true;
     }
 
@@ -126,10 +133,11 @@ public class Card : MonoBehaviour
         // 화살표를 숨긴다.
         CardArrow.Instance.HideArrow();
 
+        // 드래그가 끝남을 표시
+        isDragging = false;
+
         // 카드를 사용한다.
         UseCard();
-
-        isDragging = false;
     }
     #endregion 마우스 상호작용
 
@@ -226,6 +234,12 @@ public class Card : MonoBehaviour
     #region 애니메이션
     public void MoveTransform(PRS destPRS, bool useDotween, float dotweenTime = 0)
     {
+        // 드래그 중엔 실행되지 않게 해 부자연스러운 움직임을 방지한다.
+        if (isDragging == true)
+        {
+            return;
+        }
+
         if (useDotween)
         {
             // moveSequence에 위치, 회전, 스케일을 조정하는 DOTween을 연결했다.
