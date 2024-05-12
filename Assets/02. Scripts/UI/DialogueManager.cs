@@ -5,6 +5,7 @@ using System.Collections;
 using System.IO;
 using TMPro;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 
 public class DialogueManager : MonoBehaviour, IPointerDownHandler
@@ -34,9 +35,12 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
       
     public string[] StoryText;                  //Story Text 배열
     public string[] StoryName;                  //Story Name 배열
-      
+    public string[] ChoiceUpContent;            //Choice Text 배열
+    public string[] ChoiceDownContent;          //Choice Text 배열
+
     public int currentLine;                     //현재 출력 중인 문자열 위치
-      
+    public int currentChoice;                   //현재 선택지 위치
+
     private bool isTyping = false;              //타이핑 효과 진행 여부 확인 변수
     private bool cancelTyping = false;          //사용자의 입력으로 인한 출력 취소 확인 변수
 
@@ -82,7 +86,8 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
 
         dialogueName.text = StoryName[currentLine];
 
-        if(StoryName[currentLine][0] == '*'){
+        if(dialogueName.text == "#")
+        {
             Selection();
         }
         else
@@ -123,18 +128,18 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         Dialogue.SetActive(false);
         ChoiceUp.SetActive(true);
         ChoiceDown.SetActive(true);
-        ChoiceUpText.text = StoryName[currentLine].Substring(1);
-        ChoiceDownText.text = StoryText[currentLine].Substring(1);
+        ChoiceUpText.text   = ChoiceUpContent[currentChoice];
+        ChoiceDownText.text = ChoiceDownContent[currentChoice];
         if(Items.items.Find(x => x == "총") != null){
         
         ChoiceDownRequireText.text = "필요한 아이템: <color=red>총</color>";
         
         }
         else{
-
-        ChoiceDownRequireText.text = "필요한 아이템: 총";
-
+        ChoiceDownRequireText.text = "필요한 아이템: <color=green>총</color>/보상: 빵";
+        //Items.AddItem("빵");
         }
+        currentChoice++;
     }
 
     //초기 대화창 표시 함수
@@ -148,25 +153,25 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
     //Text 파일 불러오는 함수
     void LoadDialogue()
     {
-        TextAsset asset = Resources.Load ("StoryScript")as TextAsset;
+        List<Dictionary<string, object>> data_Dialog = CSVReader.Read("StoryScript");
 
-        string Story = asset.text;
+        StoryName = new string[data_Dialog.Count];
+        StoryText = new string[data_Dialog.Count];
+        ChoiceUpContent = new string[data_Dialog.Count];
+        ChoiceDownContent = new string[data_Dialog.Count];
 
-        StringReader reader = new StringReader(Story);
-
-        string fileContent = reader.ReadToEnd();
-
-        StoryText = fileContent.Split('\n');
-
-        StoryName = new string[StoryText.Length];
-
-        for (int i = 0; i < StoryText.Length; i++)
+        int ChoiceLines = 0;
+        for (int i = 0; i < data_Dialog.Count; i++)
         {
-            string[] Temp = StoryText[i].Split('#');
-            StoryText[i] = Temp[1]; //대화 내용 Text
-            StoryName[i] = Temp[0]; //대화 중인 캐릭터 이름 Text
+            if(data_Dialog[i]["Name"].ToString() == "#")
+            {
+                ChoiceUpContent[ChoiceLines]   = data_Dialog[i]["Text1"].ToString();
+                ChoiceDownContent[ChoiceLines] = data_Dialog[i]["Text2"].ToString();
+                ChoiceLines++;
+            }
+                StoryText[i] = data_Dialog[i]["Text1"].ToString();  //대화 내용 Text
+                StoryName[i] = data_Dialog[i]["Name"].ToString();   //대화 중인 캐릭터 이름 Text
         }
 
-        reader.Close();
     }
 }

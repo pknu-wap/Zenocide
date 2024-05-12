@@ -1,11 +1,5 @@
 using UnityEngine;
 
-public enum ChoiceType
-{
-    Up,
-    Down
-}
-
 public class SelectManager : MonoBehaviour
 {
     public static SelectManager instance;
@@ -14,9 +8,6 @@ public class SelectManager : MonoBehaviour
     public GameObject UpSignRight;           //위 선택지 선택 표시(오른쪽)
     public GameObject DownSignLeft;          //아래 선택지 선택 표시(왼쪽)
     public GameObject DownSignRight;         //아래 선택지 선택 표시(오른쪽)
-
-    public GameObject ChoiceBoxUp;
-    public GameObject ChoiceBoxDown;
 
     public GameObject ChoiceUp;
     public GameObject ChoiceDown;
@@ -31,6 +22,7 @@ public class SelectManager : MonoBehaviour
     }
 
     public Choice currentChoice;
+    public bool Selected = false;
 
     void Start(){
         UpSignLeft.SetActive(false);
@@ -46,6 +38,7 @@ public class SelectManager : MonoBehaviour
                 ChoiceUp.SetActive(false);
                 ChoiceDown.SetActive(false);
                 Dialogue.SetActive(true);
+                Selected = true;
             }
             
             if (currentChoice.name == "ChoiceBoxUp")
