@@ -25,7 +25,8 @@ public class Card : MonoBehaviour
     // DOTween 시퀀스
     Sequence moveSequence;
     Sequence disappearSequence;
-    float dotweenTime = 0.3f;
+    [SerializeField] float dotweenTime = 0.4f;
+    [SerializeField] float focusTime = 0.4f;
     #endregion 변수
 
     public void Setup(CardData item)
@@ -123,7 +124,6 @@ public class Card : MonoBehaviour
         else
         {
             // 논타겟팅 카드는 카드가 마우스를 부드럽게 따라다닌다.
-            //transform.position = worldPosition;
             transform.position = Vector2.Lerp(transform.position, worldPosition, 0.06f);
         }
     }
@@ -203,17 +203,41 @@ public class Card : MonoBehaviour
         // 코스트를 감소시킨다.
         BattleInfo.Inst.UseCost(cardData.cost);
 
-        // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
-        cardCollider.enabled = false;
-        // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
-        moveSequence = DOTween.Sequence()
-            .Append(transform.DOMove(CardManager.Inst.cardDumpPoint.position, dotweenTime))
-            .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
-            .Join(transform.DOScale(Vector3.one, dotweenTime))
-            .OnComplete(() => {
-                CardManager.Inst.DiscardCard(this);
-                cardCollider.enabled = true;
-            }); // 애니메이션 끝나면 패에서 삭제
+        if (isTargetingCard)
+        {
+            // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
+            cardCollider.enabled = false;
+            // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
+            moveSequence = DOTween.Sequence()
+                .Append(transform.DOMove(CardManager.Inst.cardDumpPoint.position, dotweenTime))
+                .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
+                .Join(transform.DOScale(Vector3.one, dotweenTime))
+                .OnComplete(() => {
+                    CardManager.Inst.DiscardCard(this);
+                    cardCollider.enabled = true;
+                }); // 애니메이션 끝나면 패에서 삭제
+        }
+        else
+        {
+            // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
+            cardCollider.enabled = false;
+            // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
+            moveSequence = DOTween.Sequence()
+                // 중앙으로 이동하고
+                .Append(transform.DOMove(Vector3.zero, dotweenTime))
+                .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
+                .Join(transform.DOScale(originPRS.scale * 1.2f, dotweenTime))
+                // 1초간 정지
+                .AppendInterval(focusTime)
+                // 묘지로 이동한다.
+                .Append(transform.DOMove(CardManager.Inst.cardDumpPoint.position, dotweenTime))
+                .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
+                .Join(transform.DOScale(Vector3.one, dotweenTime))
+                .OnComplete(() => {
+                    CardManager.Inst.DiscardCard(this);
+                    cardCollider.enabled = true;
+                }); // 애니메이션 끝나면 패에서 삭제
+        }
     }
 
     // 카드 발동을 취소한다.
