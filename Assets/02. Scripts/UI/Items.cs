@@ -1,39 +1,41 @@
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Items : MonoBehaviour
 {
-    public static Items Inst {get; private set;}
-    private void Awake() => Inst = this;
+    public static Items instance {get; private set;}
+    private void Awake() => instance = this;
 
-    public List<string> items = new List<string>();
+    public static List<string> items = new List<string>();
     public List<TMP_Text> slots = new List<TMP_Text>();
+    
     void Start()
     {
         slots = transform.GetChild(1).GetChild(0).GetChild(0).GetComponentsInChildren<TMP_Text>().ToList();
-        items.Add("¹è°íÇÄ");
-        items.Add("¹«±â");
-        items.Add("±Ù·Â");
-        items.Add("¼Óµµ");
-        items.Add("»§");
-        items.Add("°¥Áõ");
-        items.Add("Åä¸¶Åä ÅëÁ¶¸²");
-        items.Add("²ÇÄ¡ ÅëÁ¶¸²");
-        items.Add("Ã¶ÇĞ");
-        items.Add("Ã¥");
-        items.Add("ºØ´ë");
-        items.Add("ÁøÅëÁ¦");
-        items.Add("ÃâÇ÷");
-        items.Add("¹ö¼¸");
-        items.Add("ÃÖ»óÀÇ ½Ä»ç");
-        items.Add("³Ãµ¿ »ï°ã»ì");
-        items.Add("¿µ¾î ½Ç·Â");
-        items.Add("¸¶Ã¼Å×");
-        items.Add("ÃÑ");
-        items.Add("ÃÑ¾Ë");
-        items.Add("¿ì¿ïÁõ");
+        items.Add("ë°°ê³ í””");
+        items.Add("ë¬´ê¸°");
+        items.Add("ê·¼ë ¥");
+        items.Add("ì†ë„");
+        items.Add("ë¹µ");
+        items.Add("ê°ˆì¦");
+        items.Add("í† ë§ˆí†  í†µì¡°ë¦¼");
+        items.Add("ê½ì¹˜ í†µì¡°ë¦¼");
+        items.Add("ì² í•™");
+        items.Add("ì±…");
+        items.Add("ë¶•ëŒ€");
+        items.Add("ì§„í†µì œ");
+        items.Add("ì¶œí˜ˆ");
+        items.Add("ë²„ì„¯");
+        items.Add("ìµœìƒì˜ ì‹ì‚¬");
+        items.Add("ëƒ‰ë™ ì‚¼ê²¹ì‚´");
+        items.Add("ì˜ì–´ ì‹¤ë ¥");
+        items.Add("ë§ˆì²´í…Œ");
+        items.Add("ì´");
+        items.Add("ì´ì•Œ");
+        items.Add("ìš°ìš¸ì¦");
         foreach (TMP_Text slot in slots)
         {
             slot.text = "";
@@ -52,7 +54,7 @@ public class Items : MonoBehaviour
             break;
         }
     }
-    private string AddAndRemoveItem()
+    public string AddAndRemoveItem()
     {
         if (items.Count == 0)
             return null;
@@ -60,5 +62,9 @@ public class Items : MonoBehaviour
         string randomItem = items[randomIndex];
         items.RemoveAt(randomIndex);
         return randomItem;
+    }
+    public void DeleteItem()
+    {
+
     }
 }

@@ -58,12 +58,16 @@ public class CardManager : MonoBehaviour
         }
     }
 
+    public Vector3 focusPos;
+
     void Start()
     {
         SetUpDeck();
         dump = new List<CardData>(100);
         // 왜 싱글톤에서 호출하지 않고 Action으로 호출할까,,,,
         TurnManager.OnAddCard += AddCardToHand;
+
+        focusPos = new Vector3(0f, handLeft.position.y + focusOffset, -3f);
     }
 
     void OnDestroy()

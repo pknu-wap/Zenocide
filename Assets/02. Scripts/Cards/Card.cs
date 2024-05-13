@@ -14,13 +14,19 @@ public class Card : MonoBehaviour
     [SerializeField] TMP_Text nameTMP;
     [SerializeField] TMP_Text costTMP;
     [SerializeField] TMP_Text descriptionTMP;
+    [SerializeField] CardOrder cardOrder;
+    [SerializeField] Collider2D cardCollider;
 
+    [Header("상태")]
+    [SerializeField] bool isDragging = false;
+    [SerializeField] bool isTargetingCard = false;
     public PRS originPRS;
 
     // DOTween 시퀀스
     Sequence moveSequence;
     Sequence disappearSequence;
-    float dotweenTime = 0.3f;
+    [SerializeField] float dotweenTime = 0.4f;
+    [SerializeField] float focusTime = 0.4f;
     #endregion 변수
 
     public void Setup(CardData item)
@@ -31,6 +37,11 @@ public class Card : MonoBehaviour
         nameTMP.text = cardData.name;
         costTMP.text = cardData.cost.ToString();
         descriptionTMP.text = cardData.description;
+
+        cardOrder = GetComponent<CardOrder>();
+        cardCollider = GetComponent<Collider2D>();
+
+        isTargetingCard = CardInfo.Instance.IsTargetingCard(cardData.type);
     }
 
     #region 마우스 상호작용
@@ -43,6 +54,9 @@ public class Card : MonoBehaviour
         }
 
         CardManager.Inst.CardMouseEnter(this);
+
+        // 실행 중인 moveSequence가 있다면 종료한다.
+        moveSequence.Kill();
     }
 
     // 마우스가 카드를 벗어날 떄 실행된다.
@@ -53,8 +67,15 @@ public class Card : MonoBehaviour
             return;
         }
 
+        if(isDragging == true)
+        {
+            return;
+        }
+
         CardManager.Inst.CardMouseExit(this);
     }
+
+    Vector3 arrowOffset = new Vector3(0f, 100f, 3f);
 
     // 드래그가 시작될 때 호출된다.
     public void OnMouseDown()
@@ -64,10 +85,33 @@ public class Card : MonoBehaviour
             return;
         }
 
-        // 공격 카드일 경우 화살표를 표시한다.
+        // 실행 중인 moveSequence가 있다면 종료한다.
+        moveSequence.Kill();
 
-        // 공격 카드가 아닐 경우, 아무 일도 하지 않는다.
-        //CardManager.Inst.CardMouseDown();
+        // 다른 카드의 마우스 이벤트를 막는다.
+        CardArrow.Instance.ShowBlocker();
+
+        // 공격 카드일 경우
+        if (isTargetingCard)
+        {
+            // 현재 마우스의 위치를 계산한다.
+            Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f);
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+
+            // 표시 전에 위치를 옮겨, 프레임 단위로 이상한 걸 수정
+            CardArrow.Instance.MoveStartPosition(transform.position + arrowOffset);
+            CardArrow.Instance.MoveArrow(worldPosition);
+
+            // 화살표를 표시한다.
+            CardArrow.Instance.ShowArrow();
+
+            // 중앙에서 포커스시킨다.
+            FocusCardOnCenter();
+        }
+        // 공격 카드가 아닐 경우, 아무 일도 하지 않는다. (카드가 마우스를 따라감)
+
+        // 드래그 중임을 표시
+        isDragging = true;
     }
 
     // 드래그 중일 때 계속 호출된다.
@@ -78,13 +122,21 @@ public class Card : MonoBehaviour
             return;
         }
 
-        // 공격 카드일 경우, 화살표의 끝이 마우스를 향한다.
+        // 현재 마우스의 위치를 계산한다.
+        Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f);
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
 
-        // 임시로 카드가 마우스를 따라가게 해봤다.
-        Vector3 mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f);
-        Vector3 objPos = Camera.main.ScreenToWorldPoint(mousePos);
-
-        transform.position = objPos;
+        if (isTargetingCard)
+        {
+            CardArrow.Instance.MoveStartPosition(transform.position + arrowOffset);
+            // 타겟팅 카드일 경우, 화살표의 끝이 마우스를 향한다.
+            CardArrow.Instance.MoveArrow(worldPosition);
+        }
+        else
+        {
+            // 논타겟팅 카드는 카드가 마우스를 부드럽게 따라다닌다.
+            transform.position = Vector2.Lerp(transform.position, worldPosition, 0.06f);
+        }
     }
 
     // 드래그가 끝날 때 호출된다.
@@ -95,6 +147,18 @@ public class Card : MonoBehaviour
             return;
         }
 
+        if (isTargetingCard)
+        {
+            // 화살표를 숨긴다.
+            CardArrow.Instance.HideArrow();
+        }
+
+        // 다른 카드가 마우스 이벤트를 받게 한다.
+        CardArrow.Instance.HideBlocker();
+
+        // 드래그가 끝남을 표시
+        isDragging = false;
+
         // 카드를 사용한다.
         UseCard();
     }
@@ -104,14 +168,14 @@ public class Card : MonoBehaviour
     // 카드 발동 후 선택된 오브젝트
     public Character selectedCharacter;
 
-    // 카드를 사용한다.
+    // 카드를 사용한다. (마우스가 놓아지는 시점에 호출)
     private void UseCard()
     {
         // 코스트가 모자란 경우
         if (BattleInfo.Inst.CanUseCost(cardData.cost) == false)
         {
             // 카드 발동을 취소한다.
-            MoveTransform(originPRS, true, 0.5f);
+            CancelUsingCard();
 
             return;
         }
@@ -126,14 +190,14 @@ public class Card : MonoBehaviour
         if (selectedObject == null)
         {
             // 카드 발동을 취소한다.
-            MoveTransform(originPRS, true, 0.5f);
+            CancelUsingCard();
 
             return;
         }
 
         // 이제 공격 타겟을 정해야 한다.
         // 적 오브젝트를 선택하는 카드라면
-        if (layer == LayerMask.GetMask("Enemy"))
+        if (isTargetingCard)
         {
             // 적 오브젝트의 Character 스크립트를 가져오고
             selectedCharacter = selectedObject.GetComponent<Character>();
@@ -145,21 +209,54 @@ public class Card : MonoBehaviour
             selectedCharacter = Player.Instance;
         }
 
-        // 카드를 발동한다. 공격 카드일 경우 선택된 적에게 발동한다.
+        // 카드를 발동한다.
         CardInfo.Instance.effects[(int)cardData.type](cardData.amount, cardData.turnCount, selectedCharacter);
         // 코스트를 감소시킨다.
         BattleInfo.Inst.UseCost(cardData.cost);
 
-        // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
-        // 카드 스폰 위치로 날아가게 변경. 나중에 묘지로도 바꿔야 한다. -> 바꿨다
-        // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
-        moveSequence = DOTween.Sequence()
-            .Append(transform.DOMove(CardManager.Inst.cardDumpPoint.position, dotweenTime))
-            .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
-            .Join(transform.DOScale(Vector3.one, dotweenTime))
-            .OnComplete(() => CardManager.Inst.DiscardCard(this)); // 애니메이션 끝나면 패에서 삭제
+        if (isTargetingCard)
+        {
+            // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
+            cardCollider.enabled = false;
+            // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
+            moveSequence = DOTween.Sequence()
+                .Append(transform.DOMove(CardManager.Inst.cardDumpPoint.position, dotweenTime))
+                .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
+                .Join(transform.DOScale(Vector3.one, dotweenTime))
+                .OnComplete(() => {
+                    CardManager.Inst.DiscardCard(this);
+                    cardCollider.enabled = true;
+                }); // 애니메이션 끝나면 패에서 삭제
+        }
+        else
+        {
+            // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
+            cardCollider.enabled = false;
+            // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
+            moveSequence = DOTween.Sequence()
+                // 중앙으로 이동하고
+                .Append(transform.DOMove(Vector3.zero, dotweenTime))
+                .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
+                .Join(transform.DOScale(originPRS.scale * 1.2f, dotweenTime))
+                // 1초간 정지
+                .AppendInterval(focusTime)
+                // 묘지로 이동한다.
+                .Append(transform.DOMove(CardManager.Inst.cardDumpPoint.position, dotweenTime))
+                .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
+                .Join(transform.DOScale(Vector3.one, dotweenTime))
+                .OnComplete(() => {
+                    CardManager.Inst.DiscardCard(this);
+                    cardCollider.enabled = true;
+                }); // 애니메이션 끝나면 패에서 삭제
+        }
     }
 
+    // 카드 발동을 취소한다.
+    void CancelUsingCard()
+    {
+        MoveTransform(originPRS, true, 0.5f);
+        cardOrder.SetMostFrontOrder(false);
+    }
     // 클릭된(드래그 후 마우스를 뗀 순간) 오브젝트를 가져온다.
     GameObject GetClickedObject(LayerMask layer)
     {
@@ -183,6 +280,12 @@ public class Card : MonoBehaviour
     #region 애니메이션
     public void MoveTransform(PRS destPRS, bool useDotween, float dotweenTime = 0)
     {
+        // 드래그 중엔 실행되지 않게 해 부자연스러운 움직임을 방지한다.
+        if (isDragging == true)
+        {
+            return;
+        }
+
         if (useDotween)
         {
             // moveSequence에 위치, 회전, 스케일을 조정하는 DOTween을 연결했다.
@@ -198,6 +301,14 @@ public class Card : MonoBehaviour
             transform.rotation = destPRS.rot;
             transform.localScale = destPRS.scale;
         }
+    }
+
+    // 카드를 중앙에서 강조한다.
+    void FocusCardOnCenter()
+    {
+        MoveTransform(new PRS(CardManager.Inst.focusPos, Utils.QI, originPRS.scale * 1.2f), true, dotweenTime);
+
+        cardOrder.SetMostFrontOrder(true);
     }
     #endregion 애니메이션
 }
