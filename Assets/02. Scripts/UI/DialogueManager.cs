@@ -5,69 +5,57 @@ using System.Collections;
 using System.IO;
 using TMPro;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 
 public class DialogueManager : MonoBehaviour, IPointerDownHandler
 {
 
-    public TMP_Text dialogueText;        //Story Text
-    public TMP_Text dialogueName;        //Story Name
-    public TMP_Text ChoiceUpText;        //Up Selection Text
-    public TMP_Text ChoiceDownText;      //Down Selection Text
+    public TMP_Text dialogueText;               //Story Text
+    public TMP_Text dialogueName;               //Story Name
 
-    public GameObject dialogueBox;       //전체 Canvas
+    public TMP_Text ChoiceUpText;               //Up Selection Text
+    public TMP_Text ChoiceDownText;             //Down Selection Text
 
-    public GameObject Dialogue;          //대화창
+    public TMP_Text ChoiceUpRequireText;        //Up Selection Text
+    public TMP_Text ChoiceDownRequireText;      //Down Selection Text
 
-    public GameObject ChoiceUp;          //위 선택지 표시
-    public GameObject ChoiceDown;         //아래 선택지 표시
+    public GameObject dialogueBox;              //전체 Canvas
 
-    public GameObject WaitCursor;        //다음 Text 대기 표시 커서
+    public GameObject Dialogue;                 //대화창
+
+    public GameObject ChoiceUp;                 //위 선택지 표시
+    public GameObject ChoiceDown;               //아래 선택지 표시
+
+    public GameObject WaitCursor;               //다음 대화를 위한 사용자 입력 대기 커서
       
-    public Image dialogueImage;          //일러스트
+    public Image dialogueImage;                 //일러스트
           
-    public Sprite[] dialogueImages;      //일러스트 목록
+    public Sprite[] dialogueImages;             //일러스트 목록
       
-    public string[] StoryText;           //Story Text 배열
-    public string[] StoryName;           //Story Name 배열
-      
-    public int currentLine;              //현재 출력 중인 문자열 위치
-      
-    private bool isTyping = false;       //타이핑 효과 진행 여부 확인 변수
-    private bool cancelTyping = false;   //
+    public string[] StoryText;                  //Story Text 배열
+    public string[] StoryName;                  //Story Name 배열
+    public string[] ChoiceUpContent;            //Choice Text 배열
+    public string[] ChoiceDownContent;          //Choice Text 배열
 
-    private bool isSelection = false;    //선택지 진행 여부 확인 변수
-    private bool isEnd = false;          //대화 종료 여부 확인 변수
+    public int currentLine;                     //현재 출력 중인 문자열 위치
+    public int currentChoice;                   //현재 선택지 위치
+
+    private bool isTyping = false;              //타이핑 효과 진행 여부 확인 변수
+    private bool cancelTyping = false;          //사용자의 입력으로 인한 출력 취소 확인 변수
 
     void Start()
     {
-        dialogueBox.SetActive(false);    //시작 시 Canvas 전체 비활성화
-        ChoiceUp.SetActive(false);      //시작 시 선택지 비활성화
+        dialogueBox.SetActive(false);           //시작 시 Canvas 전체 비활성화
+        ChoiceUp.SetActive(false);              //시작 시 선택지 비활성화
         ChoiceDown.SetActive(false);    
-        LoadDialogue();                  //Story Name,Text 불러오기
-        ShowDialogue();                  //이미지와 전체 Canvas 표시
+        LoadDialogue();                         //Story Name,Text 불러오기
+        ShowDialogue();                         //이미지와 전체 Canvas 표시
     }
 
     void Update()
     {
-        if(!isEnd)
-        {
-            if(ChoiceUp.GetComponent<Choice>().isClicked){
-                    Dialogue.SetActive(true);
-                    ChoiceUp.SetActive(false);
-                    ChoiceDown.SetActive(false);
-                    StartCoroutine(TypeSentence("무사히 좀비를 피해 도망갔다."));
-                    isEnd = true;
-                }
-            if(ChoiceDown.GetComponent<Choice>().isClicked){
-                Dialogue.SetActive(true);
-                ChoiceUp.SetActive(false);
-                ChoiceDown.SetActive(false);
-                StartCoroutine(TypeSentence("좀비와 맞서 싸우게 된다."));
-                isEnd = true;
-                }
-        }
-        
+   
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -98,26 +86,20 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
 
         dialogueName.text = StoryName[currentLine];
 
-        if(StoryName[currentLine][0] == '*'){
-            isSelection = true;
-            dialogueText.text = "....";
-            dialogueName.text = "";
-            Dialogue.SetActive(false);
-            ChoiceUp.SetActive(true);
-            ChoiceDown.SetActive(true);
-            ChoiceUpText.text = StoryName[currentLine].Substring(1);
-            ChoiceDownText.text = StoryText[currentLine].Substring(1);
+        if(dialogueName.text == "#")
+        {
+            Selection();
         }
         else
         {
-            // 이미지 변경
+            //이미지 변경
             dialogueImage.sprite = dialogueImages[IllustTable[dialogueName.text]];
             StartCoroutine(TypeSentence(StoryText[currentLine]));
         }
 
     }
 
-    //Story Text에 타이핑 효과 추가하는 함수
+    //Story Text 출력 함수
     IEnumerator TypeSentence(string sentence)
     {
         isTyping = true;
@@ -135,45 +117,61 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
             }
         }
         isTyping = false;
-        float textWidth = dialogueText.preferredWidth;
-        Vector3 newPosition = dialogueText.transform.position + new Vector3(textWidth,0,0);
-        WaitCursor.transform.position = newPosition;
         WaitCursor.SetActive(true);
         cancelTyping = false;
     }
 
-    //초기 화면 표시
+    void Selection()
+    {
+        dialogueText.text = "....";
+        dialogueName.text = "";
+        Dialogue.SetActive(false);
+        ChoiceUp.SetActive(true);
+        ChoiceDown.SetActive(true);
+        ChoiceUpText.text   = ChoiceUpContent[currentChoice];
+        ChoiceDownText.text = ChoiceDownContent[currentChoice];
+        if(Items.items.Find(x => x == "총") != null){
+        
+        ChoiceDownRequireText.text = "필요한 아이템: <color=red>총</color>";
+        
+        }
+        else{
+        ChoiceDownRequireText.text = "필요한 아이템: <color=green>총</color>/보상: 빵";
+        //Items.AddItem("빵");
+        }
+        currentChoice++;
+    }
+
+    //초기 대화창 표시 함수
     public void ShowDialogue()
     {
         currentLine = -1;
         dialogueBox.SetActive(true);
-        // 이미지 초기화
         dialogueImage.sprite = dialogueImages[0];
     }
 
-    //TXT 파일에서 Story Text, Name 불러오는 함수
+    //Text 파일 불러오는 함수
     void LoadDialogue()
     {
-        //파일 저장 경로
-        TextAsset asset = Resources.Load ("StoryScript")as TextAsset;
+        List<Dictionary<string, object>> data_Dialog = CSVReader.Read("StoryScript");
 
-        string Story = asset.text;
+        StoryName = new string[data_Dialog.Count];
+        StoryText = new string[data_Dialog.Count];
+        ChoiceUpContent = new string[data_Dialog.Count];
+        ChoiceDownContent = new string[data_Dialog.Count];
 
-        StringReader reader = new StringReader(Story);
-
-        string fileContent = reader.ReadToEnd();
-
-        StoryText = fileContent.Split('\n');
-
-        StoryName = new string[StoryText.Length];
-
-        for (int i = 0; i < StoryText.Length; i++)
+        int ChoiceLines = 0;
+        for (int i = 0; i < data_Dialog.Count; i++)
         {
-            string[] Temp = StoryText[i].Split('#');
-            StoryText[i] = Temp[1]; // 대화 문장 저장
-            StoryName[i] = Temp[0]; // 대화 이름 저장
+            if(data_Dialog[i]["Name"].ToString() == "#")
+            {
+                ChoiceUpContent[ChoiceLines]   = data_Dialog[i]["Text1"].ToString();
+                ChoiceDownContent[ChoiceLines] = data_Dialog[i]["Text2"].ToString();
+                ChoiceLines++;
+            }
+                StoryText[i] = data_Dialog[i]["Text1"].ToString();  //대화 내용 Text
+                StoryName[i] = data_Dialog[i]["Name"].ToString();   //대화 중인 캐릭터 이름 Text
         }
 
-        reader.Close();
     }
 }
