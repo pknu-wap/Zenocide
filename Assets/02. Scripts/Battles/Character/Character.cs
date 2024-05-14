@@ -59,15 +59,15 @@ public class Character : MonoBehaviour
     public virtual void Awake()
     {
         // HP 바
-        hpBar = transform.GetChild(1).GetChild(0).GetChild(0).GetChild(0).GetComponent<Image>();
-        hpText = transform.GetChild(1).GetChild(0).GetChild(0).GetChild(1).GetComponent<TMP_Text>();
+        hpBar = transform.GetChild(0).GetChild(1).GetChild(0).GetChild(0).GetComponent<Image>();
+        hpText = hpBar.transform.GetChild(0).GetComponent<TMP_Text>();
 
         // 디버프 효과들(내부 데이터)을 담아둘 리스트
         debuffs = new List<BleedEffect>();
         debuffIcons = new List<DebuffIconComponent>();
 
         // 디버프 아이콘들의 부모 컨테이너
-        debuffIconContainer = transform.GetChild(1).GetChild(0).GetChild(1);
+        debuffIconContainer = transform.GetChild(0).GetChild(1).GetChild(1);
         // debuffIconContainer의 모든 자식 오브젝트를 비활성화. (자식의 자식은 X)
         foreach (Transform icon in debuffIconContainer)
         {
@@ -78,7 +78,7 @@ public class Character : MonoBehaviour
         }
 
         // 디버프 상세정보창을 불러온다. (더미, 행동정보창 제외)
-        statusPanel = transform.GetChild(1).GetChild(1);
+        statusPanel = transform.GetChild(0).GetChild(2);
         debuffName = new TMP_Text[statusPanel.childCount - 1];
         debuffDescription = new TMP_Text[statusPanel.childCount - 1];
 
