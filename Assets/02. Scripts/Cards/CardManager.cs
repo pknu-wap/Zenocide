@@ -1,54 +1,100 @@
-// ±èµ¿°Ç
+// ï¿½èµ¿ï¿½ï¿½
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using TMPro;
 
 public class CardManager : MonoBehaviour
 {
     public static CardManager Inst { get; private set; }
     void Awake() => Inst = this;
 
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç®
     [SerializeField] ItemSO itemSO;
+
+    // Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     [SerializeField] GameObject cardPrefab;
-    [SerializeField] List<Card> hand;
+    [SerializeField] GameObject cardBackPrefab;
+
+    // ï¿½Úµï¿½
+    public List<Card> hand;
+    [SerializeField] int maxHand = 10;
+    [SerializeField] Transform handObject;
     [SerializeField] Transform handLeft;
     [SerializeField] Transform handRight;
+
+    // Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     [SerializeField] public Transform cardSpawnPoint;
+    [SerializeField] public Transform cardDrawPoint;
+    [SerializeField] public Transform cardResetPoint;
     [SerializeField] public Transform cardDumpPoint;
 
+    // ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½
     public List<CardData> deck;
-    List<CardData> dump;
+    public List<CardData> dump;
+    List<GameObject> cardBack;
+    [SerializeField] TMP_Text deckCountTMP;
+    [SerializeField] TMP_Text dumpCountTMP;
+    [SerializeField] Transform cardBackObject;
+
     Card selectCard;
 
-    [SerializeField] float dotweenTime = 0.5f;
-    [SerializeField] float focusOffset;
+    // ï¿½ï¿½ï¿½
+    int listSize = 100;
+    float delay01 = 0.1f;
+    float delay03 = 0.3f;
+    float delay05 = 0.5f;
+    float focusOffset = 100f;
 
-    public CardData DrawCard()
+    public Vector3 focusPos;
+
+    void Start()
     {
-        if (deck.Count == 0)
-        {
-            ResetDeck();
-        }
+        focusPos = new Vector3(0f, handLeft.position.y + focusOffset, -3f);
 
-        // queue³ª dequeue¸¦ ¾²´Â °Ô ´õ ³ªÀ» µí
+        SetUpDeck();
+
+        dump = new List<CardData>(listSize);
+        UpdateDumpCount();
+
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ Actionï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½
+        TurnManager.OnAddCard += AddCardToHand;
+
+        #region ResetDeckInitiation
+        cardBack = new List<GameObject>(listSize);
+
+        // Ä«ï¿½ï¿½ ï¿½Þ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï°ï¿½ enable Ã³ï¿½ï¿½
+        for(int i = 0; i < listSize; i++)
+        {
+            cardBack.Add(Instantiate(cardBackPrefab, cardDumpPoint.position, Utils.QI, cardBackObject));
+            cardBack[i].SetActive(false);
+        }
+        #endregion
+    }
+
+    // ï¿½ï¿½ Ä«ï¿½ï¿½Æ®ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½ï¿½
+    CardData DrawCard()
+    {
         CardData card = deck[0];
         deck.RemoveAt(0);
+        UpdateDeckCount();
         return card;
     }
 
     void SetUpDeck()
     {
-        deck = new List<CardData>(100);
+        deck = new List<CardData>(listSize);
 
-        // itemSOÀÇ Ä«µåµéÀ» deck¿¡ Ãß°¡
+        // itemSOï¿½ï¿½ Ä«ï¿½ï¿½ï¿½ï¿½ï¿½ deckï¿½ï¿½ ï¿½ß°ï¿½
         for (int i = 0; i < itemSO.items.Length; i++) 
         {
             CardData card = itemSO.items[i];
             deck.Add(card);
         }
+        UpdateDeckCount();
 
-        // deck ¼ÅÇÃ
+        // deck ï¿½ï¿½ï¿½ï¿½
         for (int i = 0; i < deck.Count; i++)
         {
             int rand = Random.Range(i, deck.Count);
@@ -57,40 +103,46 @@ public class CardManager : MonoBehaviour
             deck[rand] = temp;
         }
     }
-
-    public Vector3 focusPos;
-
-    void Start()
-    {
-        SetUpDeck();
-        dump = new List<CardData>(100);
-        // ¿Ö ½Ì±ÛÅæ¿¡¼­ È£ÃâÇÏÁö ¾Ê°í ActionÀ¸·Î È£ÃâÇÒ±î,,,,
-        TurnManager.OnAddCard += AddCardToHand;
-
-        focusPos = new Vector3(0f, handLeft.position.y + focusOffset, -3f);
-    }
-
+    
     void OnDestroy()
     {
         TurnManager.OnAddCard -= AddCardToHand;
     }
 
-    [SerializeField] int maxHand = 10;
-
     void AddCardToHand(bool isMine)
     {
-        if (!isMine || hand.Count > maxHand || deck.Count+dump.Count == 0)
+        if (!isMine || hand.Count > maxHand)
         {
             return;
         }
 
-        var cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI);
+        var cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI, handObject);
         var card = cardObject.GetComponent<Card>();
+
+        // DrawCard() È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
+        if(deck.Count == 0)
+        {
+            StartCoroutine(ResetDeckAnimationCo(dump.Count));
+            ResetDeck();
+        }
+
         card.Setup(DrawCard());
         card.transform.localScale = Vector3.zero;
         hand.Add(card);
 
         SetOriginOrder();
+        StartCoroutine(DrawAnimationCo(card));
+    }
+
+    IEnumerator DrawAnimationCo(Card card)
+    {
+        Sequence sequence = DOTween.Sequence()
+                .Append(card.transform.DOMove(cardDrawPoint.position, delay05))
+                .Join(card.transform.DOScale(Vector3.one * 12f, delay05))
+                .SetEase(Ease.OutCubic);
+
+        yield return new WaitForSeconds(delay05);
+
         CardAlignment();
     }
 
@@ -114,12 +166,12 @@ public class CardManager : MonoBehaviour
         {
             var targetCard = hand[i];
 
-            targetCard.originPRS = originCardPRSs[i];
-            targetCard.MoveTransform(targetCard.originPRS, true, 0.7f);
+            targetCard.originPRS = originCardPRSs[hand.Count - i - 1];
+            targetCard.MoveTransform(targetCard.originPRS, true, delay05);
         }
     }
 
-    // ÀÌÇØÇÏ±â¸¦ Æ÷±âÇÔ...
+    // ï¿½ï¿½ï¿½ï¿½ï¿½Ï±â¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½...
     List<PRS> RoundAlignment(Transform leftTr, Transform rightTr, int objCount, float radius, Vector3 scale)
     {
         float[] objLerps = new float[objCount];
@@ -141,19 +193,19 @@ public class CardManager : MonoBehaviour
 
         for (int i = 0; i < objCount; i++)
         {
-            // Å¸°Ù À§Ä¡´Â leftTr°ú rightTr »çÀÌ, i¹øÂ° Ä«µåÀÇ À§Ä¡
+            // Å¸ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ leftTrï¿½ï¿½ rightTr ï¿½ï¿½ï¿½ï¿½, iï¿½ï¿½Â° Ä«ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡
             Vector3 targetPos = Vector3.Lerp(leftTr.position, rightTr.position, objLerps[i]);
-            // targetRotÀº ¿ì¼± ±âº»°ªÀ¸·Î.
+            // targetRotï¿½ï¿½ ï¿½ì¼± ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
             Quaternion targetRot = Utils.QI;
 
 
-            // Ä«µå°¡ 4°³ ÀÌ»óÀÏ ¶§¸¸ È¸ÀüÀ» Àû¿ëÇÑ´Ù.
+            // Ä«ï¿½å°¡ 4ï¿½ï¿½ ï¿½Ì»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
             if (objCount >= 4)
             {
-                // ¿øÀÇ ¹æÁ¤½Ä, (x-a)^2 + (y-b)^2 = r^2ÀÇ º¯Çü.
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, (x-a)^2 + (y-b)^2 = r^2ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
                 // x = targetPos.x, a = circleCenter.x, y = curve, b = circleCenter.y, r = height                
                 float curve = Mathf.Sqrt(Mathf.Pow(radius, 2) - Mathf.Pow(targetPos.x - circleCenter.x, 2));
-                // Àý´ñ°ªÀ¸·Î º¯È¯
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
                 curve = Mathf.Abs(curve);
                 targetPos.y = targetPos.y - radius + curve;
                 targetRot = Quaternion.Slerp(leftTr.rotation, rightTr.rotation, objLerps[i]);
@@ -167,6 +219,7 @@ public class CardManager : MonoBehaviour
     {
         hand.Remove(card);
         dump.Add(card.cardData);
+        UpdateDumpCount();
 
         card.transform.DOKill();
 
@@ -180,14 +233,15 @@ public class CardManager : MonoBehaviour
     {
         deck.Clear();
 
-        // dumpÀÇ Ä«µåµéÀ» deck¿¡ Ãß°¡
+        // dumpï¿½ï¿½ Ä«ï¿½ï¿½ï¿½ï¿½ï¿½ deckï¿½ï¿½ ï¿½ß°ï¿½
         for (int i = 0; i < dump.Count; i++)
         {
             CardData card = dump[i];
             deck.Add(card);
         }
+        UpdateDeckCount();
 
-        // deck ¼ÅÇÃ
+        // deck ï¿½ï¿½ï¿½ï¿½
         for (int i = 0; i < deck.Count; i++)
         {
             int rand = Random.Range(i, deck.Count);
@@ -196,39 +250,82 @@ public class CardManager : MonoBehaviour
             deck[rand] = temp;
         }
 
-        // dump ºñ¿ì±â
+        // dump ï¿½ï¿½ï¿½ï¿½
         dump.Clear();
+        UpdateDumpCount();
+    }
+
+    IEnumerator ResetDeckAnimationCo(int dumpCount)
+    {
+        // Ä«ï¿½ï¿½ ï¿½Þ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® È°ï¿½ï¿½È­
+        for (int i = 0; i < dumpCount; i++)
+        {
+            cardBack[i].SetActive(true);
+        }
+
+        for(int i = 0; i < dumpCount; i++)
+        {
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
+            Sequence sequence = DOTween.Sequence()
+                .Append(cardBack[i].transform.DOMoveX(cardResetPoint.position.x, delay03))
+                .Join(cardBack[i].transform.DOMoveY(cardResetPoint.position.y, delay03)).SetEase(Ease.OutCubic)
+                .Append(cardBack[i].transform.DOMoveX(cardSpawnPoint.position.x, delay03))
+                .Join(cardBack[i].transform.DOMoveY(cardSpawnPoint.position.y, delay03));
+
+            // ï¿½ï¿½ Ä«ï¿½å¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö±ï¿½
+            yield return new WaitForSeconds(delay01);
+        }
+
+        // ï¿½ï¿½Ã¼ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+        yield return new WaitForSeconds(delay03 * 2 + delay01 * dumpCount);
+
+        for (int i = 0; i < dumpCount; i++)
+        {
+            // Ä«ï¿½ï¿½ ï¿½Þ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+            cardBack[i].SetActive(false);
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å°Ü³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡
+            cardBack[i].transform.position = cardDumpPoint.position;
+        }
     }
 
     public IEnumerator DiscardHandCo()
     {
-        for (int i = 0; i < hand.Count; i++)
+        int handCount = hand.Count;
+        for (int i = 0; i < handCount; i++)
         {
-            // Ä«µå ½ºÆù À§Ä¡·Î ³¯¾Æ°¡°Ô º¯°æ. ³ªÁß¿¡ ¹¦Áö·Îµµ ¹Ù²ã¾ß ÇÑ´Ù.
+            Card card = hand[0];
+
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½Ìµï¿½
             Sequence sequence = DOTween.Sequence()
-                .Append(hand[i].transform.DOMove(cardDumpPoint.position, dotweenTime))
-                .Join(hand[i].transform.DORotateQuaternion(Utils.QI, dotweenTime))
-                .Join(hand[i].transform.DOScale(Vector3.one, dotweenTime))
+                .Append(card.transform.DOMove(cardDumpPoint.position, delay03))
+                .Join(card.transform.DORotateQuaternion(Utils.QI, delay03))
+                .Join(card.transform.DOScale(Vector3.one, delay03))
                 .SetEase(Ease.OutQuad);
-            /*            Sequence sequence = DOTween.Sequence()
-                        .Append(hand[i].transform.DOLocalMoveY(0.5f, 0.9f).SetEase(Ease.OutQuad))
-                        .Join(hand[i].GetComponent<SpriteRenderer>().DOFade(0, 0.9f).SetEase(Ease.InExpo));*/
-        }
+            
+            hand.RemoveAt(0);
+            CardAlignment();
 
-        // sequence ³¡³ª±â Àü±îÁö ±â´Ù¸®±â
-        yield return new WaitForSeconds(dotweenTime);
+            // sequence ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½
+            yield return new WaitForSeconds(delay03);
 
-        // sequence°¡ ³¡³ª¸é ¸ðµç ¿ÀºêÁ§Æ® ÆÄ±«
-        for (int i = 0; i < hand.Count; i++)
-        {
-            Card card = hand[i];
+            // sequenceï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ä±ï¿½
             dump.Add(card.cardData);
-
+            UpdateDumpCount();
             DestroyImmediate(card.gameObject);
         }
 
-        hand = new List<Card>(100);
+        hand.Clear();
         selectCard = null;
+    }
+
+    void UpdateDeckCount()
+    {
+        deckCountTMP.text = deck.Count.ToString();
+    }
+
+    void UpdateDumpCount()
+    {
+        dumpCountTMP.text = dump.Count.ToString();
     }
 
     #region MyCard
@@ -255,7 +352,7 @@ public class CardManager : MonoBehaviour
         if (isEnlarge)
         {
             Vector3 enlargePos = new Vector3(card.originPRS.pos.x, handLeft.position.y + focusOffset, -3f);
-            card.MoveTransform(new PRS(enlargePos, Utils.QI, card.originPRS.scale * 1.2f), false);
+            card.MoveTransform(new PRS(enlargePos, Utils.QI, card.originPRS.scale * 1.5f), false);
         }
         else
         {
