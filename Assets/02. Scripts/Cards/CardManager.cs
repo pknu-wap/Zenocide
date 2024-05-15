@@ -1,4 +1,4 @@
-// �赿��
+// 김동건
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,27 +10,27 @@ public class CardManager : MonoBehaviour
     public static CardManager Inst { get; private set; }
     void Awake() => Inst = this;
 
-    // ������ Ǯ
+    // 아이템 풀
     [SerializeField] ItemSO itemSO;
 
-    // ī�� ������
+    // 카드 프리팹
     [SerializeField] GameObject cardPrefab;
     [SerializeField] GameObject cardBackPrefab;
 
-    // �ڵ�
+    // 핸드
     public List<Card> hand;
     [SerializeField] int maxHand = 10;
     [SerializeField] Transform handObject;
     [SerializeField] Transform handLeft;
     [SerializeField] Transform handRight;
 
-    // ī�� ���� Ʈ������
+    // 카드 관련 트랜스폼
     [SerializeField] public Transform cardSpawnPoint;
     [SerializeField] public Transform cardDrawPoint;
     [SerializeField] public Transform cardResetPoint;
     [SerializeField] public Transform cardDumpPoint;
 
-    // ��, ����
+    // 덱, 묘지
     public List<CardData> deck;
     public List<CardData> dump;
     List<GameObject> cardBack;
@@ -40,7 +40,7 @@ public class CardManager : MonoBehaviour
 
     Card selectCard;
 
-    // ���
+    // 상수
     int listSize = 100;
     float delay01 = 0.1f;
     float delay03 = 0.3f;
@@ -58,14 +58,14 @@ public class CardManager : MonoBehaviour
         dump = new List<CardData>(listSize);
         UpdateDumpCount();
 
-        // ���� ������ ���̱� ���� �̱��� ��� Action���� ȣ��
+        // 동적 참조를 줄이기 위해 싱글톤 대신 Action으로 호출
         TurnManager.OnAddCard += AddCardToHand;
 
         #region ResetDeckInitiation
         cardBack = new List<GameObject>(listSize);
 
-        // ī�� �޸� ������Ʈ �����ؼ� ����Ʈ�� �߰��ϰ� enable ó��
-        for(int i = 0; i < listSize; i++)
+        // 카드 뒷면 오브젝트 생성해서 리스트에 추가하고 enable 처리
+        for (int i = 0; i < listSize; i++)
         {
             cardBack.Add(Instantiate(cardBackPrefab, cardDumpPoint.position, Utils.QI, cardBackObject));
             cardBack[i].SetActive(false);
@@ -73,7 +73,7 @@ public class CardManager : MonoBehaviour
         #endregion
     }
 
-    // �� ī��Ʈ�� 0���� Ȯ���ϰ� ����ؾ� ��
+    // 덱 카운트가 0인지 확인하고 사용해야 함
     CardData DrawCard()
     {
         CardData card = deck[0];
@@ -86,7 +86,7 @@ public class CardManager : MonoBehaviour
     {
         deck = new List<CardData>(listSize);
 
-        // itemSO�� ī����� deck�� �߰�
+        // itemSO의 카드들을 deck에 추가
         for (int i = 0; i < itemSO.items.Length; i++) 
         {
             CardData card = itemSO.items[i];
@@ -94,7 +94,7 @@ public class CardManager : MonoBehaviour
         }
         UpdateDeckCount();
 
-        // deck ����
+        // deck 셔플
         for (int i = 0; i < deck.Count; i++)
         {
             int rand = Random.Range(i, deck.Count);
@@ -119,8 +119,8 @@ public class CardManager : MonoBehaviour
         var cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI, handObject);
         var card = cardObject.GetComponent<Card>();
 
-        // DrawCard() ȣ�� ���� ���� ������� Ȯ��
-        if(deck.Count == 0)
+        // DrawCard() 호출 전에 덱이 비었는지 확인
+        if (deck.Count == 0)
         {
             StartCoroutine(ResetDeckAnimationCo(dump.Count));
             ResetDeck();
@@ -171,7 +171,7 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    // �����ϱ⸦ ������...
+    // 이해하기를 포기함...
     List<PRS> RoundAlignment(Transform leftTr, Transform rightTr, int objCount, float radius, Vector3 scale)
     {
         float[] objLerps = new float[objCount];
@@ -193,19 +193,19 @@ public class CardManager : MonoBehaviour
 
         for (int i = 0; i < objCount; i++)
         {
-            // Ÿ�� ��ġ�� leftTr�� rightTr ����, i��° ī���� ��ġ
+            // 타겟 위치는 leftTr과 rightTr 사이, i번째 카드의 위치
             Vector3 targetPos = Vector3.Lerp(leftTr.position, rightTr.position, objLerps[i]);
-            // targetRot�� �켱 �⺻������.
+            // targetRot은 우선 기본값으로.
             Quaternion targetRot = Utils.QI;
 
 
-            // ī�尡 4�� �̻��� ���� ȸ���� �����Ѵ�.
+            // 카드가 4개 이상일 때만 회전을 적용한다.
             if (objCount >= 4)
             {
-                // ���� ������, (x-a)^2 + (y-b)^2 = r^2�� ����.
-                // x = targetPos.x, a = circleCenter.x, y = curve, b = circleCenter.y, r = height                
+                // 원의 방정식, (x-a)^2 + (y-b)^2 = r^2의 변형.
+                // x = targetPos.x, a = circleCenter.x, y = curve, b = circleCenter.y, r = height    
                 float curve = Mathf.Sqrt(Mathf.Pow(radius, 2) - Mathf.Pow(targetPos.x - circleCenter.x, 2));
-                // �������� ��ȯ
+                // 절댓값으로 변환
                 curve = Mathf.Abs(curve);
                 targetPos.y = targetPos.y - radius + curve;
                 targetRot = Quaternion.Slerp(leftTr.rotation, rightTr.rotation, objLerps[i]);
@@ -233,7 +233,7 @@ public class CardManager : MonoBehaviour
     {
         deck.Clear();
 
-        // dump�� ī����� deck�� �߰�
+        // dump의 카드들을 deck에 추가
         for (int i = 0; i < dump.Count; i++)
         {
             CardData card = dump[i];
@@ -241,7 +241,7 @@ public class CardManager : MonoBehaviour
         }
         UpdateDeckCount();
 
-        // deck ����
+        // deck 셔플
         for (int i = 0; i < deck.Count; i++)
         {
             int rand = Random.Range(i, deck.Count);
@@ -250,14 +250,14 @@ public class CardManager : MonoBehaviour
             deck[rand] = temp;
         }
 
-        // dump ����
+        // dump 비우기
         dump.Clear();
         UpdateDumpCount();
     }
 
     IEnumerator ResetDeckAnimationCo(int dumpCount)
     {
-        // ī�� �޸� ������Ʈ Ȱ��ȭ
+        // 카드 뒷면 오브젝트 활성화
         for (int i = 0; i < dumpCount; i++)
         {
             cardBack[i].SetActive(true);
@@ -265,25 +265,25 @@ public class CardManager : MonoBehaviour
 
         for(int i = 0; i < dumpCount; i++)
         {
-            // ������ �̵�
+            // 포물선 이동
             Sequence sequence = DOTween.Sequence()
                 .Append(cardBack[i].transform.DOMoveX(cardResetPoint.position.x, delay03))
                 .Join(cardBack[i].transform.DOMoveY(cardResetPoint.position.y, delay03)).SetEase(Ease.OutCubic)
                 .Append(cardBack[i].transform.DOMoveX(cardSpawnPoint.position.x, delay03))
                 .Join(cardBack[i].transform.DOMoveY(cardSpawnPoint.position.y, delay03));
 
-            // �� ī�忡 ������ �ֱ�
+            // 각 카드에 딜레이 주기
             yield return new WaitForSeconds(delay01);
         }
 
-        // ��ü �ִϸ��̼� ������� ���
+        // 전체 애니메이션 종료까지 대기
         yield return new WaitForSeconds(delay03 * 2 + delay01 * dumpCount);
 
         for (int i = 0; i < dumpCount; i++)
         {
-            // ī�� �޸� ������Ʈ �ٽ� �����
+            // 카드 뒷면 오브젝트 다시 숨기기
             cardBack[i].SetActive(false);
-            // ������ �Űܳ��� ������Ʈ �ٽ� ������ ����ġ
+            // 덱으로 옮겨놓은 오브젝트 다시 묘지로 원위치
             cardBack[i].transform.position = cardDumpPoint.position;
         }
     }
@@ -295,7 +295,7 @@ public class CardManager : MonoBehaviour
         {
             Card card = hand[0];
 
-            // ������ ī�� �̵�
+            // 묘지로 카드 이동
             Sequence sequence = DOTween.Sequence()
                 .Append(card.transform.DOMove(cardDumpPoint.position, delay03))
                 .Join(card.transform.DORotateQuaternion(Utils.QI, delay03))
@@ -305,10 +305,10 @@ public class CardManager : MonoBehaviour
             hand.RemoveAt(0);
             CardAlignment();
 
-            // sequence ������ ������ ��ٸ���
+            // sequence 끝나기 전까지 기다리기
             yield return new WaitForSeconds(delay03);
 
-            // sequence�� ������ ������Ʈ �ı�
+            // sequence가 끝나면 모든 오브젝트 파괴
             dump.Add(card.cardData);
             UpdateDumpCount();
             DestroyImmediate(card.gameObject);
