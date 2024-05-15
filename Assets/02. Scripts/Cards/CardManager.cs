@@ -36,7 +36,7 @@ public class CardManager : MonoBehaviour
     List<GameObject> cardBack;
     [SerializeField] TMP_Text deckCountTMP;
     [SerializeField] TMP_Text dumpCountTMP;
-    [SerializeField] Transform CardBackObject;
+    [SerializeField] Transform cardBackObject;
 
     Card selectCard;
 
@@ -63,9 +63,8 @@ public class CardManager : MonoBehaviour
         // 카드 뒷면 오브젝트 생성해서 리스트에 추가하고 enable 처리
         for(int i = 0; i < listSize; i++)
         {
-            cardBack.Add(Instantiate(cardBackPrefab, cardDumpPoint.position, Utils.QI));
+            cardBack.Add(Instantiate(cardBackPrefab, cardDumpPoint.position, Utils.QI, cardBackObject));
             cardBack[i].SetActive(false);
-            cardBack[i].transform.SetParent(CardBackObject);
         }
         #endregion
     }
@@ -113,8 +112,7 @@ public class CardManager : MonoBehaviour
             return;
         }
 
-        var cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI);
-        cardObject.transform.SetParent(handObject);
+        var cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI, handObject);
         var card = cardObject.GetComponent<Card>();
 
         // DrawCard() 호출 전에 덱이 비었는지 확인
