@@ -57,6 +57,12 @@ public class CardInfo : MonoBehaviour
     {
         return layerDict[(int)type];
     }
+
+    // 카드가 타겟팅 카드인지 알려준다.
+    public bool IsTargetingCard(EffectType effectType)
+    {
+        return (layerDict[(int)effectType] == LayerMask.GetMask("Enemy"));
+    }
     #endregion 정보 검색
 
     #region 카드 효과

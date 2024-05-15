@@ -23,8 +23,8 @@ public class Enemy : Character
         base.Awake();
 
         // 행동 정보 아이콘
-        behaviorIcon = transform.GetChild(1).GetChild(0).GetChild(2).GetComponent<Image>();
-        behaviorAmount = transform.GetChild(1).GetChild(0).GetChild(2).GetChild(0).GetComponent<TMP_Text>();
+        behaviorIcon = transform.GetChild(0).GetChild(1).GetChild(2).GetComponent<Image>();
+        behaviorAmount = behaviorIcon.transform.GetChild(0).GetComponent<TMP_Text>();
 
         // 상제정보창
         behaviorName = statusPanel.GetChild(0).GetChild(0).GetComponent<TMP_Text>();

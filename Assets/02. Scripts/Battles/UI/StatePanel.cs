@@ -12,7 +12,7 @@ public class StatePanel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     private void Awake()
     {
-        statePanel = transform.parent.GetChild(1).gameObject;
+        statePanel = transform.parent.GetChild(2).gameObject;
         statePanelImage = statePanel.GetComponent<Image>();
         uiCanvas = transform.parent.GetComponent<Canvas>();
 

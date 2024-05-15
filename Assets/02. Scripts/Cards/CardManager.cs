@@ -1,4 +1,4 @@
-// ±èµ¿°Ç
+// ï¿½èµ¿ï¿½ï¿½
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,27 +10,27 @@ public class CardManager : MonoBehaviour
     public static CardManager Inst { get; private set; }
     void Awake() => Inst = this;
 
-    // ¾ÆÀÌÅÛ Ç®
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç®
     [SerializeField] ItemSO itemSO;
 
-    // Ä«µå ÇÁ¸®ÆÕ
+    // Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     [SerializeField] GameObject cardPrefab;
     [SerializeField] GameObject cardBackPrefab;
 
-    // ÇÚµå
+    // ï¿½Úµï¿½
     public List<Card> hand;
     [SerializeField] int maxHand = 10;
     [SerializeField] Transform handObject;
     [SerializeField] Transform handLeft;
     [SerializeField] Transform handRight;
 
-    // Ä«µå °ü·Ã Æ®·£½ºÆû
+    // Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     [SerializeField] public Transform cardSpawnPoint;
     [SerializeField] public Transform cardDrawPoint;
     [SerializeField] public Transform cardResetPoint;
     [SerializeField] public Transform cardDumpPoint;
 
-    // µ¦, ¹¦Áö
+    // ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½
     public List<CardData> deck;
     public List<CardData> dump;
     List<GameObject> cardBack;
@@ -40,27 +40,31 @@ public class CardManager : MonoBehaviour
 
     Card selectCard;
 
-    // »ó¼ö
+    // ï¿½ï¿½ï¿½
     int listSize = 100;
     float delay01 = 0.1f;
     float delay03 = 0.3f;
     float delay05 = 0.5f;
     float focusOffset = 100f;
 
+    public Vector3 focusPos;
+
     void Start()
     {
+        focusPos = new Vector3(0f, handLeft.position.y + focusOffset, -3f);
+
         SetUpDeck();
 
         dump = new List<CardData>(listSize);
         UpdateDumpCount();
 
-        // µ¿Àû ÂüÁ¶¸¦ ÁÙÀÌ±â À§ÇØ ½Ì±ÛÅæ ´ë½Å ActionÀ¸·Î È£Ãâ
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ Actionï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½
         TurnManager.OnAddCard += AddCardToHand;
 
         #region ResetDeckInitiation
         cardBack = new List<GameObject>(listSize);
 
-        // Ä«µå µÞ¸é ¿ÀºêÁ§Æ® »ý¼ºÇØ¼­ ¸®½ºÆ®¿¡ Ãß°¡ÇÏ°í enable Ã³¸®
+        // Ä«ï¿½ï¿½ ï¿½Þ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï°ï¿½ enable Ã³ï¿½ï¿½
         for(int i = 0; i < listSize; i++)
         {
             cardBack.Add(Instantiate(cardBackPrefab, cardDumpPoint.position, Utils.QI, cardBackObject));
@@ -69,7 +73,7 @@ public class CardManager : MonoBehaviour
         #endregion
     }
 
-    // µ¦ Ä«¿îÆ®°¡ 0ÀÎÁö È®ÀÎÇÏ°í »ç¿ëÇØ¾ß ÇÔ
+    // ï¿½ï¿½ Ä«ï¿½ï¿½Æ®ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½ï¿½
     CardData DrawCard()
     {
         CardData card = deck[0];
@@ -82,7 +86,7 @@ public class CardManager : MonoBehaviour
     {
         deck = new List<CardData>(listSize);
 
-        // itemSOÀÇ Ä«µåµéÀ» deck¿¡ Ãß°¡
+        // itemSOï¿½ï¿½ Ä«ï¿½ï¿½ï¿½ï¿½ï¿½ deckï¿½ï¿½ ï¿½ß°ï¿½
         for (int i = 0; i < itemSO.items.Length; i++) 
         {
             CardData card = itemSO.items[i];
@@ -90,7 +94,7 @@ public class CardManager : MonoBehaviour
         }
         UpdateDeckCount();
 
-        // deck ¼ÅÇÃ
+        // deck ï¿½ï¿½ï¿½ï¿½
         for (int i = 0; i < deck.Count; i++)
         {
             int rand = Random.Range(i, deck.Count);
@@ -99,7 +103,7 @@ public class CardManager : MonoBehaviour
             deck[rand] = temp;
         }
     }
-
+    
     void OnDestroy()
     {
         TurnManager.OnAddCard -= AddCardToHand;
@@ -115,7 +119,7 @@ public class CardManager : MonoBehaviour
         var cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI, handObject);
         var card = cardObject.GetComponent<Card>();
 
-        // DrawCard() È£Ãâ Àü¿¡ µ¦ÀÌ ºñ¾ú´ÂÁö È®ÀÎ
+        // DrawCard() È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
         if(deck.Count == 0)
         {
             StartCoroutine(ResetDeckAnimationCo(dump.Count));
@@ -167,7 +171,7 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    // ÀÌÇØÇÏ±â¸¦ Æ÷±âÇÔ...
+    // ï¿½ï¿½ï¿½ï¿½ï¿½Ï±â¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½...
     List<PRS> RoundAlignment(Transform leftTr, Transform rightTr, int objCount, float radius, Vector3 scale)
     {
         float[] objLerps = new float[objCount];
@@ -189,19 +193,19 @@ public class CardManager : MonoBehaviour
 
         for (int i = 0; i < objCount; i++)
         {
-            // Å¸°Ù À§Ä¡´Â leftTr°ú rightTr »çÀÌ, i¹øÂ° Ä«µåÀÇ À§Ä¡
+            // Å¸ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ leftTrï¿½ï¿½ rightTr ï¿½ï¿½ï¿½ï¿½, iï¿½ï¿½Â° Ä«ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡
             Vector3 targetPos = Vector3.Lerp(leftTr.position, rightTr.position, objLerps[i]);
-            // targetRotÀº ¿ì¼± ±âº»°ªÀ¸·Î.
+            // targetRotï¿½ï¿½ ï¿½ì¼± ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
             Quaternion targetRot = Utils.QI;
 
 
-            // Ä«µå°¡ 4°³ ÀÌ»óÀÏ ¶§¸¸ È¸ÀüÀ» Àû¿ëÇÑ´Ù.
+            // Ä«ï¿½å°¡ 4ï¿½ï¿½ ï¿½Ì»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
             if (objCount >= 4)
             {
-                // ¿øÀÇ ¹æÁ¤½Ä, (x-a)^2 + (y-b)^2 = r^2ÀÇ º¯Çü.
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, (x-a)^2 + (y-b)^2 = r^2ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
                 // x = targetPos.x, a = circleCenter.x, y = curve, b = circleCenter.y, r = height                
                 float curve = Mathf.Sqrt(Mathf.Pow(radius, 2) - Mathf.Pow(targetPos.x - circleCenter.x, 2));
-                // Àý´ñ°ªÀ¸·Î º¯È¯
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
                 curve = Mathf.Abs(curve);
                 targetPos.y = targetPos.y - radius + curve;
                 targetRot = Quaternion.Slerp(leftTr.rotation, rightTr.rotation, objLerps[i]);
@@ -229,7 +233,7 @@ public class CardManager : MonoBehaviour
     {
         deck.Clear();
 
-        // dumpÀÇ Ä«µåµéÀ» deck¿¡ Ãß°¡
+        // dumpï¿½ï¿½ Ä«ï¿½ï¿½ï¿½ï¿½ï¿½ deckï¿½ï¿½ ï¿½ß°ï¿½
         for (int i = 0; i < dump.Count; i++)
         {
             CardData card = dump[i];
@@ -237,7 +241,7 @@ public class CardManager : MonoBehaviour
         }
         UpdateDeckCount();
 
-        // deck ¼ÅÇÃ
+        // deck ï¿½ï¿½ï¿½ï¿½
         for (int i = 0; i < deck.Count; i++)
         {
             int rand = Random.Range(i, deck.Count);
@@ -246,14 +250,14 @@ public class CardManager : MonoBehaviour
             deck[rand] = temp;
         }
 
-        // dump ºñ¿ì±â
+        // dump ï¿½ï¿½ï¿½ï¿½
         dump.Clear();
         UpdateDumpCount();
     }
 
     IEnumerator ResetDeckAnimationCo(int dumpCount)
     {
-        // Ä«µå µÞ¸é ¿ÀºêÁ§Æ® È°¼ºÈ­
+        // Ä«ï¿½ï¿½ ï¿½Þ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® È°ï¿½ï¿½È­
         for (int i = 0; i < dumpCount; i++)
         {
             cardBack[i].SetActive(true);
@@ -261,25 +265,25 @@ public class CardManager : MonoBehaviour
 
         for(int i = 0; i < dumpCount; i++)
         {
-            // Æ÷¹°¼± ÀÌµ¿
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
             Sequence sequence = DOTween.Sequence()
                 .Append(cardBack[i].transform.DOMoveX(cardResetPoint.position.x, delay03))
                 .Join(cardBack[i].transform.DOMoveY(cardResetPoint.position.y, delay03)).SetEase(Ease.OutCubic)
                 .Append(cardBack[i].transform.DOMoveX(cardSpawnPoint.position.x, delay03))
                 .Join(cardBack[i].transform.DOMoveY(cardSpawnPoint.position.y, delay03));
 
-            // °¢ Ä«µå¿¡ µô·¹ÀÌ ÁÖ±â
+            // ï¿½ï¿½ Ä«ï¿½å¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö±ï¿½
             yield return new WaitForSeconds(delay01);
         }
 
-        // ÀüÃ¼ ¾Ö´Ï¸ÞÀÌ¼Ç Á¾·á±îÁö ´ë±â
+        // ï¿½ï¿½Ã¼ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
         yield return new WaitForSeconds(delay03 * 2 + delay01 * dumpCount);
 
         for (int i = 0; i < dumpCount; i++)
         {
-            // Ä«µå µÞ¸é ¿ÀºêÁ§Æ® ´Ù½Ã ¼û±â±â
+            // Ä«ï¿½ï¿½ ï¿½Þ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
             cardBack[i].SetActive(false);
-            // µ¦À¸·Î ¿Å°Ü³õÀº ¿ÀºêÁ§Æ® ´Ù½Ã ¹¦Áö·Î ¿øÀ§Ä¡
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å°Ü³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡
             cardBack[i].transform.position = cardDumpPoint.position;
         }
     }
@@ -291,7 +295,7 @@ public class CardManager : MonoBehaviour
         {
             Card card = hand[0];
 
-            // ¹¦Áö·Î Ä«µå ÀÌµ¿
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½Ìµï¿½
             Sequence sequence = DOTween.Sequence()
                 .Append(card.transform.DOMove(cardDumpPoint.position, delay03))
                 .Join(card.transform.DORotateQuaternion(Utils.QI, delay03))
@@ -301,10 +305,10 @@ public class CardManager : MonoBehaviour
             hand.RemoveAt(0);
             CardAlignment();
 
-            // sequence ³¡³ª±â Àü±îÁö ±â´Ù¸®±â
+            // sequence ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½
             yield return new WaitForSeconds(delay03);
 
-            // sequence°¡ ³¡³ª¸é ¿ÀºêÁ§Æ® ÆÄ±«
+            // sequenceï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ä±ï¿½
             dump.Add(card.cardData);
             UpdateDumpCount();
             DestroyImmediate(card.gameObject);

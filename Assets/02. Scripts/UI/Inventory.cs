@@ -2,23 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
-    public GameObject invnetoryPanel;
-    bool toggleInvenyory = false;
-    void Start()
+    public GameObject inventoryPanel;
+    bool activeInventory = false;
+    private void Start()
     {
-        invnetoryPanel.SetActive(toggleInvenyory);
-    }
-
-    void Update()
-    {
-        
+        inventoryPanel.SetActive(activeInventory);
     }
     public void ToggleInventory()
     {
-        toggleInvenyory = !toggleInvenyory;
-        invnetoryPanel.SetActive(toggleInvenyory);
+        activeInventory = !activeInventory;
+        inventoryPanel.SetActive(activeInventory);
     }
 }
