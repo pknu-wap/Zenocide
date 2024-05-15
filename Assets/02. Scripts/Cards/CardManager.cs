@@ -20,6 +20,7 @@ public class CardManager : MonoBehaviour
     // 핸드
     public List<Card> hand;
     [SerializeField] int maxHand = 10;
+    [SerializeField] Transform handObject;
     [SerializeField] Transform handLeft;
     [SerializeField] Transform handRight;
 
@@ -35,6 +36,7 @@ public class CardManager : MonoBehaviour
     List<GameObject> cardBack;
     [SerializeField] TMP_Text deckCountTMP;
     [SerializeField] TMP_Text dumpCountTMP;
+    [SerializeField] Transform CardBackObject;
 
     Card selectCard;
 
@@ -63,6 +65,7 @@ public class CardManager : MonoBehaviour
         {
             cardBack.Add(Instantiate(cardBackPrefab, cardDumpPoint.position, Utils.QI));
             cardBack[i].SetActive(false);
+            cardBack[i].transform.SetParent(CardBackObject);
         }
         #endregion
     }
@@ -111,6 +114,7 @@ public class CardManager : MonoBehaviour
         }
 
         var cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI);
+        cardObject.transform.SetParent(handObject);
         var card = cardObject.GetComponent<Card>();
 
         // DrawCard() 호출 전에 덱이 비었는지 확인
@@ -261,17 +265,17 @@ public class CardManager : MonoBehaviour
         {
             // 포물선 이동
             Sequence sequence = DOTween.Sequence()
-                .Append(cardBack[i].transform.DOMoveX(cardResetPoint.position.x, delay05)).SetEase(Ease.InSine)
+                .Append(cardBack[i].transform.DOMoveX(cardResetPoint.position.x, delay03))
                 .Join(cardBack[i].transform.DOMoveY(cardResetPoint.position.y, delay03)).SetEase(Ease.OutCubic)
-                .Append(cardBack[i].transform.DOMoveX(cardSpawnPoint.position.x, delay05)).SetEase(Ease.InSine)
-                .Join(cardBack[i].transform.DOMoveY(cardSpawnPoint.position.y, delay03)).SetEase(Ease.OutCubic);
+                .Append(cardBack[i].transform.DOMoveX(cardSpawnPoint.position.x, delay03))
+                .Join(cardBack[i].transform.DOMoveY(cardSpawnPoint.position.y, delay03));
 
             // 각 카드에 딜레이 주기
             yield return new WaitForSeconds(delay01);
         }
 
         // 전체 애니메이션 종료까지 대기
-        yield return new WaitForSeconds(delay05 * 2 + delay01 * dumpCount);
+        yield return new WaitForSeconds(delay03 * 2 + delay01 * dumpCount);
 
         for (int i = 0; i < dumpCount; i++)
         {
