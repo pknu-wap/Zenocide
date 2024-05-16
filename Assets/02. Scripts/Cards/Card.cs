@@ -41,7 +41,7 @@ public class Card : MonoBehaviour
         cardOrder = GetComponent<CardOrder>();
         cardCollider = GetComponent<Collider2D>();
 
-        isTargetingCard = CardInfo.Instance.IsTargetingCard(cardData.type);
+        isTargetingCard = CardInfo.Instance.IsTargetingCard(cardData.skills);
     }
 
     #region 마우스 상호작용
@@ -180,8 +180,17 @@ public class Card : MonoBehaviour
             return;
         }
 
+        LayerMask layer;
+
         // 카드 종류에 따라 Enemy 또는 Field 레이어를 선택한다.
-        LayerMask layer = CardInfo.Instance.ReturnLayer(cardData.type);
+        if (isTargetingCard)
+        {
+            layer = LayerMask.GetMask("Enemy");
+        }
+        else
+        {
+            layer = LayerMask.GetMask("Field");
+        }
 
         // layer가 일치하는, 선택된 오브젝트를 가져온다.
         GameObject selectedObject = GetClickedObject(layer);
@@ -209,8 +218,12 @@ public class Card : MonoBehaviour
             selectedCharacter = Player.Instance;
         }
 
-        // 카드를 발동한다.
-        CardInfo.Instance.effects[(int)cardData.type](cardData.amount, cardData.turnCount, selectedCharacter);
+        // 카드의 모든 효과를 발동한다.
+        for(int i = 0; i < cardData.skills.Length; ++i)
+        {
+            CardInfo.Instance.ActivateSkill(cardData.skills[i], selectedCharacter);
+        }
+
         // 코스트를 감소시킨다.
         BattleInfo.Inst.UseCost(cardData.cost);
 

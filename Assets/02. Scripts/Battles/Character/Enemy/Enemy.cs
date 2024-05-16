@@ -1,5 +1,6 @@
 // 김민철
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -78,17 +79,36 @@ public class Enemy : Character
         behaviorAmount.text = currentSkill.amount.ToString();
 
         // 2-2. 상세정보창을 스킬의 설명으로 갱신한다.
-        behaviorName.text = currentSkill.skillName;
-        behaviorDescription.text = currentSkill.description;
+        SkillText skillText = CardInfo.Instance.GetSkillText(currentSkill);
+        behaviorName.text = skillText.name;
+        behaviorDescription.text = skillText.description;
+    }
+
+
+    // 타겟을 반환한다.
+    public Character GetTarget(SkillTarget target, Character caller)
+    {
+        if (target == SkillTarget.Player)
+        {
+            return Player.Instance;
+        }
+
+        else if (target == SkillTarget.Enemy)
+        {
+            return this;
+        }
+
+        return null;
     }
 
     // 스킬을 사용한다.
     public void CastSkill()
     {
-        Character target = EnemySkillInfo.Instance.ReturnTarget(currentSkill.type, this);
+        // 타겟을 받아온다.
+        Character target = GetTarget(currentSkill.target, this);
 
         // 준비한 스킬을 사용한다.
-        EnemySkillInfo.Instance.effects[(int)currentSkill.type](currentSkill.amount, currentSkill.turnCount, target);
+        CardInfo.Instance.ActivateSkill(currentSkill, target);
     }
 
     // 죽는다.

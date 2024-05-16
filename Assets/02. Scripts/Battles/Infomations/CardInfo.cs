@@ -1,6 +1,8 @@
 // 김민철
 using UnityEngine;
 using System;
+using System.Linq;
+using System.Collections.Generic;
 
 public class CardInfo : MonoBehaviour
 {
@@ -21,8 +23,8 @@ public class CardInfo : MonoBehaviour
         }
 
         // 카드 효과를 델리게이트에 모두 등록
-        EnrollAllEffects();
-        EnrollTargetDict();
+        EnrollAllSkills();
+        EnrollLayerDict();
     }
     #endregion 싱글톤
 
@@ -37,31 +39,59 @@ public class CardInfo : MonoBehaviour
     private LayerMask[] layerDict;
 
     // 배열에 타입 - 레이어 정보를 등록한다.
-    private void EnrollTargetDict()
+    private void EnrollLayerDict()
     {
-        layerDict = new LayerMask[Enum.GetValues(typeof(EffectType)).Length];
+        layerDict = new LayerMask[Enum.GetValues(typeof(SkillType)).Length];
 
-        layerDict[(int)EffectType.Attack] = LayerMask.GetMask("Enemy");
-        layerDict[(int)EffectType.Shield] = LayerMask.GetMask("Field");
-        layerDict[(int)EffectType.Heal] = LayerMask.GetMask("Field");
-        layerDict[(int)EffectType.Cleanse] = LayerMask.GetMask("Field");
-        layerDict[(int)EffectType.RestoreCost] = LayerMask.GetMask("Field");
-        layerDict[(int)EffectType.Draw] = LayerMask.GetMask("Field");
-        layerDict[(int)EffectType.Buff] = LayerMask.GetMask("Field");
-        layerDict[(int)EffectType.Debuff] = LayerMask.GetMask("Enemy");
-        layerDict[(int)EffectType.Bleed] = LayerMask.GetMask("Enemy");
+        layerDict[(int)SkillType.Attack] = LayerMask.GetMask("Enemy");
+        layerDict[(int)SkillType.Shield] = LayerMask.GetMask("Field");
+        layerDict[(int)SkillType.Heal] = LayerMask.GetMask("Field");
+        layerDict[(int)SkillType.Cleanse] = LayerMask.GetMask("Field");
+        layerDict[(int)SkillType.RestoreCost] = LayerMask.GetMask("Field");
+        layerDict[(int)SkillType.Draw] = LayerMask.GetMask("Field");
+        layerDict[(int)SkillType.Buff] = LayerMask.GetMask("Field");
+        layerDict[(int)SkillType.Debuff] = LayerMask.GetMask("Enemy");
+        layerDict[(int)SkillType.Bleed] = LayerMask.GetMask("Enemy");
     }
 
     // 타입에 맞는 레이어를 반환한다.
-    public LayerMask ReturnLayer(EffectType type)
+    public LayerMask ReturnLayer(SkillType type)
     {
         return layerDict[(int)type];
     }
 
     // 카드가 타겟팅 카드인지 알려준다.
-    public bool IsTargetingCard(EffectType effectType)
+    public bool IsTargetingCard(Skill[] data)
     {
-        return (layerDict[(int)effectType] == LayerMask.GetMask("Enemy"));
+        // 카드가 타겟팅 스킬을 갖고 있다면 true를 리턴한다.
+        for(int i = 0; i < data.Length; ++i)
+        {
+            if (data[i].target == SkillTarget.Enemy)
+            {
+                return true;
+            }
+        }
+
+        // 그 외엔 false를 리턴한다.
+        return false;
+    }
+
+    public SkillTextInfo skillTexts;
+
+    public SkillText GetSkillText(Skill skill)
+    {
+        SkillText skillText = new SkillText();
+
+        // 스킬 이름을 저장한다.
+        skillText.name = skillTexts.text[(int)skill.type].name;
+        // 스킬 설명을 효과량, 턴 수와 함께 저장한다.
+        if(skill.turnCount != 0)
+        {
+            skillText.description = skill.turnCount + "턴 간";
+        }
+        skillText.description += skill.amount + "의" + skillTexts.text[(int)skill.type].description;
+
+        return skillText;
     }
     #endregion 정보 검색
 
@@ -69,29 +99,36 @@ public class CardInfo : MonoBehaviour
     // 카드 효과 함수들을 담아둘 델리게이트
     // amount는 카드의 효과량, turnCount는 지속될 턴의 수, target은 적용 대상이다.
     // 예를 들어 Bleed의 변수가 6, 3, Player.Instance라면, 플레이어에게 3턴간, 매 턴 6의 데미지를 준다.
-    public delegate void CardEffects(int amount, int turnCount, Character target);
+    public delegate void CardSkill(int amount, int turnCount, Character target);
     // 델리게이트 배열, EffectType에 맞는 함수를 매칭한다.
-    public CardEffects[] effects;
+    public CardSkill[] effects;
 
     // 사용 예시
     // CardInfo.Instance.effects[(int)효과 종류](효과량, 대상);
     // CardInfo.Instance.effects[(int)EffectType.Buff](5, target);
 
     // 모든 효과를 effects 배열에 등록한다.
-    void EnrollAllEffects()
+    void EnrollAllSkills()
     {
-        effects = new CardEffects[Enum.GetValues(typeof(EffectType)).Length];
+        effects = new CardSkill[Enum.GetValues(typeof(SkillType)).Length];
 
         // 카드 효과를 배열에 등록
-        effects[(int)EffectType.Attack] += Attack;
-        effects[(int)EffectType.Shield] += Shield;
-        effects[(int)EffectType.Heal] += Heal;
-        effects[(int)EffectType.Cleanse] += Cleanse;
-        effects[(int)EffectType.RestoreCost] += RestoreCost;
-        effects[(int)EffectType.Draw] += Draw;
-        effects[(int)EffectType.Buff] += Buff;
-        effects[(int)EffectType.Debuff] += Debuff;
-        effects[(int)EffectType.Bleed] += Bleed;
+        effects[(int)SkillType.Attack] += Attack;
+        effects[(int)SkillType.Shield] += Shield;
+        effects[(int)SkillType.Heal] += Heal;
+        effects[(int)SkillType.Cleanse] += Cleanse;
+        effects[(int)SkillType.RestoreCost] += RestoreCost;
+        effects[(int)SkillType.Draw] += Draw;
+        effects[(int)SkillType.Buff] += Buff;
+        effects[(int)SkillType.Debuff] += Debuff;
+        effects[(int)SkillType.Bleed] += Bleed;
+    }
+
+    /// 카드에 맞는 효과를 발동시킨다.
+    public void ActivateSkill(Skill skill, Character selectedCharacter)
+    {
+        // selectedCharacter는 타겟팅 스킬에만 사용되며, 나머지 스킬에선 무시된다.
+        effects[(int)skill.type](skill.amount, skill.turnCount, selectedCharacter);
     }
 
     // target이 null인 경우는 Card의 OnEndDrag에서 검사했으므로, 검사하지 않는다.
@@ -137,7 +174,7 @@ public class CardInfo : MonoBehaviour
 
     public void Bleed(int amount, int turnCount, Character target)
     {
-        target.EnrollBleed(new BleedEffect(EnemySkillType.Bleed, amount, turnCount));
+        target.EnrollBleed(new BleedEffect(SkillType.Bleed, amount, turnCount));
     }
     #endregion 카드 효과
 }

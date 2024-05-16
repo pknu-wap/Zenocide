@@ -6,14 +6,14 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 public class BleedEffect
 {
-    public BleedEffect(EnemySkillType type, int damagePerTurn, int remainingTurns)
+    public BleedEffect(SkillType type, int damagePerTurn, int remainingTurns)
     {
         this.type = type;
         this.damagePerTurn = damagePerTurn;
         this.remainingTurns = remainingTurns;
     }
 
-    public EnemySkillType type;
+    public SkillType type;
     public int damagePerTurn;
     public int remainingTurns;
 }
