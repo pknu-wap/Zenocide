@@ -84,12 +84,21 @@ public class CardInfo : MonoBehaviour
 
         // 스킬 이름을 저장한다.
         skillText.name = skillTexts.text[(int)skill.type].name;
+
         // 스킬 설명을 효과량, 턴 수와 함께 저장한다.
         if(skill.turnCount != 0)
         {
-            skillText.description = skill.turnCount + "턴 간";
+            // 턴 수가 0이 아니라면 설명에 추가한다.
+            skillText.description = skill.turnCount + "턴 간 ";
         }
-        skillText.description += skill.amount + "의" + skillTexts.text[(int)skill.type].description;
+
+        if (skill.amount != 0)
+        {
+            // 효과량이 0이 아니라면 추가한다.
+            skillText.description = skill.amount + "의 ";
+        }
+        // 타입에 맞는 설명을 추가한다.
+        skillText.description += skillTexts.text[(int)skill.type].description;
 
         return skillText;
     }

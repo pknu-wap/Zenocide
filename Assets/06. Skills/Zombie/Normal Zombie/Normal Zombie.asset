@@ -13,26 +13,19 @@ MonoBehaviour:
   m_Name: Normal Zombie
   m_EditorClassIdentifier: 
   skills:
-  - skillName: "\uACF5\uACA9"
-    description: "\uD50C\uB808\uC774\uC5B4\uC5D0\uAC8C 6\uC758 \uB370\uBBF8\uC9C0\uB97C
-      \uC90D\uB2C8\uB2E4."
-    type: 0
+  - type: 0
+    target: 0
     amount: 6
     turnCount: 0
-  - skillName: "\uACF5\uACA9"
-    description: "\uD50C\uB808\uC774\uC5B4\uC5D0\uAC8C 9\uC758 \uB370\uBBF8\uC9C0\uB97C
-      \uC90D\uB2C8\uB2E4."
-    type: 0
+  - type: 0
+    target: 0
     amount: 9
     turnCount: 0
-  - skillName: "\uBC29\uC5B4"
-    description: "5\uC758 \uBC29\uC5B4\uB825\uC744 \uC5BB\uC2B5\uB2C8\uB2E4."
-    type: 1
+  - type: 1
+    target: 0
     amount: 5
     turnCount: 0
-  - skillName: "\uCD9C\uD608"
-    description: "\uD50C\uB808\uC774\uC5B4\uC5D0\uAC8C 3\uD134\uAC04 6\uC758 \uB370\uBBF8\uC9C0\uB97C
-      \uC785\uD799\uB2C8\uB2E4."
-    type: 6
-    amount: 6
+  - type: 8
+    target: 0
+    amount: 0
     turnCount: 3
