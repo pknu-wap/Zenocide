@@ -60,6 +60,52 @@ public class CardInfo : MonoBehaviour
         return layerDict[(int)type];
     }
 
+    // 타겟을 반환한다.
+    public Character[] GetTarget(SkillTarget target, Enemy selectedEnemy)
+    {
+        // 각 경우에 맞는 값을 반환한다. 근데 전부 배열로 만들고 반환해서, 나중에 리팩토링 한 번 해야 겠다.
+        if (target == SkillTarget.Player)
+        {
+            return new Character[] { Player.Instance };
+        }
+
+        else if (target == SkillTarget.Enemy)
+        {
+            return new Character[] { selectedEnemy };
+        }
+
+        else if (target == SkillTarget.AllEnemy)
+        {
+            return BattleInfo.Inst.remainingEnemies.ToArray();
+        }
+
+        return null;
+    }
+
+
+    // 타겟을 반환한다. 논타겟 스킬일 때 호출 가능하다.
+    public Character[] GetTarget(SkillTarget target)
+    {
+        // 타겟이 지정되면 null을 반환한다.
+        if (target == SkillTarget.Enemy)
+        {
+            return null;
+        }
+
+        // 각 경우에 맞는 값을 반환한다. 근데 전부 배열로 만들고 반환해서, 나중에 리팩토링 한 번 해야 겠다.
+        else if (target == SkillTarget.Player)
+        {
+            return new Character[] { Player.Instance };
+        }
+
+        else if (target == SkillTarget.AllEnemy)
+        {
+            return BattleInfo.Inst.remainingEnemies.ToArray();
+        }
+
+        return null;
+    }
+
     // 카드가 타겟팅 카드인지 알려준다.
     public bool IsTargetingCard(Skill[] data)
     {
@@ -112,17 +158,6 @@ public class CardInfo : MonoBehaviour
     // 델리게이트 배열, EffectType에 맞는 함수를 매칭한다.
     public CardSkill[] effects;
 
-    // 카드를 사용할 때 호출한다.
-    public void UseSkill(Skill skill, Character[] target)
-    {
-        for(int i = 0; i < target.Length; ++i)
-        {
-            // 모든 타겟에게 skill을 사용한다.
-            ActivateSkill(skill, target[i]);
-            // 딜레이를 주면 좀 더 자연스럽다.
-        }
-    }
-
     // 모든 효과를 effects 배열에 등록한다.
     void EnrollAllSkills()
     {
@@ -140,11 +175,16 @@ public class CardInfo : MonoBehaviour
         effects[(int)SkillType.Bleed] += Bleed;
     }
 
-    /// 카드에 맞는 효과를 발동시킨다.
-    public void ActivateSkill(Skill skill, Character selectedCharacter)
+
+    // 모든 타겟에게 스킬을 사용한다.
+    public void ActivateSkill(Skill skill, Character[] target)
     {
-        // selectedCharacter는 타겟팅 스킬에만 사용되며, 나머지 스킬에선 무시된다.
-        effects[(int)skill.type](skill.amount, skill.turnCount, selectedCharacter);
+        for (int i = 0; i < target.Length; ++i)
+        {
+            // 모든 타겟에게 skill을 사용한다.
+            effects[(int)skill.type](skill.amount, skill.turnCount, target[i]);
+            // 딜레이를 주면 좀 더 자연스럽다.
+        }
     }
 
     // target이 null인 경우는 Card의 OnEndDrag에서 검사했으므로, 검사하지 않는다.

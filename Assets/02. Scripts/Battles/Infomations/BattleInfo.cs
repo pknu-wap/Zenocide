@@ -8,14 +8,16 @@ using UnityEngine;
 public class BattleInfo : MonoBehaviour
 {
     public static BattleInfo Inst { get; private set; }
-    void Awake() => Inst = this;
+    void Awake() {
+        Inst = this;
+
+        remainingEnemies = new List<Enemy>();
+    }
 
     private void Start()
     {
         ResetCost();
         TurnManager.Inst.onStartPlayerTurn.AddListener(ResetCost);
-
-        remainingEnemies = new List<Enemy>();
     }
 
     [Header("전투 정보")]
@@ -52,6 +54,8 @@ public class BattleInfo : MonoBehaviour
     public void EnrollEnemy(Enemy enemy)
     {
         remainingEnemies.Add(enemy);
+
+        Debug.Log("추가 했음");
     }
 
     // 적 오브젝트를 삭제한다.

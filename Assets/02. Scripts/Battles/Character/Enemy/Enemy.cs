@@ -1,6 +1,5 @@
 // 김민철
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -84,33 +83,11 @@ public class Enemy : Character
         behaviorDescription.text = skillText.description;
     }
 
-
-    // 타겟을 반환한다.
-    public Character GetTarget(SkillTarget target, Character caller)
-    {
-        if (target == SkillTarget.Player)
-        {
-            return Player.Instance;
-        }
-
-        else if (target == SkillTarget.Enemy)
-        {
-            return this;
-        }
-
-        else if(target == SkillTarget.AllEnemy)
-        {
-            //return BattleInfo;
-        }
-
-        return null;
-    }
-
     // 스킬을 사용한다.
     public void CastSkill()
     {
         // 타겟을 받아온다.
-        Character target = GetTarget(currentSkill.target, this);
+        Character[] target = CardInfo.Instance.GetTarget(currentSkill.target, this);
 
         // 준비한 스킬을 사용한다.
         CardInfo.Instance.ActivateSkill(currentSkill, target);

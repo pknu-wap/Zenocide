@@ -22,6 +22,10 @@ public class Card : MonoBehaviour
     [SerializeField] bool isTargetingCard = false;
     public PRS originPRS;
 
+    [Header("런타임 변수")]
+    // 카드 발동 후 선택된 오브젝트
+    public Character[] selectedCharacter;
+
     // DOTween 시퀀스
     Sequence moveSequence;
     Sequence disappearSequence;
@@ -165,9 +169,6 @@ public class Card : MonoBehaviour
     #endregion 마우스 상호작용
 
     #region 카드 사용
-    // 카드 발동 후 선택된 오브젝트
-    public Character selectedCharacter;
-
     // 카드를 사용한다. (마우스가 놓아지는 시점에 호출)
     private void UseCard()
     {
@@ -180,55 +181,40 @@ public class Card : MonoBehaviour
             return;
         }
 
-        LayerMask layer;
-
-        // 카드 종류에 따라 Enemy 또는 Field 레이어를 선택한다.
+        // 타겟팅 스킬일 때
         if (isTargetingCard)
         {
-            layer = LayerMask.GetMask("Enemy");
-        }
-        else
-        {
-            layer = LayerMask.GetMask("Field");
-        }
+            LayerMask layer = LayerMask.GetMask("Enemy");
 
-        // layer가 일치하는, 선택된 오브젝트를 가져온다.
-        GameObject selectedObject = GetClickedObject(layer);
+            // layer가 일치하는, 선택된 오브젝트를 가져온다.
+            GameObject selectedObject = GetClickedObject(layer);
 
-        // 오브젝트가 선택되지 않았다면
-        if (selectedObject == null)
-        {
-            // 카드 발동을 취소한다.
-            CancelUsingCard();
+            // 오브젝트가 선택되지 않았다면
+            if (selectedObject == null)
+            {
+                // 카드 발동을 취소한다.
+                CancelUsingCard();
 
-            return;
-        }
+                return;
+            }
 
-        // 이제 공격 타겟을 정해야 한다.
-        // 적 오브젝트를 선택하는 카드라면
-        if (isTargetingCard)
-        {
-            // 적 오브젝트의 Character 스크립트를 가져오고
-            selectedCharacter = selectedObject.GetComponent<Character>();
-        }
-        // 그 외는
-        else
-        {
-            // Player를 가져온다.
-            selectedCharacter = Player.Instance;
-        }
+            // 이제 공격 타겟을 정해야 한다.
+            // 적 오브젝트의 Enemy 스크립트를 가져온다
+            Enemy selectedEnemy = selectedObject.GetComponent<Enemy>();
 
-        // 카드의 모든 효과를 발동한다.
-        for(int i = 0; i < cardData.skills.Length; ++i)
-        {
-            CardInfo.Instance.ActivateSkill(cardData.skills[i], selectedCharacter);
-        }
+            // 카드의 모든 효과를 발동한다.
+            for (int i = 0; i < cardData.skills.Length; ++i)
+            {
+                // 타겟을 정한다.
+                selectedCharacter = CardInfo.Instance.GetTarget(cardData.skills[i].target, selectedEnemy);
 
-        // 코스트를 감소시킨다.
-        BattleInfo.Inst.UseCost(cardData.cost);
+                // 해당 타겟에게 스킬을 시전한다.
+                CardInfo.Instance.ActivateSkill(cardData.skills[i], selectedCharacter);
+            }
 
-        if (isTargetingCard)
-        {
+            // 코스트를 감소시킨다.
+            BattleInfo.Inst.UseCost(cardData.cost);
+
             // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
             cardCollider.enabled = false;
             // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
@@ -241,8 +227,37 @@ public class Card : MonoBehaviour
                     cardCollider.enabled = true;
                 }); // 애니메이션 끝나면 패에서 삭제
         }
+
+        // 논타겟 스킬일 때
         else
         {
+            // Field 레이어를 선택한다.
+            LayerMask layer = LayerMask.GetMask("Field");
+
+            // layer가 일치하는, 선택된 오브젝트를 가져온다.
+            GameObject selectedObject = GetClickedObject(layer);
+
+            // 오브젝트가 선택되지 않았다면
+            if (selectedObject == null)
+            {
+                // 카드 발동을 취소한다.
+                CancelUsingCard();
+
+                return;
+            }
+
+            // 카드의 모든 효과를 발동한다.
+            for (int i = 0; i < cardData.skills.Length; ++i)
+            {
+                // 타겟을 정한다. 타겟팅 카드가 아니니, selectedEnemy는 없다.
+                selectedCharacter = CardInfo.Instance.GetTarget(cardData.skills[i].target);
+
+                CardInfo.Instance.ActivateSkill(cardData.skills[i], selectedCharacter);
+            }
+
+            // 코스트를 감소시킨다.
+            BattleInfo.Inst.UseCost(cardData.cost);
+
             // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
             cardCollider.enabled = false;
             // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
@@ -262,6 +277,8 @@ public class Card : MonoBehaviour
                     cardCollider.enabled = true;
                 }); // 애니메이션 끝나면 패에서 삭제
         }
+
+        
     }
 
     // 카드 발동을 취소한다.
