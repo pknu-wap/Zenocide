@@ -3,18 +3,27 @@ using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Items : MonoBehaviour
 {
-    public static Items instance {get; private set;}
-    private void Awake() => instance = this;
-
-    public static List<string> items = new List<string>();
+    public static Items instance { get; private set; }
+    public Transform slotsParent;
     public List<TMP_Text> slots = new List<TMP_Text>();
-    
-    void Start()
+    public static List<string> items = new List<string>();
+    public string newItemName;
+    private void Awake() => instance = this;
+    private void Start()
     {
-        slots = transform.GetChild(1).GetChild(0).GetChild(0).GetComponentsInChildren<TMP_Text>().ToList();
+        foreach (TMP_Text slot in slotsParent.GetComponentsInChildren<TMP_Text>())
+        {
+            slots.Add(slot);
+            slot.text = "";
+        }
+        ItemList();
+    }
+    public void ItemList()
+    {
         items.Add("배고픔");
         items.Add("무기");
         items.Add("근력");
@@ -36,35 +45,24 @@ public class Items : MonoBehaviour
         items.Add("총");
         items.Add("총알");
         items.Add("우울증");
-        foreach (TMP_Text slot in slots)
-        {
-            slot.text = "";
-        }
     }
     public void AddItem()
     {
-        for (int i = 0; i < slots.Count; i++)
+        // 슬롯에 아이템을 추가할 인덱스 계산
+        int slotIndex = slots.FindIndex(slot => string.IsNullOrEmpty(slot.text));
+
+        // 아이템이 남아있는 경우 슬롯에 추가
+        if (items.Count > 0)
         {
-            if (!string.IsNullOrEmpty(slots[i].text))
-                continue;
-            string randomItem = AddAndRemoveItem();
-            if (randomItem == null)
-                break;
-            slots[i].text = randomItem;
-            break;
+            // 랜덤으로 선택
+            int randomIndex = Random.Range(0, items.Count);
+            // 선택된 아이템을 슬롯에 추가하고 리스트에서 제거
+            slots[slotIndex].text = items[randomIndex];
+            items.RemoveAt(randomIndex);
         }
-    }
-    public string AddAndRemoveItem()
-    {
-        if (items.Count == 0)
-            return null;
-        int randomIndex = Random.Range(0, items.Count);
-        string randomItem = items[randomIndex];
-        items.RemoveAt(randomIndex);
-        return randomItem;
     }
     public void DeleteItem()
     {
-
+        Debug.Log("없어짐");
     }
 }
