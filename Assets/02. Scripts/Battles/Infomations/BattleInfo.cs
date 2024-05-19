@@ -1,6 +1,7 @@
 // 김민철
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -13,11 +14,13 @@ public class BattleInfo : MonoBehaviour
     {
         ResetCost();
         TurnManager.Inst.onStartPlayerTurn.AddListener(ResetCost);
+
+        remainingEnemies = new List<Enemy>();
     }
 
     [Header("전투 정보")]
-    // 남은 적 숫자
-    public int remainingEnemies;
+    // 남은 적 오브젝트 배열
+    public List<Enemy> remainingEnemies;
     // 게임 오버 여부
     public bool isGameOver = false;
     // 최대 코스트
@@ -45,22 +48,33 @@ public class BattleInfo : MonoBehaviour
         bonusArmor = 0;
     }
 
-    // 적 오브젝트 숫자를 1 줄인다.
-    public void IncreaseEnemyCount()
+    // 적 오브젝트 등록한다.
+    public void EnrollEnemy(Enemy enemy)
     {
-        ++remainingEnemies;
+        remainingEnemies.Add(enemy);
     }
 
-    // 적 오브젝트 숫자를 1 줄인다.
-    public void DecreaseEnemyCount()
+    // 적 오브젝트를 삭제한다.
+    public void DisenrollEnemy(Enemy enemy)
     {
-        --remainingEnemies;
-
-        if(remainingEnemies <= 0)
+        // 리스트가 이미 비어있다면 리턴한다. (예외 처리)
+        if(remainingEnemies.Any() == false)
         {
+            return;
+        }
+
+        // 리스트에서 enemy를 삭제한다.
+        remainingEnemies.Remove(enemy);
+
+        // 삭제 후 리스트가 비어있다면
+        if(remainingEnemies.Any() == false)
+        {
+            // 게임을 종료한다.
             isGameOver = true;
 
             GameManager.Inst.Notification("승리");
+
+            // 이후 스토리로 복귀한다.
         }
     }
 

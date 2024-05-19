@@ -40,7 +40,7 @@ public class Enemy : Character
         ReadySkill();
 
         // BattleInfo에 자신 추가
-        BattleInfo.Inst.IncreaseEnemyCount();
+        BattleInfo.Inst.EnrollEnemy(this);
 
         // BattleManager에 이벤트 등록
         TurnManager.Inst.onEndEnemyTurn.AddListener(EndEnemyTurn);
@@ -121,9 +121,9 @@ public class Enemy : Character
     {
         // 오브젝트 비활성화
         gameObject.SetActive(false);
-        // BattleManager에서 자기 자신 제거
+        // TurnManager에서 자기 자신의 이벤트를 제거
         TurnManager.Inst.onEndEnemyTurn.RemoveListener(EndEnemyTurn);
-        // Battle Info에 남은 적 -1
-        BattleInfo.Inst.DecreaseEnemyCount();
+        // BattleInfo에서 자기 자신을 제거한다.
+        BattleInfo.Inst.DisenrollEnemy(this);
     }
 }
