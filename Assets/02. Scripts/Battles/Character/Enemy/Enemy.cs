@@ -98,6 +98,11 @@ public class Enemy : Character
             return this;
         }
 
+        else if(target == SkillTarget.AllEnemy)
+        {
+            //return BattleInfo;
+        }
+
         return null;
     }
 

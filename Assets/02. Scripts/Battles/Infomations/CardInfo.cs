@@ -112,9 +112,16 @@ public class CardInfo : MonoBehaviour
     // 델리게이트 배열, EffectType에 맞는 함수를 매칭한다.
     public CardSkill[] effects;
 
-    // 사용 예시
-    // CardInfo.Instance.effects[(int)효과 종류](효과량, 대상);
-    // CardInfo.Instance.effects[(int)EffectType.Buff](5, target);
+    // 카드를 사용할 때 호출한다.
+    public void UseSkill(Skill skill, Character[] target)
+    {
+        for(int i = 0; i < target.Length; ++i)
+        {
+            // 모든 타겟에게 skill을 사용한다.
+            ActivateSkill(skill, target[i]);
+            // 딜레이를 주면 좀 더 자연스럽다.
+        }
+    }
 
     // 모든 효과를 effects 배열에 등록한다.
     void EnrollAllSkills()
