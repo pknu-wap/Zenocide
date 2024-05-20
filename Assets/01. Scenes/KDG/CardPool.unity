@@ -4358,6 +4358,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemSO: {fileID: 11400000, guid: cc7407feaf5c0954196ac24a8c2d1af4, type: 2}
+  dummySO: {fileID: 11400000, guid: 85eb3355d1eb8ae4d80313a3a691f61f, type: 2}
   cardPrefab: {fileID: 506362370436929090, guid: 5cc6a70698541f240ae1f8d3a39b87c7, type: 3}
   cardBackPrefab: {fileID: 227734258949264060, guid: 2058b9041a462ae4d87b56575d4d8dbf, type: 3}
   hand: []

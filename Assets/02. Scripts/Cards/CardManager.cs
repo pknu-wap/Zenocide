@@ -12,6 +12,7 @@ public class CardManager : MonoBehaviour
 
     // 아이템 풀
     [SerializeField] ItemSO itemSO;
+    [SerializeField] DummySO dummySO;
 
     // 카드 프리팹
     [SerializeField] GameObject cardPrefab;
@@ -33,6 +34,7 @@ public class CardManager : MonoBehaviour
     // 덱, 묘지
     public List<CardData> deck;
     public List<CardData> dump;
+    List<string> ownCard;
     List<GameObject> cardBack;
     [SerializeField] TMP_Text deckCountTMP;
     [SerializeField] TMP_Text dumpCountTMP;
@@ -53,6 +55,10 @@ public class CardManager : MonoBehaviour
     {
         focusPos = new Vector3(0f, handLeft.position.y + focusOffset, -3f);
 
+        // 지금은 게임과 전투가 동시에 시작
+        // InitDeck은 게임 시작 시, SetUpDeck은 전투 시작 시 호출해야 함
+        ownCard = new List<string>(listSize);
+        InitDeck();
         SetUpDeck();
 
         dump = new List<CardData>(listSize);
@@ -73,6 +79,19 @@ public class CardManager : MonoBehaviour
         #endregion
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            AddCardToDeck(dummySO.items[Random.Range(0, 3)].name);
+        }
+
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            SetUpDeck();
+        }
+    }
+
     // 덱 카운트가 0인지 확인하고 사용해야 함
     CardData DrawCard()
     {
@@ -82,16 +101,50 @@ public class CardManager : MonoBehaviour
         return card;
     }
 
+    void InitDeck()
+    {
+        // itemSO의 카드들을 deck에 추가
+        for (int i = 0; i < itemSO.items.Length; i++)
+        {
+            CardData card = itemSO.items[i];
+            AddCardToDeck(card.name);
+        }
+    }
+
+    public void AddCardToDeck(string card)
+    {
+        ownCard.Add(card);
+    }
+
+    public void RemoveCardToDeck(string card)
+    {
+        // 중복된 카드가 있어도 한 장만 지워지게
+        ownCard.Remove(card);
+    }
+
     void SetUpDeck()
     {
         deck = new List<CardData>(listSize);
 
-        // itemSO의 카드들을 deck에 추가
+        // 각 SO를 순회하며 보유한 카드들을 deck에 추가
         for (int i = 0; i < itemSO.items.Length; i++) 
         {
             CardData card = itemSO.items[i];
-            deck.Add(card);
+            if(ownCard.IndexOf(card.name) != -1)
+            {
+                deck.Add(card);
+            }
         }
+
+        for (int i = 0; i < dummySO.items.Length; i++)
+        {
+            CardData card = dummySO.items[i];
+            if (ownCard.IndexOf(card.name) != -1)
+            {
+                deck.Add(card);
+            }
+        }
+
         UpdateDeckCount();
 
         // deck 셔플
