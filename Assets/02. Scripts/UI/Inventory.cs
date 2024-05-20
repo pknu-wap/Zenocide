@@ -14,7 +14,7 @@ public class Inventory : MonoBehaviour
     bool activeInventory = false;
     private void Start()
     {
-        inventoryPanel.SetActive(activeInventory); // 초기 설정값을 false로 한다.
+        inventoryPanel.SetActive(activeInventory); // 게임 시작 시 인벤토리 안 보이게
         slots = transform.GetChild(1).GetChild(0).GetChild(0).GetComponentsInChildren<TMP_Text>().ToList();
     }
     public void ToggleInventory()

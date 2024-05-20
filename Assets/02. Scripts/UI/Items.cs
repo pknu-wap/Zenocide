@@ -12,6 +12,7 @@ public class Items : MonoBehaviour
     public List<TMP_Text> slots = new List<TMP_Text>();
     public static List<string> items = new List<string>();
     public string newItemName;
+
     private void Awake() => instance = this;
     private void Start()
     {
@@ -48,21 +49,39 @@ public class Items : MonoBehaviour
     }
     public void AddItem()
     {
-        // 슬롯에 아이템을 추가할 인덱스 계산
-        int slotIndex = slots.FindIndex(slot => string.IsNullOrEmpty(slot.text));
-
-        // 아이템이 남아있는 경우 슬롯에 추가
         if (items.Count > 0)
         {
-            // 랜덤으로 선택
-            int randomIndex = Random.Range(0, items.Count);
-            // 선택된 아이템을 슬롯에 추가하고 리스트에서 제거
-            slots[slotIndex].text = items[randomIndex];
-            items.RemoveAt(randomIndex);
+            // 첫 번째 비어 있는 슬롯을 찾음
+            int slotIndex = slots.FindIndex(slot => string.IsNullOrEmpty(slot.text));
+            if (slotIndex != -1)
+            {
+                // 첫 번째 비어 있는 슬롯부터 순서대로 아이템을 추가
+                for (int i = slotIndex; i > 0; i--)
+                {
+                    slots[i].text = slots[i - 1].text;
+                }
+                // items 리스트에 있는 랜덤 아이템 슬롯에 추가
+                int randomIndex = Random.Range(0, items.Count);
+                slots[0].text = items[randomIndex];
+                items.RemoveAt(randomIndex);
+            }
         }
     }
-    public void DeleteItem()
+    public void RemoveItem()
     {
-        Debug.Log("없어짐");
+        int slotIndex = slots.FindIndex(slot => !string.IsNullOrEmpty(slot.text));
+        // 아이템이 표시된 슬롯을 찾았을 경우
+        if (slotIndex != -1)
+        {
+            // 슬롯에 있는 아이템을 removedItem에 저장한다.
+            string removedItem = slots[slotIndex].text;
+            // removedItem을 다시 items 리스트에 추가
+            items.Add(removedItem);
+            // 슬롯에 있는 아이템들을 앞으로 한 칸씩 이동
+            for (int i = slotIndex; i < slots.Count - 1; i++)
+            {
+                slots[i].text = slots[i + 1].text;
+            }
+        }
     }
 }
