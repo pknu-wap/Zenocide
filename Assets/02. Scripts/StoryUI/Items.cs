@@ -41,7 +41,7 @@ public class Items : MonoBehaviour
             slot.text = "";
         }
     }
-    public void AddItem()
+    public void AddItem(string itemName)
     {
         for (int i = 0; i < slots.Count; i++)
         {
