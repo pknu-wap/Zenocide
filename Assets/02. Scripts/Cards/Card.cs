@@ -200,17 +200,23 @@ public class Card : MonoBehaviour
                 yield break;
             }
 
+            // 코스트를 감소시킨다.
+            BattleInfo.Inst.UseCost(cardData.cost);
+
             // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
             cardCollider.enabled = false;
+
+            // 애니메이션이 끝났는지 검사하는 변수
+            bool isAnimationDone = false;
             // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
             moveSequence = DOTween.Sequence()
                 .Append(transform.DOMove(CardManager.Inst.cardDumpPoint.position, dotweenTime))
                 .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
                 .Join(transform.DOScale(Vector3.one, dotweenTime))
                 .OnComplete(() => {
-                    CardManager.Inst.DiscardCard(this);
                     cardCollider.enabled = true;
-                }); // 애니메이션 끝나면 패에서 삭제
+                    isAnimationDone = true;
+                }); // 애니메이션 끝나면 알림
 
             // 이제 공격 타겟을 정해야 한다.
             // 적 오브젝트의 Enemy 스크립트를 가져온다
@@ -229,8 +235,14 @@ public class Card : MonoBehaviour
                 yield return new WaitForSeconds(skillDelay);
             }
 
-            // 코스트를 감소시킨다.
-            BattleInfo.Inst.UseCost(cardData.cost);
+            // 애니메이션이 끝날 때까지 기다린다.
+            while (isAnimationDone == false)
+            {
+                yield return null;
+            }
+
+            // 카드를 삭제한다.
+            CardManager.Inst.DiscardCard(this);
         }
 
         // 논타겟 스킬일 때
@@ -251,8 +263,14 @@ public class Card : MonoBehaviour
                 yield break;
             }
 
+            // 코스트를 감소시킨다.
+            BattleInfo.Inst.UseCost(cardData.cost);
+
             // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
             cardCollider.enabled = false;
+
+            // 애니메이션이 끝났는지 검사하는 변수
+            bool isAnimationDone = false;
             // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
             moveSequence = DOTween.Sequence()
                 // 중앙으로 이동하고
@@ -266,9 +284,9 @@ public class Card : MonoBehaviour
                 .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
                 .Join(transform.DOScale(Vector3.one, dotweenTime))
                 .OnComplete(() => {
-                    CardManager.Inst.DiscardCard(this);
                     cardCollider.enabled = true;
-                }); // 애니메이션 끝나면 패에서 삭제
+                    isAnimationDone = true;
+                }); // 애니메이션 끝나면 알림
 
             // 카드의 모든 효과를 발동한다.
             for (int i = 0; i < cardData.skills.Length; ++i)
@@ -282,11 +300,15 @@ public class Card : MonoBehaviour
                 yield return new WaitForSeconds(skillDelay);
             }
 
-            // 코스트를 감소시킨다.
-            BattleInfo.Inst.UseCost(cardData.cost);
-        }
+            // 애니메이션이 끝날 때까지 기다린다.
+            while (isAnimationDone == false)
+            {
+                yield return null;
+            }
 
-        
+            // 카드를 삭제한다.
+            CardManager.Inst.DiscardCard(this);
+        }
     }
 
     // 카드 발동을 취소한다.
