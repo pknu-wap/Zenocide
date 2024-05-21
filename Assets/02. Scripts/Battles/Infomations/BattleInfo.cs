@@ -108,6 +108,19 @@ public class BattleInfo : MonoBehaviour
         UpdateCostText();
     }
 
+    // 코스트를 cost 만큼 회복시킨다.
+    public void RestoreCost(int cost)
+    {
+        currentCost += cost;
+
+        if(currentCost > maxCost)
+        {
+            currentCost = maxCost;
+        }
+
+        UpdateCostText();
+    }
+
     void UpdateCostText()
     {
         costText.text = currentCost + "/" + maxCost;

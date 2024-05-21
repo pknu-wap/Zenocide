@@ -188,6 +188,7 @@ public class CardInfo : MonoBehaviour
     // target이 null인 경우는 Card의 OnEndDrag에서 검사했으므로, 검사하지 않는다.
     public void Attack(int amount, int turnCount, Character target)
     {
+        // 타겟의 체력을 감소시킨다.
         target.DecreaseHP(amount);
     }
 
@@ -198,17 +199,26 @@ public class CardInfo : MonoBehaviour
 
     public void Heal(int amount, int turnCount, Character target)
     {
+        // 타겟의 체력을 회복시킨다.
         target.IncreaseHP(amount);
     }
 
     public void Cleanse(int amount, int turnCount, Character target)
     {
+        // 타겟의 디버프를 모두 제거한다.
         target.CleanseDebuff();
     }
 
     public void RestoreCost(int amount, int turnCount, Character target)
     {
-        Debug.Log("RestoreCost");
+        // target이 Player가 아니라면 종료한다.
+        if (target.GetType() != typeof(Player))
+        {
+            return;
+        }
+
+        // 코스트를 회복시킨다.
+        BattleInfo.Inst.RestoreCost(amount);
     }
 
     public void Draw(int amount, int turnCount, Character target)
