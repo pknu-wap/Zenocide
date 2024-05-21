@@ -159,6 +159,14 @@ public class Character : MonoBehaviour
         UpdateDebuffIcon(i);
     }
 
+    // 디버프를 전부 제거한다.
+    public void CleanseDebuff()
+    {
+        debuffs.Clear();
+
+        UpdateAllDebuffIcon();
+    }
+
     public void UpdateDebuffIcon(int index)
     {
         /*
