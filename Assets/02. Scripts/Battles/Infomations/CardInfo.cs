@@ -219,7 +219,14 @@ public class CardInfo : MonoBehaviour
 
     public void Draw(int amount, int turnCount, Character target)
     {
-        Debug.Log("Draw");
+        // target이 Player가 아니라면 종료한다.
+        if (target.GetType() != typeof(Player))
+        {
+            return;
+        }
+
+        // 카드를 뽑는다.
+        StartCoroutine(TurnManager.Inst.DrawCard(amount));
     }
 
     public void Bleed(int amount, int turnCount, Character target)

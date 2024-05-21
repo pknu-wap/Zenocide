@@ -82,6 +82,17 @@ public class TurnManager : MonoBehaviour
         yield return delay03;
     }
 
+    // 카드를 count 장 드로우 합니다.
+    public IEnumerator DrawCard(int count)
+    {
+        // 드로우 카드 수만큼 드로우
+        for (int i = 0; i < count; i++)
+        {
+            yield return delay03;
+            OnAddCard?.Invoke(true);
+        }
+    }
+
     public void EndTurn()
     {
         if (BattleInfo.Inst.isGameOver)
