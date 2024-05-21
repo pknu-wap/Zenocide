@@ -198,7 +198,7 @@ public class CardInfo : MonoBehaviour
 
     public void Heal(int amount, int turnCount, Character target)
     {
-        Debug.Log("Heal");
+        target.IncreaseHP(amount);
     }
 
     public void Cleanse(int amount, int turnCount, Character target)
