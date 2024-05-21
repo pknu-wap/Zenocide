@@ -3223,7 +3223,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4377931041493569489, guid: 75fdabc16d41bc04fa3893ed0b15e77a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -220
+      value: -260
       objectReference: {fileID: 0}
     - target: {fileID: 4377931041493569489, guid: 75fdabc16d41bc04fa3893ed0b15e77a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -6521,7 +6521,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d24acc541c41a274fb4af241d3420fa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  remainingEnemies: 0
+  remainingEnemies: []
   isGameOver: 0
   maxCost: 5
   currentCost: 5
@@ -10432,7 +10432,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4377931041493569489, guid: 75fdabc16d41bc04fa3893ed0b15e77a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 220
+      value: 260
       objectReference: {fileID: 0}
     - target: {fileID: 4377931041493569489, guid: 75fdabc16d41bc04fa3893ed0b15e77a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -12766,7 +12766,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: -310987611
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_TargetDisplay: 1
 --- !u!224 &1819385474 stripped
 RectTransform:
@@ -13563,7 +13563,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: -310987611
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_TargetDisplay: 0
 --- !u!224 &1994471201 stripped
 RectTransform:

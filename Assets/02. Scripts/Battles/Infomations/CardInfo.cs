@@ -1,8 +1,7 @@
 // 김민철
 using UnityEngine;
 using System;
-using System.Linq;
-using System.Collections.Generic;
+using System.Collections;
 
 public class CardInfo : MonoBehaviour
 {
@@ -183,7 +182,6 @@ public class CardInfo : MonoBehaviour
         {
             // 모든 타겟에게 skill을 사용한다.
             effects[(int)skill.type](skill.amount, skill.turnCount, target[i]);
-            // 딜레이를 주면 좀 더 자연스럽다.
         }
     }
 

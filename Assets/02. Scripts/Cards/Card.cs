@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
+using System.Collections;
 
 public class Card : MonoBehaviour
 {
@@ -162,15 +163,16 @@ public class Card : MonoBehaviour
 
         // 드래그가 끝남을 표시
         isDragging = false;
-
         // 카드를 사용한다.
-        UseCard();
+        StartCoroutine(UseCard());
     }
     #endregion 마우스 상호작용
 
     #region 카드 사용
+    [SerializeField] private float skillDelay = 0.2f;
+
     // 카드를 사용한다. (마우스가 놓아지는 시점에 호출)
-    private void UseCard()
+    private IEnumerator UseCard()
     {
         // 코스트가 모자란 경우
         if (BattleInfo.Inst.CanUseCost(cardData.cost) == false)
@@ -178,7 +180,7 @@ public class Card : MonoBehaviour
             // 카드 발동을 취소한다.
             CancelUsingCard();
 
-            return;
+            yield break;
         }
 
         // 타겟팅 스킬일 때
@@ -195,8 +197,20 @@ public class Card : MonoBehaviour
                 // 카드 발동을 취소한다.
                 CancelUsingCard();
 
-                return;
+                yield break;
             }
+
+            // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
+            cardCollider.enabled = false;
+            // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
+            moveSequence = DOTween.Sequence()
+                .Append(transform.DOMove(CardManager.Inst.cardDumpPoint.position, dotweenTime))
+                .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
+                .Join(transform.DOScale(Vector3.one, dotweenTime))
+                .OnComplete(() => {
+                    CardManager.Inst.DiscardCard(this);
+                    cardCollider.enabled = true;
+                }); // 애니메이션 끝나면 패에서 삭제
 
             // 이제 공격 타겟을 정해야 한다.
             // 적 오브젝트의 Enemy 스크립트를 가져온다
@@ -210,22 +224,13 @@ public class Card : MonoBehaviour
 
                 // 해당 타겟에게 스킬을 시전한다.
                 CardInfo.Instance.ActivateSkill(cardData.skills[i], selectedCharacter);
+
+                // 딜레이를 주면 좀 더 자연스럽다. -> 코루틴의 필요
+                yield return new WaitForSeconds(skillDelay);
             }
 
             // 코스트를 감소시킨다.
             BattleInfo.Inst.UseCost(cardData.cost);
-
-            // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
-            cardCollider.enabled = false;
-            // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
-            moveSequence = DOTween.Sequence()
-                .Append(transform.DOMove(CardManager.Inst.cardDumpPoint.position, dotweenTime))
-                .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
-                .Join(transform.DOScale(Vector3.one, dotweenTime))
-                .OnComplete(() => {
-                    CardManager.Inst.DiscardCard(this);
-                    cardCollider.enabled = true;
-                }); // 애니메이션 끝나면 패에서 삭제
         }
 
         // 논타겟 스킬일 때
@@ -243,20 +248,8 @@ public class Card : MonoBehaviour
                 // 카드 발동을 취소한다.
                 CancelUsingCard();
 
-                return;
+                yield break;
             }
-
-            // 카드의 모든 효과를 발동한다.
-            for (int i = 0; i < cardData.skills.Length; ++i)
-            {
-                // 타겟을 정한다. 타겟팅 카드가 아니니, selectedEnemy는 없다.
-                selectedCharacter = CardInfo.Instance.GetTarget(cardData.skills[i].target);
-
-                CardInfo.Instance.ActivateSkill(cardData.skills[i], selectedCharacter);
-            }
-
-            // 코스트를 감소시킨다.
-            BattleInfo.Inst.UseCost(cardData.cost);
 
             // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
             cardCollider.enabled = false;
@@ -276,6 +269,21 @@ public class Card : MonoBehaviour
                     CardManager.Inst.DiscardCard(this);
                     cardCollider.enabled = true;
                 }); // 애니메이션 끝나면 패에서 삭제
+
+            // 카드의 모든 효과를 발동한다.
+            for (int i = 0; i < cardData.skills.Length; ++i)
+            {
+                // 타겟을 정한다. 타겟팅 카드가 아니니, selectedEnemy는 없다.
+                selectedCharacter = CardInfo.Instance.GetTarget(cardData.skills[i].target);
+
+                CardInfo.Instance.ActivateSkill(cardData.skills[i], selectedCharacter);
+
+                // 딜레이를 주면 좀 더 자연스럽다. -> 코루틴의 필요
+                yield return new WaitForSeconds(skillDelay);
+            }
+
+            // 코스트를 감소시킨다.
+            BattleInfo.Inst.UseCost(cardData.cost);
         }
 
         

@@ -480,7 +480,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -153.9}
+  m_AnchoredPosition: {x: 0, y: -150}
   m_SizeDelta: {x: 500, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5287970277311670533
@@ -725,9 +725,8 @@ MonoBehaviour:
   behaviorName: {fileID: 0}
   behaviorDescription: {fileID: 0}
   currentSkill:
-    skillName: 
-    description: 
     type: 0
+    target: 0
     amount: 0
     turnCount: 0
 --- !u!1 &5488958841031887651

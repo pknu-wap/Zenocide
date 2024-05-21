@@ -50,12 +50,10 @@ public class BattleInfo : MonoBehaviour
         bonusArmor = 0;
     }
 
-    // 적 오브젝트 등록한다.
+    // 적 오브젝트 등록한다. 스토리 씬과 연계되면 삭제될 수도 있다.
     public void EnrollEnemy(Enemy enemy)
     {
         remainingEnemies.Add(enemy);
-
-        Debug.Log("추가 했음");
     }
 
     // 적 오브젝트를 삭제한다.
