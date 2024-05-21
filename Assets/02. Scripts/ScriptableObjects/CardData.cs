@@ -10,8 +10,6 @@ public enum SkillType
     Cleanse,        // 디버프 제거
     RestoreCost,    // 코스트 회복
     Draw,           // 카드 드로우
-    Buff,           // 버프
-    Debuff,         // 디버프
     Bleed,          // 출혈
 }
 

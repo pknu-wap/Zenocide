@@ -48,8 +48,6 @@ public class CardInfo : MonoBehaviour
         layerDict[(int)SkillType.Cleanse] = LayerMask.GetMask("Field");
         layerDict[(int)SkillType.RestoreCost] = LayerMask.GetMask("Field");
         layerDict[(int)SkillType.Draw] = LayerMask.GetMask("Field");
-        layerDict[(int)SkillType.Buff] = LayerMask.GetMask("Field");
-        layerDict[(int)SkillType.Debuff] = LayerMask.GetMask("Enemy");
         layerDict[(int)SkillType.Bleed] = LayerMask.GetMask("Enemy");
     }
 
@@ -169,8 +167,6 @@ public class CardInfo : MonoBehaviour
         effects[(int)SkillType.Cleanse] += Cleanse;
         effects[(int)SkillType.RestoreCost] += RestoreCost;
         effects[(int)SkillType.Draw] += Draw;
-        effects[(int)SkillType.Buff] += Buff;
-        effects[(int)SkillType.Debuff] += Debuff;
         effects[(int)SkillType.Bleed] += Bleed;
     }
 
@@ -224,16 +220,6 @@ public class CardInfo : MonoBehaviour
     public void Draw(int amount, int turnCount, Character target)
     {
         Debug.Log("Draw");
-    }
-
-    public void Buff(int amount, int turnCount, Character target)
-    {
-        Debug.Log("Buff");
-    }
-
-    public void Debuff(int amount, int turnCount, Character target)
-    {
-        Debug.Log("Debuff");
     }
 
     public void Bleed(int amount, int turnCount, Character target)
