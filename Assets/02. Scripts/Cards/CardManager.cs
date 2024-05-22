@@ -10,9 +10,8 @@ public class CardManager : MonoBehaviour
     public static CardManager Inst { get; private set; }
     void Awake() => Inst = this;
 
-    // 아이템 풀
+    // 카드 풀
     [SerializeField] ItemSO itemSO;
-    [SerializeField] DummySO dummySO;
 
     // 카드 프리팹
     [SerializeField] GameObject cardPrefab;
@@ -34,7 +33,6 @@ public class CardManager : MonoBehaviour
     // 덱, 묘지
     public List<CardData> deck;
     public List<CardData> dump;
-    List<string> ownCard;
     List<GameObject> cardBack;
     [SerializeField] TMP_Text deckCountTMP;
     [SerializeField] TMP_Text dumpCountTMP;
@@ -56,13 +54,10 @@ public class CardManager : MonoBehaviour
         focusPos = new Vector3(0f, handLeft.position.y + focusOffset, -3f);
 
         // 지금은 게임과 전투가 동시에 시작
-        // InitDeck은 게임 시작 시, SetUpDeck은 전투 시작 시 호출해야 함
-        ownCard = new List<string>(listSize);
+        // InitDeck은 게임 시작 시, SetUpDeck과 InitDump는 전투 시작 시 호출해야 함
         InitDeck();
         SetUpDeck();
-
-        dump = new List<CardData>(listSize);
-        UpdateDumpCount();
+        InitDump();
 
         // 동적 참조를 줄이기 위해 싱글톤 대신 Action으로 호출
         TurnManager.OnAddCard += AddCardToHand;
@@ -79,19 +74,6 @@ public class CardManager : MonoBehaviour
         #endregion
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            AddCardToDeck(dummySO.items[Random.Range(0, 3)].name);
-        }
-
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            SetUpDeck();
-        }
-    }
-
     // 덱 카운트가 0인지 확인하고 사용해야 함
     CardData DrawCard()
     {
@@ -103,51 +85,64 @@ public class CardManager : MonoBehaviour
 
     void InitDeck()
     {
-        // itemSO의 카드들을 deck에 추가
-        for (int i = 0; i < itemSO.items.Length; i++)
+        string[] defaultDeck =
         {
-            CardData card = itemSO.items[i];
-            AddCardToDeck(card.name);
-        }
-    }
+            "물어뜯기 꼬집기 깨물기",
+            "체인 소우",
+            "화학병",
+            "전통적인 무기",
+            "깨진 유리",
+            "논타겟 카드",
+            "독침",
+            "짱돌",
+            "화학병"
+        };
 
-    public void AddCardToDeck(string card)
-    {
-        ownCard.Add(card);
-    }
-
-    public void RemoveCardToDeck(string card)
-    {
-        // 중복된 카드가 있어도 한 장만 지워지게
-        ownCard.Remove(card);
-    }
-
-    void SetUpDeck()
-    {
         deck = new List<CardData>(listSize);
-
-        // 각 SO를 순회하며 보유한 카드들을 deck에 추가
-        for (int i = 0; i < itemSO.items.Length; i++) 
+        // 기본 카드들을 deck에 추가
+        foreach (string card in defaultDeck)
         {
-            CardData card = itemSO.items[i];
-            if(ownCard.IndexOf(card.name) != -1)
-            {
-                deck.Add(card);
-            }
-        }
-
-        for (int i = 0; i < dummySO.items.Length; i++)
-        {
-            CardData card = dummySO.items[i];
-            if (ownCard.IndexOf(card.name) != -1)
-            {
-                deck.Add(card);
-            }
+            AddCardToDeck(card);
         }
 
         UpdateDeckCount();
+    }
 
-        // deck 셔플
+    void InitDump()
+    {
+        dump = new List<CardData>(listSize);
+        UpdateDumpCount();
+    }
+
+    public void AddCardToDeck(string cardName)
+    {
+        foreach(CardData card in itemSO.items)
+        {
+            if(card.name == cardName) { 
+                deck.Add(card);
+            }
+        }
+    }
+
+    public void RemoveCardFromDeck(string cardName)
+    {
+        CardData target = null;
+        foreach(CardData card in deck)
+        {
+            // 일치하는 이름 중 첫번째 카드를 가져온다.
+            // 중복 카드가 있어도 하나만 선택
+            if(card.name == cardName) {
+                target = card;
+                break;
+            }
+        }
+
+        // 받은 이름을 못찾으면 어케될까
+        deck.Remove(target);
+    }
+
+    void ShuffleDeck()
+    {
         for (int i = 0; i < deck.Count; i++)
         {
             int rand = Random.Range(i, deck.Count);
@@ -176,7 +171,8 @@ public class CardManager : MonoBehaviour
         if (deck.Count == 0)
         {
             StartCoroutine(ResetDeckAnimationCo(dump.Count));
-            ResetDeck();
+            SetUpDeck();
+            InitDump();
         }
 
         card.Setup(DrawCard());
@@ -282,10 +278,8 @@ public class CardManager : MonoBehaviour
         CardAlignment();
     }
 
-    public void ResetDeck()
+    void SetUpDeck()
     {
-        deck.Clear();
-
         // dump의 카드들을 deck에 추가
         for (int i = 0; i < dump.Count; i++)
         {
@@ -294,18 +288,7 @@ public class CardManager : MonoBehaviour
         }
         UpdateDeckCount();
 
-        // deck 셔플
-        for (int i = 0; i < deck.Count; i++)
-        {
-            int rand = Random.Range(i, deck.Count);
-            CardData temp = deck[i];
-            deck[i] = deck[rand];
-            deck[rand] = temp;
-        }
-
-        // dump 비우기
-        dump.Clear();
-        UpdateDumpCount();
+        ShuffleDeck();
     }
 
     IEnumerator ResetDeckAnimationCo(int dumpCount)
@@ -361,7 +344,7 @@ public class CardManager : MonoBehaviour
             // sequence 끝나기 전까지 기다리기
             yield return new WaitForSeconds(delay03);
 
-            // sequence가 끝나면 모든 오브젝트 파괴
+            // sequence가 끝나면s 오브젝트 파괴
             dump.Add(card.cardData);
             UpdateDumpCount();
             DestroyImmediate(card.gameObject);
