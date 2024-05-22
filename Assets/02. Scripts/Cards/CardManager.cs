@@ -74,6 +74,22 @@ public class CardManager : MonoBehaviour
         #endregion
     }
 
+    private void Update()
+    {
+        string[] dummyCards =
+        {
+            "더미1",
+            "더미2",
+            "더미3"
+        };
+
+        if (Input.GetKeyDown(KeyCode.Q) && TurnManager.Inst.myTurn)
+        {
+            AddCardToDeck(dummyCards[Random.Range(0, 3)]);
+            SetUpDeck();
+        }
+    }
+
     // 덱 카운트가 0인지 확인하고 사용해야 함
     CardData DrawCard()
     {
@@ -108,12 +124,6 @@ public class CardManager : MonoBehaviour
         UpdateDeckCount();
     }
 
-    void SetUpDump()
-    {
-        dump = new List<CardData>(listSize);
-        UpdateDumpCount();
-    }
-
     public void AddCardToDeck(string cardName)
     {
         foreach(CardData card in itemSO.items)
@@ -122,6 +132,7 @@ public class CardManager : MonoBehaviour
                 deck.Add(card);
             }
         }
+        UpdateDeckCount();
     }
 
     public void RemoveCardFromDeck(string cardName)
@@ -171,7 +182,7 @@ public class CardManager : MonoBehaviour
         if (deck.Count == 0)
         {
             StartCoroutine(ResetDeckAnimationCo(dump.Count));
-            SetUpDeck();
+            ResetDeck();
             SetUpDump();
         }
 
@@ -278,7 +289,34 @@ public class CardManager : MonoBehaviour
         CardAlignment();
     }
 
+    // dump와 hand를 덱으로 모아서 셔플
     void SetUpDeck()
+    {
+        // hand의 카드들을 deck에 추가하고 오브젝트 파괴
+        for (int i = 0; i < hand.Count; i++)
+        {
+            Card card = hand[i];
+            deck.Add(card.cardData);
+            DestroyImmediate(card.gameObject);
+        }
+
+        SetUpDump();
+        hand.Clear();
+        UpdateDeckCount();
+        selectCard = null;
+
+        ShuffleDeck();
+    }
+
+    // dump를 deck에 모아 셔플
+    void ResetDeck()
+    {
+        SetUpDump();
+
+        ShuffleDeck();
+    }
+
+    void SetUpDump()
     {
         // dump의 카드들을 deck에 추가
         for (int i = 0; i < dump.Count; i++)
@@ -286,9 +324,9 @@ public class CardManager : MonoBehaviour
             CardData card = dump[i];
             deck.Add(card);
         }
-        UpdateDeckCount();
 
-        ShuffleDeck();
+        dump = new List<CardData>(listSize);
+        UpdateDumpCount();
     }
 
     IEnumerator ResetDeckAnimationCo(int dumpCount)
@@ -344,7 +382,7 @@ public class CardManager : MonoBehaviour
             // sequence 끝나기 전까지 기다리기
             yield return new WaitForSeconds(delay03);
 
-            // sequence가 끝나면s 오브젝트 파괴
+            // sequence가 끝나면 오브젝트 파괴
             dump.Add(card.cardData);
             UpdateDumpCount();
             DestroyImmediate(card.gameObject);
