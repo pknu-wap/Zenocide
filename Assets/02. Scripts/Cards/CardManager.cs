@@ -57,7 +57,7 @@ public class CardManager : MonoBehaviour
         // InitDeck은 게임 시작 시, SetUpDeck과 InitDump는 전투 시작 시 호출해야 함
         InitDeck();
         SetUpDeck();
-        InitDump();
+        SetUpDump();
 
         // 동적 참조를 줄이기 위해 싱글톤 대신 Action으로 호출
         TurnManager.OnAddCard += AddCardToHand;
@@ -108,7 +108,7 @@ public class CardManager : MonoBehaviour
         UpdateDeckCount();
     }
 
-    void InitDump()
+    void SetUpDump()
     {
         dump = new List<CardData>(listSize);
         UpdateDumpCount();
@@ -137,7 +137,7 @@ public class CardManager : MonoBehaviour
             }
         }
 
-        // 받은 이름을 못찾으면 어케될까
+        // target이 null이면 Remove가 false를 반환하고 아무 일도 일어나지 않는다.
         deck.Remove(target);
     }
 
@@ -172,7 +172,7 @@ public class CardManager : MonoBehaviour
         {
             StartCoroutine(ResetDeckAnimationCo(dump.Count));
             SetUpDeck();
-            InitDump();
+            SetUpDump();
         }
 
         card.Setup(DrawCard());
