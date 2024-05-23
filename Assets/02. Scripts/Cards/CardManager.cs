@@ -194,7 +194,7 @@ public class CardManager : MonoBehaviour
     {
         Sequence sequence = DOTween.Sequence()
                 .Append(card.transform.DOMove(cardDrawPoint.position, delay05))
-                .Join(card.transform.DOScale(Vector3.one * 12f, delay05))
+                .Join(card.transform.DOScale(Vector3.one * 15f, delay05))
                 .SetEase(Ease.OutCubic);
 
         yield return new WaitForSeconds(delay05);
