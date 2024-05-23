@@ -6,14 +6,14 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 public class BleedEffect
 {
-    public BleedEffect(EnemySkillType type, int damagePerTurn, int remainingTurns)
+    public BleedEffect(SkillType type, int damagePerTurn, int remainingTurns)
     {
         this.type = type;
         this.damagePerTurn = damagePerTurn;
         this.remainingTurns = remainingTurns;
     }
 
-    public EnemySkillType type;
+    public SkillType type;
     public int damagePerTurn;
     public int remainingTurns;
 }
@@ -124,6 +124,23 @@ public class Character : MonoBehaviour
         }
     }
 
+    // 이 오브젝트의 hp를 감소시킨다.
+    public void IncreaseHP(int heal)
+    {
+        // hp를 damage만큼 감소시킨다.
+        currentHp += heal;
+
+        // hp가 최대치 이상이 될 경우
+        if (currentHp > maxHp)
+        {
+            // 최대치로 맞추기
+            currentHp = maxHp;
+        }
+
+        // UI 갱신
+        UpdateCurrentHP();
+    }
+
     public virtual void Die()
     {
         // 죽음과 관련된 효과 처리
@@ -140,6 +157,14 @@ public class Character : MonoBehaviour
         int i = debuffs.Count - 1;
 
         UpdateDebuffIcon(i);
+    }
+
+    // 디버프를 전부 제거한다.
+    public void CleanseDebuff()
+    {
+        debuffs.Clear();
+
+        UpdateAllDebuffIcon();
     }
 
     public void UpdateDebuffIcon(int index)

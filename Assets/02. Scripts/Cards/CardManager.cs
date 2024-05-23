@@ -126,9 +126,10 @@ public class CardManager : MonoBehaviour
 
     public void AddCardToDeck(string cardName)
     {
-        foreach(CardData card in itemSO.items)
+        foreach (CardData card in itemSO.items)
         {
-            if(card.name == cardName) { 
+            if (card.name == cardName)
+            {
                 deck.Add(card);
             }
         }
@@ -138,11 +139,12 @@ public class CardManager : MonoBehaviour
     public void RemoveCardFromDeck(string cardName)
     {
         CardData target = null;
-        foreach(CardData card in deck)
+        foreach (CardData card in deck)
         {
             // 일치하는 이름 중 첫번째 카드를 가져온다.
             // 중복 카드가 있어도 하나만 선택
-            if(card.name == cardName) {
+            if (card.name == cardName)
+            {
                 target = card;
                 break;
             }
@@ -162,7 +164,7 @@ public class CardManager : MonoBehaviour
             deck[rand] = temp;
         }
     }
-    
+
     void OnDestroy()
     {
         TurnManager.OnAddCard -= AddCardToHand;
@@ -337,7 +339,7 @@ public class CardManager : MonoBehaviour
             cardBack[i].SetActive(true);
         }
 
-        for(int i = 0; i < dumpCount; i++)
+        for (int i = 0; i < dumpCount; i++)
         {
             // 포물선 이동
             Sequence sequence = DOTween.Sequence()
@@ -375,7 +377,7 @@ public class CardManager : MonoBehaviour
                 .Join(card.transform.DORotateQuaternion(Utils.QI, delay03))
                 .Join(card.transform.DOScale(Vector3.one, delay03))
                 .SetEase(Ease.OutQuad);
-            
+
             hand.RemoveAt(0);
             CardAlignment();
 
@@ -417,7 +419,7 @@ public class CardManager : MonoBehaviour
 
     public void CardMouseDown()
     {
-        if(TurnManager.Inst.myTurn)
+        if (TurnManager.Inst.myTurn)
             DiscardCard(selectCard);
     }
 
@@ -432,7 +434,7 @@ public class CardManager : MonoBehaviour
         {
             card.MoveTransform(card.originPRS, false);
         }
-        
+
         card.GetComponent<CardOrder>().SetMostFrontOrder(isEnlarge);
     }
 
