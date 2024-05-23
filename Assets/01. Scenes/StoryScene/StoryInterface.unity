@@ -3237,6 +3237,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventoryPanel: {fileID: 814733336}
+  slots: []
 --- !u!114 &814733340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7674,7 +7675,10 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 3487a98c5b37fbf4982d96f6086dcd56, type: 3}
   StoryText: []
   StoryName: []
+  ChoiceUpContent: []
+  ChoiceDownContent: []
   currentLine: 0
+  currentChoice: 0
 --- !u!224 &1735708312 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5866411685112972693, guid: 58794674ef2e25743a93da63a585c97c, type: 3}
