@@ -12,24 +12,25 @@ public class TurnManager : MonoBehaviour
     private void Awake() => Inst = this;
 
     [Header("Develop")]
-    [SerializeField] [Tooltip("½ÃÀÛ ÅÏ ¸ğµå¸¦ Á¤ÇÕ´Ï´Ù")] ETurnMode eTurnMode;
-    [SerializeField] [Tooltip("µå·Î¿ì Ä«µå °³¼ö¸¦ Á¤ÇÕ´Ï´Ù")] int drawCardCount;
+    [SerializeField] [Tooltip("ì‹œì‘ í„´ ëª¨ë“œë¥¼ ì •í•©ë‹ˆë‹¤")] ETurnMode eTurnMode;
+    [SerializeField] [Tooltip("ë“œë¡œìš° ì¹´ë“œ ê°œìˆ˜ë¥¼ ì •í•©ë‹ˆë‹¤")] int drawCardCount;
 
     [Header("Properties")]
-    public bool isLoading; // °ÔÀÓ ³¡³ª¸é isLoadingÀ» true·Î ÇÏ¸é Ä«µå¿Í ¿£Æ¼Æ¼ Å¬¸¯¹æÁö
+    public bool isLoading; // ê²Œì„ ëë‚˜ë©´ isLoadingì„ trueë¡œ í•˜ë©´ ì¹´ë“œì™€ ì—”í‹°í‹° í´ë¦­ë°©ì§€
     public bool myTurn;
 
     enum ETurnMode { Random, My, Other }
     WaitForSeconds delay03 = new WaitForSeconds(0.3f);
+    WaitForSeconds delay05 = new WaitForSeconds(0.5f);
     WaitForSeconds delay07 = new WaitForSeconds(0.7f);
 
     public static Action<bool> OnAddCard;
 
-    // ÅÏ ÀÌº¥Æ®
-    public UnityEvent onStartPlayerTurn;    // ÇÃ·¹ÀÌ¾î ÅÏÀÌ ½ÃÀÛÇÒ ¶§
-    public UnityEvent onStartEnemyTurn;     // Àû ÅÏÀÌ ½ÃÀÛÇÒ ¶§
-    public UnityEvent onEndPlayerTurn;      // ÇÃ·¹ÀÌ¾î ÅÏÀÌ ³¡³¯ ¶§
-    public UnityEvent onEndEnemyTurn;       // Àû ÅÏÀÌ ³¡³¯ ¶§
+    // í„´ ì´ë²¤íŠ¸
+    public UnityEvent onStartPlayerTurn;    // í”Œë ˆì´ì–´ í„´ì´ ì‹œì‘í•  ë•Œ
+    public UnityEvent onStartEnemyTurn;     // ì  í„´ì´ ì‹œì‘í•  ë•Œ
+    public UnityEvent onEndPlayerTurn;      // í”Œë ˆì´ì–´ í„´ì´ ëë‚  ë•Œ
+    public UnityEvent onEndEnemyTurn;       // ì  í„´ì´ ëë‚  ë•Œ
 
     void GameSetup()
     {
@@ -49,43 +50,43 @@ public class TurnManager : MonoBehaviour
 
     public IEnumerator StartGameCo()
     {
-        // °ÔÀÓ ¼¼ÆÃ
+        // ê²Œì„ ì„¸íŒ…
         GameSetup();
         isLoading = true;
 
-        // µå·Î¿ì Ä«µå ¼ö¸¸Å­ µå·Î¿ì
+        // ë“œë¡œìš° ì¹´ë“œ ìˆ˜ë§Œí¼ ë“œë¡œìš°
         for (int i = 0; i < drawCardCount; i++)
         {
 /*            yield return delay05;
             OnAddCard?.Invoke(false);*/
-            yield return delay03;
+            yield return delay05;
             OnAddCard?.Invoke(true);
         }
 
-        yield return delay03;
+        yield return delay05;
         isLoading = false;
     }
 
     IEnumerator StartPlayerTurnCo()
     {
-        // ÅÏ ½ÃÀÛ UI Ãâ·Â, ÀÌ ºÎºĞµµ ÃßÈÄ ¼öÁ¤ÇØ¾ß ÇÕ´Ï´Ù.
-        GameManager.Inst.Notification("³ªÀÇ ÅÏ");
+        // í„´ ì‹œì‘ UI ì¶œë ¥, ì´ ë¶€ë¶„ë„ ì¶”í›„ ìˆ˜ì •í•´ì•¼ í•©ë‹ˆë‹¤.
+        GameManager.Inst.Notification("ë‚˜ì˜ í„´");
 
-        // ¿ì¸® °ÔÀÓÀº ¿ÀÁ÷ ÇÃ·¹ÀÌ¾î¸¸ µå·Î¿ìÇÕ´Ï´Ù.
-        // µå·Î¿ì Ä«µå ¼ö¸¸Å­ µå·Î¿ì
+        // ìš°ë¦¬ ê²Œì„ì€ ì˜¤ì§ í”Œë ˆì´ì–´ë§Œ ë“œë¡œìš°í•©ë‹ˆë‹¤.
+        // ë“œë¡œìš° ì¹´ë“œ ìˆ˜ë§Œí¼ ë“œë¡œìš°
         for (int i = 0; i < drawCardCount; i++)
         {
-            yield return delay03;
+            yield return delay05;
             OnAddCard?.Invoke(myTurn);
         }
 
-        yield return delay03;
+        yield return delay05;
     }
 
-    // Ä«µå¸¦ count Àå µå·Î¿ì ÇÕ´Ï´Ù.
+    // ì¹´ë“œë¥¼ count ì¥ ë“œë¡œìš° í•©ë‹ˆë‹¤.
     public IEnumerator DrawCard(int count)
     {
-        // µå·Î¿ì Ä«µå ¼ö¸¸Å­ µå·Î¿ì
+        // ë“œë¡œìš° ì¹´ë“œ ìˆ˜ë§Œí¼ ë“œë¡œìš°
         for (int i = 0; i < count; i++)
         {
             yield return delay03;
@@ -105,7 +106,7 @@ public class TurnManager : MonoBehaviour
             return;
         }
 
-        // »óÈ£ÀÛ¿ëÀ» ¸·ˆf³ª.
+        // ìƒí˜¸ì‘ìš©ì„ ë§‰ëŠ—ë‚˜.
         isLoading = true;
 
         StartCoroutine(EndTurnCo());
@@ -113,45 +114,45 @@ public class TurnManager : MonoBehaviour
 
     public IEnumerator EndTurnCo()
     {
-        // ³» ÅÏÀÏ ¶§ È£Ãâ
+        // ë‚´ í„´ì¼ ë•Œ í˜¸ì¶œ
         if (myTurn)
         {
-            // Ä«µå ÀüºÎ ¹ö¸®±â
+            // ì¹´ë“œ ì „ë¶€ ë²„ë¦¬ê¸°
             yield return StartCoroutine(CardManager.Inst.DiscardHandCo());
 
             onEndPlayerTurn.Invoke();
             onStartEnemyTurn.Invoke();
 
-            // Àû ÅÏ Á÷Àü, ÇÃ·¹ÀÌ¾î°¡ Á×À¸¸é ÄÚ·çÆ¾À» ³¡³½´Ù.
+            // ì  í„´ ì§ì „, í”Œë ˆì´ì–´ê°€ ì£½ìœ¼ë©´ ì½”ë£¨í‹´ì„ ëë‚¸ë‹¤.
             if (BattleInfo.Inst.isGameOver)
             {
                 yield break;
             }
 
-            // Àû ÅÏÀ¸·Î º¯°æ
+            // ì  í„´ìœ¼ë¡œ ë³€ê²½
             myTurn = false;
 
-            // Àû ÅÏ Á¾·á
+            // ì  í„´ ì¢…ë£Œ
             yield return StartCoroutine(EndTurnCo());
 
-            // Àû ÅÏ Á¾·á ÈÄ¿¡µµ, ÇÃ·¹ÀÌ¾î°¡ Á×À¸¸é ÄÚ·çÆ¾À» ³¡³½´Ù.
+            // ì  í„´ ì¢…ë£Œ í›„ì—ë„, í”Œë ˆì´ì–´ê°€ ì£½ìœ¼ë©´ ì½”ë£¨í‹´ì„ ëë‚¸ë‹¤.
             if (BattleInfo.Inst.isGameOver)
             {
                 yield break;
             }
 
-            // ÇÃ·¹ÀÌ¾î ÅÏ ½ÃÀÛ
+            // í”Œë ˆì´ì–´ í„´ ì‹œì‘
             yield return StartCoroutine(StartPlayerTurnCo());
 
             isLoading = false;
         }
-        // Àû ÅÏÀÏ ¶§ È£Ãâ
+        // ì  í„´ì¼ ë•Œ í˜¸ì¶œ
         else
         {
             onEndEnemyTurn.Invoke();
             onStartPlayerTurn.Invoke();
 
-            // ÇÃ·¹ÀÌ¾î ÅÏÀ¸·Î º¯°æ
+            // í”Œë ˆì´ì–´ í„´ìœ¼ë¡œ ë³€ê²½
             myTurn = true;
         }
     }
