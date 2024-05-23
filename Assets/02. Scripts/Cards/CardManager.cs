@@ -1,4 +1,4 @@
-// ±èµ¿°Ç
+ï»¿// ê¹€ë™ê±´
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,7 +31,7 @@ public class CardManager : MonoBehaviour
             ResetDeck();
         }
 
-        // queue³ª dequeue¸¦ ¾²´Â °Ô ´õ ³ªÀ» µí
+        // queueë‚˜ dequeueë¥¼ ì“°ëŠ” ê²Œ ë” ë‚˜ì„ ë“¯
         CardData card = deck[0];
         deck.RemoveAt(0);
         return card;
@@ -41,14 +41,14 @@ public class CardManager : MonoBehaviour
     {
         deck = new List<CardData>(100);
 
-        // itemSOÀÇ Ä«µåµéÀ» deck¿¡ Ãß°¡
+        // itemSOì˜ ì¹´ë“œë“¤ì„ deckì— ì¶”ê°€
         for (int i = 0; i < itemSO.items.Length; i++) 
         {
             CardData card = itemSO.items[i];
             deck.Add(card);
         }
 
-        // deck ¼ÅÇÃ
+        // deck ì…”í”Œ
         for (int i = 0; i < deck.Count; i++)
         {
             int rand = Random.Range(i, deck.Count);
@@ -64,7 +64,7 @@ public class CardManager : MonoBehaviour
     {
         SetUpDeck();
         dump = new List<CardData>(100);
-        // ¿Ö ½Ì±ÛÅæ¿¡¼­ È£ÃâÇÏÁö ¾Ê°í ActionÀ¸·Î È£ÃâÇÒ±î,,,,
+        // ì™œ ì‹±ê¸€í†¤ì—ì„œ í˜¸ì¶œí•˜ì§€ ì•Šê³  Actionìœ¼ë¡œ í˜¸ì¶œí• ê¹Œ,,,,
         TurnManager.OnAddCard += AddCardToHand;
 
         focusPos = new Vector3(0f, handLeft.position.y + focusOffset, -3f);
@@ -119,7 +119,7 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    // ÀÌÇØÇÏ±â¸¦ Æ÷±âÇÔ...
+    // ì´í•´í•˜ê¸°ë¥¼ í¬ê¸°í•¨...
     List<PRS> RoundAlignment(Transform leftTr, Transform rightTr, int objCount, float radius, Vector3 scale)
     {
         float[] objLerps = new float[objCount];
@@ -141,19 +141,19 @@ public class CardManager : MonoBehaviour
 
         for (int i = 0; i < objCount; i++)
         {
-            // Å¸°Ù À§Ä¡´Â leftTr°ú rightTr »çÀÌ, i¹øÂ° Ä«µåÀÇ À§Ä¡
+            // íƒ€ê²Ÿ ìœ„ì¹˜ëŠ” leftTrê³¼ rightTr ì‚¬ì´, ië²ˆì§¸ ì¹´ë“œì˜ ìœ„ì¹˜
             Vector3 targetPos = Vector3.Lerp(leftTr.position, rightTr.position, objLerps[i]);
-            // targetRotÀº ¿ì¼± ±âº»°ªÀ¸·Î.
+            // targetRotì€ ìš°ì„  ê¸°ë³¸ê°’ìœ¼ë¡œ.
             Quaternion targetRot = Utils.QI;
 
 
-            // Ä«µå°¡ 4°³ ÀÌ»óÀÏ ¶§¸¸ È¸ÀüÀ» Àû¿ëÇÑ´Ù.
+            // ì¹´ë“œê°€ 4ê°œ ì´ìƒì¼ ë•Œë§Œ íšŒì „ì„ ì ìš©í•œë‹¤.
             if (objCount >= 4)
             {
-                // ¿øÀÇ ¹æÁ¤½Ä, (x-a)^2 + (y-b)^2 = r^2ÀÇ º¯Çü.
+                // ì›ì˜ ë°©ì •ì‹, (x-a)^2 + (y-b)^2 = r^2ì˜ ë³€í˜•.
                 // x = targetPos.x, a = circleCenter.x, y = curve, b = circleCenter.y, r = height                
                 float curve = Mathf.Sqrt(Mathf.Pow(radius, 2) - Mathf.Pow(targetPos.x - circleCenter.x, 2));
-                // Àı´ñ°ªÀ¸·Î º¯È¯
+                // ì ˆëŒ“ê°’ìœ¼ë¡œ ë³€í™˜
                 curve = Mathf.Abs(curve);
                 targetPos.y = targetPos.y - radius + curve;
                 targetRot = Quaternion.Slerp(leftTr.rotation, rightTr.rotation, objLerps[i]);
@@ -180,14 +180,14 @@ public class CardManager : MonoBehaviour
     {
         deck.Clear();
 
-        // dumpÀÇ Ä«µåµéÀ» deck¿¡ Ãß°¡
+        // dumpì˜ ì¹´ë“œë“¤ì„ deckì— ì¶”ê°€
         for (int i = 0; i < dump.Count; i++)
         {
             CardData card = dump[i];
             deck.Add(card);
         }
 
-        // deck ¼ÅÇÃ
+        // deck ì…”í”Œ
         for (int i = 0; i < deck.Count; i++)
         {
             int rand = Random.Range(i, deck.Count);
@@ -196,7 +196,7 @@ public class CardManager : MonoBehaviour
             deck[rand] = temp;
         }
 
-        // dump ºñ¿ì±â
+        // dump ë¹„ìš°ê¸°
         dump.Clear();
     }
 
@@ -204,7 +204,7 @@ public class CardManager : MonoBehaviour
     {
         for (int i = 0; i < hand.Count; i++)
         {
-            // Ä«µå ½ºÆù À§Ä¡·Î ³¯¾Æ°¡°Ô º¯°æ. ³ªÁß¿¡ ¹¦Áö·Îµµ ¹Ù²ã¾ß ÇÑ´Ù.
+            // ì¹´ë“œ ìŠ¤í° ìœ„ì¹˜ë¡œ ë‚ ì•„ê°€ê²Œ ë³€ê²½. ë‚˜ì¤‘ì— ë¬˜ì§€ë¡œë„ ë°”ê¿”ì•¼ í•œë‹¤.
             Sequence sequence = DOTween.Sequence()
                 .Append(hand[i].transform.DOMove(cardDumpPoint.position, dotweenTime))
                 .Join(hand[i].transform.DORotateQuaternion(Utils.QI, dotweenTime))
@@ -215,10 +215,10 @@ public class CardManager : MonoBehaviour
                         .Join(hand[i].GetComponent<SpriteRenderer>().DOFade(0, 0.9f).SetEase(Ease.InExpo));*/
         }
 
-        // sequence ³¡³ª±â Àü±îÁö ±â´Ù¸®±â
+        // sequence ëë‚˜ê¸° ì „ê¹Œì§€ ê¸°ë‹¤ë¦¬ê¸°
         yield return new WaitForSeconds(dotweenTime);
 
-        // sequence°¡ ³¡³ª¸é ¸ğµç ¿ÀºêÁ§Æ® ÆÄ±«
+        // sequenceê°€ ëë‚˜ë©´ ëª¨ë“  ì˜¤ë¸Œì íŠ¸ íŒŒê´´
         for (int i = 0; i < hand.Count; i++)
         {
             Card card = hand[i];
