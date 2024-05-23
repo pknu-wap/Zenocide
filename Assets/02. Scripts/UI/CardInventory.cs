@@ -13,6 +13,7 @@ public class CardInventory : MonoBehaviour
     private void Start()
     {
         slots = slotsParent.GetComponentsInChildren<CardSlot>().ToList<CardSlot>();
+        UpdateAllCardSlot();
     }
 
     public void UpdateAllCardSlot()
@@ -21,6 +22,12 @@ public class CardInventory : MonoBehaviour
         for (int i = 0; i < deck.Count; ++i)
         {
             slots[i].Setup(deck[i]);
+            slots[i].gameObject.SetActive(true);
+        }
+
+        for(int i = deck.Count; i < slots.Count; ++i)
+        {
+            slots[i].gameObject.SetActive(false);
         }
     }
 }
