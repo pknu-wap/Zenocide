@@ -24,10 +24,10 @@ public class LoadDialogue : MonoBehaviour
     }
 
     //인덱스에 따라 대화와 이름을 반환
-    public (string,string) IndextoText(int index)
+/*    public (string,string) IndextoText(int index)
     {
         return (textData.storyText[index], textData.storyName[index]); 
-    }
+    }*/
 
     private void LoadText()
     {
