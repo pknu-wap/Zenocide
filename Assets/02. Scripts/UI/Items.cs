@@ -59,8 +59,8 @@ public class Items : MonoBehaviour
                 {
                     slots[i].text = slots[i - 1].text;
                 }
-                // items 리스트에 있는 랜덤 아이템 슬롯에 추가
                 int randomIndex = Random.Range(0, items.Count);
+                // items 리스트에 있는 랜덤 아이템 슬롯에 추가
                 slots[0].text = items[randomIndex];
                 items.RemoveAt(randomIndex);
             }
