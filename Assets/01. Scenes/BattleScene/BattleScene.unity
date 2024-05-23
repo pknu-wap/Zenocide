@@ -4359,16 +4359,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemSO: {fileID: 11400000, guid: cc7407feaf5c0954196ac24a8c2d1af4, type: 2}
   cardPrefab: {fileID: 506362370436929090, guid: 5cc6a70698541f240ae1f8d3a39b87c7, type: 3}
+  cardBackPrefab: {fileID: 227734258949264060, guid: 2058b9041a462ae4d87b56575d4d8dbf, type: 3}
   hand: []
+  maxHand: 10
+  handObject: {fileID: 619371413}
   handLeft: {fileID: 195200250}
   handRight: {fileID: 311357463}
   cardSpawnPoint: {fileID: 1760439166}
+  cardDrawPoint: {fileID: 1564311027}
+  cardResetPoint: {fileID: 1584613706}
   cardDumpPoint: {fileID: 1226398360}
   deck: []
-  dotweenTime: 0.5
-  focusOffset: 100
+  dump: []
+  deckCountTMP: {fileID: 3213336}
+  dumpCountTMP: {fileID: 2037706006}
+  cardBackObject: {fileID: 812522535}
   focusPos: {x: 0, y: 0, z: 0}
-  maxHand: 10
 --- !u!1001 &710946050
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5449,7 +5455,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37f5663facfcd6c4c97bffc0a5694fbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slotsParent: {fileID: 0}
   slots: []
+  newItemName: 
 --- !u!114 &814733339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5463,6 +5471,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventoryPanel: {fileID: 0}
+  slots: []
 --- !u!114 &814733340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16921,9 +16930,9 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 0
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
+  m_Spacing: 25
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
