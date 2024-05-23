@@ -3223,11 +3223,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4377931041493569489, guid: 75fdabc16d41bc04fa3893ed0b15e77a, type: 3}
       propertyPath: m_LocalPosition.x
-<<<<<<<< HEAD:Assets/01. Scenes/KMC/BattleScene.unity
-      value: -260
-========
       value: -220
->>>>>>>> feature/Card-Pool:Assets/01. Scenes/KDG/CardPool.unity
       objectReference: {fileID: 0}
     - target: {fileID: 4377931041493569489, guid: 75fdabc16d41bc04fa3893ed0b15e77a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -4362,20 +4358,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemSO: {fileID: 11400000, guid: cc7407feaf5c0954196ac24a8c2d1af4, type: 2}
-  dummySO: {fileID: 11400000, guid: 85eb3355d1eb8ae4d80313a3a691f61f, type: 2}
   cardPrefab: {fileID: 506362370436929090, guid: 5cc6a70698541f240ae1f8d3a39b87c7, type: 3}
+  cardBackPrefab: {fileID: 227734258949264060, guid: 2058b9041a462ae4d87b56575d4d8dbf, type: 3}
   hand: []
-<<<<<<<< HEAD:Assets/01. Scenes/KMC/BattleScene.unity
-  handLeft: {fileID: 195200250}
-  handRight: {fileID: 311357463}
-  cardSpawnPoint: {fileID: 1760439166}
-  cardDumpPoint: {fileID: 1226398360}
-  deck: []
-  dotweenTime: 0.5
-  focusOffset: 100
-  focusPos: {x: 0, y: 0, z: 0}
-  maxHand: 10
-========
   maxHand: 10
   handObject: {fileID: 619371413}
   handLeft: {fileID: 195200250}
@@ -4390,7 +4375,6 @@ MonoBehaviour:
   dumpCountTMP: {fileID: 2037706006}
   cardBackObject: {fileID: 812522535}
   focusPos: {x: 0, y: 0, z: 0}
->>>>>>>> feature/Card-Pool:Assets/01. Scenes/KDG/CardPool.unity
 --- !u!1001 &710946050
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7278,11 +7262,7 @@ SpriteRenderer:
   m_SortingLayerID: -712678407
   m_SortingLayer: 2
   m_SortingOrder: 0
-<<<<<<<< HEAD:Assets/01. Scenes/KMC/BattleScene.unity
-  m_Sprite: {fileID: 21300000, guid: 57cc21be3087ffe4eb777120038960c3, type: 3}
-========
   m_Sprite: {fileID: 21300000, guid: 57503c9c9a29a5f49ada683b123dd175, type: 3}
->>>>>>>> feature/Card-Pool:Assets/01. Scenes/KDG/CardPool.unity
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -7290,7 +7270,7 @@ SpriteRenderer:
   m_Size: {x: 35.08, y: 49.61591}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!224 &1086993963 stripped
@@ -10456,11 +10436,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4377931041493569489, guid: 75fdabc16d41bc04fa3893ed0b15e77a, type: 3}
       propertyPath: m_LocalPosition.x
-<<<<<<<< HEAD:Assets/01. Scenes/KMC/BattleScene.unity
-      value: 260
-========
       value: 220
->>>>>>>> feature/Card-Pool:Assets/01. Scenes/KDG/CardPool.unity
       objectReference: {fileID: 0}
     - target: {fileID: 4377931041493569489, guid: 75fdabc16d41bc04fa3893ed0b15e77a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -11469,11 +11445,7 @@ SpriteRenderer:
   m_SortingLayerID: -712678407
   m_SortingLayer: 2
   m_SortingOrder: 0
-<<<<<<<< HEAD:Assets/01. Scenes/KMC/BattleScene.unity
-  m_Sprite: {fileID: 21300000, guid: 57cc21be3087ffe4eb777120038960c3, type: 3}
-========
   m_Sprite: {fileID: 21300000, guid: 57503c9c9a29a5f49ada683b123dd175, type: 3}
->>>>>>>> feature/Card-Pool:Assets/01. Scenes/KDG/CardPool.unity
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -11481,7 +11453,7 @@ SpriteRenderer:
   m_Size: {x: 35.08, y: 49.61591}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1001 &1633658380
@@ -13595,11 +13567,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: -310987611
-<<<<<<<< HEAD:Assets/01. Scenes/KMC/BattleScene.unity
-  m_SortingOrder: 2
-========
   m_SortingOrder: 1
->>>>>>>> feature/Card-Pool:Assets/01. Scenes/KDG/CardPool.unity
   m_TargetDisplay: 0
 --- !u!224 &1994471201 stripped
 RectTransform:
@@ -16957,15 +16925,9 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-<<<<<<<< HEAD:Assets/01. Scenes/KMC/BattleScene.unity
-  m_Spacing: 25
-  m_ChildForceExpandWidth: 0
-  m_ChildForceExpandHeight: 0
-========
   m_Spacing: 0
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
->>>>>>>> feature/Card-Pool:Assets/01. Scenes/KDG/CardPool.unity
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
