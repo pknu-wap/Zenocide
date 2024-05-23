@@ -10,7 +10,7 @@ public class CardManager : MonoBehaviour
     public static CardManager Inst { get; private set; }
     void Awake() => Inst = this;
 
-    // 아이템 풀
+    // 카드 풀
     [SerializeField] ItemSO itemSO;
 
     // 카드 프리팹
@@ -53,10 +53,11 @@ public class CardManager : MonoBehaviour
     {
         focusPos = new Vector3(0f, handLeft.position.y + focusOffset, -3f);
 
+        // 지금은 게임과 전투가 동시에 시작
+        // InitDeck은 게임 시작 시, SetUpDeck과 InitDump는 전투 시작 시 호출해야 함
+        InitDeck();
         SetUpDeck();
-
-        dump = new List<CardData>(listSize);
-        UpdateDumpCount();
+        SetUpDump();
 
         // 동적 참조를 줄이기 위해 싱글톤 대신 Action으로 호출
         TurnManager.OnAddCard += AddCardToHand;
@@ -73,6 +74,22 @@ public class CardManager : MonoBehaviour
         #endregion
     }
 
+    private void Update()
+    {
+        string[] dummyCards =
+        {
+            "더미1",
+            "더미2",
+            "더미3"
+        };
+
+        if (Input.GetKeyDown(KeyCode.Q) && TurnManager.Inst.myTurn)
+        {
+            AddCardToDeck(dummyCards[Random.Range(0, 3)]);
+            SetUpDeck();
+        }
+    }
+
     // 덱 카운트가 0인지 확인하고 사용해야 함
     CardData DrawCard()
     {
@@ -82,19 +99,61 @@ public class CardManager : MonoBehaviour
         return card;
     }
 
-    void SetUpDeck()
+    void InitDeck()
     {
-        deck = new List<CardData>(listSize);
-
-        // itemSO의 카드들을 deck에 추가
-        for (int i = 0; i < itemSO.items.Length; i++) 
+        string[] defaultDeck =
         {
-            CardData card = itemSO.items[i];
-            deck.Add(card);
+            "물어뜯기 꼬집기 깨물기",
+            "체인 소우",
+            "화학병",
+            "전통적인 무기",
+            "깨진 유리",
+            "논타겟 카드",
+            "독침",
+            "짱돌",
+            "화학병"
+        };
+
+        deck = new List<CardData>(listSize);
+        // 기본 카드들을 deck에 추가
+        foreach (string card in defaultDeck)
+        {
+            AddCardToDeck(card);
+        }
+
+        UpdateDeckCount();
+    }
+
+    public void AddCardToDeck(string cardName)
+    {
+        foreach(CardData card in itemSO.items)
+        {
+            if(card.name == cardName) { 
+                deck.Add(card);
+            }
         }
         UpdateDeckCount();
+    }
 
-        // deck 셔플
+    public void RemoveCardFromDeck(string cardName)
+    {
+        CardData target = null;
+        foreach(CardData card in deck)
+        {
+            // 일치하는 이름 중 첫번째 카드를 가져온다.
+            // 중복 카드가 있어도 하나만 선택
+            if(card.name == cardName) {
+                target = card;
+                break;
+            }
+        }
+
+        // target이 null이면 Remove가 false를 반환하고 아무 일도 일어나지 않는다.
+        deck.Remove(target);
+    }
+
+    void ShuffleDeck()
+    {
         for (int i = 0; i < deck.Count; i++)
         {
             int rand = Random.Range(i, deck.Count);
@@ -124,6 +183,7 @@ public class CardManager : MonoBehaviour
         {
             StartCoroutine(ResetDeckAnimationCo(dump.Count));
             ResetDeck();
+            SetUpDump();
         }
 
         card.Setup(DrawCard());
@@ -229,29 +289,43 @@ public class CardManager : MonoBehaviour
         CardAlignment();
     }
 
-    public void ResetDeck()
+    // dump와 hand를 덱으로 모아서 셔플
+    void SetUpDeck()
     {
-        deck.Clear();
+        // hand의 카드들을 deck에 추가하고 오브젝트 파괴
+        for (int i = 0; i < hand.Count; i++)
+        {
+            Card card = hand[i];
+            deck.Add(card.cardData);
+            DestroyImmediate(card.gameObject);
+        }
 
+        SetUpDump();
+        hand.Clear();
+        UpdateDeckCount();
+        selectCard = null;
+
+        ShuffleDeck();
+    }
+
+    // dump를 deck에 모아 셔플
+    void ResetDeck()
+    {
+        SetUpDump();
+
+        ShuffleDeck();
+    }
+
+    void SetUpDump()
+    {
         // dump의 카드들을 deck에 추가
         for (int i = 0; i < dump.Count; i++)
         {
             CardData card = dump[i];
             deck.Add(card);
         }
-        UpdateDeckCount();
 
-        // deck 셔플
-        for (int i = 0; i < deck.Count; i++)
-        {
-            int rand = Random.Range(i, deck.Count);
-            CardData temp = deck[i];
-            deck[i] = deck[rand];
-            deck[rand] = temp;
-        }
-
-        // dump 비우기
-        dump.Clear();
+        dump = new List<CardData>(listSize);
         UpdateDumpCount();
     }
 
@@ -308,7 +382,7 @@ public class CardManager : MonoBehaviour
             // sequence 끝나기 전까지 기다리기
             yield return new WaitForSeconds(delay03);
 
-            // sequence가 끝나면 모든 오브젝트 파괴
+            // sequence가 끝나면 오브젝트 파괴
             dump.Add(card.cardData);
             UpdateDumpCount();
             DestroyImmediate(card.gameObject);
