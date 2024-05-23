@@ -12,6 +12,8 @@ public class CardManager : MonoBehaviour
 
     // 카드 풀
     [SerializeField] ItemSO itemSO;
+    [SerializeField] ItemSO defaultDeck;
+    Dictionary<string, CardData> cardDict;
 
     // 카드 프리팹
     [SerializeField] GameObject cardPrefab;
@@ -55,6 +57,8 @@ public class CardManager : MonoBehaviour
 
         // 지금은 게임과 전투가 동시에 시작
         // InitDeck은 게임 시작 시, SetUpDeck과 InitDump는 전투 시작 시 호출해야 함
+        CreateDictionary();
+
         InitDeck();
         MergeDumpToDeck();
         SetUpDeck();
@@ -101,38 +105,28 @@ public class CardManager : MonoBehaviour
 
     void InitDeck()
     {
-        string[] defaultDeck =
-        {
-            "물어뜯기 꼬집기 깨물기",
-            "체인 소우",
-            "화학병",
-            "전통적인 무기",
-            "깨진 유리",
-            "논타겟 카드",
-            "독침",
-            "짱돌",
-            "화학병"
-        };
-
         deck = new List<CardData>(listSize);
         // 기본 카드들을 deck에 추가
-        foreach (string card in defaultDeck)
+        foreach (CardData card in defaultDeck.items)
         {
-            AddCardToDeck(card);
+            AddCardToDeck(card.name);
         }
 
         UpdateDeckCount();
     }
 
-    public void AddCardToDeck(string cardName)
+    void CreateDictionary()
     {
+        cardDict = new Dictionary<string, CardData>();
         foreach (CardData card in itemSO.items)
         {
-            if (card.name == cardName)
-            {
-                deck.Add(card);
-            }
+            cardDict.Add(card.name, card);
         }
+    }
+
+    public void AddCardToDeck(string cardName)
+    {
+        deck.Add(cardDict[cardName]);
         UpdateDeckCount();
     }
 
