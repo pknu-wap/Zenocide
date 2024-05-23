@@ -7,24 +7,30 @@ using TMPro;
 
 public class DialogueManager : MonoBehaviour, IPointerDownHandler
 {
-    [Header("Text 오브젝트 관련 요소")]
+    [Header("Text 오브젝트")]
     public TMP_Text dialogueText;               
     public TMP_Text dialogueName;               
     public TMP_Text choiceUpText;               
     public TMP_Text choiceDownText;             
     public TMP_Text choiceUpRequireText;        
     public TMP_Text choiceDownRequireText;
-    [Header("대화창 오브젝트 관련 요소")]      
+
+    [Header("대화창 오브젝트")]      
     public GameObject dialogueBox;              
-    public GameObject dialoguePanel;            
+    public GameObject dialoguePanel;
+
+    [Header("선택지 오브젝트")]            
     public GameObject choiceUpPanel;            
-    public GameObject choiceDownPanel;          
+    public GameObject choiceDownPanel;
+
+    [Header("대화창 출력 완료 시 대기 표시")]          
     public GameObject waitCursor;
-    [Header("캐릭터 이미지 데이터 요소")]               
+
+    [Header("캐릭터 이미지 데이터")]               
     public Image dialogueImage;                 
     public Sprite[] dialogueImages;             
 
-    [Header("Text 데이터 요소")]
+    [Header("Text 데이터")]
     public string[] storyText;                  
     public string[] storyName;                  
     public string[] choiceUpContent;            
@@ -35,12 +41,8 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
     private bool isTyping = false;              
     private bool cancelTyping = false;          
 
-    // 대화창 등장인물 이미지 테이블
-    private readonly Dictionary<string, int> illustTable = new Dictionary<string, int>()
-    {
-        {"???", 0},
-        {"좀비", 1}
-    };
+    public IllustData IllustData;
+    public EventData EventData;
 
     void Start()
     {
@@ -49,9 +51,7 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         // 대화 위 선택지 비활성화
         choiceUpPanel.SetActive(false);         
         // 대화 아래 선택지 비활성화
-        choiceDownPanel.SetActive(false);       
-        // 대화 불러오기
-        LoadDialogue();                         
+        choiceDownPanel.SetActive(false);                            
         // 대화창 활성화
         ShowDialogue();                         
     }
@@ -61,11 +61,12 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
     // 마우스 입력에 반응하여 대화 진행
     public void OnPointerDown(PointerEventData eventData)
     {
-        NextDialogue();
+        MainDialogue();
     }
 
-    private void NextDialogue()
+    private void MainDialogue()
     {
+
         if (isTyping && !cancelTyping)
         {
             cancelTyping = true;
@@ -79,7 +80,7 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
             dialogueBox.SetActive(false);
             return;
         }
-
+        
         dialogueName.text = storyName[currentLine];
 
         if (dialogueName.text == "#")
@@ -90,7 +91,7 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         if(dialogueName.text != null && dialogueName.text != "#")
         {
             // 캐릭터 이미지 변경
-            dialogueImage.sprite = dialogueImages[illustTable[dialogueName.text]];
+            dialogueImage.sprite = dialogueImages[IllustData.illustTable[dialogueName.text]];
             // 대화 출력
             StartCoroutine(TypeSentence(storyText[currentLine]));
         }
@@ -152,33 +153,7 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         // 대화창 활성화
         dialogueBox.SetActive(true);
         // 초기 이미지를 주인공으로 설정
-        dialogueImage.sprite = dialogueImages[illustTable["???"]];
+        dialogueImage.sprite = dialogueImages[IllustData.illustTable["???"]];
     }
 
-    private void LoadDialogue()
-    {
-        var dataDialog = CSVReader.Read("StoryScript");
-
-        // 대화 데이터의 개수
-        int dataCount = dataDialog.Count;
-
-        storyName = new string[dataCount];
-        storyText = new string[dataCount];
-        choiceUpContent = new string[dataCount];
-        choiceDownContent = new string[dataCount];
-
-        int choiceLines = 0;
-        for (int i = 0; i < dataCount; i++)
-        {
-            if (dataDialog[i]["Name"].ToString() == "#")
-            {
-                choiceUpContent[choiceLines] = dataDialog[i]["Text1"].ToString();
-                choiceDownContent[choiceLines] = dataDialog[i]["Text2"].ToString();
-                choiceLines++;
-            }
-                storyText[i] = dataDialog[i]["Text1"].ToString();
-                storyName[i] = dataDialog[i]["Name"].ToString();
-
-        }
-    }
 }

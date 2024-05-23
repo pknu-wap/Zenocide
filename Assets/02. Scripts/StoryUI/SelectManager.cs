@@ -7,15 +7,17 @@ public class SelectManager : MonoBehaviour
     [Header("선택지 오브젝트")]
     public GameObject ChoiceUp;
     public GameObject ChoiceDown;
+
     [Header("대화창 오브젝트")]
     public GameObject Dialogue;
+
     [Header("위 선택지 표시 오브젝트")]
     public GameObject UpSignLeft;
     public GameObject UpSignRight;
+
     [Header("아래 선택지 표시 오브젝트")]
     public GameObject DownSignLeft;
     public GameObject DownSignRight;
-
 
     private void Awake()
     {
