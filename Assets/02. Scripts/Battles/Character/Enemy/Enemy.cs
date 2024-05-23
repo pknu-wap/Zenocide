@@ -23,8 +23,8 @@ public class Enemy : Character
         base.Awake();
 
         // 행동 정보 아이콘
-        behaviorIcon = transform.GetChild(1).GetChild(0).GetChild(2).GetComponent<Image>();
-        behaviorAmount = transform.GetChild(1).GetChild(0).GetChild(2).GetChild(0).GetComponent<TMP_Text>();
+        behaviorIcon = transform.GetChild(0).GetChild(1).GetChild(2).GetComponent<Image>();
+        behaviorAmount = behaviorIcon.transform.GetChild(0).GetComponent<TMP_Text>();
 
         // 상제정보창
         behaviorName = statusPanel.GetChild(0).GetChild(0).GetComponent<TMP_Text>();
@@ -39,7 +39,7 @@ public class Enemy : Character
         ReadySkill();
 
         // BattleInfo에 자신 추가
-        BattleInfo.Inst.IncreaseEnemyCount();
+        BattleInfo.Inst.EnrollEnemy(this);
 
         // BattleManager에 이벤트 등록
         TurnManager.Inst.onEndEnemyTurn.AddListener(EndEnemyTurn);
@@ -78,17 +78,19 @@ public class Enemy : Character
         behaviorAmount.text = currentSkill.amount.ToString();
 
         // 2-2. 상세정보창을 스킬의 설명으로 갱신한다.
-        behaviorName.text = currentSkill.skillName;
-        behaviorDescription.text = currentSkill.description;
+        SkillText skillText = CardInfo.Instance.GetSkillText(currentSkill);
+        behaviorName.text = skillText.name;
+        behaviorDescription.text = skillText.description;
     }
 
     // 스킬을 사용한다.
     public void CastSkill()
     {
-        Character target = EnemySkillInfo.Instance.ReturnTarget(currentSkill.type, this);
+        // 타겟을 받아온다.
+        Character[] target = CardInfo.Instance.GetTarget(currentSkill.target, this);
 
         // 준비한 스킬을 사용한다.
-        EnemySkillInfo.Instance.effects[(int)currentSkill.type](currentSkill.amount, currentSkill.turnCount, target);
+        CardInfo.Instance.ActivateSkill(currentSkill, target);
     }
 
     // 죽는다.
@@ -96,9 +98,9 @@ public class Enemy : Character
     {
         // 오브젝트 비활성화
         gameObject.SetActive(false);
-        // BattleManager에서 자기 자신 제거
+        // TurnManager에서 자기 자신의 이벤트를 제거
         TurnManager.Inst.onEndEnemyTurn.RemoveListener(EndEnemyTurn);
-        // Battle Info에 남은 적 -1
-        BattleInfo.Inst.DecreaseEnemyCount();
+        // BattleInfo에서 자기 자신을 제거한다.
+        BattleInfo.Inst.DisenrollEnemy(this);
     }
 }
