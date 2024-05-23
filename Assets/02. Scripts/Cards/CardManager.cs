@@ -53,18 +53,33 @@ public class CardManager : MonoBehaviour
 
     void Start()
     {
+        // 동적 참조를 줄이기 위해 싱글톤 대신 Action으로 호출
+        TurnManager.OnAddCard += AddCardToHand;
+
         focusPos = new Vector3(0f, handLeft.position.y + focusOffset, -3f);
 
         // 지금은 게임과 전투가 동시에 시작
         // InitDeck은 게임 시작 시, SetUpDeck과 InitDump는 전투 시작 시 호출해야 함
-        CreateDictionary();
+        #region CreateDict
+        cardDict = new Dictionary<string, CardData>();
+        foreach (CardData card in itemSO.items)
+        {
+            cardDict.Add(card.name, card);
+        }
+        #endregion
 
-        InitDeck();
+        #region InitDeck
+        deck = new List<CardData>(listSize);
+        // 기본 카드들을 deck에 추가
+        foreach (CardData card in defaultDeck.items)
+        {
+            AddCardToDeck(card.name);
+        }
+
+        UpdateDeckCount();
+        #endregion
         MergeDumpToDeck();
         SetUpDeck();
-
-        // 동적 참조를 줄이기 위해 싱글톤 대신 Action으로 호출
-        TurnManager.OnAddCard += AddCardToHand;
 
         #region ResetDeckInitiation
         cardBackObjectList = new List<GameObject>(listSize);
@@ -101,27 +116,6 @@ public class CardManager : MonoBehaviour
         deck.RemoveAt(0);
         UpdateDeckCount();
         return card;
-    }
-
-    void InitDeck()
-    {
-        deck = new List<CardData>(listSize);
-        // 기본 카드들을 deck에 추가
-        foreach (CardData card in defaultDeck.items)
-        {
-            AddCardToDeck(card.name);
-        }
-
-        UpdateDeckCount();
-    }
-
-    void CreateDictionary()
-    {
-        cardDict = new Dictionary<string, CardData>();
-        foreach (CardData card in itemSO.items)
-        {
-            cardDict.Add(card.name, card);
-        }
     }
 
     public void AddCardToDeck(string cardName)
