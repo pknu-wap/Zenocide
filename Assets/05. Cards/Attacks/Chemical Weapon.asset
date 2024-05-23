@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: Chemical Weapon
   m_EditorClassIdentifier: 
   name: "\uD654\uD559\uBCD1"
-  description: "\uC801\uC5D0\uAC8C \uD654\uC5FC\uBCD1\uC744 \uB358\uC838 6\uC758
-    \uB370\uBBF8\uC9C0\uB97C \uC785\uD799\uB2C8\uB2E4."
+  description: "\uC801 \uC804\uCCB4\uC5D0\uAC8C 6\uC758 \uB370\uBBF8\uC9C0\uB97C
+    \uC785\uD799\uB2C8\uB2E4."
   sprite: {fileID: 21300000, guid: 6695824f3277be846b5c12ef43182755, type: 3}
-  type: 0
-  cost: 1
-  amount: 6
-  turnCount: 0
+  skills:
+  - type: 0
+    target: 2
+    amount: 6
+    turnCount: 0
+  cost: 2

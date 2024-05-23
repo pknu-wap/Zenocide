@@ -3223,7 +3223,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4377931041493569489, guid: 75fdabc16d41bc04fa3893ed0b15e77a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -220
+      value: -260
       objectReference: {fileID: 0}
     - target: {fileID: 4377931041493569489, guid: 75fdabc16d41bc04fa3893ed0b15e77a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5455,7 +5455,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37f5663facfcd6c4c97bffc0a5694fbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slotsParent: {fileID: 0}
   slots: []
+  newItemName: 
 --- !u!114 &814733339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5469,6 +5471,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventoryPanel: {fileID: 0}
+  slots: []
 --- !u!114 &814733340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6468,7 +6471,6 @@ GameObject:
   - component: {fileID: 1041200471}
   - component: {fileID: 1041200474}
   - component: {fileID: 1041200473}
-  - component: {fileID: 1041200472}
   m_Layer: 0
   m_Name: Battle Info
   m_TagString: Untagged
@@ -6491,18 +6493,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2114527717}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1041200472
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1041200470}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7553c1be591b4d42bce74038ae81ded, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1041200473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6523,8 +6513,11 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 21300000, guid: a5cbe5c061221aa4180ea3bb1bfe7938, type: 3}
+  - {fileID: 21300000, guid: a5cbe5c061221aa4180ea3bb1bfe7938, type: 3}
+  - {fileID: 21300000, guid: a5cbe5c061221aa4180ea3bb1bfe7938, type: 3}
   debuffIcons:
   - {fileID: 21300000, guid: a5cbe5c061221aa4180ea3bb1bfe7938, type: 3}
+  skillTexts: {fileID: 11400000, guid: d3e5efd4fb41d684e8bff8402dc0f78a, type: 2}
 --- !u!114 &1041200474
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6537,7 +6530,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d24acc541c41a274fb4af241d3420fa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  remainingEnemies: 0
+  remainingEnemies: []
   isGameOver: 0
   maxCost: 5
   currentCost: 5
@@ -10448,7 +10441,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4377931041493569489, guid: 75fdabc16d41bc04fa3893ed0b15e77a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 220
+      value: 260
       objectReference: {fileID: 0}
     - target: {fileID: 4377931041493569489, guid: 75fdabc16d41bc04fa3893ed0b15e77a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -12782,7 +12775,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: -310987611
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_TargetDisplay: 1
 --- !u!224 &1819385474 stripped
 RectTransform:
@@ -13579,7 +13572,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: -310987611
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_TargetDisplay: 0
 --- !u!224 &1994471201 stripped
 RectTransform:
@@ -16937,9 +16930,9 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 0
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
+  m_Spacing: 25
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0

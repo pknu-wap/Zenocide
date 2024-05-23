@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 public class DebuffInfo
 {
-    public static Dictionary<EnemySkillType, string> debuffNameDict = new Dictionary<EnemySkillType, string>
+    public static Dictionary<SkillType, string> debuffNameDict = new Dictionary<SkillType, string>
     {
-        { EnemySkillType.Bleed, "출혈" }
+        { SkillType.Bleed, "출혈" }
     };
-    public static Dictionary<EnemySkillType, string> debuffDescriptionDict = new Dictionary<EnemySkillType, string>
+    public static Dictionary<SkillType, string> debuffDescriptionDict = new Dictionary<SkillType, string>
     {
-        { EnemySkillType.Bleed, "턴 간 2의 피해를 입습니다." }
+        { SkillType.Bleed, "턴 간 2의 피해를 입습니다." }
     };
 }
