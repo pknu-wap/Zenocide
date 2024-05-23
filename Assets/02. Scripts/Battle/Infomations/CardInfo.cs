@@ -1,11 +1,11 @@
-// ±è¹ÎÃ¶
+// ê¹€ë¯¼ì² 
 using UnityEngine;
 using System;
 using System.Collections;
 
 public class CardInfo : MonoBehaviour
 {
-    #region ½Ì±ÛÅæ
+    #region ì‹±ê¸€í†¤
     public static CardInfo Instance { get; set; }
     private static CardInfo instance;
 
@@ -21,23 +21,23 @@ public class CardInfo : MonoBehaviour
             Destroy(gameObject);
         }
 
-        // Ä«µå È¿°ú¸¦ µ¨¸®°ÔÀÌÆ®¿¡ ¸ğµÎ µî·Ï
+        // ì¹´ë“œ íš¨ê³¼ë¥¼ ë¸ë¦¬ê²Œì´íŠ¸ì— ëª¨ë‘ ë“±ë¡
         EnrollAllSkills();
         EnrollLayerDict();
     }
-    #endregion ½Ì±ÛÅæ
+    #endregion ì‹±ê¸€í†¤
 
-    #region Ä«µå UI µ¥ÀÌÅÍ
-    // ÅëÇÕÇÏ°í ½Í´Ù...
+    #region ì¹´ë“œ UI ë°ì´í„°
+    // í†µí•©í•˜ê³  ì‹¶ë‹¤...
     public Sprite[] skillIcons;
     public Sprite[] debuffIcons;
-    #endregion Ä«µå UI µ¥ÀÌÅÍ
+    #endregion ì¹´ë“œ UI ë°ì´í„°
 
-    #region Á¤º¸ °Ë»ö
-    // Ä«µå Å¸ÀÔÀ» ³ÖÀ¸¸é ·¹ÀÌ¾î¸¦ ¹ñ¾îÁÖ´Â ¹è¿­
+    #region ì •ë³´ ê²€ìƒ‰
+    // ì¹´ë“œ íƒ€ì…ì„ ë„£ìœ¼ë©´ ë ˆì´ì–´ë¥¼ ë±‰ì–´ì£¼ëŠ” ë°°ì—´
     private LayerMask[] layerDict;
 
-    // ¹è¿­¿¡ Å¸ÀÔ - ·¹ÀÌ¾î Á¤º¸¸¦ µî·ÏÇÑ´Ù.
+    // ë°°ì—´ì— íƒ€ì… - ë ˆì´ì–´ ì •ë³´ë¥¼ ë“±ë¡í•œë‹¤.
     private void EnrollLayerDict()
     {
         layerDict = new LayerMask[Enum.GetValues(typeof(SkillType)).Length];
@@ -51,16 +51,16 @@ public class CardInfo : MonoBehaviour
         layerDict[(int)SkillType.Bleed] = LayerMask.GetMask("Enemy");
     }
 
-    // Å¸ÀÔ¿¡ ¸Â´Â ·¹ÀÌ¾î¸¦ ¹İÈ¯ÇÑ´Ù.
+    // íƒ€ì…ì— ë§ëŠ” ë ˆì´ì–´ë¥¼ ë°˜í™˜í•œë‹¤.
     public LayerMask ReturnLayer(SkillType type)
     {
         return layerDict[(int)type];
     }
 
-    // Å¸°ÙÀ» ¹İÈ¯ÇÑ´Ù.
+    // íƒ€ê²Ÿì„ ë°˜í™˜í•œë‹¤.
     public Character[] GetTarget(SkillTarget target, Enemy selectedEnemy)
     {
-        // °¢ °æ¿ì¿¡ ¸Â´Â °ªÀ» ¹İÈ¯ÇÑ´Ù. ±Ùµ¥ ÀüºÎ ¹è¿­·Î ¸¸µé°í ¹İÈ¯ÇØ¼­, ³ªÁß¿¡ ¸®ÆÑÅä¸µ ÇÑ ¹ø ÇØ¾ß °Ú´Ù.
+        // ê° ê²½ìš°ì— ë§ëŠ” ê°’ì„ ë°˜í™˜í•œë‹¤. ê·¼ë° ì „ë¶€ ë°°ì—´ë¡œ ë§Œë“¤ê³  ë°˜í™˜í•´ì„œ, ë‚˜ì¤‘ì— ë¦¬íŒ©í† ë§ í•œ ë²ˆ í•´ì•¼ ê² ë‹¤.
         if (target == SkillTarget.Player)
         {
             return new Character[] { Player.Instance };
@@ -80,16 +80,16 @@ public class CardInfo : MonoBehaviour
     }
 
 
-    // Å¸°ÙÀ» ¹İÈ¯ÇÑ´Ù. ³íÅ¸°Ù ½ºÅ³ÀÏ ¶§ È£Ãâ °¡´ÉÇÏ´Ù.
+    // íƒ€ê²Ÿì„ ë°˜í™˜í•œë‹¤. ë…¼íƒ€ê²Ÿ ìŠ¤í‚¬ì¼ ë•Œ í˜¸ì¶œ ê°€ëŠ¥í•˜ë‹¤.
     public Character[] GetTarget(SkillTarget target)
     {
-        // Å¸°ÙÀÌ ÁöÁ¤µÇ¸é nullÀ» ¹İÈ¯ÇÑ´Ù.
+        // íƒ€ê²Ÿì´ ì§€ì •ë˜ë©´ nullì„ ë°˜í™˜í•œë‹¤.
         if (target == SkillTarget.Enemy)
         {
             return null;
         }
 
-        // °¢ °æ¿ì¿¡ ¸Â´Â °ªÀ» ¹İÈ¯ÇÑ´Ù. ±Ùµ¥ ÀüºÎ ¹è¿­·Î ¸¸µé°í ¹İÈ¯ÇØ¼­, ³ªÁß¿¡ ¸®ÆÑÅä¸µ ÇÑ ¹ø ÇØ¾ß °Ú´Ù.
+        // ê° ê²½ìš°ì— ë§ëŠ” ê°’ì„ ë°˜í™˜í•œë‹¤. ê·¼ë° ì „ë¶€ ë°°ì—´ë¡œ ë§Œë“¤ê³  ë°˜í™˜í•´ì„œ, ë‚˜ì¤‘ì— ë¦¬íŒ©í† ë§ í•œ ë²ˆ í•´ì•¼ ê² ë‹¤.
         else if (target == SkillTarget.Player)
         {
             return new Character[] { Player.Instance };
@@ -103,10 +103,10 @@ public class CardInfo : MonoBehaviour
         return null;
     }
 
-    // Ä«µå°¡ Å¸°ÙÆÃ Ä«µåÀÎÁö ¾Ë·ÁÁØ´Ù.
+    // ì¹´ë“œê°€ íƒ€ê²ŸíŒ… ì¹´ë“œì¸ì§€ ì•Œë ¤ì¤€ë‹¤.
     public bool IsTargetingCard(Skill[] data)
     {
-        // Ä«µå°¡ Å¸°ÙÆÃ ½ºÅ³À» °®°í ÀÖ´Ù¸é true¸¦ ¸®ÅÏÇÑ´Ù.
+        // ì¹´ë“œê°€ íƒ€ê²ŸíŒ… ìŠ¤í‚¬ì„ ê°–ê³  ìˆë‹¤ë©´ trueë¥¼ ë¦¬í„´í•œë‹¤.
         for(int i = 0; i < data.Length; ++i)
         {
             if (data[i].target == SkillTarget.Enemy)
@@ -115,7 +115,7 @@ public class CardInfo : MonoBehaviour
             }
         }
 
-        // ±× ¿Ü¿£ false¸¦ ¸®ÅÏÇÑ´Ù.
+        // ê·¸ ì™¸ì—” falseë¥¼ ë¦¬í„´í•œë‹¤.
         return false;
     }
 
@@ -125,42 +125,42 @@ public class CardInfo : MonoBehaviour
     {
         SkillText skillText = new SkillText();
 
-        // ½ºÅ³ ÀÌ¸§À» ÀúÀåÇÑ´Ù.
+        // ìŠ¤í‚¬ ì´ë¦„ì„ ì €ì¥í•œë‹¤.
         skillText.name = skillTexts.text[(int)skill.type].name;
 
-        // ½ºÅ³ ¼³¸íÀ» È¿°ú·®, ÅÏ ¼ö¿Í ÇÔ²² ÀúÀåÇÑ´Ù.
+        // ìŠ¤í‚¬ ì„¤ëª…ì„ íš¨ê³¼ëŸ‰, í„´ ìˆ˜ì™€ í•¨ê»˜ ì €ì¥í•œë‹¤.
         if(skill.turnCount != 0)
         {
-            // ÅÏ ¼ö°¡ 0ÀÌ ¾Æ´Ï¶ó¸é ¼³¸í¿¡ Ãß°¡ÇÑ´Ù.
-            skillText.description = skill.turnCount + "ÅÏ °£ ";
+            // í„´ ìˆ˜ê°€ 0ì´ ì•„ë‹ˆë¼ë©´ ì„¤ëª…ì— ì¶”ê°€í•œë‹¤.
+            skillText.description = skill.turnCount + "í„´ ê°„ ";
         }
 
         if (skill.amount != 0)
         {
-            // È¿°ú·®ÀÌ 0ÀÌ ¾Æ´Ï¶ó¸é Ãß°¡ÇÑ´Ù.
-            skillText.description = skill.amount + "ÀÇ ";
+            // íš¨ê³¼ëŸ‰ì´ 0ì´ ì•„ë‹ˆë¼ë©´ ì¶”ê°€í•œë‹¤.
+            skillText.description = skill.amount + "ì˜ ";
         }
-        // Å¸ÀÔ¿¡ ¸Â´Â ¼³¸íÀ» Ãß°¡ÇÑ´Ù.
+        // íƒ€ì…ì— ë§ëŠ” ì„¤ëª…ì„ ì¶”ê°€í•œë‹¤.
         skillText.description += skillTexts.text[(int)skill.type].description;
 
         return skillText;
     }
-    #endregion Á¤º¸ °Ë»ö
+    #endregion ì •ë³´ ê²€ìƒ‰
 
-    #region Ä«µå È¿°ú
-    // Ä«µå È¿°ú ÇÔ¼öµéÀ» ´ã¾ÆµÑ µ¨¸®°ÔÀÌÆ®
-    // amount´Â Ä«µåÀÇ È¿°ú·®, turnCount´Â Áö¼ÓµÉ ÅÏÀÇ ¼ö, targetÀº Àû¿ë ´ë»óÀÌ´Ù.
-    // ¿¹¸¦ µé¾î BleedÀÇ º¯¼ö°¡ 6, 3, Player.Instance¶ó¸é, ÇÃ·¹ÀÌ¾î¿¡°Ô 3ÅÏ°£, ¸Å ÅÏ 6ÀÇ µ¥¹ÌÁö¸¦ ÁØ´Ù.
+    #region ì¹´ë“œ íš¨ê³¼
+    // ì¹´ë“œ íš¨ê³¼ í•¨ìˆ˜ë“¤ì„ ë‹´ì•„ë‘˜ ë¸ë¦¬ê²Œì´íŠ¸
+    // amountëŠ” ì¹´ë“œì˜ íš¨ê³¼ëŸ‰, turnCountëŠ” ì§€ì†ë  í„´ì˜ ìˆ˜, targetì€ ì ìš© ëŒ€ìƒì´ë‹¤.
+    // ì˜ˆë¥¼ ë“¤ì–´ Bleedì˜ ë³€ìˆ˜ê°€ 6, 3, Player.Instanceë¼ë©´, í”Œë ˆì´ì–´ì—ê²Œ 3í„´ê°„, ë§¤ í„´ 6ì˜ ë°ë¯¸ì§€ë¥¼ ì¤€ë‹¤.
     public delegate void CardSkill(int amount, int turnCount, Character target);
-    // µ¨¸®°ÔÀÌÆ® ¹è¿­, EffectType¿¡ ¸Â´Â ÇÔ¼ö¸¦ ¸ÅÄªÇÑ´Ù.
+    // ë¸ë¦¬ê²Œì´íŠ¸ ë°°ì—´, EffectTypeì— ë§ëŠ” í•¨ìˆ˜ë¥¼ ë§¤ì¹­í•œë‹¤.
     public CardSkill[] effects;
 
-    // ¸ğµç È¿°ú¸¦ effects ¹è¿­¿¡ µî·ÏÇÑ´Ù.
+    // ëª¨ë“  íš¨ê³¼ë¥¼ effects ë°°ì—´ì— ë“±ë¡í•œë‹¤.
     void EnrollAllSkills()
     {
         effects = new CardSkill[Enum.GetValues(typeof(SkillType)).Length];
 
-        // Ä«µå È¿°ú¸¦ ¹è¿­¿¡ µî·Ï
+        // ì¹´ë“œ íš¨ê³¼ë¥¼ ë°°ì—´ì— ë“±ë¡
         effects[(int)SkillType.Attack] += Attack;
         effects[(int)SkillType.Shield] += Shield;
         effects[(int)SkillType.Heal] += Heal;
@@ -171,20 +171,20 @@ public class CardInfo : MonoBehaviour
     }
 
 
-    // ¸ğµç Å¸°Ù¿¡°Ô ½ºÅ³À» »ç¿ëÇÑ´Ù.
+    // ëª¨ë“  íƒ€ê²Ÿì—ê²Œ ìŠ¤í‚¬ì„ ì‚¬ìš©í•œë‹¤.
     public void ActivateSkill(Skill skill, Character[] target)
     {
         for (int i = 0; i < target.Length; ++i)
         {
-            // ¸ğµç Å¸°Ù¿¡°Ô skillÀ» »ç¿ëÇÑ´Ù.
+            // ëª¨ë“  íƒ€ê²Ÿì—ê²Œ skillì„ ì‚¬ìš©í•œë‹¤.
             effects[(int)skill.type](skill.amount, skill.turnCount, target[i]);
         }
     }
 
-    // targetÀÌ nullÀÎ °æ¿ì´Â CardÀÇ OnEndDrag¿¡¼­ °Ë»çÇßÀ¸¹Ç·Î, °Ë»çÇÏÁö ¾Ê´Â´Ù.
+    // targetì´ nullì¸ ê²½ìš°ëŠ” Cardì˜ OnEndDragì—ì„œ ê²€ì‚¬í–ˆìœ¼ë¯€ë¡œ, ê²€ì‚¬í•˜ì§€ ì•ŠëŠ”ë‹¤.
     public void Attack(int amount, int turnCount, Character target)
     {
-        // Å¸°ÙÀÇ Ã¼·ÂÀ» °¨¼Ò½ÃÅ²´Ù.
+        // íƒ€ê²Ÿì˜ ì²´ë ¥ì„ ê°ì†Œì‹œí‚¨ë‹¤.
         target.DecreaseHP(amount);
     }
 
@@ -195,37 +195,37 @@ public class CardInfo : MonoBehaviour
 
     public void Heal(int amount, int turnCount, Character target)
     {
-        // Å¸°ÙÀÇ Ã¼·ÂÀ» È¸º¹½ÃÅ²´Ù.
+        // íƒ€ê²Ÿì˜ ì²´ë ¥ì„ íšŒë³µì‹œí‚¨ë‹¤.
         target.IncreaseHP(amount);
     }
 
     public void Cleanse(int amount, int turnCount, Character target)
     {
-        // Å¸°ÙÀÇ µğ¹öÇÁ¸¦ ¸ğµÎ Á¦°ÅÇÑ´Ù.
+        // íƒ€ê²Ÿì˜ ë””ë²„í”„ë¥¼ ëª¨ë‘ ì œê±°í•œë‹¤.
         target.CleanseDebuff();
     }
 
     public void RestoreCost(int amount, int turnCount, Character target)
     {
-        // targetÀÌ Player°¡ ¾Æ´Ï¶ó¸é Á¾·áÇÑ´Ù.
+        // targetì´ Playerê°€ ì•„ë‹ˆë¼ë©´ ì¢…ë£Œí•œë‹¤.
         if (target.GetType() != typeof(Player))
         {
             return;
         }
 
-        // ÄÚ½ºÆ®¸¦ È¸º¹½ÃÅ²´Ù.
+        // ì½”ìŠ¤íŠ¸ë¥¼ íšŒë³µì‹œí‚¨ë‹¤.
         BattleInfo.Instance.RestoreCost(amount);
     }
 
     public void Draw(int amount, int turnCount, Character target)
     {
-        // targetÀÌ Player°¡ ¾Æ´Ï¶ó¸é Á¾·áÇÑ´Ù.
+        // targetì´ Playerê°€ ì•„ë‹ˆë¼ë©´ ì¢…ë£Œí•œë‹¤.
         if (target.GetType() != typeof(Player))
         {
             return;
         }
 
-        // Ä«µå¸¦ »Ì´Â´Ù.
+        // ì¹´ë“œë¥¼ ë½‘ëŠ”ë‹¤.
         StartCoroutine(TurnManager.Instance.DrawCard(amount));
     }
 
@@ -233,5 +233,5 @@ public class CardInfo : MonoBehaviour
     {
         target.EnrollBleed(new BleedEffect(SkillType.Bleed, amount, turnCount));
     }
-    #endregion Ä«µå È¿°ú
+    #endregion ì¹´ë“œ íš¨ê³¼
 }
