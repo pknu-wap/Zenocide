@@ -11,7 +11,6 @@ public class Items : MonoBehaviour
     public Transform slotsParent;
     public List<TMP_Text> slots = new List<TMP_Text>();
     public static List<string> items = new List<string>();
-    public string newItemName;
 
     private void Awake() => instance = this;
     private void Start()
@@ -60,8 +59,8 @@ public class Items : MonoBehaviour
                 {
                     slots[i].text = slots[i - 1].text;
                 }
-                // items 리스트에 있는 랜덤 아이템 슬롯에 추가
                 int randomIndex = Random.Range(0, items.Count);
+                // items 리스트에 있는 랜덤 아이템 슬롯에 추가
                 slots[0].text = items[randomIndex];
                 items.RemoveAt(randomIndex);
             }
