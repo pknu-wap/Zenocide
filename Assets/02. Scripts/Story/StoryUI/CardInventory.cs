@@ -18,7 +18,7 @@ public class CardInventory : MonoBehaviour
 
     public void UpdateAllCardSlot()
     {
-        List<CardData> deck = CardManager.Inst.deck;
+        List<CardData> deck = CardManager.Instance.deck;
         for (int i = 0; i < deck.Count; ++i)
         {
             slots[i].Setup(deck[i]);

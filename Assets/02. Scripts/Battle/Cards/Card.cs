@@ -53,12 +53,12 @@ public class Card : MonoBehaviour
     // 마우스를 카드 위에 올릴 떄 실행된다.
     void OnMouseEnter()
     {
-        if (BattleInfo.Inst.isGameOver)
+        if (BattleInfo.Instance.isGameOver)
         {
             return;
         }
 
-        CardManager.Inst.CardMouseEnter(this);
+        CardManager.Instance.CardMouseEnter(this);
 
         // 실행 중인 moveSequence가 있다면 종료한다.
         moveSequence.Kill();
@@ -67,7 +67,7 @@ public class Card : MonoBehaviour
     // 마우스가 카드를 벗어날 떄 실행된다.
     void OnMouseExit()
     {
-        if (BattleInfo.Inst.isGameOver)
+        if (BattleInfo.Instance.isGameOver)
         {
             return;
         }
@@ -77,7 +77,7 @@ public class Card : MonoBehaviour
             return;
         }
 
-        CardManager.Inst.CardMouseExit(this);
+        CardManager.Instance.CardMouseExit(this);
     }
 
     Vector3 arrowOffset = new Vector3(0f, 100f, 3f);
@@ -85,7 +85,7 @@ public class Card : MonoBehaviour
     // 드래그가 시작될 때 호출된다.
     public void OnMouseDown()
     {
-        if (BattleInfo.Inst.isGameOver)
+        if (BattleInfo.Instance.isGameOver)
         {
             return;
         }
@@ -122,7 +122,7 @@ public class Card : MonoBehaviour
     // 드래그 중일 때 계속 호출된다.
     public void OnMouseDrag()
     {
-        if (BattleInfo.Inst.isGameOver)
+        if (BattleInfo.Instance.isGameOver)
         {
             return;
         }
@@ -147,7 +147,7 @@ public class Card : MonoBehaviour
     // 드래그가 끝날 때 호출된다.
     public void OnMouseUp()
     {
-        if (BattleInfo.Inst.isGameOver)
+        if (BattleInfo.Instance.isGameOver)
         {
             return;
         }
@@ -175,7 +175,7 @@ public class Card : MonoBehaviour
     private IEnumerator UseCard()
     {
         // 코스트가 모자란 경우
-        if (BattleInfo.Inst.CanUseCost(cardData.cost) == false)
+        if (BattleInfo.Instance.CanUseCost(cardData.cost) == false)
         {
             // 카드 발동을 취소한다.
             CancelUsingCard();
@@ -201,7 +201,7 @@ public class Card : MonoBehaviour
             }
 
             // 코스트를 감소시킨다.
-            BattleInfo.Inst.UseCost(cardData.cost);
+            BattleInfo.Instance.UseCost(cardData.cost);
 
             // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
             cardCollider.enabled = false;
@@ -210,7 +210,7 @@ public class Card : MonoBehaviour
             bool isAnimationDone = false;
             // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
             moveSequence = DOTween.Sequence()
-                .Append(transform.DOMove(CardManager.Inst.cardDumpPoint.position, dotweenTime))
+                .Append(transform.DOMove(CardManager.Instance.cardDumpPoint.position, dotweenTime))
                 .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
                 .Join(transform.DOScale(Vector3.one, dotweenTime))
                 .OnComplete(() => {
@@ -242,7 +242,7 @@ public class Card : MonoBehaviour
             }
 
             // 카드를 삭제한다.
-            CardManager.Inst.DiscardCard(this);
+            CardManager.Instance.DiscardCard(this);
         }
 
         // 논타겟 스킬일 때
@@ -264,7 +264,7 @@ public class Card : MonoBehaviour
             }
 
             // 코스트를 감소시킨다.
-            BattleInfo.Inst.UseCost(cardData.cost);
+            BattleInfo.Instance.UseCost(cardData.cost);
 
             // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
             cardCollider.enabled = false;
@@ -280,7 +280,7 @@ public class Card : MonoBehaviour
                 // 1초간 정지
                 .AppendInterval(focusTime)
                 // 묘지로 이동한다.
-                .Append(transform.DOMove(CardManager.Inst.cardDumpPoint.position, dotweenTime))
+                .Append(transform.DOMove(CardManager.Instance.cardDumpPoint.position, dotweenTime))
                 .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
                 .Join(transform.DOScale(Vector3.one, dotweenTime))
                 .OnComplete(() => {
@@ -307,7 +307,7 @@ public class Card : MonoBehaviour
             }
 
             // 카드를 삭제한다.
-            CardManager.Inst.DiscardCard(this);
+            CardManager.Instance.DiscardCard(this);
         }
     }
 
@@ -366,7 +366,7 @@ public class Card : MonoBehaviour
     // 카드를 중앙에서 강조한다.
     void FocusCardOnCenter()
     {
-        MoveTransform(new PRS(CardManager.Inst.focusPos, Utils.QI, originPRS.scale * 1.2f), true, dotweenTime);
+        MoveTransform(new PRS(CardManager.Instance.focusPos, Utils.QI, originPRS.scale * 1.2f), true, dotweenTime);
 
         cardOrder.SetMostFrontOrder(true);
     }

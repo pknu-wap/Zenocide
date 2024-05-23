@@ -8,8 +8,8 @@ using Random = UnityEngine.Random;
 
 public class TurnManager : MonoBehaviour
 {
-    public static TurnManager Inst { get; private set; }
-    private void Awake() => Inst = this;
+    public static TurnManager Instance { get; private set; }
+    private void Awake() => Instance = this;
 
     [Header("Develop")]
     [SerializeField] [Tooltip("시작 턴 모드를 정합니다")] ETurnMode eTurnMode;
@@ -70,7 +70,7 @@ public class TurnManager : MonoBehaviour
     IEnumerator StartPlayerTurnCo()
     {
         // 턴 시작 UI 출력, 이 부분도 추후 수정해야 합니다.
-        GameManager.Inst.Notification("나의 턴");
+        GameManager.Instance.Notification("나의 턴");
 
         // 우리 게임은 오직 플레이어만 드로우합니다.
         // 드로우 카드 수만큼 드로우
@@ -96,7 +96,7 @@ public class TurnManager : MonoBehaviour
 
     public void EndTurn()
     {
-        if (BattleInfo.Inst.isGameOver)
+        if (BattleInfo.Instance.isGameOver)
         {
             return;
         }
@@ -118,13 +118,13 @@ public class TurnManager : MonoBehaviour
         if (myTurn)
         {
             // 카드 전부 버리기
-            yield return StartCoroutine(CardManager.Inst.DiscardHandCo());
+            yield return StartCoroutine(CardManager.Instance.DiscardHandCo());
 
             onEndPlayerTurn.Invoke();
             onStartEnemyTurn.Invoke();
 
             // 적 턴 직전, 플레이어가 죽으면 코루틴을 끝낸다.
-            if (BattleInfo.Inst.isGameOver)
+            if (BattleInfo.Instance.isGameOver)
             {
                 yield break;
             }
@@ -136,7 +136,7 @@ public class TurnManager : MonoBehaviour
             yield return StartCoroutine(EndTurnCo());
 
             // 적 턴 종료 후에도, 플레이어가 죽으면 코루틴을 끝낸다.
-            if (BattleInfo.Inst.isGameOver)
+            if (BattleInfo.Instance.isGameOver)
             {
                 yield break;
             }

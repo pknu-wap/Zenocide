@@ -73,7 +73,7 @@ public class CardInfo : MonoBehaviour
 
         else if (target == SkillTarget.AllEnemy)
         {
-            return BattleInfo.Inst.remainingEnemies.ToArray();
+            return BattleInfo.Instance.remainingEnemies.ToArray();
         }
 
         return null;
@@ -97,7 +97,7 @@ public class CardInfo : MonoBehaviour
 
         else if (target == SkillTarget.AllEnemy)
         {
-            return BattleInfo.Inst.remainingEnemies.ToArray();
+            return BattleInfo.Instance.remainingEnemies.ToArray();
         }
 
         return null;
@@ -214,7 +214,7 @@ public class CardInfo : MonoBehaviour
         }
 
         // 코스트를 회복시킨다.
-        BattleInfo.Inst.RestoreCost(amount);
+        BattleInfo.Instance.RestoreCost(amount);
     }
 
     public void Draw(int amount, int turnCount, Character target)
@@ -226,7 +226,7 @@ public class CardInfo : MonoBehaviour
         }
 
         // 카드를 뽑는다.
-        StartCoroutine(TurnManager.Inst.DrawCard(amount));
+        StartCoroutine(TurnManager.Instance.DrawCard(amount));
     }
 
     public void Bleed(int amount, int turnCount, Character target)

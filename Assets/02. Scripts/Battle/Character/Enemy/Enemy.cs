@@ -1,20 +1,20 @@
-// ±è¹ÎÃ¶
+// ê¹€ë¯¼ì² 
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Enemy : Character
 {
-    [Header("Á¤º¸")]
-    // ÀûÀÌ »ç¿ëÇÒ ½ºÅ³ ¸®½ºÆ®
+    [Header("ì •ë³´")]
+    // ì ì´ ì‚¬ìš©í•  ìŠ¤í‚¬ ë¦¬ìŠ¤íŠ¸
     public EnemySkill skillData;
 
-    [Header("ÄÄÆ÷³ÍÆ®")]
-    // Çàµ¿ Á¤º¸ ¾ÆÀÌÄÜ
+    [Header("ì»´í¬ë„ŒíŠ¸")]
+    // í–‰ë™ ì •ë³´ ì•„ì´ì½˜
     [SerializeField] protected Image behaviorIcon;
     [SerializeField] protected TMP_Text behaviorAmount;
 
-    // »óÁ¦Á¤º¸Ã¢
+    // ìƒì œì •ë³´ì°½
     [SerializeField] protected TMP_Text behaviorName;
     [SerializeField] protected TMP_Text behaviorDescription;
 
@@ -22,11 +22,11 @@ public class Enemy : Character
     {
         base.Awake();
 
-        // Çàµ¿ Á¤º¸ ¾ÆÀÌÄÜ
+        // í–‰ë™ ì •ë³´ ì•„ì´ì½˜
         behaviorIcon = transform.GetChild(0).GetChild(1).GetChild(2).GetComponent<Image>();
         behaviorAmount = behaviorIcon.transform.GetChild(0).GetComponent<TMP_Text>();
 
-        // »óÁ¦Á¤º¸Ã¢
+        // ìƒì œì •ë³´ì°½
         behaviorName = statusPanel.GetChild(0).GetChild(0).GetComponent<TMP_Text>();
         behaviorDescription = statusPanel.GetChild(0).GetChild(1).GetComponent<TMP_Text>();
     }
@@ -35,15 +35,15 @@ public class Enemy : Character
     {
         base.Start();
 
-        // Å×½ºÆ®´Â Start°¡ Á¦¸À
+        // í…ŒìŠ¤íŠ¸ëŠ” Startê°€ ì œë§›
         ReadySkill();
 
-        // BattleInfo¿¡ ÀÚ½Å Ãß°¡
-        BattleInfo.Inst.EnrollEnemy(this);
+        // BattleInfoì— ìì‹  ì¶”ê°€
+        BattleInfo.Instance.EnrollEnemy(this);
 
-        // BattleManager¿¡ ÀÌº¥Æ® µî·Ï
-        TurnManager.Inst.onEndEnemyTurn.AddListener(EndEnemyTurn);
-        TurnManager.Inst.onStartPlayerTurn.AddListener(ReadySkill);
+        // BattleManagerì— ì´ë²¤íŠ¸ ë“±ë¡
+        TurnManager.Instance.onEndEnemyTurn.AddListener(EndEnemyTurn);
+        TurnManager.Instance.onStartPlayerTurn.AddListener(ReadySkill);
     }
 
     public void StartEnemyTurn()
@@ -53,54 +53,54 @@ public class Enemy : Character
 
     public void EndEnemyTurn()
     {
-        // ÇÃ·¹ÀÌ¾î¿¡°Ô ½ºÅ³À» »ç¿ëÇÑ´Ù. ÀÌ¶§, ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ¸ğµÎ ³¡³ª¾ß ÀÌÈÄ ¸í·ÉµéÀ» ½ÃÀÛÇÑ´Ù.
+        // í”Œë ˆì´ì–´ì—ê²Œ ìŠ¤í‚¬ì„ ì‚¬ìš©í•œë‹¤. ì´ë•Œ, ì• ë‹ˆë©”ì´ì…˜ì´ ëª¨ë‘ ëë‚˜ì•¼ ì´í›„ ëª…ë ¹ë“¤ì„ ì‹œì‘í•œë‹¤.
         CastSkill();
 
-        // µğ¹öÇÁ(ÃâÇ÷ µî)°¡ ÀüºÎ Àû¿ëµÈ´Ù.
+        // ë””ë²„í”„(ì¶œí˜ˆ ë“±)ê°€ ì „ë¶€ ì ìš©ëœë‹¤.
         GetBleedAll();
     }
 
-    [Header("·±Å¸ÀÓ º¯¼ö")]
-    // ÇöÀç ÁØºñ ÁßÀÎ ½ºÅ³
+    [Header("ëŸ°íƒ€ì„ ë³€ìˆ˜")]
+    // í˜„ì¬ ì¤€ë¹„ ì¤‘ì¸ ìŠ¤í‚¬
     public Skill currentSkill;
 
-    // ½ºÅ³ »ç¿ëÀ» ÁØºñÇÑ´Ù.
+    // ìŠ¤í‚¬ ì‚¬ìš©ì„ ì¤€ë¹„í•œë‹¤.
     public void ReadySkill()
     {
         int i = Random.Range(0, skillData.skills.Length);
 
-        // 1. ·£´ıÇÑ ½ºÅ³µé Áß ÇÏ³ª¸¦ ¼±ÅÃÇÑ´Ù.
+        // 1. ëœë¤í•œ ìŠ¤í‚¬ë“¤ ì¤‘ í•˜ë‚˜ë¥¼ ì„ íƒí•œë‹¤.
         currentSkill = skillData.skills[i];
 
-        // 2.UI¸¦ °»½ÅÇÑ´Ù.
-        // 2-1. ÀÚ½ÅÀÌ °í¸¥ ½ºÅ³À» Ã¼·Â¹Ù À§¿¡ Ç¥½ÃÇÑ´Ù.
+        // 2.UIë¥¼ ê°±ì‹ í•œë‹¤.
+        // 2-1. ìì‹ ì´ ê³ ë¥¸ ìŠ¤í‚¬ì„ ì²´ë ¥ë°” ìœ„ì— í‘œì‹œí•œë‹¤.
         behaviorIcon.sprite = CardInfo.Instance.skillIcons[(int)currentSkill.type];
         behaviorAmount.text = currentSkill.amount.ToString();
 
-        // 2-2. »ó¼¼Á¤º¸Ã¢À» ½ºÅ³ÀÇ ¼³¸íÀ¸·Î °»½ÅÇÑ´Ù.
+        // 2-2. ìƒì„¸ì •ë³´ì°½ì„ ìŠ¤í‚¬ì˜ ì„¤ëª…ìœ¼ë¡œ ê°±ì‹ í•œë‹¤.
         SkillText skillText = CardInfo.Instance.GetSkillText(currentSkill);
         behaviorName.text = skillText.name;
         behaviorDescription.text = skillText.description;
     }
 
-    // ½ºÅ³À» »ç¿ëÇÑ´Ù.
+    // ìŠ¤í‚¬ì„ ì‚¬ìš©í•œë‹¤.
     public void CastSkill()
     {
-        // Å¸°ÙÀ» ¹Ş¾Æ¿Â´Ù.
+        // íƒ€ê²Ÿì„ ë°›ì•„ì˜¨ë‹¤.
         Character[] target = CardInfo.Instance.GetTarget(currentSkill.target, this);
 
-        // ÁØºñÇÑ ½ºÅ³À» »ç¿ëÇÑ´Ù.
+        // ì¤€ë¹„í•œ ìŠ¤í‚¬ì„ ì‚¬ìš©í•œë‹¤.
         CardInfo.Instance.ActivateSkill(currentSkill, target);
     }
 
-    // Á×´Â´Ù.
+    // ì£½ëŠ”ë‹¤.
     public override void Die()
     {
-        // ¿ÀºêÁ§Æ® ºñÈ°¼ºÈ­
+        // ì˜¤ë¸Œì íŠ¸ ë¹„í™œì„±í™”
         gameObject.SetActive(false);
-        // TurnManager¿¡¼­ ÀÚ±â ÀÚ½ÅÀÇ ÀÌº¥Æ®¸¦ Á¦°Å
-        TurnManager.Inst.onEndEnemyTurn.RemoveListener(EndEnemyTurn);
-        // BattleInfo¿¡¼­ ÀÚ±â ÀÚ½ÅÀ» Á¦°ÅÇÑ´Ù.
-        BattleInfo.Inst.DisenrollEnemy(this);
+        // TurnManagerì—ì„œ ìê¸° ìì‹ ì˜ ì´ë²¤íŠ¸ë¥¼ ì œê±°
+        TurnManager.Instance.onEndEnemyTurn.RemoveListener(EndEnemyTurn);
+        // BattleInfoì—ì„œ ìê¸° ìì‹ ì„ ì œê±°í•œë‹¤.
+        BattleInfo.Instance.DisenrollEnemy(this);
     }
 }

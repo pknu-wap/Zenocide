@@ -1,4 +1,4 @@
-// ±è¹ÎÃ¶
+// ê¹€ë¯¼ì² 
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +7,9 @@ using UnityEngine;
 
 public class BattleInfo : MonoBehaviour
 {
-    public static BattleInfo Inst { get; private set; }
+    public static BattleInfo Instance { get; private set; }
     void Awake() {
-        Inst = this;
+        Instance = this;
 
         remainingEnemies = new List<Enemy>();
     }
@@ -17,77 +17,77 @@ public class BattleInfo : MonoBehaviour
     private void Start()
     {
         ResetCost();
-        TurnManager.Inst.onStartPlayerTurn.AddListener(ResetCost);
+        TurnManager.Instance.onStartPlayerTurn.AddListener(ResetCost);
     }
 
-    [Header("ÀüÅõ Á¤º¸")]
-    // ³²Àº Àû ¿ÀºêÁ§Æ® ¹è¿­
+    [Header("ì „íˆ¬ ì •ë³´")]
+    // ë‚¨ì€ ì  ì˜¤ë¸Œì íŠ¸ ë°°ì—´
     public List<Enemy> remainingEnemies;
-    // °ÔÀÓ ¿À¹ö ¿©ºÎ
+    // ê²Œì„ ì˜¤ë²„ ì—¬ë¶€
     public bool isGameOver = false;
-    // ÃÖ´ë ÄÚ½ºÆ®
+    // ìµœëŒ€ ì½”ìŠ¤íŠ¸
     public int maxCost = 5;
-    // ÇöÀç ÄÚ½ºÆ®
+    // í˜„ì¬ ì½”ìŠ¤íŠ¸
     public int currentCost = 5;
 
-    [Header("ÇÃ·¹ÀÌ¾î ´É·ÂÄ¡")]
-    // Ãß°¡ °ø°İ·Â. µ¥¹ÌÁö °è»ê ½Ä¿¡ Àû¿ë
+    [Header("í”Œë ˆì´ì–´ ëŠ¥ë ¥ì¹˜")]
+    // ì¶”ê°€ ê³µê²©ë ¥. ë°ë¯¸ì§€ ê³„ì‚° ì‹ì— ì ìš©
     public int bonusAttackStat;
-    // Ãß°¡ µ¥¹ÌÁö. µ¥¹ÌÁö °è»ê ÈÄ, Ãß°¡·Î µé¾î°¡´Â °íÁ¤ µ¥¹ÌÁö
+    // ì¶”ê°€ ë°ë¯¸ì§€. ë°ë¯¸ì§€ ê³„ì‚° í›„, ì¶”ê°€ë¡œ ë“¤ì–´ê°€ëŠ” ê³ ì • ë°ë¯¸ì§€
     public int bonusDamage;
-    // Ãß°¡ ¹æ¾î·Â. µ¥¹ÌÁö °è»ê ½Ä¿¡ Àû¿ë
+    // ì¶”ê°€ ë°©ì–´ë ¥. ë°ë¯¸ì§€ ê³„ì‚° ì‹ì— ì ìš©
     public int bonusArmor;
 
-    [Header("ÄÄÆ÷³ÍÆ®")]
+    [Header("ì»´í¬ë„ŒíŠ¸")]
     public TMP_Text costText;
 
-    // ¸ğµç °ªÀ» ÃÊ±âÈ­ÇÑ´Ù.
+    // ëª¨ë“  ê°’ì„ ì´ˆê¸°í™”í•œë‹¤.
     public void ResetBattleInfo()
     {
-        // ³²Àº Àû ¼ıÀÚ¸¦ Àû ¼ıÀÚ¿¡ ¸ÂÃç ÃÊ±âÈ­ÇÑ´Ù.
+        // ë‚¨ì€ ì  ìˆ«ìë¥¼ ì  ìˆ«ìì— ë§ì¶° ì´ˆê¸°í™”í•œë‹¤.
         bonusAttackStat = 0;
         bonusDamage = 0;
         bonusArmor = 0;
     }
 
-    // Àû ¿ÀºêÁ§Æ® µî·ÏÇÑ´Ù. ½ºÅä¸® ¾À°ú ¿¬°èµÇ¸é »èÁ¦µÉ ¼öµµ ÀÖ´Ù.
+    // ì  ì˜¤ë¸Œì íŠ¸ ë“±ë¡í•œë‹¤. ìŠ¤í† ë¦¬ ì”¬ê³¼ ì—°ê³„ë˜ë©´ ì‚­ì œë  ìˆ˜ë„ ìˆë‹¤.
     public void EnrollEnemy(Enemy enemy)
     {
         remainingEnemies.Add(enemy);
     }
 
-    // Àû ¿ÀºêÁ§Æ®¸¦ »èÁ¦ÇÑ´Ù.
+    // ì  ì˜¤ë¸Œì íŠ¸ë¥¼ ì‚­ì œí•œë‹¤.
     public void DisenrollEnemy(Enemy enemy)
     {
-        // ¸®½ºÆ®°¡ ÀÌ¹Ì ºñ¾îÀÖ´Ù¸é ¸®ÅÏÇÑ´Ù. (¿¹¿Ü Ã³¸®)
+        // ë¦¬ìŠ¤íŠ¸ê°€ ì´ë¯¸ ë¹„ì–´ìˆë‹¤ë©´ ë¦¬í„´í•œë‹¤. (ì˜ˆì™¸ ì²˜ë¦¬)
         if(remainingEnemies.Any() == false)
         {
             return;
         }
 
-        // ¸®½ºÆ®¿¡¼­ enemy¸¦ »èÁ¦ÇÑ´Ù.
+        // ë¦¬ìŠ¤íŠ¸ì—ì„œ enemyë¥¼ ì‚­ì œí•œë‹¤.
         remainingEnemies.Remove(enemy);
 
-        // »èÁ¦ ÈÄ ¸®½ºÆ®°¡ ºñ¾îÀÖ´Ù¸é
+        // ì‚­ì œ í›„ ë¦¬ìŠ¤íŠ¸ê°€ ë¹„ì–´ìˆë‹¤ë©´
         if(remainingEnemies.Any() == false)
         {
-            // °ÔÀÓÀ» Á¾·áÇÑ´Ù.
+            // ê²Œì„ì„ ì¢…ë£Œí•œë‹¤.
             isGameOver = true;
 
-            GameManager.Inst.Notification("½Â¸®");
+            GameManager.Instance.Notification("ìŠ¹ë¦¬");
 
-            // ÀÌÈÄ ½ºÅä¸®·Î º¹±ÍÇÑ´Ù.
+            // ì´í›„ ìŠ¤í† ë¦¬ë¡œ ë³µê·€í•œë‹¤.
         }
     }
 
-    // cost·Î Ä«µå »ç¿ëÀÌ °¡´ÉÇÑÁö ¾Ë·ÁÁØ´Ù.
+    // costë¡œ ì¹´ë“œ ì‚¬ìš©ì´ ê°€ëŠ¥í•œì§€ ì•Œë ¤ì¤€ë‹¤.
     public bool CanUseCost(int cost)
     {
         return currentCost - cost >= 0;
     }
 
 
-    // ÄÚ½ºÆ®¸¦ ÁÙÀÎ´Ù. ¼º°ø ½Ã true, ½ÇÆĞ ½Ã false¸¦ ¹İÈ¯ÇÑ´Ù.
+    // ì½”ìŠ¤íŠ¸ë¥¼ ì¤„ì¸ë‹¤. ì„±ê³µ ì‹œ true, ì‹¤íŒ¨ ì‹œ falseë¥¼ ë°˜í™˜í•œë‹¤.
     public bool UseCost(int cost)
     {
         if(currentCost - cost < 0)
@@ -101,14 +101,14 @@ public class BattleInfo : MonoBehaviour
         return true;
     }
 
-    // ÄÚ½ºÆ®¸¦ maxCost·Î º¹±¸½ÃÅ²´Ù.
+    // ì½”ìŠ¤íŠ¸ë¥¼ maxCostë¡œ ë³µêµ¬ì‹œí‚¨ë‹¤.
     public void ResetCost()
     {
         currentCost = maxCost;
         UpdateCostText();
     }
 
-    // ÄÚ½ºÆ®¸¦ cost ¸¸Å­ È¸º¹½ÃÅ²´Ù.
+    // ì½”ìŠ¤íŠ¸ë¥¼ cost ë§Œí¼ íšŒë³µì‹œí‚¨ë‹¤.
     public void RestoreCost(int cost)
     {
         currentCost += cost;

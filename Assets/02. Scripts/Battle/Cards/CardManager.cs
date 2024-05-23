@@ -7,8 +7,8 @@ using TMPro;
 
 public class CardManager : MonoBehaviour
 {
-    public static CardManager Inst { get; private set; }
-    void Awake() => Inst = this;
+    public static CardManager Instance { get; private set; }
+    void Awake() => Instance = this;
 
     // 카드 풀
     [SerializeField] CardList cardList;
@@ -102,7 +102,7 @@ public class CardManager : MonoBehaviour
             "더미3"
         };
 
-        if (Input.GetKeyDown(KeyCode.Q) && TurnManager.Inst.myTurn)
+        if (Input.GetKeyDown(KeyCode.Q) && TurnManager.Instance.myTurn)
         {
             AddCardToDeck(dummyCards[Random.Range(0, 3)]);
             SetUpDeck();
@@ -407,7 +407,7 @@ public class CardManager : MonoBehaviour
 
     public void CardMouseDown()
     {
-        if (TurnManager.Inst.myTurn)
+        if (TurnManager.Instance.myTurn)
             DiscardCard(selectCard);
     }
 

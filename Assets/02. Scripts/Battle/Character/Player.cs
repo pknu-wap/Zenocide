@@ -1,8 +1,8 @@
-// ±è¹ÎÃ¶
+// ê¹€ë¯¼ì² 
 
 public class Player : Character
 {
-    #region ½Ì±ÛÅæ
+    #region ì‹±ê¸€í†¤
     public static Player Instance { get; set; }
     private static Player instance;
 
@@ -20,13 +20,13 @@ public class Player : Character
             Destroy(gameObject);
         }
     }
-    #endregion ½Ì±ÛÅæ
+    #endregion ì‹±ê¸€í†¤
 
     protected override void Start()
     {
         base.Start();
 
-        TurnManager.Inst.onEndPlayerTurn.AddListener(EndPlayerTurn);
+        TurnManager.Instance.onEndPlayerTurn.AddListener(EndPlayerTurn);
     }
 
     public void EndPlayerTurn()
@@ -36,12 +36,12 @@ public class Player : Character
 
     public override void Die()
     {
-        // ÇÃ·¹ÀÌ¾îÀÇ »ç¸ÁÀ» ¾Ë¸²
-        BattleInfo.Inst.isGameOver = true;
+        // í”Œë ˆì´ì–´ì˜ ì‚¬ë§ì„ ì•Œë¦¼
+        BattleInfo.Instance.isGameOver = true;
 
         currentHp = 0;
         UpdateCurrentHP();
 
-        GameManager.Inst.Notification("°ÔÀÓ ¿À¹ö");
+        GameManager.Instance.Notification("ê²Œì„ ì˜¤ë²„");
     }
 }

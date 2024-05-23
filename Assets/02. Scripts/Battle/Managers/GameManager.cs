@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Ä¡Æ®, UI, ·©Å·, °ÔÀÓ¿À¹ö
+// ì¹˜íŠ¸, UI, ëž­í‚¹, ê²Œìž„ì˜¤ë²„
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Inst { get; private set; }
-    private void Awake() => Inst = this;
+    public static GameManager Instance { get; private set; }
+    private void Awake() => Instance = this;
 
     [SerializeField] NotificationPanel notificationPanel;
 
@@ -24,13 +24,13 @@ public class GameManager : MonoBehaviour
 
     void InputCheatKey()
     {
-        if (Input.GetKeyDown(KeyCode.S) && TurnManager.Inst.myTurn)
+        if (Input.GetKeyDown(KeyCode.S) && TurnManager.Instance.myTurn)
             TurnManager.OnAddCard?.Invoke(true);
     }
 
     public void StartGame()
     {
-        StartCoroutine(TurnManager.Inst.StartGameCo());
+        StartCoroutine(TurnManager.Instance.StartGameCo());
     }
 
     public void Notification(string message)
