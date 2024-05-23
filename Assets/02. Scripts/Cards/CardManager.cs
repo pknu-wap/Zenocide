@@ -20,7 +20,7 @@ public class CardManager : MonoBehaviour
     // 핸드
     public List<Card> hand;
     [SerializeField] int maxHand = 10;
-    [SerializeField] Transform handObject;
+    [SerializeField] Transform cardObjcetParent;
     [SerializeField] Transform handLeft;
     [SerializeField] Transform handRight;
 
@@ -33,10 +33,10 @@ public class CardManager : MonoBehaviour
     // 덱, 묘지
     public List<CardData> deck;
     public List<CardData> dump;
-    List<GameObject> cardBack;
+    List<GameObject> cardBackObjectList;
     [SerializeField] TMP_Text deckCountTMP;
     [SerializeField] TMP_Text dumpCountTMP;
-    [SerializeField] Transform cardBackObject;
+    [SerializeField] Transform cardBackObjectParent;
 
     Card selectCard;
 
@@ -56,20 +56,20 @@ public class CardManager : MonoBehaviour
         // 지금은 게임과 전투가 동시에 시작
         // InitDeck은 게임 시작 시, SetUpDeck과 InitDump는 전투 시작 시 호출해야 함
         InitDeck();
+        MergeDumpToDeck();
         SetUpDeck();
-        SetUpDump();
 
         // 동적 참조를 줄이기 위해 싱글톤 대신 Action으로 호출
         TurnManager.OnAddCard += AddCardToHand;
 
         #region ResetDeckInitiation
-        cardBack = new List<GameObject>(listSize);
+        cardBackObjectList = new List<GameObject>(listSize);
 
         // 카드 뒷면 오브젝트 생성해서 리스트에 추가하고 enable 처리
         for (int i = 0; i < listSize; i++)
         {
-            cardBack.Add(Instantiate(cardBackPrefab, cardDumpPoint.position, Utils.QI, cardBackObject));
-            cardBack[i].SetActive(false);
+            cardBackObjectList.Add(Instantiate(cardBackPrefab, cardDumpPoint.position, Utils.QI, cardBackObjectParent));
+            cardBackObjectList[i].SetActive(false);
         }
         #endregion
     }
@@ -177,7 +177,7 @@ public class CardManager : MonoBehaviour
             return;
         }
 
-        var cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI, handObject);
+        var cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI, cardObjcetParent);
         var card = cardObject.GetComponent<Card>();
 
         // DrawCard() 호출 전에 덱이 비었는지 확인
@@ -185,7 +185,7 @@ public class CardManager : MonoBehaviour
         {
             StartCoroutine(ResetDeckAnimationCo(dump.Count));
             ResetDeck();
-            SetUpDump();
+            MergeDumpToDeck();
         }
 
         card.Setup(DrawCard());
@@ -302,7 +302,7 @@ public class CardManager : MonoBehaviour
             DestroyImmediate(card.gameObject);
         }
 
-        SetUpDump();
+        MergeDumpToDeck();
         hand.Clear();
         UpdateDeckCount();
         selectCard = null;
@@ -313,12 +313,12 @@ public class CardManager : MonoBehaviour
     // dump를 deck에 모아 셔플
     void ResetDeck()
     {
-        SetUpDump();
+        MergeDumpToDeck();
 
         ShuffleDeck();
     }
 
-    void SetUpDump()
+    void MergeDumpToDeck()
     {
         // dump의 카드들을 deck에 추가
         for (int i = 0; i < dump.Count; i++)
@@ -336,17 +336,17 @@ public class CardManager : MonoBehaviour
         // 카드 뒷면 오브젝트 활성화
         for (int i = 0; i < dumpCount; i++)
         {
-            cardBack[i].SetActive(true);
+            cardBackObjectList[i].SetActive(true);
         }
 
         for (int i = 0; i < dumpCount; i++)
         {
             // 포물선 이동
             Sequence sequence = DOTween.Sequence()
-                .Append(cardBack[i].transform.DOMoveX(cardResetPoint.position.x, delay03))
-                .Join(cardBack[i].transform.DOMoveY(cardResetPoint.position.y, delay03)).SetEase(Ease.OutCubic)
-                .Append(cardBack[i].transform.DOMoveX(cardSpawnPoint.position.x, delay03))
-                .Join(cardBack[i].transform.DOMoveY(cardSpawnPoint.position.y, delay03));
+                .Append(cardBackObjectList[i].transform.DOMoveX(cardResetPoint.position.x, delay03))
+                .Join(cardBackObjectList[i].transform.DOMoveY(cardResetPoint.position.y, delay03)).SetEase(Ease.OutCubic)
+                .Append(cardBackObjectList[i].transform.DOMoveX(cardSpawnPoint.position.x, delay03))
+                .Join(cardBackObjectList[i].transform.DOMoveY(cardSpawnPoint.position.y, delay03));
 
             // 각 카드에 딜레이 주기
             yield return new WaitForSeconds(delay01);
@@ -358,9 +358,9 @@ public class CardManager : MonoBehaviour
         for (int i = 0; i < dumpCount; i++)
         {
             // 카드 뒷면 오브젝트 다시 숨기기
-            cardBack[i].SetActive(false);
+            cardBackObjectList[i].SetActive(false);
             // 덱으로 옮겨놓은 오브젝트 다시 묘지로 원위치
-            cardBack[i].transform.position = cardDumpPoint.position;
+            cardBackObjectList[i].transform.position = cardDumpPoint.position;
         }
     }
 
