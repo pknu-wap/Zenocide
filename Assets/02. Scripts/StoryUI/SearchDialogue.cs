@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class LoadDialogue : MonoBehaviour
 {
-    public TextData textData;
+    public EventData textData;
 
     [Header("선택지 데이터")]
     public string[] choiceUpContent;

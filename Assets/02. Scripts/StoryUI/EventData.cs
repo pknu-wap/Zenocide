@@ -8,5 +8,5 @@ public class EventData: ScriptableObject
     public int storyName;
 
     [Header("후속 이벤트")]
-    public TextData nextEvent;
+    public EventData nextEvent;
 }
