@@ -33,6 +33,11 @@ public class GameManager : MonoBehaviour
         StartCoroutine(TurnManager.Instance.StartGameCo());
     }
 
+    public void EnrollEnemies(string[] enemies)
+    {
+
+    }
+
     public void Notification(string message)
     {
         notificationPanel.Show(message);

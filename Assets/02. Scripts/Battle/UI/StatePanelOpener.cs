@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class StatePanel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class StatePanelOpener : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] GameObject statePanel;
     [SerializeField] Image statePanelImage;
@@ -12,7 +12,7 @@ public class StatePanel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     private void Awake()
     {
-        statePanel = transform.parent.GetChild(2).gameObject;
+        statePanel = transform.parent.GetChild(0).gameObject;
         statePanelImage = statePanel.GetComponent<Image>();
         uiCanvas = transform.parent.GetComponent<Canvas>();
 
@@ -21,33 +21,33 @@ public class StatePanel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        //// DOTweenÀ» ½á¼­ Fade È¿°ú¸¦ ÁÖ´Â °æ¿ì. ÇöÀç ¾È ¾¸
+        //// DOTweenì„ ì¨ì„œ Fade íš¨ê³¼ë¥¼ ì£¼ëŠ” ê²½ìš°. í˜„ì¬ ì•ˆ ì”€
         //statePanelImage.color = Color.clear;
         //statePanel.SetActive(true);
 
-        //// ¸¶¿ì½º¸¦ ¿Ã¸®¸é »óÅÂÃ¢À» ¿¬´Ù.
+        //// ë§ˆìš°ìŠ¤ë¥¼ ì˜¬ë¦¬ë©´ ìƒíƒœì°½ì„ ì—°ë‹¤.
         //statePanelImage.DOFade(1, duration)
         //    .OnComplete(() => statePanel.SetActive(true));
 
-        // °­Á¶µÈ Äµ¹ö½ºÀÇ order¸¦ ¸Ç ¾ÕÀ¸·Î º¯°æÇÏ°í
+        // ê°•ì¡°ëœ ìº”ë²„ìŠ¤ì˜ orderë¥¼ ë§¨ ì•ìœ¼ë¡œ ë³€ê²½í•˜ê³ 
         uiCanvas.sortingOrder = 10;
-        // ÆĞ³ÎÀ» È°¼ºÈ­ ½ÃÅ²´Ù.
+        // íŒ¨ë„ì„ í™œì„±í™” ì‹œí‚¨ë‹¤.
         statePanel.SetActive(true);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        //// DOTweenÀ» ½á¼­ Fade È¿°ú¸¦ ÁÖ´Â °æ¿ì. ÇöÀç ¾È ¾¸
+        //// DOTweenì„ ì¨ì„œ Fade íš¨ê³¼ë¥¼ ì£¼ëŠ” ê²½ìš°. í˜„ì¬ ì•ˆ ì”€
         //statePanelImage.color = Color.white;
         //statePanel.SetActive(true);
 
-        //// ¸¶¿ì½º¸¦ ³»¸®¸é »óÅÂÃ¢À» ´İ´Â´Ù.
+        //// ë§ˆìš°ìŠ¤ë¥¼ ë‚´ë¦¬ë©´ ìƒíƒœì°½ì„ ë‹«ëŠ”ë‹¤.
         //statePanelImage.DOFade(0, duration)
         //    .OnComplete(() => statePanel.SetActive(false));
 
-        // °­Á¶µÈ Äµ¹ö½ºÀÇ order¸¦ µÚÂÊÀ¸·Î º¯°æÇÏ°í
+        // ê°•ì¡°ëœ ìº”ë²„ìŠ¤ì˜ orderë¥¼ ë’¤ìª½ìœ¼ë¡œ ë³€ê²½í•˜ê³ 
         uiCanvas.sortingOrder = 0;
-        // ÆĞ³ÎÀ» ºñÈ°¼ºÈ­ ½ÃÅ²´Ù.
+        // íŒ¨ë„ì„ ë¹„í™œì„±í™” ì‹œí‚¨ë‹¤.
         statePanel.SetActive(false);
     }
 }

@@ -78,7 +78,7 @@ public class Character : MonoBehaviour
         }
 
         // 디버프 상세정보창을 불러온다. (더미, 행동정보창 제외)
-        statusPanel = transform.GetChild(0).GetChild(2);
+        statusPanel = transform.GetChild(1).GetChild(0);
         debuffName = new TMP_Text[statusPanel.childCount - 1];
         debuffDescription = new TMP_Text[statusPanel.childCount - 1];
 
