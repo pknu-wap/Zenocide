@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class Enemy : Character
 {
     [Header("정보")]
-    // 적이 사용할 스킬 리스트
-    public EnemySkill skillData;
+    // 적의 정보
+    public EnemyData data;
 
     [Header("컴포넌트")]
     // 행동 정보 아이콘
@@ -35,9 +35,6 @@ public class Enemy : Character
     {
         base.Start();
 
-        // 테스트는 Start가 제맛
-        ReadySkill();
-
         // BattleInfo에 자신 추가
         BattleInfo.Instance.EnrollEnemy(this);
 
@@ -60,6 +57,19 @@ public class Enemy : Character
         GetBleedAll();
     }
 
+    // 적 정보를 갱신한다.
+    public void UpdateEnemyData(EnemyData data)
+    {
+        this.data = data;
+
+        // 이미지 변경
+        imageComponent.sprite = data.illust;
+
+        // 최대 HP 변경 및 현재 체력을 maxHp와 같게 변경
+        currentHp = maxHp;
+        UpdateCurrentHP();
+    }
+
     [Header("런타임 변수")]
     // 현재 준비 중인 스킬
     public Skill currentSkill;
@@ -67,10 +77,10 @@ public class Enemy : Character
     // 스킬 사용을 준비한다.
     public void ReadySkill()
     {
-        int i = Random.Range(0, skillData.skills.Length);
+        int i = Random.Range(0, data.skills.Length);
 
         // 1. 랜덤한 스킬들 중 하나를 선택한다.
-        currentSkill = skillData.skills[i];
+        currentSkill = data.skills[i];
 
         // 2.UI를 갱신한다.
         // 2-1. 자신이 고른 스킬을 체력바 위에 표시한다.
