@@ -9,10 +9,15 @@ public class GameManager : MonoBehaviour
     private void Awake() => Instance = this;
 
     [SerializeField] NotificationPanel notificationPanel;
+    [SerializeField] Transform enemiesParent;
+    [SerializeField] private Enemy[] enemies;
 
     void Start()
     {
         StartGame();
+
+        // Enemy 프리팹들을 미리 등록해둔다.
+        enemies = enemiesParent.GetComponentsInChildren<Enemy>();
     }
 
     void Update()
@@ -33,9 +38,24 @@ public class GameManager : MonoBehaviour
         StartCoroutine(TurnManager.Instance.StartGameCo());
     }
 
-    public void EnrollEnemies(string[] enemies)
+    public void TestCreateEnemy()
     {
+        EnrollEnemies(new string[] { "NormalZombie", "NormalZombie" });
+    }
 
+    public void EnrollEnemies(string[] enemyNames)
+    {
+        int i = 0;
+        for(; i < enemyNames.Length; ++i)
+        {
+            enemies[i].UpdateEnemyData(EnemyInfo.Instance.GetEnemyData(enemyNames[i]));
+            enemies[i].gameObject.SetActive(true);
+        }
+
+        for(; i < enemies.Length; ++i)
+        {
+            enemies[i].gameObject.SetActive(false);
+        }
     }
 
     public void Notification(string message)

@@ -39,6 +39,8 @@ public class Character : MonoBehaviour
 
     // 디버그용, 추후 삭제
     [Header("컴포넌트")]
+    // 스프라이트
+    protected Image imageComponent;
     // HP 바
     protected Image hpBar;
     protected TMP_Text hpText;
@@ -58,6 +60,9 @@ public class Character : MonoBehaviour
 
     public virtual void Awake()
     {
+        // 스프라이트
+        imageComponent = transform.GetChild(0).GetChild(0).GetComponent<Image>();
+
         // HP 바
         hpBar = transform.GetChild(0).GetChild(1).GetChild(0).GetChild(0).GetComponent<Image>();
         hpText = hpBar.transform.GetChild(0).GetComponent<TMP_Text>();
