@@ -1,6 +1,6 @@
-﻿Index,Name,Text1,Text2,Event,Items,Enemy1,Enemy2,Enemy3,Enemy4
-0,???,여긴 어디지?,,"2,5",,,,,
-1,좀비,..크르르르르,,,,,,,
-2,???,꺄아아아악!,,,,,,,
-3,,,,,,,,,
-4,#,도망간다,싸운다,"6,7",,NormalZombie,NormalZombie,NormalZombie,NormalZombie
+﻿Index,Name,Text1,Text2,Event,StartIndex,EndIndex,Items,Enemy1,Enemy2,Enemy3,Enemy4
+0,???,여긴 어디지?,,A,0,4,,,,,
+1,좀비,..크르르르르,,,,,,,,,
+2,???,어쩌지?,,,,,,,,,
+3,,,,,,,,,,,
+4,#,도망간다,싸운다,B,,,,NormalZombie,NormalZombie,NormalZombie,NormalZombie

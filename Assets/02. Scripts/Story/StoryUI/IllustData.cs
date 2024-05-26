@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class IllustData: ScriptableObject
 {
     [Header("일러스트 데이터")]
-    public readonly Dictionary<string, int> illustTable = new Dictionary<string, int>()
+    public Dictionary<string, int> illustTable = new Dictionary<string, int>()
     {
         {"???", 0},
         {"좀비", 1},

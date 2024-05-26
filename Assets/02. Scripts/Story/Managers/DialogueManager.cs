@@ -26,6 +26,9 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
     [Header("대화창 출력 완료 시 대기 표시")]          
     public GameObject waitCursor;
 
+    [Header("CSV 데이터")]
+    public GameObject CSVManager;
+
     [Header("캐릭터 이미지 데이터")]               
     public Image dialogueImage;                 
     public Sprite[] dialogueImages;             
@@ -36,13 +39,25 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
     public string[] choiceUpContent;            
     public string[] choiceDownContent;          
 
-    private int currentLine = -1;               
-    private int currentChoice = 0;              
-    private bool isTyping = false;              
+    [Header("대화 텍스트 출력 진행 확인 변수")]            
+    private bool isTyping = false;
+
+    [Header("대화 텍스트 출력 중단 요청 확인 변수")]              
     private bool cancelTyping = false;          
 
-    public IllustData IllustData;
-    public EventData EventData;
+    [Header("마우스 입력 감지 변수")]
+    private bool isClicked = false;
+
+    [Header("일러스트 데이터")]
+    public Dictionary<string, int> illustTable = new Dictionary<string, int>()
+    {
+        {"???", 0},
+        {"좀비", 1},
+        {"선택지",2}
+    };
+
+    [Header("전체 이벤트 데이터")]
+    public EventQueue TotalEvent = EventList.TotalEventQueue;
 
     void Start()
     {
@@ -53,19 +68,41 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         // 대화 아래 선택지 비활성화
         choiceDownPanel.SetActive(false);                            
         // 대화창 활성화
-        ShowDialogue();                         
+        ShowDialogue();
+        // 대화 시작
+        EventProcess();                         
     }
 
-    void Update() {}
-
-    // 마우스 입력에 반응하여 대화 진행
-    public void OnPointerDown(PointerEventData eventData)
+     public void OnPointerDown(PointerEventData eventData)
     {
-        MainDialogue();
+        isClicked = true;
     }
 
-    private void MainDialogue()
+    private IEnumerator EventProcess()
     {
+        while (TotalEvent.Count > 0)
+        {
+            EventData presentEvent = TotalEvent.Dequeue();
+            Debug.Log(presentEvent.startIndex + " " + presentEvent.endIndex);
+            for (int i = presentEvent.startIndex; i < presentEvent.endIndex; i++)
+            {
+                dialogueName.text = CSVManager.GetComponent<CSVManager>().Search(i)["Name"].ToString();
+                dialogueText.text = CSVManager.GetComponent<CSVManager>().Search(i)["Text"].ToString();
+
+                DisplayDialogue();
+                
+                //마우스 입력 대기
+                yield return new WaitUntil(() => isClicked);
+                isClicked = false;
+
+            }
+            
+        }
+    }
+
+    private void DisplayDialogue()
+    {
+
 
         if (isTyping && !cancelTyping)
         {
@@ -73,27 +110,17 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
             return;
         }
 
-        currentLine++;
-
-        if (currentLine >= storyText.Length)
-        {
-            dialogueBox.SetActive(false);
-            return;
-        }
-        
-        dialogueName.text = storyName[currentLine];
-
         if (dialogueName.text == "#")
         {
-            DisplayChoices();
+            //DisplayChoices();
         }
 
         if(dialogueName.text != null && dialogueName.text != "#")
         {
             // 캐릭터 이미지 변경
-            dialogueImage.sprite = dialogueImages[IllustData.illustTable[dialogueName.text]];
+            dialogueImage.sprite = dialogueImages[illustTable[dialogueName.text]];
             // 대화 출력
-            StartCoroutine(TypeSentence(storyText[currentLine]));
+            StartCoroutine(TypeSentence(dialogueText.text));
         }
         
     }
@@ -124,7 +151,7 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         waitCursor.SetActive(true);
     }
 
-    private void DisplayChoices()
+    /*private void DisplayChoices()
     {
         dialogueText.text = "....";
         dialogueName.text = "";
@@ -145,15 +172,14 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         }
 
         currentChoice++;
-    }
+    }*/
 
     private void ShowDialogue()
     {
-        currentLine = -1;
         // 대화창 활성화
         dialogueBox.SetActive(true);
         // 초기 이미지를 주인공으로 설정
-        dialogueImage.sprite = dialogueImages[IllustData.illustTable["???"]];
+        dialogueImage.sprite = dialogueImages[illustTable["???"]];
     }
 
 }
