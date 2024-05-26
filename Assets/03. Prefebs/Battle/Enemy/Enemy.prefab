@@ -1051,8 +1051,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 35, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.90000004, y: 0.90000004, z: 0.90000004}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1359242272445068523}
   - {fileID: 8926895302726975665}
@@ -1115,22 +1115,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b6015cb6244a0c42bb9ff5573c4c279, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHp: 100
   maxHp: 100
-  hpBar: {fileID: 0}
-  hpText: {fileID: 0}
-  statusPanel: {fileID: 0}
-  debuffName: []
-  debuffDescription: []
-  debuffIconContainer: {fileID: 0}
-  onTurnStarted:
-    m_PersistentCalls:
-      m_Calls: []
   skillData: {fileID: 11400000, guid: ded25edf89430224ebfe434bb04430e1, type: 2}
-  behaviorIcon: {fileID: 0}
-  behaviorAmount: {fileID: 0}
-  behaviorName: {fileID: 0}
-  behaviorDescription: {fileID: 0}
   currentSkill:
     type: 0
     target: 0
@@ -1239,7 +1225,7 @@ RectTransform:
   m_GameObject: {fileID: 6726798009980454839}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 0.625, y: 0.625, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6406227077619198655}
