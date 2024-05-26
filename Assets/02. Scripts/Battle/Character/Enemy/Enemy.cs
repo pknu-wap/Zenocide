@@ -6,21 +6,32 @@ using UnityEngine.UI;
 public class Enemy : Character
 {
     [Header("정보")]
-    // 적이 사용할 스킬 리스트
-    public EnemySkill skillData;
+    // 적의 정보
+    public EnemyData enemyData;
 
     [Header("컴포넌트")]
     // 행동 정보 아이콘
-    [SerializeField] protected Image behaviorIcon;
-    [SerializeField] protected TMP_Text behaviorAmount;
+    protected Image behaviorIcon;
+    protected TMP_Text behaviorAmount;
 
     // 상제정보창
-    [SerializeField] protected TMP_Text behaviorName;
-    [SerializeField] protected TMP_Text behaviorDescription;
+    protected TMP_Text behaviorName;
+    protected TMP_Text behaviorDescription;
 
     public override void Awake()
     {
-        base.Awake();
+        EnrollComponents();
+    }
+
+    public void Start()
+    {
+        GameManager.Instance.onStartBattle.AddListener(StartBattle);
+    }
+
+    // 자신의 컴포넌트들을 할당한다.
+    protected override void EnrollComponents()
+    {
+        base.EnrollComponents();
 
         // 행동 정보 아이콘
         behaviorIcon = transform.GetChild(0).GetChild(1).GetChild(2).GetComponent<Image>();
@@ -31,12 +42,16 @@ public class Enemy : Character
         behaviorDescription = statusPanel.GetChild(0).GetChild(1).GetComponent<TMP_Text>();
     }
 
-    protected override void Start()
+    // 전투를 시작할 때 호출한다.
+    protected override void StartBattle()
     {
-        base.Start();
+        // 비활성화된 적은 이벤트를 등록하지 않는다.
+        if(gameObject.activeSelf == false)
+        {
+            return;
+        }
 
-        // 테스트는 Start가 제맛
-        ReadySkill();
+        base.StartBattle();
 
         // BattleInfo에 자신 추가
         BattleInfo.Instance.EnrollEnemy(this);
@@ -44,11 +59,6 @@ public class Enemy : Character
         // BattleManager에 이벤트 등록
         TurnManager.Instance.onEndEnemyTurn.AddListener(EndEnemyTurn);
         TurnManager.Instance.onStartPlayerTurn.AddListener(ReadySkill);
-    }
-
-    public void StartEnemyTurn()
-    {
-        ReadySkill();
     }
 
     public void EndEnemyTurn()
@@ -60,6 +70,20 @@ public class Enemy : Character
         GetBleedAll();
     }
 
+    // 적 정보를 갱신한다.
+    public void UpdateEnemyData(EnemyData data)
+    {
+        enemyData = data;
+
+        // 이미지 변경
+        imageComponent.sprite = enemyData.illust;
+
+        // 최대 HP 변경 및 현재 체력을 maxHp와 같게 변경
+        maxHp = enemyData.maxHp;
+        currentHp = maxHp;
+        UpdateCurrentHP();
+    }
+
     [Header("런타임 변수")]
     // 현재 준비 중인 스킬
     public Skill currentSkill;
@@ -67,10 +91,10 @@ public class Enemy : Character
     // 스킬 사용을 준비한다.
     public void ReadySkill()
     {
-        int i = Random.Range(0, skillData.skills.Length);
+        int i = Random.Range(0, enemyData.skills.Length);
 
         // 1. 랜덤한 스킬들 중 하나를 선택한다.
-        currentSkill = skillData.skills[i];
+        currentSkill = enemyData.skills[i];
 
         // 2.UI를 갱신한다.
         // 2-1. 자신이 고른 스킬을 체력바 위에 표시한다.
@@ -96,11 +120,14 @@ public class Enemy : Character
     // 죽는다.
     public override void Die()
     {
-        // 오브젝트 비활성화
-        gameObject.SetActive(false);
         // TurnManager에서 자기 자신의 이벤트를 제거
         TurnManager.Instance.onEndEnemyTurn.RemoveListener(EndEnemyTurn);
+        TurnManager.Instance.onStartPlayerTurn.RemoveListener(ReadySkill);
+
         // BattleInfo에서 자기 자신을 제거한다.
         BattleInfo.Instance.DisenrollEnemy(this);
+
+        // 오브젝트 비활성화
+        gameObject.SetActive(false);
     }
 }

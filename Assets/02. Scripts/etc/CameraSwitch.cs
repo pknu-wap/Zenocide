@@ -9,7 +9,7 @@ public class CameraSwitch : MonoBehaviour
 
     private void Start()
     {
-        // ½ÃÀÛÀº ½ºÅä¸®
+        // ì‹œì‘ì€ ìŠ¤í† ë¦¬
         SwitchToStoryScene();
     }
 
