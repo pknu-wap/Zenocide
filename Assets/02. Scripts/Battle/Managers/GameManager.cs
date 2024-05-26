@@ -62,27 +62,34 @@ public class GameManager : MonoBehaviour
         StartCoroutine(TurnManager.Instance.StartGameCo());
     }
 
+    // 스토리를 시작한다.
     public void StartStory()
     {
         SwitchToStoryScene();
     }
 
+    // StartBattle 함수를 테스트하는 함수
     public void TestStartBattle()
     {
         StartBattle(new string[] { "NormalZombie", "NormalZombie" });
     }
 
+    // 모든 적 정보를 등록, 소환한다
     public void EnrollEnemies(string[] enemyNames)
     {
+        // enemyNames로 받은 값들은
         int i = 0;
         for(; i < enemyNames.Length; ++i)
         {
+            // 데이터를 갱신하고 활성화한다.
             enemies[i].UpdateEnemyData(EnemyInfo.Instance.GetEnemyData(enemyNames[i]));
             enemies[i].gameObject.SetActive(true);
         }
 
+        // enemyNames가 없는, 빈 껍데기들은
         for(; i < enemies.Length; ++i)
         {
+            // 비활성화한다.
             enemies[i].gameObject.SetActive(false);
         }
     }

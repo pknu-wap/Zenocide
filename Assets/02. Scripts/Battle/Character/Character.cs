@@ -113,6 +113,7 @@ public class Character : MonoBehaviour
         return currentHp;
     }
 
+    // 현재 HP를 갱신한다.
     public void UpdateCurrentHP()
     {
         hpBar.fillAmount = (float)currentHp / maxHp;

@@ -5,7 +5,7 @@ public class EnemyData : ScriptableObject
 {
     [Header("외관")]
     // 적의 이름, 식별자로 사용된다.
-    public string enemyID;
+    public string enemyId;
     // 적의 일러스트
     public Sprite illust;
 

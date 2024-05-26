@@ -18,18 +18,20 @@ public class EnemyInfo : MonoBehaviour
         CreateEnemyDictionary();
     }
 
+    // enemyId를 키로, EnemyData를 밸류로 갖는 Dictionary를 생성한다.
     private void CreateEnemyDictionary()
     {
         enemyList = new Dictionary<string, EnemyData>();
 
         foreach (EnemyData data in enemies)
         {
-            enemyList.Add(data.enemyID, data);
+            enemyList.Add(data.enemyId, data);
         }
     }
 
-    public EnemyData GetEnemyData(string enemyID)
+    // enemyId에 맞는 EnemyData를 반환한다.
+    public EnemyData GetEnemyData(string enemyId)
     {
-        return enemyList[enemyID];
+        return enemyList[enemyId];
     }
 }

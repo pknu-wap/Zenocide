@@ -28,6 +28,7 @@ public class Enemy : Character
         GameManager.Instance.onStartBattle.AddListener(StartBattle);
     }
 
+    // 자신의 컴포넌트들을 할당한다.
     protected override void EnrollComponents()
     {
         base.EnrollComponents();
@@ -44,6 +45,7 @@ public class Enemy : Character
     // 전투를 시작할 때 호출한다.
     protected override void StartBattle()
     {
+        // 비활성화된 적은 이벤트를 등록하지 않는다.
         if(gameObject.activeSelf == false)
         {
             return;
