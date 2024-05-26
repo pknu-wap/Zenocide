@@ -75,11 +75,7 @@ public class CardManager : MonoBehaviour
         {
             AddCardToDeck(card.name);
         }
-
-        UpdateDeckCount();
         #endregion
-        MergeDumpToDeck();
-        SetUpDeck();
 
         #region ResetDeckInitiation
         cardBackObjectList = new List<GameObject>(listSize);
@@ -91,6 +87,15 @@ public class CardManager : MonoBehaviour
             cardBackObjectList[i].SetActive(false);
         }
         #endregion
+
+        GameManager.Instance.onStartBattle.AddListener(StartBattle);
+    }
+
+    private void StartBattle()
+    {
+        UpdateDeckCount();
+        MergeDumpToDeck();
+        SetUpDeck();
     }
 
     private void Update()

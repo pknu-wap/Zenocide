@@ -60,6 +60,12 @@ public class Character : MonoBehaviour
 
     public virtual void Awake()
     {
+
+    }
+
+    // 컴포넌트들을 등록한다.
+    protected virtual void EnrollComponents()
+    {
         // 스프라이트
         imageComponent = transform.GetChild(0).GetChild(0).GetComponent<Image>();
 
@@ -94,11 +100,11 @@ public class Character : MonoBehaviour
         }
     }
 
-    protected virtual void Start()
+    protected virtual void StartBattle()
     {
         UpdateCurrentHP();
 
-        UpdateAllDebuffIcon();
+        CleanseDebuff();
     }
 
     // 이 오브젝트의 hp를 반환한다.

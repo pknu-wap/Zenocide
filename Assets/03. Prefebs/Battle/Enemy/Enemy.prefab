@@ -1116,7 +1116,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHp: 100
-  skillData: {fileID: 11400000, guid: ded25edf89430224ebfe434bb04430e1, type: 2}
+  enemyData: {fileID: 0}
   currentSkill:
     type: 0
     target: 0
