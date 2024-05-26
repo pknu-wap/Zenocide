@@ -44,6 +44,11 @@ public class GameManager : MonoBehaviour
     /// <param name="enemyNames">전투 시작 시 생성할 적 ID</param>
     public void StartBattle(string[] enemyNames)
     {
+        if(enemyNames.Length > 4)
+        {
+            Debug.LogError("적의 숫자가 너무 많습니다. (최대 4)");
+        }
+
         // 적 생성 및 정보 갱신, 추후 분리 예정
         EnrollEnemies(enemyNames);
 
