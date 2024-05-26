@@ -11,12 +11,12 @@ public class Enemy : Character
 
     [Header("컴포넌트")]
     // 행동 정보 아이콘
-    [SerializeField] protected Image behaviorIcon;
-    [SerializeField] protected TMP_Text behaviorAmount;
+    protected Image behaviorIcon;
+    protected TMP_Text behaviorAmount;
 
     // 상제정보창
-    [SerializeField] protected TMP_Text behaviorName;
-    [SerializeField] protected TMP_Text behaviorDescription;
+    protected TMP_Text behaviorName;
+    protected TMP_Text behaviorDescription;
 
     public override void Awake()
     {

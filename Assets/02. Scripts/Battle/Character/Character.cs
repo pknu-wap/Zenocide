@@ -34,27 +34,27 @@ public class Character : MonoBehaviour
 {
     [Header("데이터")]
     // HP(체력)
-    [SerializeField] protected int currentHp = 100;
+    protected int currentHp = 100;
     [SerializeField] protected int maxHp = 100;
 
     // 디버그용, 추후 삭제
     [Header("컴포넌트")]
     // HP 바
-    [SerializeField] protected Image hpBar;
-    [SerializeField] protected TMP_Text hpText;
+    protected Image hpBar;
+    protected TMP_Text hpText;
     // 버프 아이콘 생성기 구현 예정 -> 오브젝트 풀링으로 대체
-    [SerializeField] protected Transform statusPanel;
+    protected Transform statusPanel;
     // 디버프창
-    [SerializeField] public List<DebuffIconComponent> debuffIcons;
-    [SerializeField] protected TMP_Text[] debuffName;
-    [SerializeField] protected TMP_Text[] debuffDescription;
+    protected List<DebuffIconComponent> debuffIcons;
+    protected TMP_Text[] debuffName;
+    protected TMP_Text[] debuffDescription;
 
     [Header("상태이상")]
-    public Transform debuffIconContainer;
-    [SerializeField] public List<BleedEffect> debuffs;
+    protected Transform debuffIconContainer;
+    protected List<BleedEffect> debuffs;
 
     [Header("이벤트")]
-    [SerializeField] public UnityEvent onTurnStarted;
+    protected UnityEvent onTurnStarted;
 
     public virtual void Awake()
     {
