@@ -636,6 +636,7 @@ GameObject:
   - component: {fileID: 23650995390093668}
   - component: {fileID: 4881451423811870213}
   - component: {fileID: 6405878729983452674}
+  - component: {fileID: 8046521857204375133}
   m_Layer: 0
   m_Name: CardSlot
   m_TagString: Untagged
@@ -652,7 +653,7 @@ RectTransform:
   m_GameObject: {fileID: 8379422307231257730}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 13.618351, y: 13.255947, z: 1}
+  m_LocalScale: {x: 12.192261, y: 13.344708, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8139400425554692474}
@@ -729,6 +730,19 @@ MonoBehaviour:
   nameTMP: {fileID: 1448442641837504293}
   costTMP: {fileID: 9152108978286929823}
   descriptionTMP: {fileID: 5768917916625753339}
+--- !u!114 &8046521857204375133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8379422307231257730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a9d3c041363aaf40800ba9a603c59a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scaleMultiplier: 1.2
 --- !u!1 &9077793660490480654
 GameObject:
   m_ObjectHideFlags: 0
