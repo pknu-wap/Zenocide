@@ -25,26 +25,41 @@ public class Items : MonoBehaviour
     public void ItemList()
     {
         items.Add("배고픔");
-        items.Add("무기");
         items.Add("근력");
         items.Add("속도");
         items.Add("빵");
         items.Add("갈증");
-        items.Add("토마토 통조림");
-        items.Add("꽁치 통조림");
+        items.Add("햄 통조림");
+        items.Add("참치 통조림");
         items.Add("철학");
         items.Add("책");
         items.Add("붕대");
         items.Add("진통제");
         items.Add("출혈");
         items.Add("버섯");
-        items.Add("최상의 식사");
         items.Add("냉동 삼겹살");
         items.Add("영어 실력");
         items.Add("마체테");
         items.Add("총");
         items.Add("총알");
         items.Add("우울증");
+        items.Add("카메라");
+        items.Add("손기술");
+        items.Add("약");
+        items.Add("매스");
+        items.Add("강아지");
+        items.Add("식칼");
+        items.Add("고기?");
+        items.Add("현상수배지");
+        items.Add("폭죽");
+        items.Add("기타");
+        items.Add("물감");
+        items.Add("컵");
+        items.Add("복숭아 통조림");
+        items.Add("책갈피");
+        items.Add("게임 실력");
+        items.Add("우산");
+        items.Add("네잎클로버");
     }
     public void AddItem(string itemName)
     {
