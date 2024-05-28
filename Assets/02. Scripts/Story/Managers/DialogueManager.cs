@@ -1,9 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEditor;
 using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using System;
+using System.Runtime.ExceptionServices;
 
 public class DialogueManager : MonoBehaviour, IPointerDownHandler
 {
@@ -27,7 +30,23 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
     public GameObject waitCursor;
 
     [Header("CSV 데이터")]
-    public GameObject CSVManager;
+    public List<Dictionary<string, object>> dataCSV;
+
+    [Header("이벤트 데이터 폴더 경로")]
+    public string mainEventPath = "Assets/02. Scripts/Story/EventData SO/MainEvent";
+    public string subEventPath  = "Assets/02. Scripts/Story/EventData SO/SubEvent";
+
+    [Header("전체 이벤트 데이터")]
+    public List<EventData> TotalEventList;
+
+    [Header("메인 이벤트 데이터")]
+    public List<EventData> MainSOs;
+
+    [Header("서브 이벤트 데이터")]
+    public List<EventData> SubSOs;
+
+    [Header("서브 이벤트 개수 변수")]
+    int subEventCount = 7;
 
     [Header("캐릭터 이미지 데이터")]               
     public Image dialogueImage;                 
@@ -53,14 +72,14 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
     {
         {"???", 0},
         {"좀비", 1},
-        {"선택지",2}
+        {"선택지",2},
+        {"주인공",3}
     };
-
-    [Header("전체 이벤트 데이터")]
-    public EventQueue TotalEvent = EventList.TotalEventQueue;
 
     void Start()
     {
+        // CSV 파일 읽기
+        dataCSV = CSVReader.Read("DialogueScript");
         // 대화창 비활성화
         dialogueBox.SetActive(false);           
         // 대화 위 선택지 비활성화
@@ -68,9 +87,18 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         // 대화 아래 선택지 비활성화
         choiceDownPanel.SetActive(false);                            
         // 대화창 활성화
-        ShowDialogue();
-        // 대화 시작
-        EventProcess();                         
+        dialogueBox.SetActive(true);
+        // 초기 이미지를 주인공으로 설정
+        dialogueImage.sprite = dialogueImages[illustTable["좀비"]];
+        // 이벤트 데이터 로드
+        LoadSOFromAsset();
+
+        StartCoroutine(EventProcess());                        
+    }
+
+    public Dictionary<string, object> Search(int index)
+    {
+        return dataCSV[index];
     }
 
      public void OnPointerDown(PointerEventData eventData)
@@ -78,32 +106,29 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         isClicked = true;
     }
 
+    // 이벤트 처리 함수
     private IEnumerator EventProcess()
     {
-        while (TotalEvent.Count > 0)
+        for(int i = 0; i < TotalEventList.Count; i++)
         {
-            EventData presentEvent = TotalEvent.Dequeue();
-            Debug.Log(presentEvent.startIndex + " " + presentEvent.endIndex);
-            for (int i = presentEvent.startIndex; i < presentEvent.endIndex; i++)
+            EventData loadedEvent = TotalEventList[i];
+            for(int j = loadedEvent.startIndex; j < loadedEvent.endIndex; j++)
             {
-                dialogueName.text = CSVManager.GetComponent<CSVManager>().Search(i)["Name"].ToString();
-                dialogueText.text = CSVManager.GetComponent<CSVManager>().Search(i)["Text"].ToString();
-
+                // 대화 데이터 로드
+                dialogueName.text = Search(j)["Name"].ToString();
+                dialogueText.text = Search(j)["Text1"].ToString();
                 DisplayDialogue();
-                
-                //마우스 입력 대기
+                // 마우스 입력 대기
                 yield return new WaitUntil(() => isClicked);
                 isClicked = false;
-
             }
-            
         }
+            
     }
 
+    // 대화 출력 함수
     private void DisplayDialogue()
     {
-
-
         if (isTyping && !cancelTyping)
         {
             cancelTyping = true;
@@ -125,13 +150,14 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         
     }
 
+    // 텍스트 출력 효과 함수
     private IEnumerator TypeSentence(string sentence)
     {   
         // 대화 진행 시작
         isTyping = true;
         // 다음 대화로 넘어가기 전에 기다리는 커서 비활성화
         waitCursor.SetActive(false);
-        // 
+        // 마우스 입력 시 출력 취소 변수 초기화
         cancelTyping = false;
         dialogueText.text = "";
 
@@ -174,12 +200,65 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         currentChoice++;
     }*/
 
-    private void ShowDialogue()
+     private void LoadSOFromAsset()
     {
-        // 대화창 활성화
-        dialogueBox.SetActive(true);
-        // 초기 이미지를 주인공으로 설정
-        dialogueImage.sprite = dialogueImages[illustTable["???"]];
+        string[] mainEventNames = AssetDatabase.FindAssets("t:EventData", new[] { mainEventPath });
+        int mainEventCount = mainEventNames.Length;
+        Array.Sort(mainEventNames);
+        Array.Reverse(mainEventNames);
+        
+        string[] subEventNames  = AssetDatabase.FindAssets("t:EventData", new[] { subEventPath });
+        Array.Sort(subEventNames);
+        Array.Reverse(subEventNames);
+
+        for (int i = 0; i < mainEventNames.Length; i++)
+        {
+            string assetPath = AssetDatabase.GUIDToAssetPath(mainEventNames[i]);
+            EventData so = AssetDatabase.LoadAssetAtPath<EventData>(assetPath);
+            if (so != null)
+            {
+                MainSOs[i] = so;
+                Debug.Log(i);
+            }
+        }
+
+        for (int i = 0; i < subEventNames.Length; i++)
+        {
+            string assetPath = AssetDatabase.GUIDToAssetPath(subEventNames[i]);
+            EventData so = AssetDatabase.LoadAssetAtPath<EventData>(assetPath);
+            if (so != null)
+            {
+               SubSOs[i] = so;
+            }
+        }
+  
+        for(int i = 0; i < mainEventCount; i++)
+        {
+            // 메인 이벤트 리스트에서 데이터 추출
+            EventData presentEvent = MainSOs[i];
+            TotalEventList.Add(presentEvent);
+            // 로드된 메인 이벤트에 다음 이벤트가 있다면 추가 로드
+            if(presentEvent.nextEvent != null)
+            {
+
+            }
+
+            //서브 이벤트 랜덤 로드
+            for(int j = 0; j < subEventCount; j++)
+            {
+                EventData randomSubEvent = PickRandomElement(SubSOs);
+                TotalEventList.Add(randomSubEvent);
+            }
+
+        }            
+
     }
 
+    // 제네릭 함수를 사용하여 리스트에서 랜덤 요소를 뽑기
+    public T PickRandomElement<T>(List<T> array)
+    {
+        System.Random random = new System.Random();
+        int randomIndex = random.Next(array.Count);
+        return array[randomIndex];
+    }
 }

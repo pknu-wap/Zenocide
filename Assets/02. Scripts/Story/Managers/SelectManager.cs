@@ -40,7 +40,7 @@ public class SelectManager : MonoBehaviour
     {
         if (currentChoice != null)
         {
-            if (Choice.Selected != 0)
+            if (Choice.Selected != -1)
             {
                 ChoiceUp.SetActive(false);
                 ChoiceDown.SetActive(false);

@@ -1,4 +1,4 @@
-using UnityEngine;
+/*using UnityEngine;
 using System.Collections.Generic;
 
 
@@ -19,8 +19,7 @@ public class CSVManager : MonoBehaviour
     //인덱스에 따라 CSV 행 반환
     public Dictionary<string, object> Search(int index)
     {
-        Debug.Log(dataCSV[index]);
         return dataCSV[index];
     }
 
-}
+}*/
