@@ -34,41 +34,30 @@ public class Character : MonoBehaviour
 {
     [Header("데이터")]
     // HP(체력)
-    protected int currentHp = 100;
+    [SerializeField] protected int currentHp = 100;
     [SerializeField] protected int maxHp = 100;
 
     // 디버그용, 추후 삭제
     [Header("컴포넌트")]
-    // 스프라이트
-    protected Image imageComponent;
     // HP 바
-    protected Image hpBar;
-    protected TMP_Text hpText;
+    [SerializeField] protected Image hpBar;
+    [SerializeField] protected TMP_Text hpText;
     // 버프 아이콘 생성기 구현 예정 -> 오브젝트 풀링으로 대체
-    protected Transform statusPanel;
+    [SerializeField] protected Transform statusPanel;
     // 디버프창
-    protected List<DebuffIconComponent> debuffIcons;
-    protected TMP_Text[] debuffName;
-    protected TMP_Text[] debuffDescription;
+    [SerializeField] public List<DebuffIconComponent> debuffIcons;
+    [SerializeField] protected TMP_Text[] debuffName;
+    [SerializeField] protected TMP_Text[] debuffDescription;
 
     [Header("상태이상")]
-    protected Transform debuffIconContainer;
-    protected List<BleedEffect> debuffs;
+    public Transform debuffIconContainer;
+    [SerializeField] public List<BleedEffect> debuffs;
 
     [Header("이벤트")]
-    protected UnityEvent onTurnStarted;
+    [SerializeField] public UnityEvent onTurnStarted;
 
     public virtual void Awake()
     {
-
-    }
-
-    // 컴포넌트들을 등록한다.
-    protected virtual void EnrollComponents()
-    {
-        // 스프라이트
-        imageComponent = transform.GetChild(0).GetChild(0).GetComponent<Image>();
-
         // HP 바
         hpBar = transform.GetChild(0).GetChild(1).GetChild(0).GetChild(0).GetComponent<Image>();
         hpText = hpBar.transform.GetChild(0).GetComponent<TMP_Text>();
@@ -89,7 +78,7 @@ public class Character : MonoBehaviour
         }
 
         // 디버프 상세정보창을 불러온다. (더미, 행동정보창 제외)
-        statusPanel = transform.GetChild(1).GetChild(0);
+        statusPanel = transform.GetChild(0).GetChild(2);
         debuffName = new TMP_Text[statusPanel.childCount - 1];
         debuffDescription = new TMP_Text[statusPanel.childCount - 1];
 
@@ -100,11 +89,11 @@ public class Character : MonoBehaviour
         }
     }
 
-    protected virtual void StartBattle()
+    protected virtual void Start()
     {
         UpdateCurrentHP();
 
-        CleanseDebuff();
+        UpdateAllDebuffIcon();
     }
 
     // 이 오브젝트의 hp를 반환한다.
@@ -113,7 +102,6 @@ public class Character : MonoBehaviour
         return currentHp;
     }
 
-    // 현재 HP를 갱신한다.
     public void UpdateCurrentHP()
     {
         hpBar.fillAmount = (float)currentHp / maxHp;

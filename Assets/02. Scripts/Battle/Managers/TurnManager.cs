@@ -52,10 +52,6 @@ public class TurnManager : MonoBehaviour
     {
         // 게임 세팅
         GameSetup();
-        
-        // 플레이어 턴으로 시작한다. 이벤트 호출
-        onStartPlayerTurn.Invoke();
-
         isLoading = true;
 
         // 드로우 카드 수만큼 드로우
@@ -75,9 +71,6 @@ public class TurnManager : MonoBehaviour
     {
         // 턴 시작 UI 출력, 이 부분도 추후 수정해야 합니다.
         GameManager.Instance.Notification("나의 턴");
-
-        // 플레이어 턴 시작 시 이벤트 호출
-        onStartPlayerTurn.Invoke();
 
         // 우리 게임은 오직 플레이어만 드로우합니다.
         // 드로우 카드 수만큼 드로우

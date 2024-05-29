@@ -8,6 +8,8 @@ public class Player : Character
 
     public override void Awake()
     {
+        base.Awake();
+
         if (Instance == null)
         {
             Instance = this;
@@ -17,22 +19,14 @@ public class Player : Character
         {
             Destroy(gameObject);
         }
-
-        EnrollComponents();
     }
     #endregion 싱글톤
 
-    public void Start()
+    protected override void Start()
     {
-        GameManager.Instance.onStartBattle.AddListener(StartBattle);
+        base.Start();
 
         TurnManager.Instance.onEndPlayerTurn.AddListener(EndPlayerTurn);
-    }
-
-    // 전투를 시작할 때 실행할 함수들
-    protected override void StartBattle()
-    {
-        base.StartBattle();
     }
 
     public void EndPlayerTurn()
