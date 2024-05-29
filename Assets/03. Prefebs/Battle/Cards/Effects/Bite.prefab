@@ -43,7 +43,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1076115285558358657}
   serializedVersion: 8
-  lengthInSec: 5
+  lengthInSec: 3
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
@@ -118,7 +118,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 3
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -4842,7 +4842,7 @@ GameObject:
   - component: {fileID: 6051879658646360362}
   - component: {fileID: 1935578912361361106}
   m_Layer: 0
-  m_Name: UpperTooth
+  m_Name: UpperJaw
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4857,8 +4857,8 @@ Transform:
   m_GameObject: {fileID: 1488318633324490367}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 10, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 30, z: 0}
+  m_LocalScale: {x: 20, y: 10, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5196295349930457454}
@@ -5502,7 +5502,7 @@ ParticleSystem:
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: 0, y: 0, z: 0}
-    m_Scale: {x: 1, y: 1, z: 1}
+    m_Scale: {x: 0, y: 0, z: 0}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -6443,9 +6443,9 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0.1351347
-          inSlope: -1.1351347
-          outSlope: -1.1351347
+          value: 0.15317059
+          inSlope: -1.1531706
+          outSlope: -1.1531706
           tangentMode: 34
           weightedMode: 0
           inWeight: 0
@@ -6453,8 +6453,8 @@ ParticleSystem:
         - serializedVersion: 3
           time: 1
           value: -1
-          inSlope: -1.1351347
-          outSlope: -1.1351347
+          inSlope: -1.1531706
+          outSlope: -1.1531706
           tangentMode: 34
           weightedMode: 0
           inWeight: 0.33333334
@@ -8515,7 +8515,8 @@ ParticleSystem:
     multiplyColliderForceByParticleSize: 0
     multiplyColliderForceByParticleSpeed: 0
     multiplyColliderForceByCollisionAngle: 1
-    m_Planes: []
+    m_Planes:
+    - {fileID: 8315112741835897573}
     m_Dampen:
       serializedVersion: 2
       minMaxState: 0
@@ -8696,7 +8697,8 @@ ParticleSystem:
     exit: 0
     colliderQueryMode: 0
     radiusScale: 1
-    primitives: []
+    primitives:
+    - {fileID: 8315112741835897573}
   SubModule:
     serializedVersion: 2
     enabled: 0
@@ -9665,7 +9667,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10308, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 9ab493c1d0c48b54a8a0fc205a835787, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9728,7 +9730,7 @@ GameObject:
   - component: {fileID: 5005060484395558153}
   - component: {fileID: 4734930740141274218}
   m_Layer: 0
-  m_Name: LowerTooth
+  m_Name: LowerJaw
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9743,8 +9745,8 @@ Transform:
   m_GameObject: {fileID: 7112161880417216569}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -10, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: -30, z: 0}
+  m_LocalScale: {x: 20, y: 10, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5196295349930457454}
@@ -10386,9 +10388,9 @@ ParticleSystem:
     boxThickness: {x: 0, y: 0, z: 0}
     radiusThickness: 1
     donutRadius: 0.2
-    m_Position: {x: 0, y: 0, z: 0}
+    m_Position: {x: 0.05, y: 0, z: 0}
     m_Rotation: {x: 0, y: 0, z: 0}
-    m_Scale: {x: 1, y: 1, z: 1}
+    m_Scale: {x: 0, y: 0, z: 0}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -11329,9 +11331,9 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: -0.10810852
-          inSlope: 1.1081085
-          outSlope: 1.1081085
+          value: -0.20602843
+          inSlope: 1.2060285
+          outSlope: 1.2060285
           tangentMode: 34
           weightedMode: 0
           inWeight: 0
@@ -11339,8 +11341,8 @@ ParticleSystem:
         - serializedVersion: 3
           time: 1
           value: 1
-          inSlope: 1.1081085
-          outSlope: 1.1081085
+          inSlope: 1.2060285
+          outSlope: 1.2060285
           tangentMode: 34
           weightedMode: 0
           inWeight: 0.33333334
@@ -13401,7 +13403,8 @@ ParticleSystem:
     multiplyColliderForceByParticleSize: 0
     multiplyColliderForceByParticleSpeed: 0
     multiplyColliderForceByCollisionAngle: 1
-    m_Planes: []
+    m_Planes:
+    - {fileID: 5196295349930457454}
     m_Dampen:
       serializedVersion: 2
       minMaxState: 0
@@ -14551,7 +14554,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10308, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 68d7e8e75961e3d4baed809e21d30cff, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
