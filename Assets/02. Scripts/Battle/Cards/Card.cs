@@ -233,7 +233,6 @@ public class Card : MonoBehaviour
 
             if(effectObject != null)
             {
-                Vector3 effectPosition = effectObject.transform.position;
                 effectObject.transform.position = selectedEnemy.transform.position;
                 effectObject.Play();
             }

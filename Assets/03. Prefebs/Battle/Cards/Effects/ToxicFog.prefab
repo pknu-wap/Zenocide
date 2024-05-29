@@ -664,7 +664,7 @@ ParticleSystem:
   ShapeModule:
     serializedVersion: 6
     enabled: 1
-    type: 5
+    type: 18
     angle: 25
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
@@ -1491,7 +1491,7 @@ ParticleSystem:
     flipU: 0
     flipV: 0
   VelocityModule:
-    enabled: 0
+    enabled: 1
     x:
       serializedVersion: 2
       minMaxState: 0
@@ -1548,7 +1548,7 @@ ParticleSystem:
     y:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0
+      scalar: -0.5
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -1653,7 +1653,7 @@ ParticleSystem:
         m_RotationOrder: 4
     orbitalX:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 0
       minScalar: 0
       maxCurve:
@@ -1706,9 +1706,9 @@ ParticleSystem:
         m_RotationOrder: 4
     orbitalY:
       serializedVersion: 2
-      minMaxState: 0
-      scalar: 0
-      minScalar: 0
+      minMaxState: 3
+      scalar: 0.03
+      minScalar: -0.03
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1759,7 +1759,7 @@ ParticleSystem:
         m_RotationOrder: 4
     orbitalZ:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 0
       minScalar: 0
       maxCurve:
