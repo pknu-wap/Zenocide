@@ -35,18 +35,22 @@ public class PageCurl : MonoBehaviour
     }*/
 
     public Transform backPage;
-    public Transform backMask;
+    public Transform mask;
+    public Transform frontPage;
 
     public Vector2 point;
     public Vector3 corner = new Vector3(600f, -450f, 0f);
 
     public void Awake()
     {
-        backPage = transform.GetChild(0).GetChild(1).GetChild(0);
-        backMask = transform.GetChild(0).GetChild(2).GetChild(0);
-        corner += transform.localPosition;
+        backPage = transform.GetChild(0).GetChild(0).GetChild(0).GetChild(1);
+        frontPage = transform.GetChild(0).GetChild(0).GetChild(0).GetChild(0);
+        mask = transform.GetChild(0).GetChild(0);
+        
+        corner += transform.position;
+
         Debug.Log(corner);
-        Debug.Log(backPage.transform.localPosition);
+        Debug.Log(backPage.transform.position);
     }
 
     public void Update()
@@ -56,24 +60,33 @@ public class PageCurl : MonoBehaviour
 
     public void CurlPage()
     {
-        point = backPage.transform.localPosition;
+        point = backPage.transform.position;
 
         // x, y 계산
         float x = corner.x - point.x;
         float y = point.y - corner.y;
 
-        // 세타 계산
+        // 세타(각도) 계산, 단위는 Degree(도)
         // x == 0인 경우를 처리하기 위해, Atan이 아닌 Atan2를 쓴다.
         float theta = Mathf.Atan2(y, x) * Mathf.Rad2Deg;
-        
-        // BackPage 변경
+
+        // BackPage, FrontPage가 Mask에 영향받아 움직이지 않게, 미리 위치를 캐싱해둔다.
+        Vector3 firstFrontPagePosition = frontPage.position;
+        Vector3 firstBackPagePosition = backPage.position;
+
+        // Mask의 이동할 거리 계산 및 이동
+        float maskX = (Vector2.Distance(point, corner) / 2) / Mathf.Cos(theta * Mathf.Deg2Rad);
+        mask.position = corner - new Vector3(maskX, 0f, 0f);
+        // Mask 회전
+        mask.rotation = Quaternion.Euler(0f, 0f, -theta);
+
+        // BackPage, FrontPage 위치를 원래대로 바꾼다.
+        backPage.position = firstBackPagePosition;
+        // BackPage의 회전은 계산한 결과대로 변경
         backPage.rotation = Quaternion.Euler(0f, 0f, -2 * theta);
 
-        // BackMask 변경
-        backMask.rotation = Quaternion.Euler(0f, 0f, -theta);
-
-        // backMask의 이동할 거리 계산
-        float backMaskX = (Vector2.Distance(point, corner) / 2) / Mathf.Cos(theta * Mathf.Deg2Rad);
-        backMask.localPosition = corner - new Vector3(backMaskX, 0f, 0f);
+        // FrontPage는 위치, 회전 고정
+        frontPage.position = firstFrontPagePosition;
+        frontPage.rotation = Quaternion.Euler(0f, 0f, 0f);
     }
 }

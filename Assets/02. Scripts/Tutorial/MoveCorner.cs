@@ -7,18 +7,18 @@ public class MoveCorner : MonoBehaviour
 
     void Start()
     {
-        firstPosition = transform.localPosition;
+        firstPosition = transform.position;
         Move();
     }
 
     public void Move()
     {
-        transform.localPosition = firstPosition;
+        transform.position = firstPosition;
 
         DOTween.Sequence()
-            .Append(transform.DOLocalMoveX(0f, 2f))
-            .Join(transform.DOLocalMoveY(-350f, 2f))
-            .Append(transform.DOLocalMoveX(-600f, 2f))
-            .Join(transform.DOLocalMoveY(-450f, 2f)).SetEase(Ease.OutCubic);
+            .Append(transform.DOMoveX(firstPosition.x - 300f, 2f))
+            .Join(transform.DOMoveY(firstPosition.y + 150f, 2f))
+            .Append(transform.DOMoveX(firstPosition.x - 600f, 2f))
+            .Join(transform.DOMoveY(firstPosition.y, 2f)).SetEase(Ease.OutCubic);
     }
 }
