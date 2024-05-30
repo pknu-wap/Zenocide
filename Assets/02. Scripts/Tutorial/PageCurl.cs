@@ -42,13 +42,19 @@ public class PageCurl : MonoBehaviour
 
     public void Awake()
     {
-        backPage = transform.GetChild(0).GetChild(0);
+        backPage = transform.GetChild(0).GetChild(1).GetChild(0);
+        backMask = transform.GetChild(0).GetChild(2).GetChild(0);
         corner += transform.localPosition;
         Debug.Log(corner);
         Debug.Log(backPage.transform.localPosition);
     }
 
-    public void LateUpdate()
+    public void Update()
+    {
+        CurlPage();
+    }
+
+    public void CurlPage()
     {
         point = backPage.transform.localPosition;
 
@@ -59,7 +65,7 @@ public class PageCurl : MonoBehaviour
         // 세타 계산
         // x == 0인 경우를 처리하기 위해, Atan이 아닌 Atan2를 쓴다.
         float theta = Mathf.Atan2(y, x) * Mathf.Rad2Deg;
-
+        
         // BackPage 변경
         backPage.rotation = Quaternion.Euler(0f, 0f, -2 * theta);
 
@@ -67,7 +73,7 @@ public class PageCurl : MonoBehaviour
         backMask.rotation = Quaternion.Euler(0f, 0f, -theta);
 
         // backMask의 이동할 거리 계산
-        float backMaskX = (Vector2.Distance(point, corner) / 2) / Mathf.Abs(Mathf.Cos(theta * Mathf.Deg2Rad));
+        float backMaskX = (Vector2.Distance(point, corner) / 2) / Mathf.Cos(theta * Mathf.Deg2Rad);
         backMask.localPosition = corner - new Vector3(backMaskX, 0f, 0f);
     }
 }
