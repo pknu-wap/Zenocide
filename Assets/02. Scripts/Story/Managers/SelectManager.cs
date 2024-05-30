@@ -5,19 +5,19 @@ public class SelectManager : MonoBehaviour
     public static SelectManager instance;
 
     [Header("선택지 오브젝트")]
-    public GameObject ChoiceUp;
-    public GameObject ChoiceDown;
+    public GameObject[] Choices = new GameObject[4];
 
     [Header("대화창 오브젝트")]
     public GameObject Dialogue;
 
-    [Header("위 선택지 표시 오브젝트")]
-    public GameObject UpSignLeft;
-    public GameObject UpSignRight;
+    [Header("왼쪽 선택지 표시 오브젝트")]
+    public GameObject[] LeftSign = new GameObject[4];
 
-    [Header("아래 선택지 표시 오브젝트")]
-    public GameObject DownSignLeft;
-    public GameObject DownSignRight;
+    [Header("오른쪽 선택지 표시 오브젝트")]
+    public GameObject[] RightSign = new GameObject[4];
+    
+    [Header("선택지 갯수 저장 변수")]
+    public int choiceCount = 4;
 
     private void Awake()
     {
@@ -33,7 +33,7 @@ public class SelectManager : MonoBehaviour
     void Start()
     {
         // 모든 선택지 표시 비활성화
-        SetSignVisibility(false, false); 
+        SetSignVisibility(null); 
     }
 
     void Update()
@@ -42,22 +42,31 @@ public class SelectManager : MonoBehaviour
         {
             if (Choice.Selected != -1)
             {
-                ChoiceUp.SetActive(false);
-                ChoiceDown.SetActive(false);
+                foreach (GameObject choice in Choices)
+                {
+                    choice.SetActive(false);
+                }
                 Dialogue.SetActive(true);
                 Selected = true;
             }
             // 선택지에 따라 선택 표시 함수 호출
-            SetSignVisibility(currentChoice.name == "ChoiceBoxUp", 
-                              currentChoice.name == "ChoiceBoxDown");
+            SetSignVisibility(currentChoice.name);
         }
     }
 
-    private void SetSignVisibility(bool isUpSelected, bool isDownSelected)
+    private void SetSignVisibility(string choiceName)
     {
-        UpSignLeft.SetActive(isUpSelected);
-        UpSignRight.SetActive(isUpSelected);
-        DownSignLeft.SetActive(isDownSelected);
-        DownSignRight.SetActive(isDownSelected);
+        for (int i = 0; i < choiceCount; i++)
+        {
+            if (Choices[i].name == choiceName)
+            {
+                LeftSign[i].SetActive(true);
+                RightSign[i].SetActive(true);
+                continue;
+            }
+            LeftSign[i].SetActive(false);
+            RightSign[i].SetActive(false);
+        }
+        
     }
 }

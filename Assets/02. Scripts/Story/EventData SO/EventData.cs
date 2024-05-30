@@ -11,5 +11,5 @@ public class EventData: ScriptableObject
     public int endIndex;
 
     [Header("후속 이벤트")]
-    public string nextEvent;
+    public EventData nextEvent;
 }

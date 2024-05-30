@@ -1,4 +1,4 @@
-// ±è¹ÎÃ¶
+// ï¿½ï¿½ï¿½Ã¶
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -32,52 +32,52 @@ public class DebuffIconComponent
 
 public class Character : MonoBehaviour
 {
-    [Header("µ¥ÀÌÅÍ")]
-    // HP(Ã¼·Â)
+    [Header("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")]
+    // HP(Ã¼ï¿½ï¿½)
     [SerializeField] protected int currentHp = 100;
-    [SerializeField] protected int maxHp = 100;
+    [SerializeField] public int maxHp = 100;
 
-    // µð¹ö±×¿ë, ÃßÈÄ »èÁ¦
-    [Header("ÄÄÆ÷³ÍÆ®")]
-    // HP ¹Ù
+    // ï¿½ï¿½ï¿½ï¿½×¿ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    [Header("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®")]
+    // HP ï¿½ï¿½
     [SerializeField] protected Image hpBar;
     [SerializeField] protected TMP_Text hpText;
-    // ¹öÇÁ ¾ÆÀÌÄÜ »ý¼º±â ±¸Çö ¿¹Á¤ -> ¿ÀºêÁ§Æ® Ç®¸µÀ¸·Î ´ëÃ¼
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ -> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® Ç®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼
     [SerializeField] protected Transform statusPanel;
-    // µð¹öÇÁÃ¢
+    // ï¿½ï¿½ï¿½ï¿½ï¿½Ã¢
     [SerializeField] public List<DebuffIconComponent> debuffIcons;
     [SerializeField] protected TMP_Text[] debuffName;
     [SerializeField] protected TMP_Text[] debuffDescription;
 
-    [Header("»óÅÂÀÌ»ó")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ï¿½Ì»ï¿½")]
     public Transform debuffIconContainer;
     [SerializeField] public List<BleedEffect> debuffs;
 
-    [Header("ÀÌº¥Æ®")]
+    [Header("ï¿½Ìºï¿½Æ®")]
     [SerializeField] public UnityEvent onTurnStarted;
 
     public virtual void Awake()
     {
-        // HP ¹Ù
+        // HP ï¿½ï¿½
         hpBar = transform.GetChild(0).GetChild(1).GetChild(0).GetChild(0).GetComponent<Image>();
         hpText = hpBar.transform.GetChild(0).GetComponent<TMP_Text>();
 
-        // µð¹öÇÁ È¿°úµé(³»ºÎ µ¥ÀÌÅÍ)À» ´ã¾ÆµÑ ¸®½ºÆ®
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ ï¿½ï¿½Æµï¿½ ï¿½ï¿½ï¿½ï¿½Æ®
         debuffs = new List<BleedEffect>();
         debuffIcons = new List<DebuffIconComponent>();
 
-        // µð¹öÇÁ ¾ÆÀÌÄÜµéÀÇ ºÎ¸ð ÄÁÅ×ÀÌ³Ê
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Üµï¿½ï¿½ï¿½ ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì³ï¿½
         debuffIconContainer = transform.GetChild(0).GetChild(1).GetChild(1);
-        // debuffIconContainerÀÇ ¸ðµç ÀÚ½Ä ¿ÀºêÁ§Æ®¸¦ ºñÈ°¼ºÈ­. (ÀÚ½ÄÀÇ ÀÚ½ÄÀº X)
+        // debuffIconContainerï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ú½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­. (ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ X)
         foreach (Transform icon in debuffIconContainer)
         {
-            // debuffIcons¿¡ iconÀÇ ÀÌ¹ÌÁö, ÅØ½ºÆ® ÄÄÆ÷³ÍÆ®¸¦ ÇÒ´ç
+            // debuffIconsï¿½ï¿½ iconï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½, ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ò´ï¿½
             debuffIcons.Add(new DebuffIconComponent(icon.GetComponent<Image>(), icon.GetChild(0).GetComponent<TMP_Text>()));
-            // ±×¸®°í ºñÈ°¼ºÈ­.
+            // ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­.
             icon.gameObject.SetActive(false);
         }
 
-        // µð¹öÇÁ »ó¼¼Á¤º¸Ã¢À» ºÒ·¯¿Â´Ù. (´õ¹Ì, Çàµ¿Á¤º¸Ã¢ Á¦¿Ü)
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¢ï¿½ï¿½ ï¿½Ò·ï¿½ï¿½Â´ï¿½. (ï¿½ï¿½ï¿½ï¿½, ï¿½àµ¿ï¿½ï¿½ï¿½ï¿½Ã¢ ï¿½ï¿½ï¿½ï¿½)
         statusPanel = transform.GetChild(0).GetChild(2);
         debuffName = new TMP_Text[statusPanel.childCount - 1];
         debuffDescription = new TMP_Text[statusPanel.childCount - 1];
@@ -96,7 +96,7 @@ public class Character : MonoBehaviour
         UpdateAllDebuffIcon();
     }
 
-    // ÀÌ ¿ÀºêÁ§Æ®ÀÇ hp¸¦ ¹ÝÈ¯ÇÑ´Ù.
+    // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ hpï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ñ´ï¿½.
     public int GetHP()
     {
         return currentHp;
@@ -108,58 +108,58 @@ public class Character : MonoBehaviour
         hpText.text = currentHp + "/" + maxHp;
     }
 
-    // ÀÌ ¿ÀºêÁ§Æ®ÀÇ hp¸¦ °¨¼Ò½ÃÅ²´Ù.
+    // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ hpï¿½ï¿½ ï¿½ï¿½ï¿½Ò½ï¿½Å²ï¿½ï¿½.
     public void DecreaseHP(int damage)
     {
-        // hp¸¦ damage¸¸Å­ °¨¼Ò½ÃÅ²´Ù.
+        // hpï¿½ï¿½ damageï¿½ï¿½Å­ ï¿½ï¿½ï¿½Ò½ï¿½Å²ï¿½ï¿½.
         currentHp -= damage;
 
         UpdateCurrentHP();
 
-        // hp°¡ 0 ÀÌÇÏ°¡ µÉ °æ¿ì
+        // hpï¿½ï¿½ 0 ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½
         if (currentHp <= 0)
         {
-            // Á×À½ ÀÌº¥Æ® ½ÇÇà
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½Ìºï¿½Æ® ï¿½ï¿½ï¿½ï¿½
             Die();
         }
     }
 
-    // ÀÌ ¿ÀºêÁ§Æ®ÀÇ hp¸¦ °¨¼Ò½ÃÅ²´Ù.
+    // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ hpï¿½ï¿½ ï¿½ï¿½ï¿½Ò½ï¿½Å²ï¿½ï¿½.
     public void IncreaseHP(int heal)
     {
-        // hp¸¦ damage¸¸Å­ °¨¼Ò½ÃÅ²´Ù.
+        // hpï¿½ï¿½ damageï¿½ï¿½Å­ ï¿½ï¿½ï¿½Ò½ï¿½Å²ï¿½ï¿½.
         currentHp += heal;
 
-        // hp°¡ ÃÖ´ëÄ¡ ÀÌ»óÀÌ µÉ °æ¿ì
+        // hpï¿½ï¿½ ï¿½Ö´ï¿½Ä¡ ï¿½Ì»ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½
         if (currentHp > maxHp)
         {
-            // ÃÖ´ëÄ¡·Î ¸ÂÃß±â
+            // ï¿½Ö´ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ß±ï¿½
             currentHp = maxHp;
         }
 
-        // UI °»½Å
+        // UI ï¿½ï¿½ï¿½ï¿½
         UpdateCurrentHP();
     }
 
     public virtual void Die()
     {
-        // Á×À½°ú °ü·ÃµÈ È¿°ú Ã³¸®
-        // Á×À½ ¾Ö´Ï¸ÞÀÌ¼Ç
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ È¿ï¿½ï¿½ Ã³ï¿½ï¿½
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½
     }
 
-    // ÃâÇ÷ È¿°ú¸¦ ÅÏ ½ÃÀÛ ÀÌº¥Æ®¿¡ µî·ÏÇÑ´Ù.
+    // ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ìºï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
     public void EnrollBleed(BleedEffect bleedEffect)
     {
-        // ÃâÇ÷ ¸®½ºÆ®¿¡ Ãß°¡
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ß°ï¿½
         debuffs.Add(bleedEffect);
 
-        // ÃâÇ÷ µð¹öÇÁ UI Ãß°¡
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ UI ï¿½ß°ï¿½
         int i = debuffs.Count - 1;
 
         UpdateDebuffIcon(i);
     }
 
-    // µð¹öÇÁ¸¦ ÀüºÎ Á¦°ÅÇÑ´Ù.
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
     public void CleanseDebuff()
     {
         debuffs.Clear();
@@ -170,70 +170,70 @@ public class Character : MonoBehaviour
     public void UpdateDebuffIcon(int index)
     {
         /*
-         * ´ëÀÔÇÏ´Â °ªÀÌ ÇöÀç´Â ÃâÇ÷·Î °íÁ¤µÇ¾î ÀÖ´Ù. (±×°Å ¹Û¿¡ ¾È ±×·Á¼­...)
+         * ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ ï¿½Ö´ï¿½. (ï¿½×°ï¿½ ï¿½Û¿ï¿½ ï¿½ï¿½ ï¿½×·ï¿½ï¿½ï¿½...)
          */
-        // i¹øÂ° ¾ÆÀÌÄÜ¿Í ¼ýÀÚ¸¦ º¯°æÇÏ°í
+        // iï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½Ü¿ï¿½ ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
         debuffIcons[index].image.sprite = CardInfo.Instance.debuffIcons[0];
         debuffIcons[index].tmp_Text.text = debuffs[index].remainingTurns.ToString();
 
-        // i¹øÂ° µð¹öÇÁÃ¢ÀÇ ³»¿ëÀ» °»½ÅÇÑ´Ù
+        // iï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½Ã¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½
         debuffName[index].text = DebuffInfo.debuffNameDict[debuffs[index].type];
-        // ÀÌ·¸°Ô $¿Í {}¸¦ ¾²¸é º¯¼ö¸í°ú ¹®ÀÚ¿­À» ¼¯¾î¾µ ¼ö ÀÖ´Ù.
+        // ï¿½Ì·ï¿½ï¿½ï¿½ $ï¿½ï¿½ {}ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½î¾µ ï¿½ï¿½ ï¿½Ö´ï¿½.
         debuffDescription[index].text = $"{debuffs[index].remainingTurns}{DebuffInfo.debuffDescriptionDict[debuffs[index].type]}";
 
-        // ¿ÀºêÁ§Æ® È°¼ºÈ­
-        // ÀÌ ±¸¹®µéÀº ¸®ÆÑÅä¸µÀÌ ÇÊ¿äÇØº¸ÀÎ´Ù.
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® È°ï¿½ï¿½È­
+        // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ä¸µï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Øºï¿½ï¿½Î´ï¿½.
         debuffIconContainer.GetChild(index).gameObject.SetActive(true);
         debuffName[index].gameObject.transform.parent.gameObject.SetActive(true);
     }
 
     public void UpdateAllDebuffIcon()
     {
-        // ¸ðµç ÇöÀç µð¹öÇÁ¿¡ ´ëÇØ(i¹øÂ° µð¹öÇÁ¿¡ ´ëÇØ)
+        // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(iï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
         int i = 0;
         for (; i < debuffs.Count; ++i)
         {
             UpdateDebuffIcon(i);
         }
 
-        // µð¹öÇÁ°¡ ¾ø´Â ¾ÆÀÌÄÜµéÀº
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Üµï¿½ï¿½ï¿½
         for (; i < debuffIconContainer.childCount; ++i)
         {
-            // ºñÈ°¼ºÈ­ÇÑ´Ù.
+            // ï¿½ï¿½È°ï¿½ï¿½È­ï¿½Ñ´ï¿½.
             debuffIconContainer.GetChild(i).gameObject.SetActive(false);
             debuffName[i].gameObject.transform.parent.gameObject.SetActive(false);
         }
     }
 
-    // ÃâÇ÷ È¿°ú¸¦ ¹ß»ý½ÃÅ²´Ù.
+    // ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½ï¿½Å²ï¿½ï¿½.
     public void GetBleedAll()
     {
-        // ¹Þ°Ô µÉ ÀüÃ¼ µ¥¹ÌÁö
+        // ï¿½Þ°ï¿½ ï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         int totalDamage = 0;
 
-        // ¸ðµç Àû¿ë ÁßÀÎ ÃâÇ÷ È¿°ú¿¡ ´ëÇØ
+        // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         for(int i = 0; i < debuffs.Count; ++i)
         {
             totalDamage += debuffs[i].damagePerTurn;
 
-            // ³²Àº ÅÏ 1 °¨¼Ò
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ 1 ï¿½ï¿½ï¿½ï¿½
             --debuffs[i].remainingTurns;
-            // ³²Àº ÅÏÀÌ 0 ÀÌÇÏ¶ó¸é
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 0 ï¿½ï¿½ï¿½Ï¶ï¿½ï¿½
             if (debuffs[i].remainingTurns <= 0)
             {
-                // ÇØ´ç ÃâÇ÷ È¿°ú¸¦ »èÁ¦ÇÑ´Ù.
+                // ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
                 debuffs.RemoveAt(i);
-                // µÚÀÇ µð¹öÇÁµéÀÌ 1Ä­¾¿ ¾ÕÀ¸·Î ¶¯°ÜÁ³À¸´Ï, ÀÎµ¦½ºµµ 1 ¾ÕÀ¸·Î Á¶Á¤
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 1Ä­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ 1 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 --i;
             }
         }
 
-        // ÃâÇ÷ ÀÌÆåÆ® Àç»ý
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½
 
-        // Ã¼·ÂÀ» °¨¼Ò½ÃÅ²´Ù.
+        // Ã¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ò½ï¿½Å²ï¿½ï¿½.
         DecreaseHP(totalDamage);
 
-        // ¾ÆÀÌÄÜÀ» ¾÷µ¥ÀÌÆ® ÇÑ´Ù.
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ñ´ï¿½.
         UpdateAllDebuffIcon();
     }
 }

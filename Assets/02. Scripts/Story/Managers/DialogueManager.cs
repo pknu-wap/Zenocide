@@ -12,19 +12,20 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
 {
     [Header("Text 오브젝트")]
     public TMP_Text dialogueText;               
-    public TMP_Text dialogueName;               
-    public TMP_Text choiceUpText;               
-    public TMP_Text choiceDownText;             
-    public TMP_Text choiceUpRequireText;        
-    public TMP_Text choiceDownRequireText;
+    public TMP_Text dialogueName;
+
+    [Header("선택지 TMP_Text")]               
+    public TMP_Text[] choiceText = new TMP_Text[4];
+
+    [Header("선택지 요구 아이템 안내 TMP_Text")]             
+    public TMP_Text[] choiceRequireText = new TMP_Text[4];
 
     [Header("대화창 오브젝트")]      
     public GameObject dialogueBox;              
     public GameObject dialoguePanel;
 
     [Header("선택지 오브젝트")]            
-    public GameObject choiceUpPanel;            
-    public GameObject choiceDownPanel;
+    public GameObject[] choices = new GameObject[4];
 
     [Header("대화창 출력 완료 시 대기 표시")]          
     public GameObject waitCursor;
@@ -76,32 +77,25 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         {"주인공",2}
     };
 
+    [Header("표시될 일러스트 이름")]
+    public string illustName; 
+
     // 카드 추가 함수 AddCardtoDeck  
     // 전투 시작 시 MergeDumpToDeck, SetUpDeck 선호출
     // BattleInfo.Instance.StartBattle(string[] str) <= 전투 시작 
     void Start()
     {
         // CSV 파일 읽기
-        dataCSV = CSVReader.Read("DialogueScript");
-        // 대화창 비활성화
-        dialogueBox.SetActive(false);           
-        // 대화 위 선택지 비활성화
-        choiceUpPanel.SetActive(false);         
-        // 대화 아래 선택지 비활성화
-        choiceDownPanel.SetActive(false);                            
-        // 대화창 활성화
-        dialogueBox.SetActive(true);
-        // 초기 이미지를 주인공으로 설정
-        dialogueImage.sprite = dialogueImages[illustTable["좀비"]];
+        dataCSV = CSVReader.Read("DialogueScript");        
+        // 선택지 비활성화
+        foreach(GameObject choice in choices)
+        {
+            choice.SetActive(false);
+        }                            
         // 이벤트 데이터 로드
         LoadSOFromAsset();
 
         StartCoroutine(EventProcess());                        
-    }
-
-    public Dictionary<string, object> Search(int index)
-    {
-        return dataCSV[index];
     }
 
      public void OnPointerDown(PointerEventData eventData)
@@ -115,21 +109,14 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         for(int i = 0; i < TotalEventList.Count; i++)
         {
             EventData loadedEvent = TotalEventList[i];
-            for(int j = loadedEvent.startIndex; j < loadedEvent.endIndex; j++)
+            for(int j = loadedEvent.startIndex; j < loadedEvent.endIndex + 1; j++)
             {
-                // 대화 데이터 로드
-                dialogueName.text = Search(j)["Name"].ToString();
-                dialogueText.text = Search(j)["Text1"].ToString();
+                Debug.Log(i + "" + j);
+                dialogueName.text = dataCSV[j]["Name"].ToString();
+                dialogueText.text = dataCSV[j]["Text1"].ToString();
+                // 캐릭터 이미지 변경
+                dialogueImage.sprite = dialogueImages[illustTable[dialogueName.text]];
                 DisplayDialogue(j);
-
-                // 획득 아이템이 존재 한다면 아이템 지급
-                if(Search(j)["Items"] != null)
-                {
-                    string equipItem = Search(j)["Items"].ToString();
-                    //Items.AddItem(equipItem);
-                    dialogueText.text = equipItem + " 을(를) 획득했습니다.";
-                    DisplayDialogue(j);
-                }
 
                 // 마우스 입력 대기
                 yield return new WaitUntil(() => isClicked);
@@ -148,20 +135,22 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
             return;
         }
 
-        if (dialogueName.text == "선택지")
+        if (dataCSV[index]["ChoiceCount"].ToString() != "")
         {
             DisplayChoices(index);
             return;
         }
+        // 대화 출력
+        StartCoroutine(TypeSentence(dialogueText.text));
 
-        if(dialogueName.text != null && dialogueName.text != "선택지")
+        // 획득 아이템이 존재 한다면 아이템 지급
+        if(dataCSV[index]["EquipItem"].ToString() != "")
         {
-            // 캐릭터 이미지 변경
-            dialogueImage.sprite = dialogueImages[illustTable[dialogueName.text]];
-            // 대화 출력
+            string equipItem = dataCSV[index]["EquipItem"].ToString();
+            Items.instance.AddItem(equipItem);
+            dialogueText.text = equipItem + " 을(를) 획득했습니다.";
             StartCoroutine(TypeSentence(dialogueText.text));
         }
-        
     }
 
     // 텍스트 출력 효과 함수
@@ -196,20 +185,27 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         dialogueText.text = "....";
         dialogueName.text = "";
         dialoguePanel.SetActive(false);
-        choiceUpPanel.SetActive(true);
-        choiceDownPanel.SetActive(true);
-
-        choiceUpText.text = Search(index)["Text1"].ToString();
-        choiceDownText.text = Search(index)["Text2"].ToString();
-
-        if (Items.items.Contains("총"))
+        for(int i = 0; i < (int)dataCSV[index]["ChoiceCount"]; i++)
         {
-            choiceDownRequireText.text = "필요한 아이템: <color=red>총</color>";
+            Debug.Log("Choice" + (i + 1));
+            choices[i].SetActive(true);
+            choiceText[i].text = dataCSV[index]["Choice" + (i + 1)].ToString();
+
+            string requireItem = dataCSV[index]["RequireItem" + (i + 1)].ToString();
+            if (requireItem != "")
+            {
+                if(Items.items.Contains(requireItem))
+                {
+                    choiceRequireText[i].text = "필요한 아이템: <color=green>" + requireItem + "</color>";
+                }
+                else
+                {
+                    choiceRequireText[i].text = "필요한 아이템: <color=red>" + requireItem + "</color>";
+                }
+            }
+            choiceRequireText[i].text = "";
         }
-        else
-        {
-            choiceDownRequireText.text = "필요한 아이템: <color=green>총</color>/보상: 빵";
-        }
+
     }
 
      private void LoadSOFromAsset()
@@ -251,6 +247,7 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
             // 로드된 메인 이벤트에 다음 이벤트가 있다면 추가 로드
             if(presentEvent.nextEvent != null)
             {
+                TotalEventList.Add(presentEvent.nextEvent);
             }
 
             //서브 이벤트 랜덤 로드
