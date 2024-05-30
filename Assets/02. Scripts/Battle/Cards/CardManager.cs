@@ -185,8 +185,8 @@ public class CardManager : MonoBehaviour
             MergeDumpToDeck();
         }
 
-        card.Setup(DrawCard());
         card.effectGroup = effectGroup;
+        card.Setup(DrawCard());
         card.transform.localScale = Vector3.zero;
         hand.Add(card);
 

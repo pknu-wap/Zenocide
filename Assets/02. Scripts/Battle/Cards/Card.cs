@@ -58,7 +58,9 @@ public class Card : MonoBehaviour
         {
             if (item.skills[i].effectPrefeb != null)
             {
-                effectObject[i] = (Instantiate(item.skills[i].effectPrefeb, effectGroup).GetComponent<ParticleSystem>());
+                ParticleSystem effectInstance = Instantiate(item.skills[i].effectPrefeb);
+                effectObject[i] = effectInstance.GetComponent<ParticleSystem>();
+                effectInstance.transform.SetParent(effectGroup, false);
             }
             else
             {
