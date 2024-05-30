@@ -178,7 +178,7 @@ public class Card : MonoBehaviour
     #endregion 마우스 상호작용
 
     #region 카드 사용
-    [SerializeField] private float skillDelay = 0.2f;
+    private float skillDelay = 0.5f;
 
     // 카드를 사용한다. (마우스가 놓아지는 시점에 호출)
     private IEnumerator UseCard()
