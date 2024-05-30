@@ -40,6 +40,10 @@ public class CardManager : MonoBehaviour
     [SerializeField] TMP_Text dumpCountTMP;
     [SerializeField] Transform cardBackObjectParent;
 
+    // 이펙트
+    [SerializeField] public Transform effectGroup;
+
+
     Card selectCard;
 
     // 상수
@@ -182,6 +186,7 @@ public class CardManager : MonoBehaviour
         }
 
         card.Setup(DrawCard());
+        card.effectGroup = effectGroup;
         card.transform.localScale = Vector3.zero;
         hand.Add(card);
 
@@ -285,7 +290,7 @@ public class CardManager : MonoBehaviour
     }
 
     // dump와 hand를 덱으로 모아서 셔플
-    void SetUpDeck()
+    public void SetUpDeck()
     {
         // hand의 카드들을 deck에 추가하고 오브젝트 파괴
         for (int i = 0; i < hand.Count; i++)
@@ -311,7 +316,7 @@ public class CardManager : MonoBehaviour
         ShuffleDeck();
     }
 
-    void MergeDumpToDeck()
+    public void MergeDumpToDeck()
     {
         // dump의 카드들을 deck에 추가
         for (int i = 0; i < dump.Count; i++)
