@@ -33,8 +33,9 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
     public List<Dictionary<string, object>> dataCSV;
 
     [Header("이벤트 데이터 폴더 경로")]
-    public string mainEventPath = "Assets/02. Scripts/Story/EventData SO/MainEvent";
-    public string subEventPath  = "Assets/02. Scripts/Story/EventData SO/SubEvent";
+    public string mainEventPath          = "Assets/02. Scripts/Story/EventData SO/MainEvent";
+    public string connectedMainEventPath = "Assets/02. Scripts/Story/EventData SO/ConnectedMainEvent";
+    public string subEventPath           = "Assets/02. Scripts/Story/EventData SO/SubEvent";
 
     [Header("전체 이벤트 데이터")]
     public List<EventData> TotalEventList;
@@ -72,10 +73,12 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
     {
         {"???", 0},
         {"좀비", 1},
-        {"선택지",2},
-        {"주인공",3}
+        {"주인공",2}
     };
 
+    // 카드 추가 함수 AddCardtoDeck  
+    // 전투 시작 시 MergeDumpToDeck, SetUpDeck 선호출
+    // BattleInfo.Instance.StartBattle(string[] str) <= 전투 시작 
     void Start()
     {
         // CSV 파일 읽기
@@ -117,7 +120,17 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
                 // 대화 데이터 로드
                 dialogueName.text = Search(j)["Name"].ToString();
                 dialogueText.text = Search(j)["Text1"].ToString();
-                DisplayDialogue();
+                DisplayDialogue(j);
+
+                // 획득 아이템이 존재 한다면 아이템 지급
+                if(Search(j)["Items"] != null)
+                {
+                    string equipItem = Search(j)["Items"].ToString();
+                    //Items.AddItem(equipItem);
+                    dialogueText.text = equipItem + " 을(를) 획득했습니다.";
+                    DisplayDialogue(j);
+                }
+
                 // 마우스 입력 대기
                 yield return new WaitUntil(() => isClicked);
                 isClicked = false;
@@ -127,7 +140,7 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
     }
 
     // 대화 출력 함수
-    private void DisplayDialogue()
+    private void DisplayDialogue(int index)
     {
         if (isTyping && !cancelTyping)
         {
@@ -135,12 +148,13 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
             return;
         }
 
-        if (dialogueName.text == "#")
+        if (dialogueName.text == "선택지")
         {
-            //DisplayChoices();
+            DisplayChoices(index);
+            return;
         }
 
-        if(dialogueName.text != null && dialogueName.text != "#")
+        if(dialogueName.text != null && dialogueName.text != "선택지")
         {
             // 캐릭터 이미지 변경
             dialogueImage.sprite = dialogueImages[illustTable[dialogueName.text]];
@@ -177,7 +191,7 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         waitCursor.SetActive(true);
     }
 
-    /*private void DisplayChoices()
+    private void DisplayChoices(int index)
     {
         dialogueText.text = "....";
         dialogueName.text = "";
@@ -185,8 +199,8 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         choiceUpPanel.SetActive(true);
         choiceDownPanel.SetActive(true);
 
-        choiceUpText.text = choiceUpContent[currentChoice];
-        choiceDownText.text = choiceDownContent[currentChoice];
+        choiceUpText.text = Search(index)["Text1"].ToString();
+        choiceDownText.text = Search(index)["Text2"].ToString();
 
         if (Items.items.Contains("총"))
         {
@@ -196,9 +210,7 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         {
             choiceDownRequireText.text = "필요한 아이템: <color=green>총</color>/보상: 빵";
         }
-
-        currentChoice++;
-    }*/
+    }
 
      private void LoadSOFromAsset()
     {
@@ -218,7 +230,6 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
             if (so != null)
             {
                 MainSOs[i] = so;
-                Debug.Log(i);
             }
         }
 
@@ -240,7 +251,6 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
             // 로드된 메인 이벤트에 다음 이벤트가 있다면 추가 로드
             if(presentEvent.nextEvent != null)
             {
-
             }
 
             //서브 이벤트 랜덤 로드
