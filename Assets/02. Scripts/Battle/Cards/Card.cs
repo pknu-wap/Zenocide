@@ -58,9 +58,7 @@ public class Card : MonoBehaviour
         {
             if (item.skills[i].effectPrefeb != null)
             {
-                ParticleSystem effectInstance = Instantiate(item.skills[i].effectPrefeb);
-                effectObject[i] = effectInstance.GetComponent<ParticleSystem>();
-                effectInstance.transform.SetParent(effectGroup, false);
+                effectObject[i] = Instantiate(item.skills[i].effectPrefeb, effectGroup).GetComponent<ParticleSystem>();
             }
             else
             {
@@ -331,14 +329,15 @@ public class Card : MonoBehaviour
             yield return null;
         }
 
-        // 파티클을 삭제한다
-        /*for (int i = 0; i < cardData.skills.Length; i++)
+        /*// 파티클을 삭제한다
+        for (int i = 0; i < cardData.skills.Length; i++)
         {
             if (effectObject[i] == null)
             {
                 continue;
             }
 
+            Debug.Log("deleted");
             Destroy(effectObject[i]);
         }*/
 
