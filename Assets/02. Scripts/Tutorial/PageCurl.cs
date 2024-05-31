@@ -34,23 +34,32 @@ public class PageCurl : MonoBehaviour
         transform.eulerAngles = Vector3.zero;
     }*/
 
-    public Transform backPage;
-    public Transform mask;
-    public Transform frontPage;
+    public Transform[] frontPage;
+    public Transform[] backPage;
+    public Transform[] mask;
 
     public Vector2 point;
     public Vector3 corner = new Vector3(600f, -450f, 0f);
 
     public void Awake()
     {
-        backPage = transform.GetChild(5).GetChild(0).GetChild(0).GetChild(1);
-        frontPage = transform.GetChild(5).GetChild(0).GetChild(0).GetChild(0);
-        mask = transform.GetChild(5).GetChild(0);
+        // 배열 초기화
+        frontPage = new Transform[transform.childCount];
+        backPage = new Transform[transform.childCount];
+        mask = new Transform[transform.childCount];
+
+        for(int i = 0; i < transform.childCount; ++i)
+        {
+            frontPage[i] = transform.GetChild(i).GetChild(0).GetChild(0).GetChild(0);
+            backPage[i] = transform.GetChild(i).GetChild(0).GetChild(0).GetChild(1);
+            mask[i] = transform.GetChild(i).GetChild(0);
+        }
+
         
         corner += transform.position;
 
         Debug.Log(corner);
-        Debug.Log(backPage.transform.position);
+        Debug.Log(backPage[0].transform.position);
     }
 
     public void Update()
@@ -58,9 +67,9 @@ public class PageCurl : MonoBehaviour
         CurlPage();
     }
 
-    public void CurlPage()
+    public void CurlPage(int i)
     {
-        point = backPage.transform.position;
+        point = backPage[i].transform.position;
 
         // x, y 계산
         float x = corner.x - point.x;
