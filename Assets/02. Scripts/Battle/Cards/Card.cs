@@ -67,6 +67,18 @@ public class Card : MonoBehaviour
             }
         }
     }
+    
+    // 카드를 버릴 때 오브젝트를 파괴한다
+    private void OnDestroy()
+    {
+        foreach(ParticleSystem particle in effectObject)
+        {
+            if(particle != null)
+            {
+                Destroy(particle.gameObject);
+            }
+        }
+    }
 
     #region 마우스 상호작용
     // 마우스를 카드 위에 올릴 떄 실행된다.
