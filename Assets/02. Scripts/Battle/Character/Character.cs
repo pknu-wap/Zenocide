@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using DG.Tweening;
 public class BleedEffect
 {
     public BleedEffect(SkillType type, int damagePerTurn, int remainingTurns)
@@ -127,6 +128,12 @@ public class Character : MonoBehaviour
         currentHp -= damage;
 
         UpdateCurrentHP();
+
+        // 적이 피격될 때 모션 출력
+        if(this != Player.Instance)
+        {
+            imageComponent.transform.DOShakePosition(0.5f, 10f);
+        }
 
         // hp가 0 이하가 될 경우
         if (currentHp <= 0)

@@ -1,4 +1,5 @@
 // 김민철
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +18,9 @@ public class Enemy : Character
     // 상제정보창
     protected TMP_Text behaviorName;
     protected TMP_Text behaviorDescription;
+
+    // 피격 모션 시퀀스
+    Sequence AttackedSequence;
 
     public override void Awake()
     {
@@ -129,5 +133,11 @@ public class Enemy : Character
 
         // 오브젝트 비활성화
         gameObject.SetActive(false);
+    }
+
+    // 피격 모션
+    public void AttackedMotion()
+    {
+        imageComponent.transform.DOShakePosition(0.5f, 10f);
     }
 }

@@ -329,18 +329,6 @@ public class Card : MonoBehaviour
             yield return null;
         }
 
-        /*// 파티클을 삭제한다
-        for (int i = 0; i < cardData.skills.Length; i++)
-        {
-            if (effectObject[i] == null)
-            {
-                continue;
-            }
-
-            Debug.Log("deleted");
-            Destroy(effectObject[i]);
-        }*/
-
         // 카드를 삭제한다.
         CardManager.Instance.DiscardCard(this);
     }
