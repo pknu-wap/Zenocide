@@ -51,8 +51,8 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
     int subEventCount = 7;
 
     [Header("캐릭터 이미지 데이터")]               
-    public Image dialogueImage;                 
-    public Sprite[] dialogueImages;             
+    public Image[] IllustsObjects;                 
+    public Sprite[] illustImages;             
 
     [Header("Text 데이터")]
     public string[] storyText;                  
@@ -77,9 +77,6 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         {"주인공",2}
     };
 
-    [Header("표시될 일러스트 이름")]
-    public string illustName; 
-
     // 카드 추가 함수 AddCardtoDeck  
     // 전투 시작 시 MergeDumpToDeck, SetUpDeck 선호출
     // BattleInfo.Instance.StartBattle(string[] str) <= 전투 시작 
@@ -98,6 +95,42 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         StartCoroutine(EventProcess());                        
     }
 
+    public void ShowIllust(List<string> names)
+    {
+
+        List<string> Names = new List<string>();
+
+        foreach (string name in names)
+        {
+            if(name != ""){
+                Names.Add(name);
+            }
+        }
+
+        IllustsObjects[0].enabled = true;
+        IllustsObjects[1].enabled = true;
+        IllustsObjects[2].enabled = true;
+        Debug.Log(Names.Count);
+        switch(Names.Count)
+        {
+            case 1:
+                IllustsObjects[0].sprite = illustImages[illustTable[Names[0]]];
+                IllustsObjects[1].enabled = false;
+                IllustsObjects[2].enabled = false;
+                break;
+            case 2:
+                IllustsObjects[1].sprite = illustImages[illustTable[Names[0]]];
+                IllustsObjects[2].sprite = illustImages[illustTable[Names[1]]];
+                IllustsObjects[0].enabled = false;
+                break;
+            case 3:
+                IllustsObjects[0].sprite = illustImages[illustTable[Names[0]]];
+                IllustsObjects[1].sprite = illustImages[illustTable[Names[1]]];
+                IllustsObjects[2].sprite = illustImages[illustTable[Names[2]]];
+                break;
+        }
+    }
+
      public void OnPointerDown(PointerEventData eventData)
     {
         isClicked = true;
@@ -111,11 +144,14 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
             EventData loadedEvent = TotalEventList[i];
             for(int j = loadedEvent.startIndex; j < loadedEvent.endIndex + 1; j++)
             {
-                Debug.Log(i + "" + j);
-                dialogueName.text = dataCSV[j]["Name"].ToString();
+                List<string> illustNames = new List<string>(){dataCSV[j]["Name1"].ToString(),
+                                                              dataCSV[j]["Name2"].ToString(), 
+                                                              dataCSV[j]["Name3"].ToString()};
+                dialogueName.text = dataCSV[j]["Name1"].ToString();
                 dialogueText.text = dataCSV[j]["Text1"].ToString();
-                // 캐릭터 이미지 변경
-                dialogueImage.sprite = dialogueImages[illustTable[dialogueName.text]];
+                // 일러스트 표시 함수
+                ShowIllust(illustNames);
+                // 대화 출력 함수
                 DisplayDialogue(j);
 
                 // 마우스 입력 대기
@@ -182,8 +218,6 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
 
     private void DisplayChoices(int index)
     {
-        dialogueText.text = "....";
-        dialogueName.text = "";
         dialoguePanel.SetActive(false);
         for(int i = 0; i < (int)dataCSV[index]["ChoiceCount"]; i++)
         {

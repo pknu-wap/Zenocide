@@ -8,7 +8,7 @@ public class StatusHP : MonoBehaviour
 
     void Update()
     {
-        slider.value = Player.Instance.GetHP() / Player.Instance.maxHp;
+        //slider.value = Player.Instance.GetHP() / Player.Instance.maxHp;
     }
 
 }
