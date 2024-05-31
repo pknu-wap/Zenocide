@@ -31,6 +31,7 @@ public class Card : MonoBehaviour
     [Header("이펙트")]
     ParticleSystem[] effectObject = new ParticleSystem[10];
     public Transform effectGroup;
+    bool isPlaying = false;
 
     // DOTween 시퀀스
     Sequence moveSequence;
@@ -69,11 +70,13 @@ public class Card : MonoBehaviour
     }
     
     // 카드를 버릴 때 오브젝트를 파괴한다
+    // 이펙트 출력 도중 카드가 파괴되면 이펙트도 같이 사라진다
+    // -> isPlaying으로 방지
     private void OnDestroy()
     {
         foreach(ParticleSystem particle in effectObject)
         {
-            if(particle != null)
+            if(particle != null && !isPlaying)
             {
                 Destroy(particle.gameObject);
             }
@@ -268,6 +271,7 @@ public class Card : MonoBehaviour
                 {
                     effectObject[i].transform.position = selectedEnemy.transform.position;
                     effectObject[i].Play();
+                    isPlaying = true;
                 }
 
                 // 딜레이를 주면 좀 더 자연스럽다. -> 코루틴의 필요
@@ -328,6 +332,7 @@ public class Card : MonoBehaviour
                 if (effectObject[i] != null)
                 {
                     effectObject[i].Play();
+                    isPlaying = true;
                 }
 
                 // 딜레이를 주면 좀 더 자연스럽다. -> 코루틴의 필요
