@@ -130,7 +130,7 @@ public class Character : MonoBehaviour
         UpdateCurrentHP();
 
         // 적이 피격될 때 모션 출력
-        if(this != Player.Instance)
+        if(this != Player.Instance && damage > 0)
         {
             imageComponent.transform.DOShakePosition(0.5f, 10f);
         }
