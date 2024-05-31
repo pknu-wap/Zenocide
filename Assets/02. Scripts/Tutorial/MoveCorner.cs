@@ -8,7 +8,6 @@ public class MoveCorner : MonoBehaviour
     void Start()
     {
         firstPosition = transform.position;
-        Move();
     }
 
     public void Move()

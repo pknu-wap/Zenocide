@@ -43,9 +43,9 @@ public class PageCurl : MonoBehaviour
 
     public void Awake()
     {
-        backPage = transform.GetChild(0).GetChild(0).GetChild(0).GetChild(1);
-        frontPage = transform.GetChild(0).GetChild(0).GetChild(0).GetChild(0);
-        mask = transform.GetChild(0).GetChild(0);
+        backPage = transform.GetChild(5).GetChild(0).GetChild(0).GetChild(1);
+        frontPage = transform.GetChild(5).GetChild(0).GetChild(0).GetChild(0);
+        mask = transform.GetChild(5).GetChild(0);
         
         corner += transform.position;
 
