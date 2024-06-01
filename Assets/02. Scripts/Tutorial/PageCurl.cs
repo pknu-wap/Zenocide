@@ -13,22 +13,24 @@ public class PageCurl : MonoBehaviour
     private Transform[] gradient;
 
     // 넘김 효과가 실행 중인가?
-    private bool isCurling = false;
+    public bool isCurling = false;
     // 넘길 페이지 번호. 한 장 넘긴 후 증가시켜 다음 장을 넘긴다.
     private int pageNumber = 0;
 
+    // 책의 너비와 높이
+    private float bookWidth;
+    private float bookHeight;
+
     // 페이지의 꼭짓점과 책의 꼭짓점
     private Vector2 point;
-    private Vector3 corner = new Vector3(300f, -225f, 0f);
+    [SerializeField] private Vector3 corner;
 
-    // BackPage의 시작 위치
-    private Vector3 firstBackPagePosition;
+    // BackPage의 시작 위치, corner와 다를 시 정상적으로 작동하지 않는다.
+    [SerializeField] private Vector3 firstBackPagePosition;
 
     // DOTween 애니메이션 관련
     public Transform curlPoint;
     public float flipTime = 1f;
-
-    public float bookWidth;
 
     public void Awake()
     {
@@ -51,13 +53,17 @@ public class PageCurl : MonoBehaviour
             backPage[i] = mask[i].GetChild(1);
             gradient[i] = backPage[i].GetChild(0);
         }
-        
-        // 코너를 책 위치 기준으로 해야 하니 책 위치를 더해준다.
-        corner += transform.position;
-        // 시작 위치를 미리 받아둔다.
-        firstBackPagePosition = backPage[0].transform.position;
 
-        bookWidth = GetComponent<RectTransform>().rect.width;
+        // 책의 너비와 높이를 구한다.
+        RectTransform bookRect = GetComponent<RectTransform>();
+        bookWidth = bookRect.rect.width;
+        bookHeight = bookRect.rect.height;
+
+        // 코너를 책 위치 기준으로 해야 하니 책 위치에 더해준다.
+        corner = transform.position + new Vector3(bookWidth / 4, -bookHeight / 4, 0f);
+
+        // 시작 위치를 미리 받아둔다. (corner와 같아야 함)
+        firstBackPagePosition = backPage[0].transform.position;
     }
 
     public void LateUpdate()
@@ -93,7 +99,7 @@ public class PageCurl : MonoBehaviour
         DOTween.Sequence()
             .Append(backPage[i].transform.DOMoveX(curlPoint.position.x, flipTime / 2).SetEase(Ease.Linear))
             .Join(backPage[i].transform.DOMoveY(curlPoint.position.y, flipTime / 2).SetEase(Ease.OutCubic))
-            .Append(backPage[i].transform.DOMoveX(firstBackPagePosition.x - 600f, flipTime / 2).SetEase(Ease.Linear))
+            .Append(backPage[i].transform.DOMoveX(firstBackPagePosition.x - bookWidth / 2, flipTime / 2).SetEase(Ease.Linear))
             .Join(backPage[i].transform.DOMoveY(firstBackPagePosition.y, flipTime / 2).SetEase(Ease.InCubic))
             // 끝나면 Curling 종료, 페이지 번호 증가, 다음 장을 제일 위로 올리기
             .OnComplete(() => { 
