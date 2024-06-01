@@ -156,7 +156,44 @@ public class TurnManager : MonoBehaviour
         // 적 턴일 때 호출
         else
         {
-            onEndEnemyTurn.Invoke();
+            #region 적 공격
+            // 적이 랜덤한 순서로 스킬을 사용함
+            // 더 깔끔한 알고리즘이 있지 않을까
+            int enemyIndex = Random.Range(0, 4);
+            int count = 0;
+            bool[] hasAttack = new bool[4]; // 변수 이름이 부적절한 거 같다.
+            Array.Fill(hasAttack, false);
+
+            while (count < 4)
+            {
+                Enemy enemy = GameManager.Instance.enemies[enemyIndex];
+
+                if (!hasAttack[enemyIndex])
+                {
+                    count++;
+                    hasAttack[enemyIndex] = true;
+                }
+                else
+                {
+                    enemyIndex = Random.Range(0, 4);
+                    continue;
+                }
+
+                if (!enemy.gameObject.activeSelf)
+                {
+                    enemyIndex = Random.Range(0, 4);
+                    continue;
+                }
+
+                enemy.EndEnemyTurn();
+
+                // 스킬 모션이 끝날 때까지 대기
+                yield return StartCoroutine(enemy.SkillMotion());
+
+                enemyIndex = Random.Range(0, 4);
+            }
+            #endregion 적 공격
+
             onStartPlayerTurn.Invoke();
 
             // 플레이어 턴으로 변경

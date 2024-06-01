@@ -1122,6 +1122,7 @@ MonoBehaviour:
     target: 0
     amount: 0
     turnCount: 0
+    effectPrefeb: {fileID: 0}
 --- !u!1 &5823784707379359355
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] NotificationPanel notificationPanel;
     [SerializeField] Transform enemiesParent;
-    [SerializeField] private Enemy[] enemies;
+    [SerializeField] public Enemy[] enemies;
 
     // 전투 시작 시 실행할 이벤트
     public UnityEvent onStartBattle;

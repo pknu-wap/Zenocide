@@ -20,8 +20,13 @@ public class Enemy : Character
     protected TMP_Text behaviorName;
     protected TMP_Text behaviorDescription;
 
+    // 스킬 모션, 이펙트
+    Sequence attackSequence;
+    ParticleSystem healEffect;
+
     // 상수
-    float fadeTime = 2f;
+    float fadeDelay = 2f;
+    float skillDelay = 0.5f;   // 0.5의 배수로 해줘야 함
 
     public override void Awake()
     {
@@ -62,7 +67,6 @@ public class Enemy : Character
         BattleInfo.Instance.EnrollEnemy(this);
 
         // BattleManager에 이벤트 등록
-        TurnManager.Instance.onEndEnemyTurn.AddListener(EndEnemyTurn);
         TurnManager.Instance.onStartPlayerTurn.AddListener(ReadySkill);
     }
 
@@ -122,26 +126,42 @@ public class Enemy : Character
         CardInfo.Instance.ActivateSkill(currentSkill, target);
     }
 
+    // SkillType 별 모션 출력
+    public IEnumerator SkillMotion()
+    {
+        switch (currentSkill.type)
+        {
+            case (SkillType.Attack):
+                attackSequence = DOTween.Sequence()
+                .Append(imageComponent.transform.DOShakePosition(skillDelay * (2f / 5), 40f))
+                .Join(transform.DOScale(1.5f, skillDelay * (2f / 5)))
+                .Append(transform.DOScale(0.9f, skillDelay * (3f / 5)));    // enemy 원래 스케일이 0.9로 돼있다.
+                break;
+            case (SkillType.Shield):
+                
+                break;
+        }
+
+        yield return new WaitForSeconds(skillDelay);
+    }
+
     // 죽는다.
     public override void Die()
     {
         // TurnManager에서 자기 자신의 이벤트를 제거
-        TurnManager.Instance.onEndEnemyTurn.RemoveListener(EndEnemyTurn);
         TurnManager.Instance.onStartPlayerTurn.RemoveListener(ReadySkill);
 
         // BattleInfo에서 자기 자신을 제거한다.
         BattleInfo.Instance.DisenrollEnemy(this);
 
         StartCoroutine(DieMotionCo());
-        /*// 오브젝트 비활성화
-        gameObject.SetActive(false);*/
     }
 
     IEnumerator DieMotionCo()
     {
-        this.imageComponent.DOFade(0f, fadeTime);
+        this.imageComponent.DOFade(0f, fadeDelay);
 
-        yield return new WaitForSeconds(fadeTime);
+        yield return new WaitForSeconds(fadeDelay);
 
         // 오브젝트 비활성화
         gameObject.SetActive(false);
