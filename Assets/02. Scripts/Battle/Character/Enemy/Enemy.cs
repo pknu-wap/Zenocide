@@ -1,5 +1,6 @@
 // 김민철
 using DG.Tweening;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,8 +20,8 @@ public class Enemy : Character
     protected TMP_Text behaviorName;
     protected TMP_Text behaviorDescription;
 
-    // 피격 모션 시퀀스
-    Sequence AttackedSequence;
+    // 상수
+    float fadeTime = 2f;
 
     public override void Awake()
     {
@@ -131,13 +132,18 @@ public class Enemy : Character
         // BattleInfo에서 자기 자신을 제거한다.
         BattleInfo.Instance.DisenrollEnemy(this);
 
-        // 오브젝트 비활성화
-        gameObject.SetActive(false);
+        StartCoroutine(DieMotionCo());
+        /*// 오브젝트 비활성화
+        gameObject.SetActive(false);*/
     }
 
-    // 피격 모션
-    public void AttackedMotion()
+    IEnumerator DieMotionCo()
     {
-        imageComponent.transform.DOShakePosition(0.5f, 10f);
+        this.imageComponent.DOFade(0f, fadeTime);
+
+        yield return new WaitForSeconds(fadeTime);
+
+        // 오브젝트 비활성화
+        gameObject.SetActive(false);
     }
 }

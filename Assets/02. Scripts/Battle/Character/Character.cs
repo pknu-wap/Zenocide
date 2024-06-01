@@ -1,4 +1,5 @@
 // 김민철
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -125,8 +126,8 @@ public class Character : MonoBehaviour
     public void DecreaseHP(int damage)
     {
         // hp를 damage만큼 감소시킨다.
-        currentHp -= damage;
-
+        currentHp = Math.Max(currentHp - damage, 0);
+        
         UpdateCurrentHP();
 
         // 적이 피격될 때 모션 출력
