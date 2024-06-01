@@ -31,7 +31,7 @@ public class PageCurl : MonoBehaviour
 
     // DOTween 애니메이션 관련
     public Transform curlPoint;
-    public float flipTime = 1f;
+    public float flipTime = 0.5f;
 
     public void Awake()
     {
