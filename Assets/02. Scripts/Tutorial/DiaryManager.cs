@@ -77,8 +77,17 @@ public class DiaryManager : MonoBehaviour
     // 문장을 넘겨준다.
     public void AddDialog()
     {
+        // 이미 타이핑 중일 때
         if (scripter[pageIndex].isTyping == true)
         {
+            // 캔슬은 하지 않았다면
+            if(scripter[pageIndex].cancelTyping == false)
+            {
+                // 캔슬한다.
+                scripter[pageIndex].CancelTyping();
+            }
+
+            // 그 외의 경우는 함수를 취소한다.
             return;
         }
 
@@ -87,6 +96,7 @@ public class DiaryManager : MonoBehaviour
 
     public bool isSelected = false;
 
+    // 선택지 버튼을 띄운다.
     public IEnumerator ShowChoiceButton()
     {
         // 선택지를 띄운다.

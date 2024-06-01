@@ -13,7 +13,7 @@ public class PageScripter : MonoBehaviour
     [Header("상태 체크")]
     // 현재 타이핑 중인가?
     public bool isTyping = false;
-    private bool cancelTyping = false;
+    public bool cancelTyping = false;
     // 현재까지 적힌 텍스트
     private string currentDialog = "";
     // 선택된 단어
@@ -69,6 +69,11 @@ public class PageScripter : MonoBehaviour
         cancelTyping = false;
         diaryText.text = currentDialog;
 
+        // 이번 문장에 선택지가 있는가?
+        bool hasSelect = sentence.Contains('%');
+        // 이번 턴에 선택지가 골라졌는가?
+        bool isSelectHappened = false;
+
         for (int i = 0; i < sentence.Length; ++i)
         {
             // 한 글자만 떼온다.
@@ -77,6 +82,9 @@ public class PageScripter : MonoBehaviour
             // 해당 글자가 %라면
             if(letter == '%')
             {
+                // 선택이 있었음을 체크한다.
+                isSelectHappened = true;
+
                 // 선택지를 띄우고, 응답을 기다린다.
                 yield return StartCoroutine(DiaryManager.Instance.ShowChoiceButton());
 
@@ -101,7 +109,25 @@ public class PageScripter : MonoBehaviour
             // 타이핑 효과 취소 시 대화를 한번에 출력
             if (cancelTyping)
             {
-                diaryText.text = currentDialog + sentence;
+                // 선택이 일어났다면
+                if (isSelectHappened)
+                {
+                    // 선택된 단어로 변경한다.
+                    diaryText.text = currentDialog + sentence.Replace("%", selectedWord + ' ');
+                }
+                // 선택은 하지 않았으나
+                else
+                {
+                    // 선택지가 있는 문장이라면
+                    if (hasSelect)
+                    {
+                        // 캔슬을 무시한다.
+                        continue;
+                    }
+
+                    // 그 외엔 문장을 즉시 출력한다.
+                    diaryText.text = currentDialog + sentence;
+                }
                 break;
             }
         }
@@ -127,6 +153,6 @@ public class PageScripter : MonoBehaviour
     // 타이핑 효과를 취소한다.
     public void CancelTyping()
     {
-        cancelTyping = false;
+        cancelTyping = true;
     }
 }
