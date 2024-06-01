@@ -21,9 +21,11 @@ public class DiaryManager : MonoBehaviour
 
     [Header("현재 다이얼로그 정보")]
     // 현재 출력 중인 텍스트 번호
-    public int dialogIndex = 0;
+    public int currentDialogIndex = 0;
+    // 마지막으로 출력한 (혹은 중인) 텍스트 번호, 중복 출력 방지에 쓰인다.
+    public int lastDialogIndex = -1;
     // 현재 출력 중인 페이지 번호
-    public int pageIndex = 0;
+    public int currentPageIndex = 0;
     // 선택된 단어
     [SerializeField] private string selectedWord;
 
@@ -71,27 +73,42 @@ public class DiaryManager : MonoBehaviour
     private IEnumerator StartTutorial()
     {
         yield return StartCoroutine(book.FlipPage());
-        ++pageIndex;
+        ++currentPageIndex;
     }
 
     // 문장을 넘겨준다.
     public void AddDialog()
     {
+        // 페이지가 넘어가고 있다면 무조건 취소한다.
+        if (book.isCurling == true)
+        {
+            return;
+        }
+
         // 이미 타이핑 중일 때
-        if (scripter[pageIndex].isTyping == true)
+        if (scripter[currentPageIndex].isTyping == true)
         {
             // 캔슬은 하지 않았다면
-            if(scripter[pageIndex].cancelTyping == false)
+            if(scripter[currentPageIndex].cancelTyping == false)
             {
                 // 캔슬한다.
-                scripter[pageIndex].CancelTyping();
+                scripter[currentPageIndex].CancelTyping();
             }
 
             // 그 외의 경우는 함수를 취소한다.
             return;
         }
 
-        StartCoroutine(scripter[pageIndex].ShowDialog(diaryDialog[dialogIndex]));
+        // 해당 번호가 출력 중이라면 무조건 취소한다.
+        if (lastDialogIndex == currentDialogIndex)
+        {
+            return;
+        }
+
+        // 마지막 출력 번호를 갱신하고
+        lastDialogIndex = currentDialogIndex;
+        // 출력한다.
+        StartCoroutine(scripter[currentPageIndex].ShowDialog(diaryDialog[currentDialogIndex]));
     }
 
     public bool isSelected = false;
@@ -102,7 +119,7 @@ public class DiaryManager : MonoBehaviour
         // 선택지를 띄운다.
         for(int i = 0; i < choiceButtons.Length; ++i)
         {
-            choiceButtons[i].text = diaryDialog[dialogIndex][i.ToString()].ToString();
+            choiceButtons[i].text = diaryDialog[currentDialogIndex][i.ToString()].ToString();
         }
         choiceParent.gameObject.SetActive(true);
 
@@ -113,7 +130,7 @@ public class DiaryManager : MonoBehaviour
         }
 
         // scripter에 전달해준다.
-        scripter[pageIndex].Select(selectedWord);
+        scripter[currentPageIndex].Select(selectedWord);
 
         // 다시 false로 돌리고 종료
         isSelected = false;
@@ -122,7 +139,7 @@ public class DiaryManager : MonoBehaviour
     // 선택한다.
     public void Select(int i)
     {
-        selectedWord = diaryDialog[dialogIndex][i.ToString()].ToString();
+        selectedWord = diaryDialog[currentDialogIndex][i.ToString()].ToString();
 
         // 선택한 직업의 카드를 추가한다.
         string[] classCards = supplier.classCardDeck[selectedWord];

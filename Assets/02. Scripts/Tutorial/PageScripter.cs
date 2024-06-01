@@ -48,7 +48,7 @@ public class PageScripter : MonoBehaviour
         if(sentence == "#")
         {
             yield return StartCoroutine(book.FlipPage());
-            DiaryManager.Instance.pageIndex++;
+            DiaryManager.Instance.currentPageIndex++;
         }
 
         // $일 경우 튜토리얼을 종료한다.
@@ -138,7 +138,7 @@ public class PageScripter : MonoBehaviour
         // 현재 텍스트 갱신
         currentDialog = diaryText.text + "\n";
         // 다음 줄로 이동
-        DiaryManager.Instance.dialogIndex++;
+        DiaryManager.Instance.currentDialogIndex++;
 
         // 대화 진행 종료
         isTyping = false;

@@ -65,8 +65,8 @@ public class GameManager : MonoBehaviour
     public void FinishTutorial()
     {
         // 다시 처음으로 돌리고
-        DiaryManager.Instance.dialogIndex = 0;
-        DiaryManager.Instance.pageIndex = 0;
+        DiaryManager.Instance.currentDialogIndex = 0;
+        DiaryManager.Instance.currentPageIndex = 0;
 
         // 스토리 시작
         tutorialCamera.SetActive(false);
