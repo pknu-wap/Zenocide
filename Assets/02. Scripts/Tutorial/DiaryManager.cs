@@ -8,7 +8,7 @@ public class DiaryManager : MonoBehaviour
 
     private void Awake()
     {
-        diaryDialog = CSVReader.Read("Assets/NoShare2024-1/NoShare2024-1/04. Scenarios/Tutorial Diary");
+        diaryDialog = CSVReader.Read("Tutorial Diary");
 
         Debug.Log(diaryDialog[0]["내용"]);
     }
