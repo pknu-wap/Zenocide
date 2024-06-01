@@ -22,7 +22,13 @@ public class PageScripter : MonoBehaviour
 
     [Header("타이핑 시간")]
     private const float typingTime = 0.03f;
-    private const float meetMarkTime = 0.5f;
+    private Dictionary<char, float> markTypingTime = new Dictionary<char, float>
+    {
+        { ',', 0.3f },
+        { '.', 0.5f },
+        { '?', 0.5f },
+        { '!', 0.5f },
+    };
 
     private void Awake()
     {
@@ -75,6 +81,7 @@ public class PageScripter : MonoBehaviour
                 // 선택지를 띄우고, 응답을 기다린다.
                 yield return StartCoroutine(DiaryManager.Instance.ShowChoiceButton());
 
+                // letter는 띄어쓰기로
                 letter = ' ';
                 diaryText.text += selectedWord;
             }
@@ -85,9 +92,9 @@ public class PageScripter : MonoBehaviour
             // delay를 준다.
             float delay = typingTime;
             // 문장 부호로 끝난다면 더 길게 준다.
-            if (letter == ',' || letter == '.')
+            if (markTypingTime.ContainsKey(letter))
             {
-                delay = meetMarkTime;
+                delay = markTypingTime[letter];
             }
 
             yield return new WaitForSeconds(delay);
