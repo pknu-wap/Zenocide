@@ -11,6 +11,7 @@ public class PageCurl : MonoBehaviour
     private Transform[] frontPage;
     private Transform[] backPage;
     private Transform[] mask;
+    private Transform[] gradient;
 
     // 넘김 효과가 실행 중인가?
     private bool isCurling = false;
@@ -24,6 +25,9 @@ public class PageCurl : MonoBehaviour
     // BackPage의 시작 위치
     private Vector3 firstPosition;
 
+    // gradient의 가로 폭
+    public float gradientWidth = 50;
+
     public void Awake()
     {
         // 배열 초기화
@@ -31,6 +35,7 @@ public class PageCurl : MonoBehaviour
         frontPage = new Transform[transform.childCount];
         backPage = new Transform[transform.childCount];
         mask = new Transform[transform.childCount];
+        gradient = new Transform[transform.childCount];
         
         // 배열에 자식들을 불러온다.
         for(int i = 0; i < transform.childCount; ++i)
@@ -42,6 +47,7 @@ public class PageCurl : MonoBehaviour
             frontPage[i] = pages[i].GetChild(0).GetChild(0).GetChild(0);
             backPage[i] = pages[i].GetChild(0).GetChild(0).GetChild(1);
             mask[i] = pages[i].GetChild(0);
+            gradient[i] = pages[i].GetChild(1).GetChild(0);
         }
         
         // 코너를 책 위치 기준으로 해야 하니 책 위치를 더해준다.
@@ -119,6 +125,13 @@ public class PageCurl : MonoBehaviour
         mask[i].position = corner - new Vector3(maskX, 0f, 0f);
         // Mask 회전
         mask[i].rotation = Quaternion.Euler(0f, 0f, -theta);
+
+        // gradient도 함께 이동 및 회전
+        gradient[i].position = corner - new Vector3(maskX, 0f, 0f);
+        gradient[i].rotation = Quaternion.Euler(0f, 0f, -theta);
+
+        // 음영을 활성화한다.
+        gradient[i].gameObject.SetActive(true);
 
         // BackPage, FrontPage 위치를 원래대로 바꾼다.
         backPage[i].position = firstBackPagePosition;

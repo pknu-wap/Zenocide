@@ -7357,16 +7357,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c8e7909ddede9246a063f945e9e391e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pages: []
-  frontPage:
-  - {fileID: 0}
-  backPage:
-  - {fileID: 0}
-  mask:
-  - {fileID: 0}
   pageNumber: 0
-  corner: {x: 300, y: -225, z: 0}
-  firstPosition: {x: 0, y: 0, z: 0}
+  gradientWidth: 50
 --- !u!1001 &689183424
 PrefabInstance:
   m_ObjectHideFlags: 0
