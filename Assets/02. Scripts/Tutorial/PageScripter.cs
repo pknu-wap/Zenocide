@@ -8,6 +8,7 @@ public class PageScripter : MonoBehaviour
     [Header("컴포넌트")]
     public TMP_Text diaryText;
     public PageCurl book;
+    public GameObject waitCursor;
 
     [Header("상태 체크")]
     // 현재 타이핑 중인가?
@@ -34,6 +35,7 @@ public class PageScripter : MonoBehaviour
     {
         diaryText = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<TMP_Text>();
         book = transform.parent.GetComponent<PageCurl>();
+        waitCursor = transform.parent.parent.GetChild(1).gameObject;
     }
 
     // 스크립트를 보여준다.
@@ -65,7 +67,7 @@ public class PageScripter : MonoBehaviour
     private IEnumerator TypeSentence(string sentence)
     {
         // 다음 대화로 넘어가기 전에 기다리는 커서 비활성화
-        // waitCursor.SetActive(false);
+        waitCursor.SetActive(false);
 
         cancelTyping = false;
         diaryText.text = currentDialog;
@@ -107,7 +109,9 @@ public class PageScripter : MonoBehaviour
             }
         }
 
-        // waitCursor.SetActive(true);
+        // waitCursor 켜기
+        waitCursor.SetActive(true);
+
         // 현재 텍스트 갱신
         currentDialog = diaryText.text + "\n";
         // 다음 줄로 이동
