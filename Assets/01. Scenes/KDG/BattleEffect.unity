@@ -6737,7 +6737,7 @@ GameObject:
   m_Component:
   - component: {fileID: 619371413}
   m_Layer: 0
-  m_Name: HandObject
+  m_Name: HandGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6942,7 +6942,7 @@ MonoBehaviour:
   cardBackPrefab: {fileID: 227734258949264060, guid: 6024536deded88249a005d18d341dcb1, type: 3}
   hand: []
   maxHand: 10
-  cardObjcetParent: {fileID: 619371413}
+  handGroup: {fileID: 619371413}
   handLeft: {fileID: 195200250}
   handRight: {fileID: 311357463}
   cardSpawnPoint: {fileID: 1760439166}
@@ -6953,7 +6953,7 @@ MonoBehaviour:
   dump: []
   deckCountTMP: {fileID: 3213336}
   dumpCountTMP: {fileID: 2037706006}
-  cardBackObjectParent: {fileID: 812522535}
+  cardBackGroup: {fileID: 812522535}
   effectGroup: {fileID: 967340216}
   focusPos: {x: 0, y: 0, z: 0}
 --- !u!1001 &721954020
@@ -8222,7 +8222,7 @@ GameObject:
   m_Component:
   - component: {fileID: 812522535}
   m_Layer: 0
-  m_Name: CardBackObject
+  m_Name: CardBackGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

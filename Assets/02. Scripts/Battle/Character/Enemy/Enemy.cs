@@ -76,11 +76,17 @@ public class Enemy : Character
 
     public void EndEnemyTurn()
     {
-        // 플레이어에게 스킬을 사용한다. 이때, 애니메이션이 모두 끝나야 이후 명령들을 시작한다.
-        CastSkill();
-
         // 디버프(출혈 등)가 전부 적용된다.
         GetBleedAll();
+
+        // 죽고 나서 스킬 사용하는 걸 방지
+        if(currentHp <= 0)
+        {
+            return;
+        }
+
+        // 스킬을 사용한다. 이때, 애니메이션이 모두 끝나야 이후 명령들을 시작한다.
+        CastSkill();
     }
 
     // 적 정보를 갱신한다.
@@ -133,13 +139,19 @@ public class Enemy : Character
     // SkillType 별 모션 출력
     public IEnumerator SkillMotion()
     {
+        // 죽고 나서 스킬 사용 방지
+        if (currentHp <= 0)
+        {
+            yield break;
+        }
+
         switch (currentSkill.type)
         {
             case (SkillType.Attack):
                 skillSequence = DOTween.Sequence()
-                    .Append(imageComponent.transform.DOShakePosition(skillDelay * (2f / 5), 40f))
-                    .Join(transform.DOScale(1.5f, skillDelay * (2f / 5)))
-                    .Append(transform.DOScale(0.9f, skillDelay * (3f / 5)));    // enemy 원래 스케일이 0.9로 돼있다.
+                    .Append(transform.DOScale(1.5f, skillDelay * 2 / 5))
+                    .Append(imageComponent.transform.DOShakePosition(skillDelay * 1 / 5, 100f))
+                    .Append(transform.DOScale(0.9f, skillDelay * 2 / 5));    // enemy 원래 스케일이 0.9로 돼있다.
                 break;
             case (SkillType.Shield):
                 skillSequence = DOTween.Sequence()

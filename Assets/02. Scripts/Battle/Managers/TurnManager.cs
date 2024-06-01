@@ -168,6 +168,7 @@ public class TurnManager : MonoBehaviour
             {
                 Enemy enemy = GameManager.Instance.enemies[enemyIndex];
 
+                // 공격한 적은 체크
                 if (!hasAttack[enemyIndex])
                 {
                     count++;
@@ -179,15 +180,17 @@ public class TurnManager : MonoBehaviour
                     continue;
                 }
 
+                // 비활성화 된 적은 패스
                 if (!enemy.gameObject.activeSelf)
                 {
                     enemyIndex = Random.Range(0, 4);
                     continue;
                 }
 
+                // 실제 스킬 사용
                 enemy.EndEnemyTurn();
 
-                // 스킬 모션이 끝날 때까지 대기
+                // 스킬 모션
                 yield return StartCoroutine(enemy.SkillMotion());
 
                 enemyIndex = Random.Range(0, 4);
