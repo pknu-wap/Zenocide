@@ -30,6 +30,7 @@ public class PageScripter : MonoBehaviour
         book = transform.parent.GetComponent<PageCurl>();
     }
 
+    // 스크립트를 보여준다.
     public IEnumerator ShowDialog(Dictionary<string, object> line)
     {
         // 대화 진행 시작
@@ -38,15 +39,23 @@ public class PageScripter : MonoBehaviour
         currentLine = line;
         string sentence = line["내용"].ToString();
 
+        // #일 경우 페이지를 넘긴다.
         if(sentence == "#")
         {
             yield return StartCoroutine(book.FlipPage());
             DiaryManager.Instance.pageIndex++;
         }
 
+        // $일 경우 튜토리얼을 종료한다.
+        if (sentence == "$")
+        {
+            GameManager.Instance.FinishTutorial();
+        }
+
         yield return StartCoroutine(TypeSentence(sentence));
     }
 
+    // 문장을 타이핑한다.
     private IEnumerator TypeSentence(string sentence)
     {
         // 다음 대화로 넘어가기 전에 기다리는 커서 비활성화
