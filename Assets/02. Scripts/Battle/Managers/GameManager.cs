@@ -20,10 +20,6 @@ public class GameManager : MonoBehaviour
     {
         // Enemy 프리팹들을 미리 등록해둔다.
         enemies = enemiesParent.GetComponentsInChildren<Enemy>();
-        for(int i = 0; i < enemies.Length; ++i)
-        {
-            enemies[i].gameObject.SetActive(false);
-        }
 
         // 시작은 스토리
         // SwitchToStoryScene();
