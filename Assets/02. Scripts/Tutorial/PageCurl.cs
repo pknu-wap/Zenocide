@@ -28,6 +28,8 @@ public class PageCurl : MonoBehaviour
     public Transform curlPoint;
     public float flipTime = 1f;
 
+    public float bookWidth;
+
     public void Awake()
     {
         // 배열 초기화
@@ -54,6 +56,8 @@ public class PageCurl : MonoBehaviour
         corner += transform.position;
         // 시작 위치를 미리 받아둔다.
         firstBackPagePosition = backPage[0].transform.position;
+
+        bookWidth = GetComponent<RectTransform>().rect.width;
     }
 
     public void LateUpdate()
@@ -97,13 +101,13 @@ public class PageCurl : MonoBehaviour
                 mask[i].position = corner;
                 mask[i].rotation = Quaternion.Euler(Vector3.zero);
 
-                frontPage[i].position = corner - new Vector3(600f, 0f, 0f);
+                frontPage[i].position = corner - new Vector3(bookWidth / 2, 0f, 0f);
                 frontPage[i].rotation = Quaternion.Euler(Vector3.zero);
 
-                backPage[i].position = corner - new Vector3(600f, 0f, 0f);
+                backPage[i].position = corner - new Vector3(bookWidth / 2, 0f, 0f);
                 backPage[i].rotation = Quaternion.Euler(Vector3.zero);
 
-                gradient[i].position = corner - new Vector3(300f, 0f, 0f);
+                gradient[i].position = corner - new Vector3(bookWidth / 4, 0f, 0f);
                 gradient[i].rotation = Quaternion.Euler(Vector3.zero);
 
                 // Curling 종료, 넘길 페이지 번호 증가
@@ -141,7 +145,7 @@ public class PageCurl : MonoBehaviour
 
         // FrontPage는 위치, 회전 고정
         frontPage[i].position = originFrontPagePosition;
-        frontPage[i].rotation = Quaternion.Euler(0f, 0f, 0f);
+        frontPage[i].rotation = Quaternion.Euler(Vector3.zero);
 
         // BackPage의 회전은 계산한 결과대로 변경, 위치는 원래대로
         backPage[i].position = originBackPagePosition;
