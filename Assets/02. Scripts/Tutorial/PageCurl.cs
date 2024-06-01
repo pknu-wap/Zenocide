@@ -24,6 +24,10 @@ public class PageCurl : MonoBehaviour
     // BackPage의 시작 위치
     private Vector3 firstBackPagePosition;
 
+    // DOTween 애니메이션 관련
+    public Transform curlPoint;
+    public float flipTime = 1f;
+
     public void Awake()
     {
         // 배열 초기화
@@ -81,14 +85,28 @@ public class PageCurl : MonoBehaviour
         // 틀어질 경우를 대비해, 시작 위치로 이동시킨다.
         backPage[i].transform.position = firstBackPagePosition;
 
-        // 위치를 포물선으로 이동시킨다. (개선 필요)
+        // 위치를 포물선으로 이동시킨다.
         DOTween.Sequence()
-            .Append(backPage[i].transform.DOMoveX(firstBackPagePosition.x - 300f, 1f))
-            .Join(backPage[i].transform.DOMoveY(firstBackPagePosition.y + 150f, 1f))
-            .Append(backPage[i].transform.DOMoveX(firstBackPagePosition.x - 600f, 1f))
-            .Join(backPage[i].transform.DOMoveY(firstBackPagePosition.y, 1f)).SetEase(Ease.OutCubic)
+            .Append(backPage[i].transform.DOMoveX(curlPoint.position.x, flipTime / 2).SetEase(Ease.Linear))
+            .Join(backPage[i].transform.DOMoveY(curlPoint.position.y, flipTime / 2).SetEase(Ease.OutCubic))
+            .Append(backPage[i].transform.DOMoveX(firstBackPagePosition.x - 600f, flipTime / 2).SetEase(Ease.Linear))
+            .Join(backPage[i].transform.DOMoveY(firstBackPagePosition.y, flipTime / 2).SetEase(Ease.InCubic))
             // 끝나면 Curling 종료, 페이지 번호 증가, 다음 장을 제일 위로 올리기
             .OnComplete(() => { 
+                // 위치를 딱 맞춘다. (Snapping)
+                mask[i].position = corner;
+                mask[i].rotation = Quaternion.Euler(Vector3.zero);
+
+                frontPage[i].position = corner - new Vector3(600f, 0f, 0f);
+                frontPage[i].rotation = Quaternion.Euler(Vector3.zero);
+
+                backPage[i].position = corner - new Vector3(600f, 0f, 0f);
+                backPage[i].rotation = Quaternion.Euler(Vector3.zero);
+
+                gradient[i].position = corner - new Vector3(300f, 0f, 0f);
+                gradient[i].rotation = Quaternion.Euler(Vector3.zero);
+
+                // Curling 종료, 넘길 페이지 번호 증가
                 isCurling = false;
                 pageNumber++;
                 pages[pageNumber].SetAsLastSibling();
