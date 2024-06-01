@@ -58,7 +58,6 @@ public class DiaryManager : MonoBehaviour
             return;
         }
 
-        // 출력이 끝났다면
         StartCoroutine(scripter.ShowDialog(diaryDialog[dialogIndex]));
     }
 

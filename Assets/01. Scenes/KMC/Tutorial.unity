@@ -7374,6 +7374,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   diaryText: {fileID: 0}
+  book: {fileID: 655354131}
+  isTyping: 0
   selectedWord: 
 --- !u!1001 &606707476
 PrefabInstance:

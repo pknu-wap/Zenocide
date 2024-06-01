@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System.Collections;
 using UnityEngine;
 
 public class PageCurl : MonoBehaviour
@@ -77,50 +78,50 @@ public class PageCurl : MonoBehaviour
     }
     
     // 페이지를 넘긴다.
-    public void FlipPage()
+    public IEnumerator FlipPage()
     {
         if (isCurling || pageNumber >= transform.childCount)
         {
-            return;
+            yield break;
         }
 
         isCurling = true;
-
-        MoveBackPage(pageNumber);
+        yield return StartCoroutine(MoveBackPage(pageNumber));
     }
 
     // 페이지를 움직인다.
-    private void MoveBackPage(int i)
+    private IEnumerator MoveBackPage(int i)
     {
         // 틀어질 경우를 대비해, 시작 위치로 이동시킨다.
         backPage[i].transform.position = firstBackPagePosition;
 
         // 위치를 포물선으로 이동시킨다.
-        DOTween.Sequence()
+        Sequence move = DOTween.Sequence()
             .Append(backPage[i].transform.DOMoveX(curlPoint.position.x, flipTime / 2).SetEase(Ease.Linear))
             .Join(backPage[i].transform.DOMoveY(curlPoint.position.y, flipTime / 2).SetEase(Ease.OutCubic))
             .Append(backPage[i].transform.DOMoveX(firstBackPagePosition.x - bookWidth / 2, flipTime / 2).SetEase(Ease.Linear))
-            .Join(backPage[i].transform.DOMoveY(firstBackPagePosition.y, flipTime / 2).SetEase(Ease.InCubic))
-            // 끝나면 Curling 종료, 페이지 번호 증가, 다음 장을 제일 위로 올리기
-            .OnComplete(() => { 
-                // 위치를 딱 맞춘다. (Snapping)
-                mask[i].position = corner;
-                mask[i].rotation = Quaternion.Euler(Vector3.zero);
+            .Join(backPage[i].transform.DOMoveY(firstBackPagePosition.y, flipTime / 2).SetEase(Ease.InCubic));
 
-                frontPage[i].position = corner - new Vector3(bookWidth / 2, 0f, 0f);
-                frontPage[i].rotation = Quaternion.Euler(Vector3.zero);
+        // 끝날 때까지 기다린다.
+        yield return move.WaitForCompletion();
 
-                backPage[i].position = corner - new Vector3(bookWidth / 2, 0f, 0f);
-                backPage[i].rotation = Quaternion.Euler(Vector3.zero);
+        // 위치를 딱 맞춘다. (Snapping)
+        mask[i].position = corner;
+        mask[i].rotation = Quaternion.Euler(Vector3.zero);
 
-                gradient[i].position = corner - new Vector3(bookWidth / 4, 0f, 0f);
-                gradient[i].rotation = Quaternion.Euler(Vector3.zero);
+        frontPage[i].position = corner - new Vector3(bookWidth / 2, 0f, 0f);
+        frontPage[i].rotation = Quaternion.Euler(Vector3.zero);
 
-                // Curling 종료, 넘길 페이지 번호 증가
-                isCurling = false;
-                pageNumber++;
-                pages[pageNumber].SetAsLastSibling();
-            });
+        backPage[i].position = corner - new Vector3(bookWidth / 2, 0f, 0f);
+        backPage[i].rotation = Quaternion.Euler(Vector3.zero);
+
+        gradient[i].position = corner - new Vector3(bookWidth / 4, 0f, 0f);
+        gradient[i].rotation = Quaternion.Euler(Vector3.zero);
+
+        // Curling 종료, 넘길 페이지 번호 증가, 다음 장을 맨 위로 올린다.
+        isCurling = false;
+        pageNumber++;
+        pages[pageNumber].SetAsLastSibling();
     }
 
     // 페이지 넘김 효과를 실행한다.

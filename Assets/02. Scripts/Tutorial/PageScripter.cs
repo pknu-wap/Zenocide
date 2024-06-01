@@ -31,12 +31,15 @@ public class PageScripter : MonoBehaviour
 
     public IEnumerator ShowDialog(Dictionary<string, object> line)
     {
+        // 대화 진행 시작
+        isTyping = true;
+
         currentLine = line;
         string sentence = line["내용"].ToString();
 
         if(sentence == "#")
         {
-            book.FlipPage();
+            yield return StartCoroutine(book.FlipPage());
         }
 
         yield return StartCoroutine(TypeSentence(sentence));
@@ -44,8 +47,6 @@ public class PageScripter : MonoBehaviour
 
     private IEnumerator TypeSentence(string sentence)
     {
-        // 대화 진행 시작
-        isTyping = true;
         // 다음 대화로 넘어가기 전에 기다리는 커서 비활성화
         // waitCursor.SetActive(false);
 
