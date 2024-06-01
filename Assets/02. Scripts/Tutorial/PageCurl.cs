@@ -1,5 +1,4 @@
 using DG.Tweening;
-using System;
 using UnityEngine;
 
 public class PageCurl : MonoBehaviour
@@ -8,33 +7,30 @@ public class PageCurl : MonoBehaviour
     private Transform[] pages;
 
     // 구성 요소 (앞면, 뒷면, 마스크)
+    private Transform[] mask;
     private Transform[] frontPage;
     private Transform[] backPage;
-    private Transform[] mask;
     private Transform[] gradient;
 
     // 넘김 효과가 실행 중인가?
     private bool isCurling = false;
     // 넘길 페이지 번호. 한 장 넘긴 후 증가시켜 다음 장을 넘긴다.
-    [SerializeField] private int pageNumber = 0;
+    private int pageNumber = 0;
 
     // 페이지의 꼭짓점과 책의 꼭짓점
     private Vector2 point;
     private Vector3 corner = new Vector3(300f, -225f, 0f);
 
     // BackPage의 시작 위치
-    private Vector3 firstPosition;
-
-    // gradient의 가로 폭
-    public float gradientWidth = 50;
+    private Vector3 firstBackPagePosition;
 
     public void Awake()
     {
         // 배열 초기화
         pages = new Transform[transform.childCount];
+        mask = new Transform[transform.childCount];
         frontPage = new Transform[transform.childCount];
         backPage = new Transform[transform.childCount];
-        mask = new Transform[transform.childCount];
         gradient = new Transform[transform.childCount];
         
         // 배열에 자식들을 불러온다.
@@ -44,19 +40,16 @@ public class PageCurl : MonoBehaviour
             pages[i] = transform.GetChild((transform.childCount - 1) - i);
 
             // 나머진 pages를 기준으로 불러오니 i가 들어갔다.
-            frontPage[i] = pages[i].GetChild(0).GetChild(0).GetChild(0);
-            backPage[i] = pages[i].GetChild(0).GetChild(0).GetChild(1);
             mask[i] = pages[i].GetChild(0);
-            gradient[i] = pages[i].GetChild(1).GetChild(0);
+            frontPage[i] = mask[i].GetChild(0);
+            backPage[i] = mask[i].GetChild(1);
+            gradient[i] = backPage[i].GetChild(0);
         }
         
         // 코너를 책 위치 기준으로 해야 하니 책 위치를 더해준다.
         corner += transform.position;
         // 시작 위치를 미리 받아둔다.
-        firstPosition = backPage[0].transform.position;
-
-        Debug.Log(corner);
-        Debug.Log(backPage[0].transform.position);
+        firstBackPagePosition = backPage[0].transform.position;
     }
 
     public void LateUpdate()
@@ -86,14 +79,14 @@ public class PageCurl : MonoBehaviour
     private void MoveBackPage(int i)
     {
         // 틀어질 경우를 대비해, 시작 위치로 이동시킨다.
-        backPage[i].transform.position = firstPosition;
+        backPage[i].transform.position = firstBackPagePosition;
 
         // 위치를 포물선으로 이동시킨다. (개선 필요)
         DOTween.Sequence()
-            .Append(backPage[i].transform.DOMoveX(firstPosition.x - 300f, 1f))
-            .Join(backPage[i].transform.DOMoveY(firstPosition.y + 150f, 1f))
-            .Append(backPage[i].transform.DOMoveX(firstPosition.x - 600f, 1f))
-            .Join(backPage[i].transform.DOMoveY(firstPosition.y, 1f)).SetEase(Ease.OutCubic)
+            .Append(backPage[i].transform.DOMoveX(firstBackPagePosition.x - 300f, 1f))
+            .Join(backPage[i].transform.DOMoveY(firstBackPagePosition.y + 150f, 1f))
+            .Append(backPage[i].transform.DOMoveX(firstBackPagePosition.x - 600f, 1f))
+            .Join(backPage[i].transform.DOMoveY(firstBackPagePosition.y, 1f)).SetEase(Ease.OutCubic)
             // 끝나면 Curling 종료, 페이지 번호 증가, 다음 장을 제일 위로 올리기
             .OnComplete(() => { 
                 isCurling = false;
@@ -117,29 +110,30 @@ public class PageCurl : MonoBehaviour
         float theta = Mathf.Atan2(y, x) * Mathf.Rad2Deg;
 
         // BackPage, FrontPage가 Mask에 영향받아 움직이지 않게, 미리 위치를 캐싱해둔다.
-        Vector3 firstFrontPagePosition = frontPage[i].position;
-        Vector3 firstBackPagePosition = backPage[i].position;
+        Vector3 originFrontPagePosition = frontPage[i].position;
+        Vector3 originBackPagePosition = backPage[i].position;
 
-        // Mask의 이동할 거리 계산 및 이동
+        // 오브젝트 이동. 부모 오브젝트부터 자식 오브젝트 순으로 위치를 변경해야 한다.
+        // Mask의 이동할 거리 계산
         float maskX = (Vector2.Distance(point, corner) / 2) / Mathf.Cos(theta * Mathf.Deg2Rad);
+
+        // Mask 이동 및 회전
         mask[i].position = corner - new Vector3(maskX, 0f, 0f);
-        // Mask 회전
         mask[i].rotation = Quaternion.Euler(0f, 0f, -theta);
 
-        // gradient도 함께 이동 및 회전
+        // FrontPage는 위치, 회전 고정
+        frontPage[i].position = originFrontPagePosition;
+        frontPage[i].rotation = Quaternion.Euler(0f, 0f, 0f);
+
+        // BackPage의 회전은 계산한 결과대로 변경, 위치는 원래대로
+        backPage[i].position = originBackPagePosition;
+        backPage[i].rotation = Quaternion.Euler(0f, 0f, -2 * theta);
+
+        // gradient도  Mask와 같게 이동 및 회전
         gradient[i].position = corner - new Vector3(maskX, 0f, 0f);
         gradient[i].rotation = Quaternion.Euler(0f, 0f, -theta);
 
         // 음영을 활성화한다.
         gradient[i].gameObject.SetActive(true);
-
-        // BackPage, FrontPage 위치를 원래대로 바꾼다.
-        backPage[i].position = firstBackPagePosition;
-        // BackPage의 회전은 계산한 결과대로 변경
-        backPage[i].rotation = Quaternion.Euler(0f, 0f, -2 * theta);
-
-        // FrontPage는 위치, 회전 고정
-        frontPage[i].position = firstFrontPagePosition;
-        frontPage[i].rotation = Quaternion.Euler(0f, 0f, 0f);
     }
 }
