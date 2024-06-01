@@ -59,7 +59,7 @@ public class PageCurl : MonoBehaviour
         Debug.Log(backPage[0].transform.position);
     }
 
-    public void Update()
+    public void LateUpdate()
     {
         // Curl 효과가 동작하는 동안
         if (isCurling)
