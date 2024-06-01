@@ -1,4 +1,4 @@
-// ���ö
+// 김민철
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -32,53 +32,64 @@ public class DebuffIconComponent
 
 public class Character : MonoBehaviour
 {
-    [Header("������")]
-    // HP(ü��)
-    [SerializeField] protected int currentHp = 100;
-    [SerializeField] public int maxHp = 100;
+    [Header("데이터")]
+    // HP(체력)
+    protected int currentHp = 100;
+    [SerializeField] protected int maxHp = 100;
 
-    // ����׿�, ���� ����
-    [Header("������Ʈ")]
-    // HP ��
-    [SerializeField] protected Image hpBar;
-    [SerializeField] protected TMP_Text hpText;
-    // ���� ������ ������ ���� ���� -> ������Ʈ Ǯ������ ��ü
-    [SerializeField] protected Transform statusPanel;
-    // �����â
-    [SerializeField] public List<DebuffIconComponent> debuffIcons;
-    [SerializeField] protected TMP_Text[] debuffName;
-    [SerializeField] protected TMP_Text[] debuffDescription;
+    // 디버그용, 추후 삭제
+    [Header("컴포넌트")]
+    // 스프라이트
+    protected Image imageComponent;
+    // HP 바
+    protected Image hpBar;
+    protected TMP_Text hpText;
+    // 버프 아이콘 생성기 구현 예정 -> 오브젝트 풀링으로 대체
+    protected Transform statusPanel;
+    // 디버프창
+    protected List<DebuffIconComponent> debuffIcons;
+    protected TMP_Text[] debuffName;
+    protected TMP_Text[] debuffDescription;
 
-    [Header("�����̻�")]
-    public Transform debuffIconContainer;
-    [SerializeField] public List<BleedEffect> debuffs;
+    [Header("상태이상")]
+    protected Transform debuffIconContainer;
+    protected List<BleedEffect> debuffs;
 
-    [Header("�̺�Ʈ")]
-    [SerializeField] public UnityEvent onTurnStarted;
+    [Header("이벤트")]
+    protected UnityEvent onTurnStarted;
 
     public virtual void Awake()
     {
-        // HP ��
+
+    }
+
+    // 컴포넌트들을 등록한다.
+    protected virtual void EnrollComponents()
+    {
+        // 스프라이트
+        imageComponent = transform.GetChild(0).GetChild(0).GetComponent<Image>();
+
+        // HP 바
         hpBar = transform.GetChild(0).GetChild(1).GetChild(0).GetChild(0).GetComponent<Image>();
         hpText = hpBar.transform.GetChild(0).GetComponent<TMP_Text>();
 
-        // ����� ȿ����(���� ������)�� ��Ƶ� ����Ʈ
+        // 디버프 효과들(내부 데이터)을 담아둘 리스트
         debuffs = new List<BleedEffect>();
         debuffIcons = new List<DebuffIconComponent>();
 
-        // ����� �����ܵ��� �θ� �����̳�
+        // 디버프 아이콘들의 부모 컨테이너
         debuffIconContainer = transform.GetChild(0).GetChild(1).GetChild(1);
-        // debuffIconContainer�� ��� �ڽ� ������Ʈ�� ��Ȱ��ȭ. (�ڽ��� �ڽ��� X)
+        // debuffIconContainer의 모든 자식 오브젝트를 비활성화. (자식의 자식은 X)
         foreach (Transform icon in debuffIconContainer)
         {
-            // debuffIcons�� icon�� �̹���, �ؽ�Ʈ ������Ʈ�� �Ҵ�
+            // debuffIcons에 icon의 이미지, 텍스트 컴포넌트를 할당
             debuffIcons.Add(new DebuffIconComponent(icon.GetComponent<Image>(), icon.GetChild(0).GetComponent<TMP_Text>()));
-            // �׸��� ��Ȱ��ȭ.
+            // 그리고 비활성화.
             icon.gameObject.SetActive(false);
         }
 
-        // ����� ������â�� �ҷ��´�. (����, �ൿ����â ����)
-        statusPanel = transform.GetChild(0).GetChild(2);
+        // 디버프 상세정보창을 불러온다. (더미, 행동정보창 제외)
+        statusPanel = transform.GetChild(1).GetChild(0);
         debuffName = new TMP_Text[statusPanel.childCount - 1];
         debuffDescription = new TMP_Text[statusPanel.childCount - 1];
 
@@ -89,77 +100,78 @@ public class Character : MonoBehaviour
         }
     }
 
-    protected virtual void Start()
+    protected virtual void StartBattle()
     {
         UpdateCurrentHP();
 
-        UpdateAllDebuffIcon();
+        CleanseDebuff();
     }
 
-    // �� ������Ʈ�� hp�� ��ȯ�Ѵ�.
+    // 이 오브젝트의 hp를 반환한다.
     public int GetHP()
     {
         return currentHp;
     }
 
+    // 현재 HP를 갱신한다.
     public void UpdateCurrentHP()
     {
         hpBar.fillAmount = (float)currentHp / maxHp;
         hpText.text = currentHp + "/" + maxHp;
     }
 
-    // �� ������Ʈ�� hp�� ���ҽ�Ų��.
+    // 이 오브젝트의 hp를 감소시킨다.
     public void DecreaseHP(int damage)
     {
-        // hp�� damage��ŭ ���ҽ�Ų��.
+        // hp를 damage만큼 감소시킨다.
         currentHp -= damage;
 
         UpdateCurrentHP();
 
-        // hp�� 0 ���ϰ� �� ���
+        // hp가 0 이하가 될 경우
         if (currentHp <= 0)
         {
-            // ���� �̺�Ʈ ����
+            // 죽음 이벤트 실행
             Die();
         }
     }
 
-    // �� ������Ʈ�� hp�� ���ҽ�Ų��.
+    // 이 오브젝트의 hp를 감소시킨다.
     public void IncreaseHP(int heal)
     {
-        // hp�� damage��ŭ ���ҽ�Ų��.
+        // hp를 damage만큼 감소시킨다.
         currentHp += heal;
 
-        // hp�� �ִ�ġ �̻��� �� ���
+        // hp가 최대치 이상이 될 경우
         if (currentHp > maxHp)
         {
-            // �ִ�ġ�� ���߱�
+            // 최대치로 맞추기
             currentHp = maxHp;
         }
 
-        // UI ����
+        // UI 갱신
         UpdateCurrentHP();
     }
 
     public virtual void Die()
     {
-        // ������ ���õ� ȿ�� ó��
-        // ���� �ִϸ��̼�
+        // 죽음과 관련된 효과 처리
+        // 죽음 애니메이션
     }
 
-    // ���� ȿ���� �� ���� �̺�Ʈ�� ����Ѵ�.
+    // 출혈 효과를 턴 시작 이벤트에 등록한다.
     public void EnrollBleed(BleedEffect bleedEffect)
     {
-        // ���� ����Ʈ�� �߰�
+        // 출혈 리스트에 추가
         debuffs.Add(bleedEffect);
 
-        // ���� ����� UI �߰�
+        // 출혈 디버프 UI 추가
         int i = debuffs.Count - 1;
 
         UpdateDebuffIcon(i);
     }
 
-    // ������� ���� �����Ѵ�.
+    // 디버프를 전부 제거한다.
     public void CleanseDebuff()
     {
         debuffs.Clear();
@@ -170,70 +182,70 @@ public class Character : MonoBehaviour
     public void UpdateDebuffIcon(int index)
     {
         /*
-         * �����ϴ� ���� ����� ������ �����Ǿ� �ִ�. (�װ� �ۿ� �� �׷���...)
+         * 대입하는 값이 현재는 출혈로 고정되어 있다. (그거 밖에 안 그려서...)
          */
-        // i��° �����ܿ� ���ڸ� �����ϰ�
+        // i번째 아이콘와 숫자를 변경하고
         debuffIcons[index].image.sprite = CardInfo.Instance.debuffIcons[0];
         debuffIcons[index].tmp_Text.text = debuffs[index].remainingTurns.ToString();
 
-        // i��° �����â�� ������ �����Ѵ�
+        // i번째 디버프창의 내용을 갱신한다
         debuffName[index].text = DebuffInfo.debuffNameDict[debuffs[index].type];
-        // �̷��� $�� {}�� ���� �������� ���ڿ��� ��� �� �ִ�.
+        // 이렇게 $와 {}를 쓰면 변수명과 문자열을 섞어쓸 수 있다.
         debuffDescription[index].text = $"{debuffs[index].remainingTurns}{DebuffInfo.debuffDescriptionDict[debuffs[index].type]}";
 
-        // ������Ʈ Ȱ��ȭ
-        // �� �������� �����丵�� �ʿ��غ��δ�.
+        // 오브젝트 활성화
+        // 이 구문들은 리팩토링이 필요해보인다.
         debuffIconContainer.GetChild(index).gameObject.SetActive(true);
         debuffName[index].gameObject.transform.parent.gameObject.SetActive(true);
     }
 
     public void UpdateAllDebuffIcon()
     {
-        // ��� ���� ������� ����(i��° ������� ����)
+        // 모든 현재 디버프에 대해(i번째 디버프에 대해)
         int i = 0;
         for (; i < debuffs.Count; ++i)
         {
             UpdateDebuffIcon(i);
         }
 
-        // ������� ���� �����ܵ���
+        // 디버프가 없는 아이콘들은
         for (; i < debuffIconContainer.childCount; ++i)
         {
-            // ��Ȱ��ȭ�Ѵ�.
+            // 비활성화한다.
             debuffIconContainer.GetChild(i).gameObject.SetActive(false);
             debuffName[i].gameObject.transform.parent.gameObject.SetActive(false);
         }
     }
 
-    // ���� ȿ���� �߻���Ų��.
+    // 출혈 효과를 발생시킨다.
     public void GetBleedAll()
     {
-        // �ް� �� ��ü ������
+        // 받게 될 전체 데미지
         int totalDamage = 0;
 
-        // ��� ���� ���� ���� ȿ���� ����
+        // 모든 적용 중인 출혈 효과에 대해
         for(int i = 0; i < debuffs.Count; ++i)
         {
             totalDamage += debuffs[i].damagePerTurn;
 
-            // ���� �� 1 ����
+            // 남은 턴 1 감소
             --debuffs[i].remainingTurns;
-            // ���� ���� 0 ���϶��
+            // 남은 턴이 0 이하라면
             if (debuffs[i].remainingTurns <= 0)
             {
-                // �ش� ���� ȿ���� �����Ѵ�.
+                // 해당 출혈 효과를 삭제한다.
                 debuffs.RemoveAt(i);
-                // ���� ��������� 1ĭ�� ������ ����������, �ε����� 1 ������ ����
+                // 뒤의 디버프들이 1칸씩 앞으로 땡겨졌으니, 인덱스도 1 앞으로 조정
                 --i;
             }
         }
 
-        // ���� ����Ʈ ���
+        // 출혈 이펙트 재생
 
-        // ü���� ���ҽ�Ų��.
+        // 체력을 감소시킨다.
         DecreaseHP(totalDamage);
 
-        // �������� ������Ʈ �Ѵ�.
+        // 아이콘을 업데이트 한다.
         UpdateAllDebuffIcon();
     }
 }
