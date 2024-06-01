@@ -21,8 +21,9 @@ public class Enemy : Character
     protected TMP_Text behaviorDescription;
 
     // 스킬 모션, 이펙트
-    Sequence attackSequence;
+    Sequence skillSequence;
     ParticleSystem healEffect;
+    Image shieldMask;
 
     // 상수
     float fadeDelay = 2f;
@@ -50,6 +51,9 @@ public class Enemy : Character
         // 상제정보창
         behaviorName = statusPanel.GetChild(0).GetChild(0).GetComponent<TMP_Text>();
         behaviorDescription = statusPanel.GetChild(0).GetChild(1).GetComponent<TMP_Text>();
+
+        // 스킬 이펙트, 모션
+        shieldMask = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Image>();
     }
 
     // 전투를 시작할 때 호출한다.
@@ -132,13 +136,15 @@ public class Enemy : Character
         switch (currentSkill.type)
         {
             case (SkillType.Attack):
-                attackSequence = DOTween.Sequence()
-                .Append(imageComponent.transform.DOShakePosition(skillDelay * (2f / 5), 40f))
-                .Join(transform.DOScale(1.5f, skillDelay * (2f / 5)))
-                .Append(transform.DOScale(0.9f, skillDelay * (3f / 5)));    // enemy 원래 스케일이 0.9로 돼있다.
+                skillSequence = DOTween.Sequence()
+                    .Append(imageComponent.transform.DOShakePosition(skillDelay * (2f / 5), 40f))
+                    .Join(transform.DOScale(1.5f, skillDelay * (2f / 5)))
+                    .Append(transform.DOScale(0.9f, skillDelay * (3f / 5)));    // enemy 원래 스케일이 0.9로 돼있다.
                 break;
             case (SkillType.Shield):
-                
+                skillSequence = DOTween.Sequence()
+                    .Append(shieldMask.DOFade(0.7f, skillDelay / 2))
+                    .Append(shieldMask.DOFade(0f, skillDelay / 2));
                 break;
         }
 
@@ -159,7 +165,7 @@ public class Enemy : Character
 
     IEnumerator DieMotionCo()
     {
-        this.imageComponent.DOFade(0f, fadeDelay);
+        imageComponent.DOFade(0f, fadeDelay);
 
         yield return new WaitForSeconds(fadeDelay);
 
