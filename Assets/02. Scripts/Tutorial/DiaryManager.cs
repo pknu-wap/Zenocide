@@ -20,7 +20,7 @@ public class DiaryManager : MonoBehaviour
 
     [Header("현재 다이얼로그 정보")]
     // 현재 출력 중인 텍스트 번호
-    [SerializeField] private int dialogIndex = 0;
+    [SerializeField] public int dialogIndex = 0;
     // 현재 출력 중인 페이지 번호
     private int pageIndex = 0;
     // 선택된 단어
@@ -38,6 +38,7 @@ public class DiaryManager : MonoBehaviour
             Destroy(gameObject);
         }
 
+        // 선택지 오브젝트들을 캐싱해둔다.
         choiceButtons = new TMP_Text[choiceParent.childCount];
         for(int i = 0; i < choiceParent.childCount; ++i)
         {
@@ -45,20 +46,20 @@ public class DiaryManager : MonoBehaviour
         }
         choiceParent.gameObject.SetActive(false);
 
+        // CSV를 읽어온다.
         diaryDialog = CSVReader.Read(diaryCSV);
-
-        Debug.Log(diaryDialog[0]["내용"]);
     }
 
     // 문장을 넘겨준다.
     public void AddDialog()
     {
-        // 출력에 성공한다면
-        if (scripter.ShowDialog(diaryDialog[dialogIndex]) == true)
+        if (scripter.isTyping == true)
         {
-            // 다음 줄로 이동한다.
-            ++dialogIndex;
+            return;
         }
+
+        // 출력이 끝났다면
+        StartCoroutine(scripter.ShowDialog(diaryDialog[dialogIndex]));
     }
 
     public bool isSelected = false;

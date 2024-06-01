@@ -7,10 +7,11 @@ public class PageScripter : MonoBehaviour
 {
     [Header("컴포넌트")]
     public TMP_Text diaryText;
+    public PageCurl book;
 
     [Header("상태 체크")]
     // 현재 타이핑 중인가?
-    private bool isTyping = false;
+    public bool isTyping = false;
     private bool cancelTyping = false;
     // 현재까지 적힌 텍스트
     private string currentDialog = "";
@@ -28,20 +29,17 @@ public class PageScripter : MonoBehaviour
         diaryText = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<TMP_Text>();
     }
 
-    public bool ShowDialog(Dictionary<string, object> line)
+    public IEnumerator ShowDialog(Dictionary<string, object> line)
     {
-        if (isTyping)
-        {
-            // 실패했음을 알린다.
-            return false;
-        }
-
         currentLine = line;
         string sentence = line["내용"].ToString();
 
-        StartCoroutine(TypeSentence(sentence));
-        // 성공했음을 알린다.
-        return true;
+        if(sentence == "#")
+        {
+            book.FlipPage();
+        }
+
+        yield return StartCoroutine(TypeSentence(sentence));
     }
 
     private IEnumerator TypeSentence(string sentence)
@@ -65,7 +63,7 @@ public class PageScripter : MonoBehaviour
                 // 선택지를 띄우고, 응답을 기다린다.
                 yield return StartCoroutine(DiaryManager.Instance.ShowChoiceButton());
 
-                letter = '\0';
+                letter = ' ';
                 diaryText.text += selectedWord;
             }
 
@@ -85,18 +83,22 @@ public class PageScripter : MonoBehaviour
             // 타이핑 효과 취소 시 대화를 한번에 출력
             if (cancelTyping)
             {
-                diaryText.text = currentDialog + sentence + "\n";
+                diaryText.text = currentDialog + sentence;
                 break;
             }
         }
 
-        // 대화 진행 종료
-        isTyping = false;
         // waitCursor.SetActive(true);
         // 현재 텍스트 갱신
-        currentDialog += sentence + "\n";
+        currentDialog = diaryText.text + "\n";
+        // 다음 줄로 이동
+        DiaryManager.Instance.dialogIndex++;
+
+        // 대화 진행 종료
+        isTyping = false;
     }
 
+    // 선택한다.
     public void Select(string word)
     {
         selectedWord = word;
