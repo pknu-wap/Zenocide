@@ -16,8 +16,6 @@ public class PageScripter : MonoBehaviour
     private bool cancelTyping = false;
     // 현재까지 적힌 텍스트
     private string currentDialog = "";
-    // 현재 진행 중인 행
-    private Dictionary<string, object> currentLine;
     // 선택된 단어
     [SerializeField] private string selectedWord;
 
@@ -44,7 +42,6 @@ public class PageScripter : MonoBehaviour
         // 대화 진행 시작
         isTyping = true;
 
-        currentLine = line;
         string sentence = line["내용"].ToString();
 
         // #일 경우 페이지를 넘긴다.

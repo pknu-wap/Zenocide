@@ -1,4 +1,3 @@
-using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -14,6 +13,7 @@ public class DiaryManager : MonoBehaviour
     [SerializeField] private TextAsset diaryCSV;
 
     [Header("컴포넌트")]
+    [SerializeField] private PageCurl book;
     [SerializeField] private Transform bookObject;
     [SerializeField] private PageScripter[] scripter;
     [SerializeField] private Transform choiceParent;
@@ -48,6 +48,8 @@ public class DiaryManager : MonoBehaviour
         {
             scripter[i] = bookObject.GetChild(bookObject.childCount - 1 - i).GetComponent<PageScripter>();
         }
+        // 스크립트도 받아온다.
+        book = bookObject.GetComponent<PageCurl>();
 
         // 선택지 오브젝트들을 캐싱해둔다.
         choiceButtons = new TMP_Text[choiceParent.childCount];
@@ -59,6 +61,17 @@ public class DiaryManager : MonoBehaviour
 
         // CSV를 읽어온다.
         diaryDialog = CSVReader.Read(diaryCSV);
+    }
+
+    private void Start()
+    {
+        StartCoroutine(StartTutorial());
+    }
+
+    private IEnumerator StartTutorial()
+    {
+        yield return StartCoroutine(book.FlipPage());
+        ++pageIndex;
     }
 
     // 문장을 넘겨준다.
