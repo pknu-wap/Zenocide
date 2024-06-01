@@ -27,6 +27,9 @@ public class DiaryManager : MonoBehaviour
     // 선택된 단어
     [SerializeField] private string selectedWord;
 
+    [Header("보급병")]
+    public Supplier supplier;
+
     private void Awake()
     {
         // 싱글톤
@@ -97,6 +100,20 @@ public class DiaryManager : MonoBehaviour
     public void Select(int i)
     {
         selectedWord = diaryDialog[dialogIndex][i.ToString()].ToString();
+
+        // 선택한 직업의 카드를 추가한다.
+        string[] classCards = supplier.classCardDeck[selectedWord];
+        for(int j = 0; j < classCards.Length; ++j)
+        {
+            CardManager.Instance.AddCardToDeck(classCards[j]);
+        }
+
+        // 선택한 직업의 아이템을 추가한다.
+        string[] classItems = supplier.classCardDeck[selectedWord];
+        for (int j = 0; j < classItems.Length; ++j)
+        {
+            Items.instance.AddItem(classItems[j]);
+        }
 
         choiceParent.gameObject.SetActive(false);
         isSelected = true;
