@@ -14,15 +14,16 @@ public class DiaryManager : MonoBehaviour
     [SerializeField] private TextAsset diaryCSV;
 
     [Header("컴포넌트")]
-    [SerializeField] private PageScripter scripter;
+    [SerializeField] private Transform bookObject;
+    [SerializeField] private PageScripter[] scripter;
     [SerializeField] private Transform choiceParent;
     [SerializeField] private TMP_Text[] choiceButtons;
 
     [Header("현재 다이얼로그 정보")]
     // 현재 출력 중인 텍스트 번호
-    [SerializeField] public int dialogIndex = 0;
+    public int dialogIndex = 0;
     // 현재 출력 중인 페이지 번호
-    private int pageIndex = 0;
+    public int pageIndex = 0;
     // 선택된 단어
     [SerializeField] private string selectedWord;
 
@@ -36,6 +37,13 @@ public class DiaryManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+
+        // Scripter 들을 받아온다.
+        scripter = new PageScripter[bookObject.childCount];
+        for (int i = 0; i < bookObject.childCount; ++i)
+        {
+            scripter[i] = bookObject.GetChild(bookObject.childCount - 1 - i).GetComponent<PageScripter>();
         }
 
         // 선택지 오브젝트들을 캐싱해둔다.
@@ -53,12 +61,12 @@ public class DiaryManager : MonoBehaviour
     // 문장을 넘겨준다.
     public void AddDialog()
     {
-        if (scripter.isTyping == true)
+        if (scripter[pageIndex].isTyping == true)
         {
             return;
         }
 
-        StartCoroutine(scripter.ShowDialog(diaryDialog[dialogIndex]));
+        StartCoroutine(scripter[pageIndex].ShowDialog(diaryDialog[dialogIndex]));
     }
 
     public bool isSelected = false;
@@ -79,7 +87,7 @@ public class DiaryManager : MonoBehaviour
         }
 
         // scripter에 전달해준다.
-        scripter.Select(selectedWord);
+        scripter[pageIndex].Select(selectedWord);
 
         // 다시 false로 돌리고 종료
         isSelected = false;

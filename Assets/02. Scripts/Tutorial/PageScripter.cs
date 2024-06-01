@@ -27,6 +27,7 @@ public class PageScripter : MonoBehaviour
     private void Awake()
     {
         diaryText = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<TMP_Text>();
+        book = transform.parent.GetComponent<PageCurl>();
     }
 
     public IEnumerator ShowDialog(Dictionary<string, object> line)
@@ -40,6 +41,7 @@ public class PageScripter : MonoBehaviour
         if(sentence == "#")
         {
             yield return StartCoroutine(book.FlipPage());
+            DiaryManager.Instance.pageIndex++;
         }
 
         yield return StartCoroutine(TypeSentence(sentence));
