@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using TMPro;
 using System;
 using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 public class DialogueManager : MonoBehaviour, IPointerDownHandler
 {
@@ -20,45 +21,49 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
     [Header("선택지 요구 아이템 안내 TMP_Text")]             
     public TMP_Text[] choiceRequireText = new TMP_Text[4];
 
-    [Header("대화창 오브젝트")]      
-    public GameObject dialogueBox;              
+    [Header("대화창 오브젝트")]              
     public GameObject dialoguePanel;
+    public GameObject dialogueBlinder;
 
     [Header("선택지 오브젝트")]            
     public GameObject[] choices = new GameObject[4];
+
+    [Header("선택지 가림막 오브젝트")]
+    public GameObject[] choiceBlinders = new GameObject[4];
+
+    [Header("선택지 관리자")]
+    public SelectManager selectManager;
 
     [Header("대화창 출력 완료 시 대기 표시")]          
     public GameObject waitCursor;
 
     [Header("CSV 데이터")]
-    public List<Dictionary<string, object>> dataCSV;
+    public List<Dictionary<string, object>> dataMainCSV;
+    public List<Dictionary<string, object>> dataSubCSV;
+    public List<Dictionary<string, object>> dataMainRelationCSV;
 
     [Header("이벤트 데이터 폴더 경로")]
     public string mainEventPath          = "Assets/02. Scripts/Story/EventData SO/MainEvent";
-    public string connectedMainEventPath = "Assets/02. Scripts/Story/EventData SO/ConnectedMainEvent";
     public string subEventPath           = "Assets/02. Scripts/Story/EventData SO/SubEvent";
 
     [Header("전체 이벤트 데이터")]
-    public List<EventData> TotalEventList;
+    public List<EventData> TotalEventList = new List<EventData>();
 
     [Header("메인 이벤트 데이터")]
-    public List<EventData> MainSOs;
+    public List<EventData> MainSOs = new List<EventData>();
+
+    [Header("관계 이벤트 데이터")]
+    public List<EventData> RelationSOs = new List<EventData>();
 
     [Header("서브 이벤트 데이터")]
-    public List<EventData> SubSOs;
+    public List<EventData> SubSOs = new List<EventData>();
 
     [Header("서브 이벤트 개수 변수")]
     int subEventCount = 7;
 
     [Header("캐릭터 이미지 데이터")]               
     public Image[] IllustsObjects;                 
-    public Sprite[] illustImages;             
-
-    [Header("Text 데이터")]
-    public string[] storyText;                  
-    public string[] storyName;                  
-    public string[] choiceUpContent;            
-    public string[] choiceDownContent;          
+    public Sprite[] illustImages;                 
 
     [Header("대화 텍스트 출력 진행 확인 변수")]            
     private bool isTyping = false;
@@ -77,63 +82,24 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         {"주인공",2}
     };
 
-    // 카드 추가 함수 AddCardtoDeck  
-    // 전투 시작 시 MergeDumpToDeck, SetUpDeck 선호출
-    // BattleInfo.Instance.StartBattle(string[] str) <= 전투 시작 
     void Start()
     {
         // CSV 파일 읽기
-        dataCSV = CSVReader.Read("DialogueScript");        
+        dataMainCSV         = CSVReader.Read("MainScript");
+        dataSubCSV          = CSVReader.Read("SubScript");
+        dataMainRelationCSV = CSVReader.Read("RelationScript");    
+        // 대화창 가림막 비활성화
+        dialogueBlinder.SetActive(false);    
         // 선택지 비활성화
-        foreach(GameObject choice in choices)
+        for(int i=0; i<choices.Length; i++)
         {
-            choice.SetActive(false);
+            choices[i].SetActive(false);
+            choiceBlinders[i].SetActive(false);
         }                            
         // 이벤트 데이터 로드
-        LoadSOFromAsset();
-
+        LoadSOs();
+        // 대화 이벤트 시작
         StartCoroutine(EventProcess());                        
-    }
-
-    public void ShowIllust(List<string> names)
-    {
-
-        List<string> Names = new List<string>();
-
-        foreach (string name in names)
-        {
-            if(name != ""){
-                Names.Add(name);
-            }
-        }
-
-        IllustsObjects[0].enabled = true;
-        IllustsObjects[1].enabled = true;
-        IllustsObjects[2].enabled = true;
-        Debug.Log(Names.Count);
-        switch(Names.Count)
-        {
-            case 1:
-                IllustsObjects[0].sprite = illustImages[illustTable[Names[0]]];
-                IllustsObjects[1].enabled = false;
-                IllustsObjects[2].enabled = false;
-                break;
-            case 2:
-                IllustsObjects[1].sprite = illustImages[illustTable[Names[0]]];
-                IllustsObjects[2].sprite = illustImages[illustTable[Names[1]]];
-                IllustsObjects[0].enabled = false;
-                break;
-            case 3:
-                IllustsObjects[0].sprite = illustImages[illustTable[Names[0]]];
-                IllustsObjects[1].sprite = illustImages[illustTable[Names[1]]];
-                IllustsObjects[2].sprite = illustImages[illustTable[Names[2]]];
-                break;
-        }
-    }
-
-     public void OnPointerDown(PointerEventData eventData)
-    {
-        isClicked = true;
     }
 
     // 이벤트 처리 함수
@@ -144,50 +110,94 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
             EventData loadedEvent = TotalEventList[i];
             for(int j = loadedEvent.startIndex; j < loadedEvent.endIndex + 1; j++)
             {
-                List<string> illustNames = new List<string>(){dataCSV[j]["Name1"].ToString(),
-                                                              dataCSV[j]["Name2"].ToString(), 
-                                                              dataCSV[j]["Name3"].ToString()};
-                dialogueName.text = dataCSV[j]["Name1"].ToString();
-                dialogueText.text = dataCSV[j]["Text1"].ToString();
-                // 일러스트 표시 함수
-                ShowIllust(illustNames);
+                Dictionary<string, object> MainData = dataMainCSV[j]; 
                 // 대화 출력 함수
-                DisplayDialogue(j);
+                DisplayDialogue(MainData);
 
                 // 마우스 입력 대기
                 yield return new WaitUntil(() => isClicked);
                 isClicked = false;
+            }
+
+            // 이벤트의 모든 요소 종료 이후 관련된 다음 이벤트가 존재 시 추가적으로 실행
+            if(loadedEvent.nextEvent != null)
+            {
+                Debug.Log(selectManager.result + "" + loadedEvent.nextEvent);
+                EventData relationEvent = loadedEvent.nextEvent[selectManager.result];
+                for(int k = relationEvent.startIndex; k < relationEvent.endIndex + 1; k++)
+                {
+                Dictionary<string, object> relationCSVData = dataMainRelationCSV[k];
+                DisplayDialogue(relationCSVData);
+                yield return new WaitUntil(() => isClicked);
+                isClicked = false;
+                }
             }
         }
             
     }
 
     // 대화 출력 함수
-    private void DisplayDialogue(int index)
+    private void DisplayDialogue(Dictionary<string, object> csvData)
     {
+        List<string> illustNames = new List<string>(){csvData["Name1"].ToString(),
+                                                      csvData["Name2"].ToString(), 
+                                                      csvData["Name3"].ToString()};
+        
+        dialogueName.text = csvData["Name1"].ToString();
+        string text = csvData["Text1"].ToString();
+        // 일러스트 표시 함수
+        ShowIllust(illustNames);
+
         if (isTyping && !cancelTyping)
         {
             cancelTyping = true;
             return;
         }
-
-        if (dataCSV[index]["ChoiceCount"].ToString() != "")
+        
+        // 획득 아이템이 존재 한다면 아이템 지급
+        if(csvData["EquipItem"].ToString() != "")
         {
-            DisplayChoices(index);
-            return;
+            string equipItem = csvData["EquipItem"].ToString();
+            Items.Instance.AddItem(equipItem);
+            text = csvData["EquipItem"].ToString() + " " + text;
         }
+
+        // 획득 카드가 존재 한다면 카드 지급
+        if(csvData["EquipCard"].ToString() != "")
+        {
+            string equipCard = csvData["EquipCard"].ToString();
+            Debug.Log(equipCard);
+            CardManager.Instance.AddCardToDeck(equipCard);
+            text = csvData["EquipCard"].ToString() + " " + text;
+        }
+        
         // 대화 출력
+        dialogueText.text = text;   
         StartCoroutine(TypeSentence(dialogueText.text));
 
-        // 획득 아이템이 존재 한다면 아이템 지급
-        if(dataCSV[index]["EquipItem"].ToString() != "")
+        // 전투 시작
+        if(csvData["Enemy1"].ToString() != "")
         {
-            string equipItem = dataCSV[index]["EquipItem"].ToString();
-            Items.instance.AddItem(equipItem);
-            dialogueText.text = equipItem + " 을(를) 획득했습니다.";
-            StartCoroutine(TypeSentence(dialogueText.text));
+            List<string> Enemys = new List<string>();
+            for(int i = 1; i < 4; i++)
+            {
+                if(csvData["Enemy" + i].ToString() != "")
+                {
+                   Enemys.Add(csvData["Enemy" + i].ToString());
+                }
+            }
+            CardManager.Instance.MergeDumpToDeck();
+            CardManager.Instance.SetUpDeck();
+            GameManager.Instance.StartBattle(Enemys.ToArray());   
         }
+
+        if (csvData["ChoiceCount"].ToString() != "")
+        {
+            StartCoroutine(DisplayChoices(csvData));
+        }
+        
     }
+
 
     // 텍스트 출력 효과 함수
     private IEnumerator TypeSentence(string sentence)
@@ -216,39 +226,43 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         waitCursor.SetActive(true);
     }
 
-    private void DisplayChoices(int index)
+    private IEnumerator DisplayChoices(Dictionary<string, object> csvData)
     {
-        dialoguePanel.SetActive(false);
-        for(int i = 0; i < (int)dataCSV[index]["ChoiceCount"]; i++)
+        // 선택지 초기화
+        selectManager.ResetChoice();
+        // 선택지가 마우스 입력을 감지하기 위해서 대화창 가림막 활성화
+        dialogueBlinder.SetActive(true);
+        for(int i = 0; i < (int)csvData["ChoiceCount"]; i++)
         {
-            Debug.Log("Choice" + (i + 1));
             choices[i].SetActive(true);
-            choiceText[i].text = dataCSV[index]["Choice" + (i + 1)].ToString();
+            choiceText[i].text = csvData["Choice" + (i + 1)].ToString();
 
-            string requireItem = dataCSV[index]["RequireItem" + (i + 1)].ToString();
+            string requireItem = csvData["RequireItem" + (i + 1)].ToString();
             if (requireItem != "")
             {
-                if(Items.items.Contains(requireItem))
+                if(SearchItem(requireItem))
                 {
                     choiceRequireText[i].text = "필요한 아이템: <color=green>" + requireItem + "</color>";
                 }
                 else
                 {
                     choiceRequireText[i].text = "필요한 아이템: <color=red>" + requireItem + "</color>";
+                    choiceBlinders[i].SetActive(true);
                 }
             }
-            choiceRequireText[i].text = "";
         }
-
+        yield return new WaitUntil(() => selectManager.result != -1);
+        // 선택지 선택 완료 후 마우스 입력 스킵
+        isClicked = true;
     }
 
-     private void LoadSOFromAsset()
+     private void LoadSOs()
     {
         string[] mainEventNames = AssetDatabase.FindAssets("t:EventData", new[] { mainEventPath });
         int mainEventCount = mainEventNames.Length;
         Array.Sort(mainEventNames);
         Array.Reverse(mainEventNames);
-        
+
         string[] subEventNames  = AssetDatabase.FindAssets("t:EventData", new[] { subEventPath });
         Array.Sort(subEventNames);
         Array.Reverse(subEventNames);
@@ -259,7 +273,7 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
             EventData so = AssetDatabase.LoadAssetAtPath<EventData>(assetPath);
             if (so != null)
             {
-                MainSOs[i] = so;
+                MainSOs.Add(so);
             }
         }
 
@@ -269,7 +283,7 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
             EventData so = AssetDatabase.LoadAssetAtPath<EventData>(assetPath);
             if (so != null)
             {
-               SubSOs[i] = so;
+               SubSOs.Add(so);
             }
         }
   
@@ -278,11 +292,6 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
             // 메인 이벤트 리스트에서 데이터 추출
             EventData presentEvent = MainSOs[i];
             TotalEventList.Add(presentEvent);
-            // 로드된 메인 이벤트에 다음 이벤트가 있다면 추가 로드
-            if(presentEvent.nextEvent != null)
-            {
-                TotalEventList.Add(presentEvent.nextEvent);
-            }
 
             //서브 이벤트 랜덤 로드
             for(int j = 0; j < subEventCount; j++)
@@ -301,5 +310,56 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         System.Random random = new System.Random();
         int randomIndex = random.Next(array.Count);
         return array[randomIndex];
+    }
+
+     public bool SearchItem(string itemName)
+    {
+        bool result = false;
+        foreach(TMP_Text item in Items.Instance.slots)
+        {
+            result = item.text == itemName ? true : false;
+        }
+        return result;
+    }
+
+    public void ShowIllust(List<string> names)
+    {
+
+        List<string> Names = new List<string>();
+
+        foreach (string name in names)
+        {
+            if(name != ""){
+                Names.Add(name);
+            }
+        }
+        // 일러스트 비활성화
+        IllustsObjects[0].enabled = true;
+        IllustsObjects[1].enabled = true;
+        IllustsObjects[2].enabled = true;
+        switch(Names.Count)
+        {
+            case 1:
+                IllustsObjects[0].sprite = illustImages[illustTable[Names[0]]];
+                IllustsObjects[1].enabled = false;
+                IllustsObjects[2].enabled = false;
+                break;
+            case 2:
+                IllustsObjects[1].sprite = illustImages[illustTable[Names[0]]];
+                IllustsObjects[2].sprite = illustImages[illustTable[Names[1]]];
+                IllustsObjects[0].enabled = false;
+                break;
+            case 3:
+                IllustsObjects[0].sprite = illustImages[illustTable[Names[0]]];
+                IllustsObjects[1].sprite = illustImages[illustTable[Names[1]]];
+                IllustsObjects[2].sprite = illustImages[illustTable[Names[2]]];
+                break;
+        }
+    }
+
+    // 마우스 좌클릭 감지 함수
+     public void OnPointerDown(PointerEventData eventData)
+    {
+        isClicked = true;
     }
 }

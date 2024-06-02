@@ -1,4 +1,4 @@
-using UnityEngine;
+/*using UnityEngine;
 using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "IllustData", menuName = "Scriptable Objects/IllustData", order = 1)]
@@ -11,4 +11,4 @@ public class IllustData: ScriptableObject
         {"좀비", 1},
         {"선택지",2}
     };
-}
+}*/

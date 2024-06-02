@@ -1,24 +1,36 @@
 using UnityEngine.EventSystems;
 using UnityEngine;
+using System;
 
-public class Choice : MonoBehaviour, IPointerDownHandler
+public class Choice : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
-    public Choice choice;
-    // 선택지가 선택되었는지 여부 저장 변수
-    public static int Selected = -1;
+    public bool marked = false;
+    public bool selected = false;
+    [Header("선택 표시 오브젝트")]
+    public GameObject[] Sign = new GameObject[2];
 
-
-    public void OnPointerDown(PointerEventData eventData)
+    void Start()
     {
-        Selected = -1;
-        // 동일한 선택지를 한번 더 선택 시
-        if(SelectManager.instance.currentChoice == choice){
-            if(choice.name == "ChoiceBoxUp")
-                Selected = 1;
-            else
-                Selected = 2;
-        }
-        // 플레이어가 고른 선택지 저장
-        SelectManager.instance.currentChoice = choice;
+        Sign[0].SetActive(false);
+        Sign[1].SetActive(false);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        selected = marked ? true : false;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        marked = true;       
+        Sign[0].SetActive(true);
+        Sign[1].SetActive(true);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        marked = false;
+        Sign[0].SetActive(false);
+        Sign[1].SetActive(false);
     }
 }

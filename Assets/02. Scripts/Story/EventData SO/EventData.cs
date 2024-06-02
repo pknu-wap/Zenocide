@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "EventData", menuName = "Scriptable Objects/EventData", order = 1)]
+[CreateAssetMenu(fileName = "EventData", menuName = "Scriptable Object/EventData", order = 1)]
 public class EventData: ScriptableObject
 {
     [Header("Event Index")]
@@ -11,5 +11,5 @@ public class EventData: ScriptableObject
     public int endIndex;
 
     [Header("후속 이벤트")]
-    public EventData nextEvent;
+    public EventData[] nextEvent;
 }

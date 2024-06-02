@@ -7,12 +7,12 @@ using UnityEngine.UI;
 
 public class Items : MonoBehaviour
 {
-    public static Items instance { get; private set; }
+    public static Items Instance { get; private set; }
     public Transform slotsParent;
     public List<TMP_Text> slots = new List<TMP_Text>();
     public static List<string> items = new List<string>();
 
-    private void Awake() => instance = this;
+    private void Awake() => Instance = this;
     private void Start()
     {
         foreach (TMP_Text slot in slotsParent.GetComponentsInChildren<TMP_Text>())
