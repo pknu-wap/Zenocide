@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: SubEventA1
   m_EditorClassIdentifier: 
   eventID: 1
-  startIndex: 11
-  endIndex: 22
-  nextEvent: {fileID: 0}
+  startIndex: 0
+  endIndex: 3
+  nextEvent:
+  - {fileID: 0}

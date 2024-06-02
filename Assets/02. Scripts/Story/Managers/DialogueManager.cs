@@ -8,6 +8,7 @@ using TMPro;
 using System;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Unity.VisualScripting;
 
 public class DialogueManager : MonoBehaviour, IPointerDownHandler
 {
@@ -38,6 +39,7 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
     public GameObject waitCursor;
 
     [Header("CSV 데이터")]
+    public List<Dictionary<string, object>> dataCSV;
     public List<Dictionary<string, object>> dataMainCSV;
     public List<Dictionary<string, object>> dataSubCSV;
     public List<Dictionary<string, object>> dataMainRelationCSV;
@@ -60,6 +62,11 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
 
     [Header("서브 이벤트 개수 변수")]
     int subEventCount = 7;
+
+    [Header("이벤트별 ID 저장 변수")]
+    public const int MainEventID = 0;
+    public const int SubEventID = 1;
+    public const int RelationEventID = 2;
 
     [Header("캐릭터 이미지 데이터")]               
     public Image[] IllustsObjects;                 
@@ -108,11 +115,25 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         for(int i = 0; i < TotalEventList.Count; i++)
         {
             EventData loadedEvent = TotalEventList[i];
+            // 이벤트 종류에 따라 불러오는 CSV 데이터 변경
+            switch(loadedEvent.eventID)
+            {
+                case MainEventID:
+                    dataCSV = dataMainCSV;
+                    break;
+                case SubEventID:
+                    dataCSV = dataSubCSV;
+                    break;
+                case RelationEventID:
+                    dataCSV = dataMainRelationCSV;
+                    break;
+            }
+            Debug.Log(loadedEvent.name + " 이벤트 발생");
             for(int j = loadedEvent.startIndex; j < loadedEvent.endIndex + 1; j++)
             {
-                Dictionary<string, object> MainData = dataMainCSV[j]; 
+                Dictionary<string, object> presentData = dataCSV[j]; 
                 // 대화 출력 함수
-                DisplayDialogue(MainData);
+                DisplayDialogue(presentData);
 
                 // 마우스 입력 대기
                 yield return new WaitUntil(() => isClicked);
@@ -122,7 +143,7 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
             // 이벤트의 모든 요소 종료 이후 관련된 다음 이벤트가 존재 시 추가적으로 실행
             if(loadedEvent.nextEvent != null)
             {
-                Debug.Log(selectManager.result + "" + loadedEvent.nextEvent);
+                Debug.Log("관련 이벤트 발생");
                 EventData relationEvent = loadedEvent.nextEvent[selectManager.result];
                 for(int k = relationEvent.startIndex; k < relationEvent.endIndex + 1; k++)
                 {

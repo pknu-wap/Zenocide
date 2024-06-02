@@ -15,4 +15,5 @@ MonoBehaviour:
   eventID: 2
   startIndex: 5
   endIndex: 7
-  nextEvent: {fileID: 0}
+  nextEvent:
+  - {fileID: 0}

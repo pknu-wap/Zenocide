@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41e3f233dbcc0434fbc8a44a7763d9bd, type: 3}
   m_Name: SubEventB1
   m_EditorClassIdentifier: 
-  eventID: 3
-  startIndex: 55
-  endIndex: 66
-  nextEvent: {fileID: 0}
+  eventID: 1
+  startIndex: 16
+  endIndex: 16
+  nextEvent:
+  - {fileID: 0}
