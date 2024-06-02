@@ -1,4 +1,6 @@
 // 김민철
+using DG.Tweening;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +19,15 @@ public class Enemy : Character
     // 상제정보창
     protected TMP_Text behaviorName;
     protected TMP_Text behaviorDescription;
+
+    // 스킬 모션, 이펙트
+    Sequence skillSequence;
+    ParticleSystem healEffect;
+    Image shieldMask;
+
+    // 상수
+    float fadeDelay = 2f;
+    float skillDelay = 0.5f;   // 0.5의 배수로 해줘야 함
 
     public override void Awake()
     {
@@ -40,6 +51,9 @@ public class Enemy : Character
         // 상제정보창
         behaviorName = statusPanel.GetChild(0).GetChild(0).GetComponent<TMP_Text>();
         behaviorDescription = statusPanel.GetChild(0).GetChild(1).GetComponent<TMP_Text>();
+
+        // 스킬 이펙트, 모션
+        shieldMask = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Image>();
     }
 
     // 전투를 시작할 때 호출한다.
@@ -57,17 +71,22 @@ public class Enemy : Character
         BattleInfo.Instance.EnrollEnemy(this);
 
         // BattleManager에 이벤트 등록
-        TurnManager.Instance.onEndEnemyTurn.AddListener(EndEnemyTurn);
         TurnManager.Instance.onStartPlayerTurn.AddListener(ReadySkill);
     }
 
     public void EndEnemyTurn()
     {
-        // 플레이어에게 스킬을 사용한다. 이때, 애니메이션이 모두 끝나야 이후 명령들을 시작한다.
-        CastSkill();
-
         // 디버프(출혈 등)가 전부 적용된다.
         GetBleedAll();
+
+        // 죽고 나서 스킬 사용하는 걸 방지
+        if(currentHp <= 0)
+        {
+            return;
+        }
+
+        // 스킬을 사용한다. 이때, 애니메이션이 모두 끝나야 이후 명령들을 시작한다.
+        CastSkill();
     }
 
     // 적 정보를 갱신한다.
@@ -117,15 +136,50 @@ public class Enemy : Character
         CardInfo.Instance.ActivateSkill(currentSkill, target);
     }
 
+    // SkillType 별 모션 출력
+    public IEnumerator SkillMotion()
+    {
+        // 죽고 나서 스킬 사용 방지
+        if (currentHp <= 0)
+        {
+            yield break;
+        }
+
+        switch (currentSkill.type)
+        {
+            case (SkillType.Attack):
+                skillSequence = DOTween.Sequence()
+                    .Append(transform.DOScale(1.5f, skillDelay * 2 / 5))
+                    .Append(imageComponent.transform.DOShakePosition(skillDelay * 1 / 5, 100f))
+                    .Append(transform.DOScale(0.9f, skillDelay * 2 / 5));    // enemy 원래 스케일이 0.9로 돼있다.
+                break;
+            case (SkillType.Shield):
+                skillSequence = DOTween.Sequence()
+                    .Append(shieldMask.DOFade(0.7f, skillDelay / 2))
+                    .Append(shieldMask.DOFade(0f, skillDelay / 2));
+                break;
+        }
+
+        yield return new WaitForSeconds(skillDelay);
+    }
+
     // 죽는다.
     public override void Die()
     {
         // TurnManager에서 자기 자신의 이벤트를 제거
-        TurnManager.Instance.onEndEnemyTurn.RemoveListener(EndEnemyTurn);
         TurnManager.Instance.onStartPlayerTurn.RemoveListener(ReadySkill);
 
         // BattleInfo에서 자기 자신을 제거한다.
         BattleInfo.Instance.DisenrollEnemy(this);
+
+        StartCoroutine(DieMotionCo());
+    }
+
+    IEnumerator DieMotionCo()
+    {
+        imageComponent.DOFade(0f, fadeDelay);
+
+        yield return new WaitForSeconds(fadeDelay);
 
         // 오브젝트 비활성화
         gameObject.SetActive(false);
