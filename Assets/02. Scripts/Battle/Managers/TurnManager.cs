@@ -20,9 +20,8 @@ public class TurnManager : MonoBehaviour
     public bool myTurn;
 
     enum ETurnMode { Random, My, Other }
-    WaitForSeconds delay03 = new WaitForSeconds(0.3f);
     WaitForSeconds delay05 = new WaitForSeconds(0.5f);
-    WaitForSeconds delay07 = new WaitForSeconds(0.7f);
+    WaitForSeconds delay10 = new WaitForSeconds(1f);
 
     public static Action<bool> OnAddCard;
 
@@ -96,7 +95,7 @@ public class TurnManager : MonoBehaviour
         // 드로우 카드 수만큼 드로우
         for (int i = 0; i < count; i++)
         {
-            yield return delay03;
+            yield return delay10;   // 포커싱 + 얼라인 시간 기다리기
             OnAddCard?.Invoke(true);
         }
     }

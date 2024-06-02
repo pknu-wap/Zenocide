@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: "\uAE00\uB7EC\uD2B8\uB2C8"
   description: "\uCE74\uB4DC\uB97C 3\uC7A5 \uB4DC\uB85C\uC6B0\uD569\uB2C8\uB2E4."
-  sprite: {fileID: 21300000, guid: ffb746d25b7ee9641874cffae4fb5f18, type: 3}
+  sprite: {fileID: 21300000, guid: a2d3ba7c1570d5042864dac969759f2e, type: 3}
   skills:
   - type: 5
     target: 0
     amount: 3
     turnCount: 0
-    effectPrefeb: {fileID: 3675006101537835259, guid: 075bd88e74682664792ed12c07fc48c9, type: 3}
+    effectPrefeb: {fileID: 2022655609410639260, guid: 8a09b4c6c9103f643a097dc4bb7971b5, type: 3}
   cost: 2
