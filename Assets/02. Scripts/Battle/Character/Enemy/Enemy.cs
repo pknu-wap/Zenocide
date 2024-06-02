@@ -100,7 +100,7 @@ public class Enemy : Character
         // 최대 HP 변경 및 현재 체력을 maxHp와 같게 변경
         maxHp = enemyData.maxHp;
         currentHp = maxHp;
-        UpdateCurrentHP();
+        UpdateHPUI();
     }
 
     [Header("런타임 변수")]
