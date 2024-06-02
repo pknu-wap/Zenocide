@@ -16,10 +16,10 @@ MonoBehaviour:
   description: "\uD50C\uB808\uC774\uC5B4 \uCCB4\uB825\uC774 6\uD134 \uAC04 2\uC529
     \uAC10\uC18C\uD569\uB2C8\uB2E4."
   sprite: {fileID: 21300000, guid: 6f3435f12967b544e9abeccac0a085a3, type: 3}
-  effectPrefeb: {fileID: 0}
   skills:
   - type: 6
     target: 0
     amount: 2
     turnCount: 6
+    effectPrefeb: {fileID: 2791311640683196035, guid: c1b65553f8809c54f881fa3efa0769e4, type: 3}
   cost: 5

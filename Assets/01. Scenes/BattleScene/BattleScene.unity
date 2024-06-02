@@ -6941,7 +6941,7 @@ MonoBehaviour:
   cardBackPrefab: {fileID: 227734258949264060, guid: 6024536deded88249a005d18d341dcb1, type: 3}
   hand: []
   maxHand: 10
-  cardObjcetParent: {fileID: 619371413}
+  handGroup: {fileID: 0}
   handLeft: {fileID: 195200250}
   handRight: {fileID: 311357463}
   cardSpawnPoint: {fileID: 1760439166}
@@ -6952,7 +6952,7 @@ MonoBehaviour:
   dump: []
   deckCountTMP: {fileID: 3213336}
   dumpCountTMP: {fileID: 2037706006}
-  cardBackObjectParent: {fileID: 812522535}
+  cardBackGroup: {fileID: 0}
   effectGroup: {fileID: 0}
   focusPos: {x: 0, y: 0, z: 0}
 --- !u!1001 &721954020
