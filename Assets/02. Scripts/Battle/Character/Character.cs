@@ -37,6 +37,7 @@ public class Character : MonoBehaviour
     // HP(체력)
     protected int currentHp = 100;
     [SerializeField] protected int maxHp = 100;
+    [SerializeField] protected int shield = 0;
 
     // 디버그용, 추후 삭제
     [Header("컴포넌트")]
@@ -108,6 +109,7 @@ public class Character : MonoBehaviour
         CleanseDebuff();
     }
 
+    #region HP
     // 이 오브젝트의 hp를 반환한다.
     public int GetHP()
     {
@@ -124,13 +126,41 @@ public class Character : MonoBehaviour
     // 이 오브젝트의 hp를 감소시킨다.
     public void DecreaseHP(int damage)
     {
-        // hp를 damage만큼 감소시킨다.
-        currentHp -= damage;
-        
+        // 현재 데미지
+        int currentDamage = damage;
+        Debug.Log("시작 데미지: " + currentDamage);
+
+        // 실드가 있다면 데미지 재계산
+        if (shield > 0)
+        {
+            // currentDamage를 감소시키고
+            currentDamage -= shield;
+            if (currentDamage < 0)
+            {
+                // 잔여 데미지가 음수면 0으로 적용한다.
+                currentDamage = 0;
+            }
+
+            // 실드에선 기존 데미지를 뺀다.
+            shield -= damage;
+            if (shield < 0)
+            {
+                // 잔여 방어막이 음수면 0으로 적용한다.
+                shield = 0;
+            }
+        }
+
+        // hp를 잔여 데미지 만큼 감소시킨다.
+        currentHp -= currentDamage;
+        Debug.Log("최종 데미지: " + currentDamage);
+        Debug.Log("최종 체력: " + currentHp);
+
+        // UI를 갱신한다.
+        UpdateShieldUI();
         UpdateCurrentHP();
 
         // 적이 피격될 때 모션 출력
-        if(this != Player.Instance && damage > 0)
+        if(this != Player.Instance && currentDamage > 0)
         {
             imageComponent.transform.DOShakePosition(0.5f, 10f);
         }
@@ -157,8 +187,28 @@ public class Character : MonoBehaviour
         }
 
         // UI 갱신
+        UpdateShieldUI();
         UpdateCurrentHP();
     }
+    #endregion HP
+
+    #region 실드
+    // 방어막을 얻는다.
+    public void GetShield(int amount)
+    {
+        // 방어막을 추가하고
+        shield += amount;
+
+        // UI 변경
+        UpdateShieldUI();
+        UpdateCurrentHP();
+    }
+
+    private void UpdateShieldUI()
+    {
+
+    }
+    #endregion 실드
 
     public virtual void Die()
     {

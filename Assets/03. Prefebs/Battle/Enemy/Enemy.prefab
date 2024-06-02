@@ -1116,6 +1116,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHp: 100
+  shield: 0
   enemyData: {fileID: 0}
   currentSkill:
     type: 0

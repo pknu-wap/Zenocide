@@ -192,7 +192,8 @@ public class CardInfo : MonoBehaviour
 
     public void Shield(int amount, int turnCount, Character target)
     {
-        Debug.Log("Shield");
+        // 타겟이 방어막을 얻는다. (턴 미구현)
+        target.GetShield(amount);
     }
 
     public void Heal(int amount, int turnCount, Character target)
