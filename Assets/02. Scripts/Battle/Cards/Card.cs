@@ -25,6 +25,7 @@ public class Card : MonoBehaviour
     public PRS originPRS;
 
     [Header("런타임 변수")]
+    GameObject selectedObject;
     // 카드 발동 후 선택된 오브젝트
     public Character[] selectedCharacter;
 
@@ -39,6 +40,12 @@ public class Card : MonoBehaviour
     [SerializeField] float dotweenTime = 0.4f;
     [SerializeField] float focusTime = 0.4f;
     #endregion 변수
+
+    private void Update()
+    {
+        // layer가 일치하는, 선택된 오브젝트를 가져온다.
+        selectedObject = GetClickedObject(LayerMask.GetMask("Enemy"));
+    }
 
     public void Setup(CardData item)
     {
@@ -168,8 +175,16 @@ public class Card : MonoBehaviour
         if (isTargetingCard)
         {
             CardArrow.Instance.MoveStartPosition(transform.position + arrowOffset);
-            // 타겟팅 카드일 경우, 화살표의 끝이 마우스를 향한다.
-            CardArrow.Instance.MoveArrow(worldPosition);
+            if(selectedObject != null)
+            {
+                Vector3 enemyPosition = selectedObject.GetComponent<Enemy>().transform.position;
+                CardArrow.Instance.MoveArrow(enemyPosition);
+            }
+            else
+            {
+                // 타겟팅 카드일 경우, 화살표의 끝이 마우스를 향한다.
+                CardArrow.Instance.MoveArrow(worldPosition);
+            }
         }
         else
         {
@@ -220,29 +235,23 @@ public class Card : MonoBehaviour
         // 애니메이션이 끝났는지 검사하는 변수
         bool isAnimationDone = false;
 
+        // 오브젝트가 선택되지 않았다면
+        if (selectedObject == null)
+        {
+            // 카드 발동을 취소한다.
+            CancelUsingCard();
+            yield break;
+        }
+
+        // 코스트를 감소시킨다.
+        BattleInfo.Instance.UseCost(cardData.cost);
+
+        // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
+        cardCollider.enabled = false;
+
         // 타겟팅 스킬일 때
         if (isTargetingCard)
         {
-            LayerMask layer = LayerMask.GetMask("Enemy");
-
-            // layer가 일치하는, 선택된 오브젝트를 가져온다.
-            GameObject selectedObject = GetClickedObject(layer);
-
-            // 오브젝트가 선택되지 않았다면
-            if (selectedObject == null)
-            {
-                // 카드 발동을 취소한다.
-                CancelUsingCard();
-
-                yield break;
-            }
-
-            // 코스트를 감소시킨다.
-            BattleInfo.Instance.UseCost(cardData.cost);
-
-            // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
-            cardCollider.enabled = false;
-
             // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
             moveSequence = DOTween.Sequence()
                 .Append(transform.DOMove(CardManager.Instance.cardDumpPoint.position, dotweenTime))
@@ -282,27 +291,6 @@ public class Card : MonoBehaviour
         // 논타겟 스킬일 때
         else
         {
-            // Field 레이어를 선택한다.
-            LayerMask layer = LayerMask.GetMask("Field");
-
-            // layer가 일치하는, 선택된 오브젝트를 가져온다.
-            GameObject selectedObject = GetClickedObject(layer);
-
-            // 오브젝트가 선택되지 않았다면
-            if (selectedObject == null)
-            {
-                // 카드 발동을 취소한다.
-                CancelUsingCard();
-
-                yield break;
-            }
-
-            // 코스트를 감소시킨다.
-            BattleInfo.Instance.UseCost(cardData.cost);
-
-            // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
-            cardCollider.enabled = false;
-
             // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
             moveSequence = DOTween.Sequence()
                 // 중앙으로 이동하고
@@ -356,6 +344,7 @@ public class Card : MonoBehaviour
         MoveTransform(originPRS, true, 0.5f);
         cardOrder.SetMostFrontOrder(false);
     }
+
     // 클릭된(드래그 후 마우스를 뗀 순간) 오브젝트를 가져온다.
     GameObject GetClickedObject(LayerMask layer)
     {
