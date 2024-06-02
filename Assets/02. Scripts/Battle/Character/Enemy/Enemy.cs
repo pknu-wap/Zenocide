@@ -133,7 +133,7 @@ public class Enemy : Character
         Character[] target = CardInfo.Instance.GetTarget(currentSkill.target, this);
 
         // 준비한 스킬을 사용한다.
-        CardInfo.Instance.ActivateSkill(currentSkill, target);
+        CardInfo.Instance.ActivateSkill(currentSkill, target, this);
     }
 
     // SkillType 별 모션 출력

@@ -30,37 +30,8 @@ public class BattleInfo : MonoBehaviour
     // 현재 코스트
     public int currentCost = 5;
 
-    [Header("플레이어 능력치")]
-    // 추가 공격력. 데미지 계산 식에 적용
-    public int bonusAttackStat = 0;
-    // 추가 데미지. 데미지 계산 후, 추가로 들어가는 고정 데미지
-    public int bonusDamage = 0;
-    // 추가 방어력. 데미지 계산 식에 적용
-    public int bonusArmor = 0;
-
     [Header("컴포넌트")]
     public TMP_Text costText;
-
-    // 모든 값을 초기화한다.
-    public void ResetBattleInfo()
-    {
-        // 남은 적 숫자를 적 숫자에 맞춰 초기화한다.
-        bonusAttackStat = 0;
-        bonusDamage = 0;
-        bonusArmor = 0;
-    }
-
-    #region 보너스 스텟
-    public void GetBonusAttackStat(int amount)
-    {
-        bonusAttackStat += amount;
-    }
-
-    public void GetBonusDamage(int amount)
-    {
-        bonusDamage += amount;
-    }
-    #endregion 스텟
 
     #region 적 등록
     // 적 오브젝트 등록한다. 스토리 씬과 연계되면 삭제될 수도 있다.

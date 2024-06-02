@@ -39,6 +39,14 @@ public class Character : MonoBehaviour
     [SerializeField] protected int maxHp = 100;
     [SerializeField] protected int shield = 0;
 
+    [Header("능력치")]
+    // 추가 공격력. 데미지 계산 식에 적용
+    public int bonusAttackStat = 0;
+    // 추가 데미지. 데미지 계산 후, 추가로 들어가는 고정 데미지
+    public int bonusDamage = 0;
+    // 추가 방어력. 데미지 계산 식에 적용
+    public int bonusArmor = 0;
+
     // 디버그용, 추후 삭제
     [Header("컴포넌트")]
     // 스프라이트
@@ -113,6 +121,7 @@ public class Character : MonoBehaviour
         UpdateHPUI();
 
         CleanseDebuff();
+        ResetStat();
     }
 
     #region HP
@@ -262,6 +271,7 @@ public class Character : MonoBehaviour
         // 죽음 애니메이션
     }
 
+    #region 디버프
     // 출혈 효과를 턴 시작 이벤트에 등록한다.
     public void EnrollBleed(BleedEffect bleedEffect)
     {
@@ -351,4 +361,26 @@ public class Character : MonoBehaviour
         // 아이콘을 업데이트 한다.
         UpdateAllDebuffIcon();
     }
+    #endregion 디버프
+
+    #region 스텟
+
+    // 모든 능력치 값을 초기화한다.
+    public void ResetStat()
+    {
+        bonusAttackStat = 0;
+        bonusDamage = 0;
+        bonusArmor = 0;
+    }
+
+    public void GetBonusAttackStat(int amount)
+    {
+        bonusAttackStat += amount;
+    }
+
+    public void GetBonusDamage(int amount)
+    {
+        bonusDamage += amount;
+    }
+    #endregion 스텟
 }

@@ -80,7 +80,6 @@ public class CardInfo : MonoBehaviour
         return null;
     }
 
-
     // 타겟을 반환한다. 논타겟 스킬일 때 호출 가능하다.
     public Character[] GetTarget(SkillTarget target)
     {
@@ -152,7 +151,7 @@ public class CardInfo : MonoBehaviour
     // 카드 효과 함수들을 담아둘 델리게이트
     // amount는 카드의 효과량, turnCount는 지속될 턴의 수, target은 적용 대상이다.
     // 예를 들어 Bleed의 변수가 6, 3, Player.Instance라면, 플레이어에게 3턴간, 매 턴 6의 데미지를 준다.
-    public delegate void CardSkill(int amount, int turnCount, Character target);
+    public delegate void CardSkill(int amount, int turnCount, Character target, Character caller);
     // 델리게이트 배열, EffectType에 맞는 함수를 매칭한다.
     public CardSkill[] effects;
 
@@ -174,41 +173,41 @@ public class CardInfo : MonoBehaviour
 
 
     // 모든 타겟에게 스킬을 사용한다.
-    public void ActivateSkill(Skill skill, Character[] target)
+    public void ActivateSkill(Skill skill, Character[] target, Character caller)
     {
         for (int i = 0; i < target.Length; ++i)
         {
             // 모든 타겟에게 skill을 사용한다.
-            effects[(int)skill.type](skill.amount, skill.turnCount, target[i]);
+            effects[(int)skill.type](skill.amount, skill.turnCount, target[i], caller);
         }
     }
 
     // target이 null인 경우는 Card의 OnEndDrag에서 검사했으므로, 검사하지 않는다.
-    public void Attack(int amount, int turnCount, Character target)
+    public void Attack(int amount, int turnCount, Character target, Character caller)
     {
-        // 타겟의 체력을 감소시킨다.
-        target.DecreaseHP(amount + BattleInfo.Instance.bonusDamage);
+        // 타겟의 체력을 감소시킨다. (공격량 + 추가 데미지)
+        target.DecreaseHP(amount + caller.bonusDamage);
     }
 
-    public void Shield(int amount, int turnCount, Character target)
+    public void Shield(int amount, int turnCount, Character target, Character caller)
     {
         // 타겟이 방어막을 얻는다. (턴 미구현)
         target.GetShield(amount);
     }
 
-    public void Heal(int amount, int turnCount, Character target)
+    public void Heal(int amount, int turnCount, Character target, Character caller)
     {
         // 타겟의 체력을 회복시킨다.
         target.IncreaseHP(amount);
     }
 
-    public void Cleanse(int amount, int turnCount, Character target)
+    public void Cleanse(int amount, int turnCount, Character target, Character caller)
     {
         // 타겟의 디버프를 모두 제거한다.
         target.CleanseDebuff();
     }
 
-    public void RestoreCost(int amount, int turnCount, Character target)
+    public void RestoreCost(int amount, int turnCount, Character target, Character caller)
     {
         // target이 Player가 아니라면 종료한다.
         if (target.GetType() != typeof(Player))
@@ -220,7 +219,7 @@ public class CardInfo : MonoBehaviour
         BattleInfo.Instance.RestoreCost(amount);
     }
 
-    public void Draw(int amount, int turnCount, Character target)
+    public void Draw(int amount, int turnCount, Character target, Character caller)
     {
         // target이 Player가 아니라면 종료한다.
         if (target.GetType() != typeof(Player))
@@ -232,14 +231,14 @@ public class CardInfo : MonoBehaviour
         StartCoroutine(TurnManager.Instance.DrawCard(amount));
     }
 
-    public void Bleed(int amount, int turnCount, Character target)
+    public void Bleed(int amount, int turnCount, Character target, Character caller)
     {
         target.EnrollBleed(new BleedEffect(SkillType.Bleed, amount, turnCount));
     }
 
-    public void AddExtraDamage(int amount, int turnCount, Character target)
+    public void AddExtraDamage(int amount, int turnCount, Character target, Character caller)
     {
-        BattleInfo.Instance.GetBonusDamage(amount);
+        target.GetBonusDamage(amount);
     }
     #endregion 카드 효과
 }
