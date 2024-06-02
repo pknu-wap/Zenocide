@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee4e1de6682e5bb448d13b0b62311c21, type: 3}
-  m_Name: Vodka
+  m_Name: Capture
   m_EditorClassIdentifier: 
-  name: "\uD654\uC5FC\uBCD1"
-  description: "\uC801 \uC804\uCCB4\uC5D0\uAC8C 2\uD134 \uB3D9\uC548 \uD654\uC0C1\uC744
-    6 \uBD80\uC5EC\uD569\uB2C8\uB2E4."
-  sprite: {fileID: 21300000, guid: 304b9e10f3c2f844785bd1488737cf5f, type: 3}
-  effectPrefeb: {fileID: 8728685446278229399, guid: 1886b411636606245afd7098274c0f85, type: 3}
+  name: "\uD3EC\uBC15"
+  description: "\uC801 \uD55C \uBA85\uC744 \uD589\uB3D9 \uBD88\uAC00 \uC0C1\uD0DC\uB85C
+    \uB9CC\uB4ED\uB2C8\uB2E4."
+  sprite: {fileID: 21300000, guid: 028caf8b60168b849bea37070b28b491, type: 3}
+  effectPrefeb: {fileID: 0}
   skills:
   - type: 6
-    target: 2
-    amount: 6
+    target: 0
+    amount: 0
     turnCount: 2
-  cost: 2
+  cost: 3
