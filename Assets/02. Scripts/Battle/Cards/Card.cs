@@ -178,6 +178,7 @@ public class Card : MonoBehaviour
             if(selectedObject != null)
             {
                 Vector3 enemyPosition = selectedObject.GetComponent<Enemy>().transform.position;
+                enemyPosition.y += illust.sprite.bounds.size.y * 3;
                 CardArrow.Instance.MoveArrow(enemyPosition);
             }
             else
