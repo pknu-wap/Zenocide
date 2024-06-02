@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using TMPro;
+using System.Linq;
 
 public class CardManager : MonoBehaviour
 {
@@ -216,7 +217,8 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    void CardAlignment()
+    // 카드를 정렬시킨다.
+    public void CardAlignment()
     {
         List<PRS> originCardPRSs = new List<PRS>();
         float radius = handRight.position.x - handLeft.position.x;
@@ -231,7 +233,7 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    // 이해하기를 포기함...
+    // 카드를 원형으로 정렬시킨다. (위치 배열 반환)
     List<PRS> RoundAlignment(Transform leftTr, Transform rightTr, int objCount, float radius, Vector3 scale)
     {
         float[] objLerps = new float[objCount];
@@ -277,16 +279,18 @@ public class CardManager : MonoBehaviour
 
     public void DiscardCard(Card card)
     {
-        hand.Remove(card);
         dump.Add(card.cardData);
         UpdateDumpCount();
 
         card.transform.DOKill();
 
+        // 추후 풀링 예정
         DestroyImmediate(card.gameObject);
-        selectCard = null;
+    }
 
-        CardAlignment();
+    public void ClearSelectCard()
+    {
+        selectCard = null;
     }
 
     // dump와 hand를 덱으로 모아서 셔플
@@ -364,17 +368,15 @@ public class CardManager : MonoBehaviour
 
     public IEnumerator DiscardHandCo()
     {
-        // hand가 줄어들어도 숫자를 유지하기 위함
-        int handCount = hand.Count;
-
         // 패 버리기가 시작되면 모든 카드의 클릭을 막는다.
         for(int i = 0; i < hand.Count; ++i)
         {
-            hand[i].DisableCollider();
+            //hand[i].DisableCollider();
+            hand[i].isDiscarded = true;
         }
 
-        // hand.Count 회 반복
-        for (int i = 0; i < handCount; i++)
+        // hand가 남아 있다면 반복
+        while (hand.Any())
         {
             // 맨 끝의 카드를 가져오고 캐싱
             Card card = hand[0];
@@ -382,6 +384,9 @@ public class CardManager : MonoBehaviour
             hand.RemoveAt(0);
             // 카드가 사라지는 순간 정렬한다.
             CardAlignment();
+
+            // 카드의 실행 중인 애니메이션을 종료하고
+            card.moveSequence.Kill();
 
             // 묘지로 카드 이동
             Sequence move = DOTween.Sequence()
@@ -398,17 +403,15 @@ public class CardManager : MonoBehaviour
             UpdateDumpCount();
             // 추후 오브젝트 풀링 예정
             DestroyImmediate(card.gameObject);
+            // 카드의 클릭 허용
+            //card.EnableCollider();
+            //hand[i].isDiscarded = false;
         }
 
         // 패를 전부 비우고
         hand.Clear();
         // 선택된 카드도 비운다.
         selectCard = null;
-        // 패 버리기가 시작되면 모든 카드의 클릭을 허용한다.
-        for (int i = 0; i < hand.Count; ++i)
-        {
-            hand[i].EnableCollider();
-        }
     }
 
     void UpdateDeckCount()
@@ -432,12 +435,6 @@ public class CardManager : MonoBehaviour
     public void CardMouseExit(Card card)
     {
         EnlargeCard(false, card);
-    }
-
-    public void CardMouseDown()
-    {
-        if (TurnManager.Instance.myTurn)
-            DiscardCard(selectCard);
     }
 
     void EnlargeCard(bool isEnlarge, Card card)

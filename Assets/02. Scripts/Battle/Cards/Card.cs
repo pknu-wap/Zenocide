@@ -22,6 +22,8 @@ public class Card : MonoBehaviour
     [Header("상태")]
     [SerializeField] bool isDragging = false;
     [SerializeField] bool isTargetingCard = false;
+    // 카드가 버려졌는가?
+    public bool isDiscarded = false;
     public PRS originPRS;
 
     [Header("런타임 변수")]
@@ -34,8 +36,7 @@ public class Card : MonoBehaviour
     bool isPlaying = false;
 
     // DOTween 시퀀스
-    Sequence moveSequence;
-    Sequence disappearSequence;
+    public Sequence moveSequence;
     [SerializeField] float dotweenTime = 0.4f;
     [SerializeField] float focusTime = 0.4f;
     #endregion 변수
@@ -87,7 +88,7 @@ public class Card : MonoBehaviour
     // 마우스를 카드 위에 올릴 떄 실행된다.
     void OnMouseEnter()
     {
-        if (BattleInfo.Instance.isGameOver)
+        if (BattleInfo.Instance.isGameOver || isDiscarded)
         {
             return;
         }
@@ -101,7 +102,7 @@ public class Card : MonoBehaviour
     // 마우스가 카드를 벗어날 떄 실행된다.
     void OnMouseExit()
     {
-        if (BattleInfo.Instance.isGameOver)
+        if (BattleInfo.Instance.isGameOver || isDiscarded)
         {
             return;
         }
@@ -119,7 +120,7 @@ public class Card : MonoBehaviour
     // 드래그가 시작될 때 호출된다.
     public void OnMouseDown()
     {
-        if (BattleInfo.Instance.isGameOver)
+        if (BattleInfo.Instance.isGameOver || isDiscarded)
         {
             return;
         }
@@ -156,7 +157,7 @@ public class Card : MonoBehaviour
     // 드래그 중일 때 계속 호출된다.
     public void OnMouseDrag()
     {
-        if (BattleInfo.Instance.isGameOver)
+        if (BattleInfo.Instance.isGameOver || isDiscarded)
         {
             return;
         }
@@ -181,7 +182,7 @@ public class Card : MonoBehaviour
     // 드래그가 끝날 때 호출된다.
     public void OnMouseUp()
     {
-        if (BattleInfo.Instance.isGameOver)
+        if (BattleInfo.Instance.isGameOver || isDiscarded)
         {
             return;
         }
@@ -239,9 +240,14 @@ public class Card : MonoBehaviour
 
             // 코스트를 감소시킨다.
             BattleInfo.Instance.UseCost(cardData.cost);
-
-            // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
-            DisableCollider();
+            // 패에서 카드를 삭제한다. (중복 삭제 방지)
+            CardManager.Instance.hand.Remove(this);
+            // 선택 카드를 비운다.
+            CardManager.Instance.ClearSelectCard();
+            // 카드를 정렬한다.
+            CardManager.Instance.CardAlignment();
+            // 버려졌음을 체크한다.
+            isDiscarded = true;
 
             // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
             moveSequence = DOTween.Sequence()
@@ -274,7 +280,7 @@ public class Card : MonoBehaviour
                     isPlaying = true;
                 }
 
-                // 딜레이를 주면 좀 더 자연스럽다. -> 코루틴의 필요
+                // 딜레이를 주면 좀 더 자연스럽다.
                 yield return new WaitForSeconds(skillDelay);
             }
         }
@@ -299,9 +305,14 @@ public class Card : MonoBehaviour
 
             // 코스트를 감소시킨다.
             BattleInfo.Instance.UseCost(cardData.cost);
-
-            // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
-            DisableCollider();
+            // 패에서 카드를 삭제한다. (중복 삭제 방지)
+            CardManager.Instance.hand.Remove(this);
+            // 선택 카드를 비운다.
+            CardManager.Instance.ClearSelectCard();
+            // 카드를 정렬한다.
+            CardManager.Instance.CardAlignment();
+            // 버려졌음을 체크한다.
+            isDiscarded = true;
 
             // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
             moveSequence = DOTween.Sequence()
