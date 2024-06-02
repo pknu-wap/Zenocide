@@ -49,6 +49,7 @@ public class CardInfo : MonoBehaviour
         layerDict[(int)SkillType.RestoreCost] = LayerMask.GetMask("Field");
         layerDict[(int)SkillType.Draw] = LayerMask.GetMask("Field");
         layerDict[(int)SkillType.Bleed] = LayerMask.GetMask("Enemy");
+        layerDict[(int)SkillType.AddExtraDamage] = LayerMask.GetMask("Field");
     }
 
     // 타입에 맞는 레이어를 반환한다.
@@ -168,6 +169,7 @@ public class CardInfo : MonoBehaviour
         effects[(int)SkillType.RestoreCost] += RestoreCost;
         effects[(int)SkillType.Draw] += Draw;
         effects[(int)SkillType.Bleed] += Bleed;
+        effects[(int)SkillType.AddExtraDamage] += AddExtraDamage;
     }
 
 
@@ -185,7 +187,7 @@ public class CardInfo : MonoBehaviour
     public void Attack(int amount, int turnCount, Character target)
     {
         // 타겟의 체력을 감소시킨다.
-        target.DecreaseHP(amount);
+        target.DecreaseHP(amount + BattleInfo.Instance.bonusDamage);
     }
 
     public void Shield(int amount, int turnCount, Character target)
@@ -232,6 +234,11 @@ public class CardInfo : MonoBehaviour
     public void Bleed(int amount, int turnCount, Character target)
     {
         target.EnrollBleed(new BleedEffect(SkillType.Bleed, amount, turnCount));
+    }
+
+    public void AddExtraDamage(int amount, int turnCount, Character target)
+    {
+        BattleInfo.Instance.GetBonusDamage(amount);
     }
     #endregion 카드 효과
 }
