@@ -364,32 +364,51 @@ public class CardManager : MonoBehaviour
 
     public IEnumerator DiscardHandCo()
     {
+        // hand가 줄어들어도 숫자를 유지하기 위함
         int handCount = hand.Count;
+
+        // 패 버리기가 시작되면 모든 카드의 클릭을 막는다.
+        for(int i = 0; i < hand.Count; ++i)
+        {
+            hand[i].DisableCollider();
+        }
+
+        // hand.Count 회 반복
         for (int i = 0; i < handCount; i++)
         {
+            // 맨 끝의 카드를 가져오고 캐싱
             Card card = hand[0];
+            // 패에서 바로 삭제한다.
+            hand.RemoveAt(0);
+            // 카드가 사라지는 순간 정렬한다.
+            CardAlignment();
 
             // 묘지로 카드 이동
-            Sequence sequence = DOTween.Sequence()
+            Sequence move = DOTween.Sequence()
                 .Append(card.transform.DOMove(cardDumpPoint.position, delay03))
                 .Join(card.transform.DORotateQuaternion(Utils.QI, delay03))
                 .Join(card.transform.DOScale(Vector3.one, delay03))
                 .SetEase(Ease.OutQuad);
 
-            hand.RemoveAt(0);
-            CardAlignment();
-
             // sequence 끝나기 전까지 기다리기
-            yield return new WaitForSeconds(delay03);
+            yield return move.WaitForCompletion();
 
             // sequence가 끝나면 오브젝트 파괴
             dump.Add(card.cardData);
             UpdateDumpCount();
+            // 추후 오브젝트 풀링 예정
             DestroyImmediate(card.gameObject);
         }
 
+        // 패를 전부 비우고
         hand.Clear();
+        // 선택된 카드도 비운다.
         selectCard = null;
+        // 패 버리기가 시작되면 모든 카드의 클릭을 허용한다.
+        for (int i = 0; i < hand.Count; ++i)
+        {
+            hand[i].EnableCollider();
+        }
     }
 
     void UpdateDeckCount()

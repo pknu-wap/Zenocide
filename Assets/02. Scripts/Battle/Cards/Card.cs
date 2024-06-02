@@ -241,7 +241,7 @@ public class Card : MonoBehaviour
             BattleInfo.Instance.UseCost(cardData.cost);
 
             // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
-            cardCollider.enabled = false;
+            DisableCollider();
 
             // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
             moveSequence = DOTween.Sequence()
@@ -249,7 +249,7 @@ public class Card : MonoBehaviour
                 .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
                 .Join(transform.DOScale(Vector3.one, dotweenTime))
                 .OnComplete(() => {
-                    cardCollider.enabled = true;
+                    EnableCollider();
                     isAnimationDone = true;
                 }); // 애니메이션 끝나면 알림
 
@@ -301,7 +301,7 @@ public class Card : MonoBehaviour
             BattleInfo.Instance.UseCost(cardData.cost);
 
             // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
-            cardCollider.enabled = false;
+            DisableCollider();
 
             // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
             moveSequence = DOTween.Sequence()
@@ -316,7 +316,7 @@ public class Card : MonoBehaviour
                 .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
                 .Join(transform.DOScale(Vector3.one, dotweenTime))
                 .OnComplete(() => {
-                    cardCollider.enabled = true;
+                    EnableCollider();
                     isAnimationDone = true;
                 }); // 애니메이션 끝나면 알림
 
@@ -411,4 +411,18 @@ public class Card : MonoBehaviour
         cardOrder.SetMostFrontOrder(true);
     }
     #endregion 애니메이션
+
+    #region 콜라이더
+    // 콜라이더를 켜 마우스 상호작용을 허용한다.
+    public void EnableCollider()
+    {
+        cardCollider.enabled = true;
+    }
+
+    // 콜라이더를 꺼 마우스 상호작용을 차단한다.
+    public void DisableCollider()
+    {
+        cardCollider.enabled = false;
+    }
+    #endregion 콜라이더
 }
