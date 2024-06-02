@@ -100,7 +100,7 @@ public class Enemy : Character
         // 최대 HP 변경 및 현재 체력을 maxHp와 같게 변경
         maxHp = enemyData.maxHp;
         currentHp = maxHp;
-        UpdateCurrentHP();
+        UpdateHPUI();
     }
 
     [Header("런타임 변수")]
@@ -133,7 +133,7 @@ public class Enemy : Character
         Character[] target = CardInfo.Instance.GetTarget(currentSkill.target, this);
 
         // 준비한 스킬을 사용한다.
-        CardInfo.Instance.ActivateSkill(currentSkill, target);
+        CardInfo.Instance.ActivateSkill(currentSkill, target, this);
     }
 
     // SkillType 별 모션 출력

@@ -264,7 +264,7 @@ public class Card : MonoBehaviour
                 selectedCharacter = CardInfo.Instance.GetTarget(cardData.skills[i].target, selectedEnemy);
 
                 // 해당 타겟에게 스킬을 시전한다.
-                CardInfo.Instance.ActivateSkill(cardData.skills[i], selectedCharacter);
+                CardInfo.Instance.ActivateSkill(cardData.skills[i], selectedCharacter, Player.Instance);
 
                 // 이펙트 출력
                 if (effectObject[i] != null)
@@ -326,7 +326,7 @@ public class Card : MonoBehaviour
                 // 타겟을 정한다. 타겟팅 카드가 아니니, selectedEnemy는 없다.
                 selectedCharacter = CardInfo.Instance.GetTarget(cardData.skills[i].target);
 
-                CardInfo.Instance.ActivateSkill(cardData.skills[i], selectedCharacter);
+                CardInfo.Instance.ActivateSkill(cardData.skills[i], selectedCharacter, Player.Instance);
 
                 // 이펙트 출력
                 if (effectObject[i] != null)

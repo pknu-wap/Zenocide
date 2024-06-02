@@ -37,6 +37,15 @@ public class Character : MonoBehaviour
     // HP(체력)
     protected int currentHp = 100;
     [SerializeField] protected int maxHp = 100;
+    [SerializeField] protected int shield = 0;
+
+    [Header("능력치")]
+    // 추가 공격력. 데미지 계산 식에 적용
+    public int bonusAttackStat = 0;
+    // 추가 데미지. 데미지 계산 후, 추가로 들어가는 고정 데미지
+    public int bonusDamage = 0;
+    // 추가 방어력. 데미지 계산 식에 적용
+    public int bonusArmor = 0;
 
     // 디버그용, 추후 삭제
     [Header("컴포넌트")]
@@ -45,6 +54,8 @@ public class Character : MonoBehaviour
     // HP 바
     protected Image hpBar;
     protected TMP_Text hpText;
+    // 실드 바
+    protected Image shieldBar;
     // 버프 아이콘 생성기 구현 예정 -> 오브젝트 풀링으로 대체
     protected Transform statusPanel;
     // 디버프창
@@ -71,8 +82,11 @@ public class Character : MonoBehaviour
         imageComponent = transform.GetChild(0).GetChild(0).GetComponent<Image>();
 
         // HP 바
-        hpBar = transform.GetChild(0).GetChild(1).GetChild(0).GetChild(0).GetComponent<Image>();
+        hpBar = transform.GetChild(0).GetChild(1).GetChild(0).GetChild(1).GetComponent<Image>();
         hpText = hpBar.transform.GetChild(0).GetComponent<TMP_Text>();
+
+        // 실드 바
+        shieldBar = transform.GetChild(0).GetChild(1).GetChild(0).GetChild(0).GetComponent<Image>();
 
         // 디버프 효과들(내부 데이터)을 담아둘 리스트
         debuffs = new List<BleedEffect>();
@@ -103,11 +117,14 @@ public class Character : MonoBehaviour
 
     protected virtual void StartBattle()
     {
-        UpdateCurrentHP();
+        UpdateShieldUI();
+        UpdateHPUI();
 
         CleanseDebuff();
+        ResetStat();
     }
 
+    #region HP
     // 이 오브젝트의 hp를 반환한다.
     public int GetHP()
     {
@@ -115,22 +132,69 @@ public class Character : MonoBehaviour
     }
 
     // 현재 HP를 갱신한다.
-    public void UpdateCurrentHP()
+    public void UpdateHPUI()
     {
-        hpBar.fillAmount = (float)currentHp / maxHp;
-        hpText.text = currentHp + "/" + maxHp;
+        // 이미지 변경
+        // HP 바를 뚫으려 하면
+        if (currentHp + shield > maxHp)
+        {
+            // 비율을 맞춰 현재 체력 바의 크기를 줄이고
+            hpBar.fillAmount = (float)currentHp / (maxHp + shield);
+        }
+        // 아니라면
+        else
+        {
+            // 그대로 출력한다.
+            hpBar.fillAmount = (float)currentHp / maxHp;
+        }
+
+        // 텍스트 변경
+        // 실드가 없다면 현재 체력과 최대 체력을
+        string text = currentHp + "/" + maxHp;
+        // 그게 아니라면
+        if(shield > 0)
+        {
+            // 방어막도 함께 적어준다.
+            text = "(" + currentHp + " + " + shield + ") / " + maxHp;
+        }
+        hpText.text = text;
     }
 
     // 이 오브젝트의 hp를 감소시킨다.
     public void DecreaseHP(int damage)
     {
-        // hp를 damage만큼 감소시킨다.
-        currentHp -= damage;
-        
-        UpdateCurrentHP();
+        // 현재 데미지
+        int currentDamage = damage;
+
+        // 실드가 있다면 데미지 재계산
+        if (shield > 0)
+        {
+            // currentDamage를 감소시키고
+            currentDamage -= shield;
+            if (currentDamage < 0)
+            {
+                // 잔여 데미지가 음수면 0으로 적용한다.
+                currentDamage = 0;
+            }
+
+            // 실드에선 기존 데미지를 뺀다.
+            shield -= damage;
+            if (shield < 0)
+            {
+                // 잔여 방어막이 음수면 0으로 적용한다.
+                shield = 0;
+            }
+        }
+
+        // hp를 잔여 데미지 만큼 감소시킨다.
+        currentHp -= currentDamage;
+
+        // UI를 갱신한다.
+        UpdateShieldUI();
+        UpdateHPUI();
 
         // 적이 피격될 때 모션 출력
-        if(this != Player.Instance && damage > 0)
+        if(this != Player.Instance && currentDamage > 0)
         {
             imageComponent.transform.DOShakePosition(0.5f, 10f);
         }
@@ -157,8 +221,49 @@ public class Character : MonoBehaviour
         }
 
         // UI 갱신
-        UpdateCurrentHP();
+        UpdateShieldUI();
+        UpdateHPUI();
     }
+    #endregion HP
+
+    #region 실드
+    // 방어막을 얻는다.
+    public void GetShield(int amount)
+    {
+        // 방어막을 추가하고
+        shield += amount;
+
+        // UI 변경
+        UpdateShieldUI();
+        UpdateHPUI();
+    }
+
+    // 실드 UI를 갱신한다.
+    private void UpdateShieldUI()
+    {
+        // 실드가 없다면
+        if(shield == 0)
+        {
+            // 0으로 만들고 종료
+            shieldBar.fillAmount = 0;
+            return;
+        }
+
+        // HP 바를 뚫으려 하면
+        if(currentHp + shield > maxHp)
+        {
+            // 100으로 만들고
+            shieldBar.fillAmount = 1;
+        }
+
+        // 그 외는
+        else
+        {
+            // 이미지를 변경한다. Shield를 뒤에 깔고 HP를 앞으로 빼서, 아래 식이 쓰인다.
+            shieldBar.fillAmount = (float)(currentHp + shield) / (maxHp);
+        }
+    }
+    #endregion 실드
 
     public virtual void Die()
     {
@@ -166,6 +271,7 @@ public class Character : MonoBehaviour
         // 죽음 애니메이션
     }
 
+    #region 디버프
     // 출혈 효과를 턴 시작 이벤트에 등록한다.
     public void EnrollBleed(BleedEffect bleedEffect)
     {
@@ -255,4 +361,26 @@ public class Character : MonoBehaviour
         // 아이콘을 업데이트 한다.
         UpdateAllDebuffIcon();
     }
+    #endregion 디버프
+
+    #region 스텟
+
+    // 모든 능력치 값을 초기화한다.
+    public void ResetStat()
+    {
+        bonusAttackStat = 0;
+        bonusDamage = 0;
+        bonusArmor = 0;
+    }
+
+    public void GetBonusAttackStat(int amount)
+    {
+        bonusAttackStat += amount;
+    }
+
+    public void GetBonusDamage(int amount)
+    {
+        bonusDamage += amount;
+    }
+    #endregion 스텟
 }

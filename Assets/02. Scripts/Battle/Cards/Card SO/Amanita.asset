@@ -10,15 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee4e1de6682e5bb448d13b0b62311c21, type: 3}
-  m_Name: Gluttony
+  m_Name: Amanita
   m_EditorClassIdentifier: 
-  name: "\uAE00\uB7EC\uD2B8\uB2C8"
-  description: "\uCE74\uB4DC\uB97C 3\uC7A5 \uB4DC\uB85C\uC6B0\uD569\uB2C8\uB2E4."
-  sprite: {fileID: 21300000, guid: a2d3ba7c1570d5042864dac969759f2e, type: 3}
+  name: "\uAD11\uB300 \uBC84\uC12F"
+  description: "\uD50C\uB808\uC774\uC5B4 \uCCB4\uB825\uC774 6\uD134 \uAC04 2\uC529
+    \uAC10\uC18C\uD569\uB2C8\uB2E4."
+  sprite: {fileID: 21300000, guid: 6f3435f12967b544e9abeccac0a085a3, type: 3}
   skills:
-  - type: 5
+  - type: 6
     target: 0
-    amount: 3
-    turnCount: 0
-    effectPrefeb: {fileID: 2022655609410639260, guid: 8a09b4c6c9103f643a097dc4bb7971b5, type: 3}
-  cost: 1
+    amount: 2
+    turnCount: 6
+    effectPrefeb: {fileID: 2791311640683196035, guid: c1b65553f8809c54f881fa3efa0769e4, type: 3}
+  cost: 5
