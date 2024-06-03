@@ -255,7 +255,7 @@ public class Card : MonoBehaviour
                 .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
                 .Join(transform.DOScale(Vector3.one, dotweenTime))
                 .OnComplete(() => {
-                    EnableCollider();
+                    isDiscarded = false;
                     isAnimationDone = true;
                 }); // 애니메이션 끝나면 알림
 
@@ -327,7 +327,7 @@ public class Card : MonoBehaviour
                 .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
                 .Join(transform.DOScale(Vector3.one, dotweenTime))
                 .OnComplete(() => {
-                    EnableCollider();
+                    isDiscarded = false;
                     isAnimationDone = true;
                 }); // 애니메이션 끝나면 알림
 
@@ -422,18 +422,4 @@ public class Card : MonoBehaviour
         cardOrder.SetMostFrontOrder(true);
     }
     #endregion 애니메이션
-
-    #region 콜라이더
-    // 콜라이더를 켜 마우스 상호작용을 허용한다.
-    public void EnableCollider()
-    {
-        cardCollider.enabled = true;
-    }
-
-    // 콜라이더를 꺼 마우스 상호작용을 차단한다.
-    public void DisableCollider()
-    {
-        cardCollider.enabled = false;
-    }
-    #endregion 콜라이더
 }

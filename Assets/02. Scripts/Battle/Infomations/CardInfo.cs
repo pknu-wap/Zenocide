@@ -228,7 +228,7 @@ public class CardInfo : MonoBehaviour
         }
 
         // 카드를 뽑는다.
-        StartCoroutine(TurnManager.Instance.DrawCard(amount));
+        StartCoroutine(CardManager.Instance.AddCardToHand(amount));
     }
 
     public void Bleed(int amount, int turnCount, Character target, Character caller)

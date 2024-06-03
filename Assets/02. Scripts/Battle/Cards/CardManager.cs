@@ -11,29 +11,29 @@ public class CardManager : MonoBehaviour
     public static CardManager Instance { get; private set; }
     void Awake() => Instance = this;
 
-    // 카드 풀
+    [Header("카드 풀")]
     [SerializeField] CardList cardList;
     [SerializeField] CardList defaultDeck;
     Dictionary<string, CardData> cardDict;
 
-    // 카드 프리팹
+    [Header("카드 프리팹")]
     [SerializeField] GameObject cardPrefab;
     [SerializeField] GameObject cardBackPrefab;
 
-    // 핸드
+    [Header("핸드")]
     public List<Card> hand;
     [SerializeField] int maxHand = 10;
     [SerializeField] Transform handGroup;
     [SerializeField] Transform handLeft;
     [SerializeField] Transform handRight;
 
-    // 카드 관련 트랜스폼
+    [Header("카드 위치")]
     [SerializeField] public Transform cardSpawnPoint;
     [SerializeField] public Transform cardDrawPoint;
     [SerializeField] public Transform cardResetPoint;
     [SerializeField] public Transform cardDumpPoint;
 
-    // 덱, 묘지
+    [Header("덱, 묘지")]
     public List<CardData> deck;
     public List<CardData> dump;
     List<GameObject> cardBackObjectList;
@@ -41,26 +41,26 @@ public class CardManager : MonoBehaviour
     [SerializeField] TMP_Text dumpCountTMP;
     [SerializeField] Transform cardBackGroup;
 
-    // 이펙트
+    [Header("이펙트")]
     [SerializeField] public Transform effectGroup;
 
-
+    // 선택된 카드
     Card selectCard;
 
-    // 상수
+    [Header("상수")]
     int listSize = 100;
-    float delay01 = 0.1f;
-    float delay03 = 0.3f;
-    float delay05 = 0.5f;
     float focusOffset = 100f;
-
     public Vector3 focusPos;
+
+    [Header("딜레이")]
+    [SerializeField] float drawDelay = 0.5f;
+    [SerializeField] float discardDelay = 0.2f;
+    [SerializeField] float resetDelay = 0.1f;
+    [SerializeField] float resetMoveDelay = 0.3f;
+    [SerializeField] float moveDelay = 0.5f;
 
     void Start()
     {
-        // 동적 참조를 줄이기 위해 싱글톤 대신 Action으로 호출
-        TurnManager.OnAddCard += AddCardToHand;
-
         focusPos = new Vector3(0f, handLeft.position.y + focusOffset, -3f);
 
         // 지금은 게임과 전투가 동시에 시작
@@ -103,37 +103,14 @@ public class CardManager : MonoBehaviour
         SetUpDeck();
     }
 
-    private void Update()
-    {
-        string[] dummyCards =
-        {
-            "더미1",
-            "더미2",
-            "더미3"
-        };
-
-        if (Input.GetKeyDown(KeyCode.Q) && TurnManager.Instance.myTurn)
-        {
-            AddCardToDeck(dummyCards[Random.Range(0, 3)]);
-            SetUpDeck();
-        }
-    }
-
-    // 덱 카운트가 0인지 확인하고 사용해야 함
-    CardData DrawCard()
-    {
-        CardData card = deck[0];
-        deck.RemoveAt(0);
-        UpdateDeckCount();
-        return card;
-    }
-
+    // 카드를 덱에 추가한다. (string)
     public void AddCardToDeck(string cardName)
     {
         deck.Add(cardDict[cardName]);
         UpdateDeckCount();
     }
-
+    
+    // 카드를 덱에서 삭제한다.
     public void RemoveCardFromDeck(string cardName)
     {
         CardData target = null;
@@ -163,46 +140,77 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    void OnDestroy()
+    public IEnumerator AddCardToHand(int count)
     {
-        TurnManager.OnAddCard -= AddCardToHand;
-    }
-
-    void AddCardToHand(bool isMine)
-    {
-        if (!isMine || hand.Count > maxHand || deck.Count + dump.Count == 0)
+        int drawCount = count;
+        // Draw Count 조정
+        if (hand.Count + drawCount > maxHand)            
         {
-            return;
+            drawCount = maxHand - hand.Count;
         }
 
-        var cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI, handGroup);
-        var card = cardObject.GetComponent<Card>();
-
-        // DrawCard() 호출 전에 덱이 비었는지 확인
-        if (deck.Count == 0)
+        // 덱과 묘지 전부 카드가 없을 경우
+        if (deck.Count + dump.Count == 0)
         {
-            StartCoroutine(ResetDeckAnimationCo(dump.Count));
-            ResetDeck();
-            MergeDumpToDeck();
+            // 뽑지 않는다.
+            drawCount = 0;
         }
 
-        card.effectGroup = effectGroup;
-        card.Setup(DrawCard());
-        card.transform.localScale = Vector3.zero;
-        hand.Add(card);
+        // 드로우 한 카드들을 캐싱해둔다.
+        Card[] drawedCard = new Card[drawCount];
 
+        // 개수만큼 뽑는다. (데이터적으로, 한 번에 패에 추가된다.)
+        for (int i = 0; i < drawedCard.Length; ++i)
+        {
+            GameObject cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI, handGroup);
+            drawedCard[i] = cardObject.GetComponent<Card>();
+
+            // DrawCard() 호출 전에 덱이 비었는지 확인
+            if (deck.Count == 0)
+            {
+                StartCoroutine(ResetDeckAnimationCo(dump.Count));
+                ResetDeck();
+                MergeDumpToDeck();
+            }
+
+            drawedCard[i].effectGroup = effectGroup;
+            drawedCard[i].Setup(DrawCard());
+            drawedCard[i].transform.localScale = Vector3.zero;
+            hand.Add(drawedCard[i]);
+        }
+
+        // Hand 카드 순서 정렬
         SetOriginOrder();
-        StartCoroutine(DrawAnimationCo(card));
+
+        // 애니메이션을 순차적으로 실행한다.
+        for (int i = 0; i < drawedCard.Length; ++i)
+        {
+            StartCoroutine(DrawAnimationCo(drawedCard[i]));
+            // drawDelay만큼 딜레이를 준다.
+            yield return new WaitForSeconds(drawDelay);
+        }
     }
 
+    // 덱 카운트가 0인지 확인하고 사용해야 함
+    // AddCardToHand 호출 시 함께 사용된다.
+    CardData DrawCard()
+    {
+        CardData card = deck[0];
+        deck.RemoveAt(0);
+        UpdateDeckCount();
+        return card;
+    }
+
+    // 드로우 애니메이션을 실행한다.
     IEnumerator DrawAnimationCo(Card card)
     {
         Sequence sequence = DOTween.Sequence()
-                .Append(card.transform.DOMove(cardDrawPoint.position, delay05))
-                .Join(card.transform.DOScale(Vector3.one * 15f, delay05))
+                .Append(card.transform.DOMove(cardDrawPoint.position, drawDelay))
+                .Join(card.transform.DOScale(Vector3.one * 15f, drawDelay))
                 .SetEase(Ease.OutCubic);
 
-        yield return new WaitForSeconds(delay05);
+        // DOTween이 끝날 때까지 기다린다.
+        yield return sequence.WaitForCompletion();
 
         CardAlignment();
     }
@@ -217,7 +225,7 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    // 카드를 정렬시킨다.
+    // 0번 카드부터 last번 째 카드까지 정렬시킨다.
     public void CardAlignment()
     {
         List<PRS> originCardPRSs = new List<PRS>();
@@ -229,7 +237,7 @@ public class CardManager : MonoBehaviour
             var targetCard = hand[i];
 
             targetCard.originPRS = originCardPRSs[hand.Count - i - 1];
-            targetCard.MoveTransform(targetCard.originPRS, true, delay05);
+            targetCard.MoveTransform(targetCard.originPRS, true, moveDelay);
         }
     }
 
@@ -345,17 +353,17 @@ public class CardManager : MonoBehaviour
         {
             // 포물선 이동
             Sequence sequence = DOTween.Sequence()
-                .Append(cardBackObjectList[i].transform.DOMoveX(cardResetPoint.position.x, delay03))
-                .Join(cardBackObjectList[i].transform.DOMoveY(cardResetPoint.position.y, delay03)).SetEase(Ease.OutCubic)
-                .Append(cardBackObjectList[i].transform.DOMoveX(cardSpawnPoint.position.x, delay03))
-                .Join(cardBackObjectList[i].transform.DOMoveY(cardSpawnPoint.position.y, delay03));
+                .Append(cardBackObjectList[i].transform.DOMoveX(cardResetPoint.position.x, resetMoveDelay))
+                .Join(cardBackObjectList[i].transform.DOMoveY(cardResetPoint.position.y, resetMoveDelay)).SetEase(Ease.OutCubic)
+                .Append(cardBackObjectList[i].transform.DOMoveX(cardSpawnPoint.position.x, resetMoveDelay))
+                .Join(cardBackObjectList[i].transform.DOMoveY(cardSpawnPoint.position.y, resetMoveDelay));
 
             // 각 카드에 딜레이 주기
-            yield return new WaitForSeconds(delay01);
+            yield return new WaitForSeconds(resetDelay);
         }
 
         // 전체 애니메이션 종료까지 대기
-        yield return new WaitForSeconds(delay03 * 2 + delay01 * dumpCount);
+        yield return new WaitForSeconds(resetMoveDelay * 2 + resetDelay * dumpCount);
 
         for (int i = 0; i < dumpCount; i++)
         {
@@ -390,9 +398,9 @@ public class CardManager : MonoBehaviour
 
             // 묘지로 카드 이동
             Sequence move = DOTween.Sequence()
-                .Append(card.transform.DOMove(cardDumpPoint.position, delay03))
-                .Join(card.transform.DORotateQuaternion(Utils.QI, delay03))
-                .Join(card.transform.DOScale(Vector3.one, delay03))
+                .Append(card.transform.DOMove(cardDumpPoint.position, discardDelay))
+                .Join(card.transform.DORotateQuaternion(Utils.QI, discardDelay))
+                .Join(card.transform.DOScale(Vector3.one, discardDelay))
                 .SetEase(Ease.OutQuad);
 
             // sequence 끝나기 전까지 기다리기
