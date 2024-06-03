@@ -2,14 +2,15 @@ using UnityEngine;
 using TMPro;
 using DG.Tweening;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Card : MonoBehaviour
 {
-    #region º¯¼ö
-    [Header("Ä«µå Á¤º¸")]
+    #region ë³€ìˆ˜
+    [Header("ì¹´ë“œ ì •ë³´")]
     public CardData cardData;
 
-    [Header("ÄÄÆ÷³ÍÆ®")]
+    [Header("ì»´í¬ë„ŒíŠ¸")]
     [SerializeField] SpriteRenderer card;
     [SerializeField] SpriteRenderer illust;
     [SerializeField] TMP_Text nameTMP;
@@ -18,21 +19,26 @@ public class Card : MonoBehaviour
     [SerializeField] CardOrder cardOrder;
     [SerializeField] Collider2D cardCollider;
 
-    [Header("»óÅÂ")]
+    [Header("ìƒíƒœ")]
     [SerializeField] bool isDragging = false;
     [SerializeField] bool isTargetingCard = false;
     public PRS originPRS;
 
-    [Header("·±Å¸ÀÓ º¯¼ö")]
-    // Ä«µå ¹ßµ¿ ÈÄ ¼±ÅÃµÈ ¿ÀºêÁ§Æ®
+    [Header("ëŸ°íƒ€ì„ ë³€ìˆ˜")]
+    // ì¹´ë“œ ë°œë™ í›„ ì„ íƒëœ ì˜¤ë¸Œì íŠ¸
     public Character[] selectedCharacter;
 
-    // DOTween ½ÃÄö½º
+    [Header("ì´í™íŠ¸")]
+    ParticleSystem[] effectObject = new ParticleSystem[10];
+    public Transform effectGroup;
+    bool isPlaying = false;
+
+    // DOTween ì‹œí€€ìŠ¤
     Sequence moveSequence;
     Sequence disappearSequence;
     [SerializeField] float dotweenTime = 0.4f;
     [SerializeField] float focusTime = 0.4f;
-    #endregion º¯¼ö
+    #endregion ë³€ìˆ˜
 
     public void Setup(CardData item)
     {
@@ -47,10 +53,38 @@ public class Card : MonoBehaviour
         cardCollider = GetComponent<Collider2D>();
 
         isTargetingCard = CardInfo.Instance.IsTargetingCard(cardData.skills);
+
+        // CardData ì•ˆì˜ ê° skillë“¤ì˜ ì´í™íŠ¸ ìƒì„±
+        for(int i = 0; i < item.skills.Length; i++)
+        {
+            if (item.skills[i].effectPrefeb != null)
+            {
+                effectObject[i] = Instantiate(item.skills[i].effectPrefeb, effectGroup).GetComponent<ParticleSystem>();
+            }
+            else
+            {
+                // ì´í™íŠ¸ê°€ ì—†ëŠ” ìŠ¤í‚¬ì€ null ì²˜ë¦¬
+                effectObject[i] = (null);
+            }
+        }
+    }
+    
+    // ì¹´ë“œë¥¼ ë²„ë¦´ ë•Œ ì˜¤ë¸Œì íŠ¸ë¥¼ íŒŒê´´í•œë‹¤
+    // ì´í™íŠ¸ ì¶œë ¥ ë„ì¤‘ ì¹´ë“œê°€ íŒŒê´´ë˜ë©´ ì´í™íŠ¸ë„ ê°™ì´ ì‚¬ë¼ì§„ë‹¤
+    // -> isPlayingìœ¼ë¡œ ë°©ì§€
+    private void OnDestroy()
+    {
+        foreach(ParticleSystem particle in effectObject)
+        {
+            if(particle != null && !isPlaying)
+            {
+                Destroy(particle.gameObject);
+            }
+        }
     }
 
-    #region ¸¶¿ì½º »óÈ£ÀÛ¿ë
-    // ¸¶¿ì½º¸¦ Ä«µå À§¿¡ ¿Ã¸± ‹š ½ÇÇàµÈ´Ù.
+    #region ë§ˆìš°ìŠ¤ ìƒí˜¸ì‘ìš©
+    // ë§ˆìš°ìŠ¤ë¥¼ ì¹´ë“œ ìœ„ì— ì˜¬ë¦´ ë–„ ì‹¤í–‰ëœë‹¤.
     void OnMouseEnter()
     {
         if (BattleInfo.Instance.isGameOver)
@@ -60,11 +94,11 @@ public class Card : MonoBehaviour
 
         CardManager.Instance.CardMouseEnter(this);
 
-        // ½ÇÇà ÁßÀÎ moveSequence°¡ ÀÖ´Ù¸é Á¾·áÇÑ´Ù.
+        // ì‹¤í–‰ ì¤‘ì¸ moveSequenceê°€ ìˆë‹¤ë©´ ì¢…ë£Œí•œë‹¤.
         moveSequence.Kill();
     }
 
-    // ¸¶¿ì½º°¡ Ä«µå¸¦ ¹ş¾î³¯ ‹š ½ÇÇàµÈ´Ù.
+    // ë§ˆìš°ìŠ¤ê°€ ì¹´ë“œë¥¼ ë²—ì–´ë‚  ë–„ ì‹¤í–‰ëœë‹¤.
     void OnMouseExit()
     {
         if (BattleInfo.Instance.isGameOver)
@@ -82,7 +116,7 @@ public class Card : MonoBehaviour
 
     Vector3 arrowOffset = new Vector3(0f, 100f, 3f);
 
-    // µå·¡±×°¡ ½ÃÀÛµÉ ¶§ È£ÃâµÈ´Ù.
+    // ë“œë˜ê·¸ê°€ ì‹œì‘ë  ë•Œ í˜¸ì¶œëœë‹¤.
     public void OnMouseDown()
     {
         if (BattleInfo.Instance.isGameOver)
@@ -90,36 +124,36 @@ public class Card : MonoBehaviour
             return;
         }
 
-        // ½ÇÇà ÁßÀÎ moveSequence°¡ ÀÖ´Ù¸é Á¾·áÇÑ´Ù.
+        // ì‹¤í–‰ ì¤‘ì¸ moveSequenceê°€ ìˆë‹¤ë©´ ì¢…ë£Œí•œë‹¤.
         moveSequence.Kill();
 
-        // ´Ù¸¥ Ä«µåÀÇ ¸¶¿ì½º ÀÌº¥Æ®¸¦ ¸·´Â´Ù.
+        // ë‹¤ë¥¸ ì¹´ë“œì˜ ë§ˆìš°ìŠ¤ ì´ë²¤íŠ¸ë¥¼ ë§‰ëŠ”ë‹¤.
         CardArrow.Instance.ShowBlocker();
 
-        // °ø°İ Ä«µåÀÏ °æ¿ì
+        // ê³µê²© ì¹´ë“œì¼ ê²½ìš°
         if (isTargetingCard)
         {
-            // ÇöÀç ¸¶¿ì½ºÀÇ À§Ä¡¸¦ °è»êÇÑ´Ù.
+            // í˜„ì¬ ë§ˆìš°ìŠ¤ì˜ ìœ„ì¹˜ë¥¼ ê³„ì‚°í•œë‹¤.
             Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f);
             Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
 
-            // Ç¥½Ã Àü¿¡ À§Ä¡¸¦ ¿Å°Ü, ÇÁ·¹ÀÓ ´ÜÀ§·Î ÀÌ»óÇÑ °É ¼öÁ¤
+            // í‘œì‹œ ì „ì— ìœ„ì¹˜ë¥¼ ì˜®ê²¨, í”„ë ˆì„ ë‹¨ìœ„ë¡œ ì´ìƒí•œ ê±¸ ìˆ˜ì •
             CardArrow.Instance.MoveStartPosition(transform.position + arrowOffset);
             CardArrow.Instance.MoveArrow(worldPosition);
 
-            // È­»ìÇ¥¸¦ Ç¥½ÃÇÑ´Ù.
+            // í™”ì‚´í‘œë¥¼ í‘œì‹œí•œë‹¤.
             CardArrow.Instance.ShowArrow();
 
-            // Áß¾Ó¿¡¼­ Æ÷Ä¿½º½ÃÅ²´Ù.
+            // ì¤‘ì•™ì—ì„œ í¬ì»¤ìŠ¤ì‹œí‚¨ë‹¤.
             FocusCardOnCenter();
         }
-        // °ø°İ Ä«µå°¡ ¾Æ´Ò °æ¿ì, ¾Æ¹« ÀÏµµ ÇÏÁö ¾Ê´Â´Ù. (Ä«µå°¡ ¸¶¿ì½º¸¦ µû¶ó°¨)
+        // ê³µê²© ì¹´ë“œê°€ ì•„ë‹ ê²½ìš°, ì•„ë¬´ ì¼ë„ í•˜ì§€ ì•ŠëŠ”ë‹¤. (ì¹´ë“œê°€ ë§ˆìš°ìŠ¤ë¥¼ ë”°ë¼ê°)
 
-        // µå·¡±× ÁßÀÓÀ» Ç¥½Ã
+        // ë“œë˜ê·¸ ì¤‘ì„ì„ í‘œì‹œ
         isDragging = true;
     }
 
-    // µå·¡±× ÁßÀÏ ¶§ °è¼Ó È£ÃâµÈ´Ù.
+    // ë“œë˜ê·¸ ì¤‘ì¼ ë•Œ ê³„ì† í˜¸ì¶œëœë‹¤.
     public void OnMouseDrag()
     {
         if (BattleInfo.Instance.isGameOver)
@@ -127,24 +161,24 @@ public class Card : MonoBehaviour
             return;
         }
 
-        // ÇöÀç ¸¶¿ì½ºÀÇ À§Ä¡¸¦ °è»êÇÑ´Ù.
+        // í˜„ì¬ ë§ˆìš°ìŠ¤ì˜ ìœ„ì¹˜ë¥¼ ê³„ì‚°í•œë‹¤.
         Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f);
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
 
         if (isTargetingCard)
         {
             CardArrow.Instance.MoveStartPosition(transform.position + arrowOffset);
-            // Å¸°ÙÆÃ Ä«µåÀÏ °æ¿ì, È­»ìÇ¥ÀÇ ³¡ÀÌ ¸¶¿ì½º¸¦ ÇâÇÑ´Ù.
+            // íƒ€ê²ŸíŒ… ì¹´ë“œì¼ ê²½ìš°, í™”ì‚´í‘œì˜ ëì´ ë§ˆìš°ìŠ¤ë¥¼ í–¥í•œë‹¤.
             CardArrow.Instance.MoveArrow(worldPosition);
         }
         else
         {
-            // ³íÅ¸°ÙÆÃ Ä«µå´Â Ä«µå°¡ ¸¶¿ì½º¸¦ ºÎµå·´°Ô µû¶ó´Ù´Ñ´Ù.
+            // ë…¼íƒ€ê²ŸíŒ… ì¹´ë“œëŠ” ì¹´ë“œê°€ ë§ˆìš°ìŠ¤ë¥¼ ë¶€ë“œëŸ½ê²Œ ë”°ë¼ë‹¤ë‹Œë‹¤.
             transform.position = Vector2.Lerp(transform.position, worldPosition, 0.06f);
         }
     }
 
-    // µå·¡±×°¡ ³¡³¯ ¶§ È£ÃâµÈ´Ù.
+    // ë“œë˜ê·¸ê°€ ëë‚  ë•Œ í˜¸ì¶œëœë‹¤.
     public void OnMouseUp()
     {
         if (BattleInfo.Instance.isGameOver)
@@ -154,61 +188,62 @@ public class Card : MonoBehaviour
 
         if (isTargetingCard)
         {
-            // È­»ìÇ¥¸¦ ¼û±ä´Ù.
+            // í™”ì‚´í‘œë¥¼ ìˆ¨ê¸´ë‹¤.
             CardArrow.Instance.HideArrow();
         }
 
-        // ´Ù¸¥ Ä«µå°¡ ¸¶¿ì½º ÀÌº¥Æ®¸¦ ¹Ş°Ô ÇÑ´Ù.
+        // ë‹¤ë¥¸ ì¹´ë“œê°€ ë§ˆìš°ìŠ¤ ì´ë²¤íŠ¸ë¥¼ ë°›ê²Œ í•œë‹¤.
         CardArrow.Instance.HideBlocker();
 
-        // µå·¡±×°¡ ³¡³²À» Ç¥½Ã
+        // ë“œë˜ê·¸ê°€ ëë‚¨ì„ í‘œì‹œ
         isDragging = false;
-        // Ä«µå¸¦ »ç¿ëÇÑ´Ù.
+        // ì¹´ë“œë¥¼ ì‚¬ìš©í•œë‹¤.
         StartCoroutine(UseCard());
     }
-    #endregion ¸¶¿ì½º »óÈ£ÀÛ¿ë
+    #endregion ë§ˆìš°ìŠ¤ ìƒí˜¸ì‘ìš©
 
-    #region Ä«µå »ç¿ë
-    [SerializeField] private float skillDelay = 0.2f;
+    #region ì¹´ë“œ ì‚¬ìš©
+    private float skillDelay = 0.5f;
 
-    // Ä«µå¸¦ »ç¿ëÇÑ´Ù. (¸¶¿ì½º°¡ ³õ¾ÆÁö´Â ½ÃÁ¡¿¡ È£Ãâ)
+    // ì¹´ë“œë¥¼ ì‚¬ìš©í•œë‹¤. (ë§ˆìš°ìŠ¤ê°€ ë†“ì•„ì§€ëŠ” ì‹œì ì— í˜¸ì¶œ)
     private IEnumerator UseCard()
     {
-        // ÄÚ½ºÆ®°¡ ¸ğÀÚ¶õ °æ¿ì
+        // ì½”ìŠ¤íŠ¸ê°€ ëª¨ìë€ ê²½ìš°
         if (BattleInfo.Instance.CanUseCost(cardData.cost) == false)
         {
-            // Ä«µå ¹ßµ¿À» Ãë¼ÒÇÑ´Ù.
+            // ì¹´ë“œ ë°œë™ì„ ì·¨ì†Œí•œë‹¤.
             CancelUsingCard();
 
             yield break;
         }
 
-        // Å¸°ÙÆÃ ½ºÅ³ÀÏ ¶§
+        // ì• ë‹ˆë©”ì´ì…˜ì´ ëë‚¬ëŠ”ì§€ ê²€ì‚¬í•˜ëŠ” ë³€ìˆ˜
+        bool isAnimationDone = false;
+
+        // íƒ€ê²ŸíŒ… ìŠ¤í‚¬ì¼ ë•Œ
         if (isTargetingCard)
         {
             LayerMask layer = LayerMask.GetMask("Enemy");
 
-            // layer°¡ ÀÏÄ¡ÇÏ´Â, ¼±ÅÃµÈ ¿ÀºêÁ§Æ®¸¦ °¡Á®¿Â´Ù.
+            // layerê°€ ì¼ì¹˜í•˜ëŠ”, ì„ íƒëœ ì˜¤ë¸Œì íŠ¸ë¥¼ ê°€ì ¸ì˜¨ë‹¤.
             GameObject selectedObject = GetClickedObject(layer);
 
-            // ¿ÀºêÁ§Æ®°¡ ¼±ÅÃµÇÁö ¾Ê¾Ò´Ù¸é
+            // ì˜¤ë¸Œì íŠ¸ê°€ ì„ íƒë˜ì§€ ì•Šì•˜ë‹¤ë©´
             if (selectedObject == null)
             {
-                // Ä«µå ¹ßµ¿À» Ãë¼ÒÇÑ´Ù.
+                // ì¹´ë“œ ë°œë™ì„ ì·¨ì†Œí•œë‹¤.
                 CancelUsingCard();
 
                 yield break;
             }
 
-            // ÄÚ½ºÆ®¸¦ °¨¼Ò½ÃÅ²´Ù.
+            // ì½”ìŠ¤íŠ¸ë¥¼ ê°ì†Œì‹œí‚¨ë‹¤.
             BattleInfo.Instance.UseCost(cardData.cost);
 
-            // Ä«µå¸¦ ¹¦Áö·Î º¸³½´Ù. º¸³»´Â °Å Àâ¾ÆÃ¤Áö ¸øÇÏ°Ô Colliderµµ Àá±ñ ²¨µĞ´Ù.
+            // ì¹´ë“œë¥¼ ë¬˜ì§€ë¡œ ë³´ë‚¸ë‹¤. ë³´ë‚´ëŠ” ê±° ì¡ì•„ì±„ì§€ ëª»í•˜ê²Œ Colliderë„ ì ê¹ êº¼ë‘”ë‹¤.
             cardCollider.enabled = false;
 
-            // ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ³¡³µ´ÂÁö °Ë»çÇÏ´Â º¯¼ö
-            bool isAnimationDone = false;
-            // ÀÏ´Ü ¾Æ·¡ÀÇ ÄÚµå¸¦ ±×´ë·Î °¡Á®¿Ô´Ù. ÇÔ¼öÈ­ÇÏ¸é ÁÁÀ» µí
+            // ì¼ë‹¨ ì•„ë˜ì˜ ì½”ë“œë¥¼ ê·¸ëŒ€ë¡œ ê°€ì ¸ì™”ë‹¤. í•¨ìˆ˜í™”í•˜ë©´ ì¢‹ì„ ë“¯
             moveSequence = DOTween.Sequence()
                 .Append(transform.DOMove(CardManager.Instance.cardDumpPoint.position, dotweenTime))
                 .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
@@ -216,131 +251,136 @@ public class Card : MonoBehaviour
                 .OnComplete(() => {
                     cardCollider.enabled = true;
                     isAnimationDone = true;
-                }); // ¾Ö´Ï¸ŞÀÌ¼Ç ³¡³ª¸é ¾Ë¸²
+                }); // ì• ë‹ˆë©”ì´ì…˜ ëë‚˜ë©´ ì•Œë¦¼
 
-            // ÀÌÁ¦ °ø°İ Å¸°ÙÀ» Á¤ÇØ¾ß ÇÑ´Ù.
-            // Àû ¿ÀºêÁ§Æ®ÀÇ Enemy ½ºÅ©¸³Æ®¸¦ °¡Á®¿Â´Ù
+            // ì´ì œ ê³µê²© íƒ€ê²Ÿì„ ì •í•´ì•¼ í•œë‹¤.
+            // ì  ì˜¤ë¸Œì íŠ¸ì˜ Enemy ìŠ¤í¬ë¦½íŠ¸ë¥¼ ê°€ì ¸ì˜¨ë‹¤
             Enemy selectedEnemy = selectedObject.GetComponent<Enemy>();
 
-            // Ä«µåÀÇ ¸ğµç È¿°ú¸¦ ¹ßµ¿ÇÑ´Ù.
+            // ì¹´ë“œì˜ ëª¨ë“  íš¨ê³¼ë¥¼ ë°œë™í•œë‹¤.
             for (int i = 0; i < cardData.skills.Length; ++i)
             {
-                // Å¸°ÙÀ» Á¤ÇÑ´Ù.
+                // íƒ€ê²Ÿì„ ì •í•œë‹¤.
                 selectedCharacter = CardInfo.Instance.GetTarget(cardData.skills[i].target, selectedEnemy);
 
-                // ÇØ´ç Å¸°Ù¿¡°Ô ½ºÅ³À» ½ÃÀüÇÑ´Ù.
-                CardInfo.Instance.ActivateSkill(cardData.skills[i], selectedCharacter);
+                // í•´ë‹¹ íƒ€ê²Ÿì—ê²Œ ìŠ¤í‚¬ì„ ì‹œì „í•œë‹¤.
+                CardInfo.Instance.ActivateSkill(cardData.skills[i], selectedCharacter, Player.Instance);
 
-                // µô·¹ÀÌ¸¦ ÁÖ¸é Á» ´õ ÀÚ¿¬½º·´´Ù. -> ÄÚ·çÆ¾ÀÇ ÇÊ¿ä
+                // ì´í™íŠ¸ ì¶œë ¥
+                if (effectObject[i] != null)
+                {
+                    effectObject[i].transform.position = selectedEnemy.transform.position;
+                    effectObject[i].Play();
+                    isPlaying = true;
+                }
+
+                // ë”œë ˆì´ë¥¼ ì£¼ë©´ ì¢€ ë” ìì—°ìŠ¤ëŸ½ë‹¤. -> ì½”ë£¨í‹´ì˜ í•„ìš”
                 yield return new WaitForSeconds(skillDelay);
             }
-
-            // ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ³¡³¯ ¶§±îÁö ±â´Ù¸°´Ù.
-            while (isAnimationDone == false)
-            {
-                yield return null;
-            }
-
-            // Ä«µå¸¦ »èÁ¦ÇÑ´Ù.
-            CardManager.Instance.DiscardCard(this);
         }
 
-        // ³íÅ¸°Ù ½ºÅ³ÀÏ ¶§
+        // ë…¼íƒ€ê²Ÿ ìŠ¤í‚¬ì¼ ë•Œ
         else
         {
-            // Field ·¹ÀÌ¾î¸¦ ¼±ÅÃÇÑ´Ù.
+            // Field ë ˆì´ì–´ë¥¼ ì„ íƒí•œë‹¤.
             LayerMask layer = LayerMask.GetMask("Field");
 
-            // layer°¡ ÀÏÄ¡ÇÏ´Â, ¼±ÅÃµÈ ¿ÀºêÁ§Æ®¸¦ °¡Á®¿Â´Ù.
+            // layerê°€ ì¼ì¹˜í•˜ëŠ”, ì„ íƒëœ ì˜¤ë¸Œì íŠ¸ë¥¼ ê°€ì ¸ì˜¨ë‹¤.
             GameObject selectedObject = GetClickedObject(layer);
 
-            // ¿ÀºêÁ§Æ®°¡ ¼±ÅÃµÇÁö ¾Ê¾Ò´Ù¸é
+            // ì˜¤ë¸Œì íŠ¸ê°€ ì„ íƒë˜ì§€ ì•Šì•˜ë‹¤ë©´
             if (selectedObject == null)
             {
-                // Ä«µå ¹ßµ¿À» Ãë¼ÒÇÑ´Ù.
+                // ì¹´ë“œ ë°œë™ì„ ì·¨ì†Œí•œë‹¤.
                 CancelUsingCard();
 
                 yield break;
             }
 
-            // ÄÚ½ºÆ®¸¦ °¨¼Ò½ÃÅ²´Ù.
+            // ì½”ìŠ¤íŠ¸ë¥¼ ê°ì†Œì‹œí‚¨ë‹¤.
             BattleInfo.Instance.UseCost(cardData.cost);
 
-            // Ä«µå¸¦ ¹¦Áö·Î º¸³½´Ù. º¸³»´Â °Å Àâ¾ÆÃ¤Áö ¸øÇÏ°Ô Colliderµµ Àá±ñ ²¨µĞ´Ù.
+            // ì¹´ë“œë¥¼ ë¬˜ì§€ë¡œ ë³´ë‚¸ë‹¤. ë³´ë‚´ëŠ” ê±° ì¡ì•„ì±„ì§€ ëª»í•˜ê²Œ Colliderë„ ì ê¹ êº¼ë‘”ë‹¤.
             cardCollider.enabled = false;
 
-            // ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ³¡³µ´ÂÁö °Ë»çÇÏ´Â º¯¼ö
-            bool isAnimationDone = false;
-            // ÀÏ´Ü ¾Æ·¡ÀÇ ÄÚµå¸¦ ±×´ë·Î °¡Á®¿Ô´Ù. ÇÔ¼öÈ­ÇÏ¸é ÁÁÀ» µí
+            // ì¼ë‹¨ ì•„ë˜ì˜ ì½”ë“œë¥¼ ê·¸ëŒ€ë¡œ ê°€ì ¸ì™”ë‹¤. í•¨ìˆ˜í™”í•˜ë©´ ì¢‹ì„ ë“¯
             moveSequence = DOTween.Sequence()
-                // Áß¾ÓÀ¸·Î ÀÌµ¿ÇÏ°í
+                // ì¤‘ì•™ìœ¼ë¡œ ì´ë™í•˜ê³ 
                 .Append(transform.DOMove(Vector3.zero, dotweenTime))
                 .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
                 .Join(transform.DOScale(originPRS.scale * 1.2f, dotweenTime))
-                // 1ÃÊ°£ Á¤Áö
+                // 1ì´ˆê°„ ì •ì§€
                 .AppendInterval(focusTime)
-                // ¹¦Áö·Î ÀÌµ¿ÇÑ´Ù.
+                // ë¬˜ì§€ë¡œ ì´ë™í•œë‹¤.
                 .Append(transform.DOMove(CardManager.Instance.cardDumpPoint.position, dotweenTime))
                 .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
                 .Join(transform.DOScale(Vector3.one, dotweenTime))
                 .OnComplete(() => {
                     cardCollider.enabled = true;
                     isAnimationDone = true;
-                }); // ¾Ö´Ï¸ŞÀÌ¼Ç ³¡³ª¸é ¾Ë¸²
+                }); // ì• ë‹ˆë©”ì´ì…˜ ëë‚˜ë©´ ì•Œë¦¼
 
-            // Ä«µåÀÇ ¸ğµç È¿°ú¸¦ ¹ßµ¿ÇÑ´Ù.
+            // ì¹´ë“œì˜ ëª¨ë“  íš¨ê³¼ë¥¼ ë°œë™í•œë‹¤.
             for (int i = 0; i < cardData.skills.Length; ++i)
             {
-                // Å¸°ÙÀ» Á¤ÇÑ´Ù. Å¸°ÙÆÃ Ä«µå°¡ ¾Æ´Ï´Ï, selectedEnemy´Â ¾ø´Ù.
+                // íƒ€ê²Ÿì„ ì •í•œë‹¤. íƒ€ê²ŸíŒ… ì¹´ë“œê°€ ì•„ë‹ˆë‹ˆ, selectedEnemyëŠ” ì—†ë‹¤.
                 selectedCharacter = CardInfo.Instance.GetTarget(cardData.skills[i].target);
 
-                CardInfo.Instance.ActivateSkill(cardData.skills[i], selectedCharacter);
+                CardInfo.Instance.ActivateSkill(cardData.skills[i], selectedCharacter, Player.Instance);
 
-                // µô·¹ÀÌ¸¦ ÁÖ¸é Á» ´õ ÀÚ¿¬½º·´´Ù. -> ÄÚ·çÆ¾ÀÇ ÇÊ¿ä
+                // ì´í™íŠ¸ ì¶œë ¥
+                if (effectObject[i] != null)
+                {
+                    effectObject[i].Play();
+                    isPlaying = true;
+                }
+
+                // ë”œë ˆì´ë¥¼ ì£¼ë©´ ì¢€ ë” ìì—°ìŠ¤ëŸ½ë‹¤. -> ì½”ë£¨í‹´ì˜ í•„ìš”
                 yield return new WaitForSeconds(skillDelay);
             }
-
-            // ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ³¡³¯ ¶§±îÁö ±â´Ù¸°´Ù.
-            while (isAnimationDone == false)
-            {
-                yield return null;
-            }
-
-            // Ä«µå¸¦ »èÁ¦ÇÑ´Ù.
-            CardManager.Instance.DiscardCard(this);
         }
+
+        // ì• ë‹ˆë©”ì´ì…˜ì´ ëë‚  ë•Œê¹Œì§€ ê¸°ë‹¤ë¦°ë‹¤.
+        while (isAnimationDone == false)
+        {
+            yield return null;
+        }
+
+        // ì¹´ë“œë¥¼ ì‚­ì œí•œë‹¤.
+        CardManager.Instance.DiscardCard(this);
     }
 
-    // Ä«µå ¹ßµ¿À» Ãë¼ÒÇÑ´Ù.
+    // ì¹´ë“œ ë°œë™ì„ ì·¨ì†Œí•œë‹¤.
     void CancelUsingCard()
     {
         MoveTransform(originPRS, true, 0.5f);
         cardOrder.SetMostFrontOrder(false);
     }
-    // Å¬¸¯µÈ(µå·¡±× ÈÄ ¸¶¿ì½º¸¦ ¶¾ ¼ø°£) ¿ÀºêÁ§Æ®¸¦ °¡Á®¿Â´Ù.
+    // í´ë¦­ëœ(ë“œë˜ê·¸ í›„ ë§ˆìš°ìŠ¤ë¥¼ ë—€ ìˆœê°„) ì˜¤ë¸Œì íŠ¸ë¥¼ ê°€ì ¸ì˜¨ë‹¤.
     GameObject GetClickedObject(LayerMask layer)
     {
-        // ¸¶¿ì½º À§Ä¡¸¦ ¹Ş¾Æ¿Â´Ù.
+        // ë§ˆìš°ìŠ¤ ìœ„ì¹˜ë¥¼ ë°›ì•„ì˜¨ë‹¤.
         Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        // ¸¶¿ì½º À§Ä¡¿¡ ·¹ÀÌÄ³½ºÆ®¸¦ ½î°í, layer°¡ ÀÏÄ¡ÇÏ´Â ¿ÀºêÁ§Æ® Áß °¡Àå ¸ÕÀú Ãæµ¹ÇÑ ¿ÀºêÁ§Æ®¸¦ ¹İÈ¯ÇÑ´Ù.
+        // ë§ˆìš°ìŠ¤ ìœ„ì¹˜ì— ë ˆì´ìºìŠ¤íŠ¸ë¥¼ ì˜ê³ , layerê°€ ì¼ì¹˜í•˜ëŠ” ì˜¤ë¸Œì íŠ¸ ì¤‘ ê°€ì¥ ë¨¼ì € ì¶©ëŒí•œ ì˜¤ë¸Œì íŠ¸ë¥¼ ë°˜í™˜í•œë‹¤.
         RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f, layer);
 
-        // layer°¡ ÀÏÄ¡ÇÏ´Â ¿ÀºêÁ§Æ®¸¦ Ã£¾Ò´Ù¸é
+        // layerê°€ ì¼ì¹˜í•˜ëŠ” ì˜¤ë¸Œì íŠ¸ë¥¼ ì°¾ì•˜ë‹¤ë©´
         if (hit.collider != null)
         {
-            // ÇØ´ç ¿ÀºêÁ§Æ®¸¦ ¹İÈ¯ÇÏ°í
+            // í•´ë‹¹ ì˜¤ë¸Œì íŠ¸ë¥¼ ë°˜í™˜í•˜ê³ 
             return hit.transform.gameObject;
         }
 
-        // ¾Æ´Ï¶ó¸é nullÀ» ¹İÈ¯ÇÑ´Ù.
+        // ì•„ë‹ˆë¼ë©´ nullì„ ë°˜í™˜í•œë‹¤.
         return null;
     }
-    #endregion Ä«µå »ç¿ë
 
-    #region ¾Ö´Ï¸ŞÀÌ¼Ç
+    #endregion ì¹´ë“œ ì‚¬ìš©
+
+    #region ì• ë‹ˆë©”ì´ì…˜
     public void MoveTransform(PRS destPRS, bool useDotween, float dotweenTime = 0)
     {
-        // µå·¡±× Áß¿£ ½ÇÇàµÇÁö ¾Ê°Ô ÇØ ºÎÀÚ¿¬½º·¯¿î ¿òÁ÷ÀÓÀ» ¹æÁöÇÑ´Ù.
+        // ë“œë˜ê·¸ ì¤‘ì—” ì‹¤í–‰ë˜ì§€ ì•Šê²Œ í•´ ë¶€ìì—°ìŠ¤ëŸ¬ìš´ ì›€ì§ì„ì„ ë°©ì§€í•œë‹¤.
         if (isDragging == true)
         {
             return;
@@ -348,7 +388,7 @@ public class Card : MonoBehaviour
 
         if (useDotween)
         {
-            // moveSequence¿¡ À§Ä¡, È¸Àü, ½ºÄÉÀÏÀ» Á¶Á¤ÇÏ´Â DOTweenÀ» ¿¬°áÇß´Ù.
+            // moveSequenceì— ìœ„ì¹˜, íšŒì „, ìŠ¤ì¼€ì¼ì„ ì¡°ì •í•˜ëŠ” DOTweenì„ ì—°ê²°í–ˆë‹¤.
             moveSequence = DOTween.Sequence()
                 .Append(transform.DOMove(destPRS.pos, dotweenTime))
                 .Join(transform.DORotateQuaternion(destPRS.rot, dotweenTime))
@@ -363,12 +403,12 @@ public class Card : MonoBehaviour
         }
     }
 
-    // Ä«µå¸¦ Áß¾Ó¿¡¼­ °­Á¶ÇÑ´Ù.
+    // ì¹´ë“œë¥¼ ì¤‘ì•™ì—ì„œ ê°•ì¡°í•œë‹¤.
     void FocusCardOnCenter()
     {
         MoveTransform(new PRS(CardManager.Instance.focusPos, Utils.QI, originPRS.scale * 1.2f), true, dotweenTime);
 
         cardOrder.SetMostFrontOrder(true);
     }
-    #endregion ¾Ö´Ï¸ŞÀÌ¼Ç
+    #endregion ì• ë‹ˆë©”ì´ì…˜
 }

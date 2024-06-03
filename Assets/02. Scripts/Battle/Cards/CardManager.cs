@@ -22,7 +22,7 @@ public class CardManager : MonoBehaviour
     // 핸드
     public List<Card> hand;
     [SerializeField] int maxHand = 10;
-    [SerializeField] Transform cardObjcetParent;
+    [SerializeField] Transform handGroup;
     [SerializeField] Transform handLeft;
     [SerializeField] Transform handRight;
 
@@ -38,7 +38,11 @@ public class CardManager : MonoBehaviour
     List<GameObject> cardBackObjectList;
     [SerializeField] TMP_Text deckCountTMP;
     [SerializeField] TMP_Text dumpCountTMP;
-    [SerializeField] Transform cardBackObjectParent;
+    [SerializeField] Transform cardBackGroup;
+
+    // 이펙트
+    [SerializeField] public Transform effectGroup;
+
 
     Card selectCard;
 
@@ -83,7 +87,7 @@ public class CardManager : MonoBehaviour
         // 카드 뒷면 오브젝트 생성해서 리스트에 추가하고 enable 처리
         for (int i = 0; i < listSize; i++)
         {
-            cardBackObjectList.Add(Instantiate(cardBackPrefab, cardDumpPoint.position, Utils.QI, cardBackObjectParent));
+            cardBackObjectList.Add(Instantiate(cardBackPrefab, cardDumpPoint.position, Utils.QI, cardBackGroup));
             cardBackObjectList[i].SetActive(false);
         }
         #endregion
@@ -165,12 +169,12 @@ public class CardManager : MonoBehaviour
 
     void AddCardToHand(bool isMine)
     {
-        if (!isMine || hand.Count > maxHand)
+        if (!isMine || hand.Count > maxHand || deck.Count + dump.Count == 0)
         {
             return;
         }
 
-        var cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI, cardObjcetParent);
+        var cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI, handGroup);
         var card = cardObject.GetComponent<Card>();
 
         // DrawCard() 호출 전에 덱이 비었는지 확인
@@ -181,6 +185,7 @@ public class CardManager : MonoBehaviour
             MergeDumpToDeck();
         }
 
+        card.effectGroup = effectGroup;
         card.Setup(DrawCard());
         card.transform.localScale = Vector3.zero;
         hand.Add(card);
@@ -285,7 +290,7 @@ public class CardManager : MonoBehaviour
     }
 
     // dump와 hand를 덱으로 모아서 셔플
-    void SetUpDeck()
+    public void SetUpDeck()
     {
         // hand의 카드들을 deck에 추가하고 오브젝트 파괴
         for (int i = 0; i < hand.Count; i++)
@@ -311,7 +316,7 @@ public class CardManager : MonoBehaviour
         ShuffleDeck();
     }
 
-    void MergeDumpToDeck()
+    public void MergeDumpToDeck()
     {
         // dump의 카드들을 deck에 추가
         for (int i = 0; i < dump.Count; i++)

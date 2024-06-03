@@ -1,56 +1,59 @@
-// ±è¹ÎÃ¶
+// ê¹€ë¯¼ì² 
 using UnityEngine;
 
-// Ä«µåÀÇ Á¾·ù
+// ì¹´ë“œì˜ ì¢…ë¥˜
 public enum SkillType
 {
-    Attack,         // °ø°İ
-    Shield,         // ½Çµå »ı¼º
-    Heal,           // Ã¼·Â È¸º¹
-    Cleanse,        // µğ¹öÇÁ Á¦°Å
-    RestoreCost,    // ÄÚ½ºÆ® È¸º¹
-    Draw,           // Ä«µå µå·Î¿ì
-    Bleed,          // ÃâÇ÷
+    Attack,         // ê³µê²©
+    Shield,         // ì‹¤ë“œ ìƒì„±
+    Heal,           // ì²´ë ¥ íšŒë³µ
+    Cleanse,        // ë””ë²„í”„ ì œê±°
+    RestoreCost,    // ì½”ìŠ¤íŠ¸ íšŒë³µ
+    Draw,           // ì¹´ë“œ ë“œë¡œìš°
+    Bleed,          // ì¶œí˜ˆ
+    AddExtraDamage, // ì¶”ê°€ ë°ë¯¸ì§€ ì œê³µ
 }
 
 public enum SkillTarget
 {
-    Player,         // ÇÃ·¹ÀÌ¾î
-    Enemy,          // Àû
-    AllEnemy,       // ¸ğµç Àû
+    Player,         // í”Œë ˆì´ì–´
+    Enemy,          // ì 
+    AllEnemy,       // ëª¨ë“  ì 
 }
 
-// Ä«µå°¡ °®°í ÀÖ´Â ½ºÅ³ÀÇ Á¾·ù
-[System.Serializable]   // ÀÌ°É ºÙ¿©Áà¾ß Inspector¿¡ ³ªÅ¸³­´Ù.
+// ì¹´ë“œê°€ ê°–ê³  ìˆëŠ” ìŠ¤í‚¬ì˜ ì¢…ë¥˜
+[System.Serializable]   // ì´ê±¸ ë¶™ì—¬ì¤˜ì•¼ Inspectorì— ë‚˜íƒ€ë‚œë‹¤.
 public class Skill
 {
-    [Header("Ä«µå ¼º´É")]
-    // Ä«µå È¿°úÀÇ Á¾·ù
+    [Header("ì¹´ë“œ ì„±ëŠ¥")]
+    // ì¹´ë“œ íš¨ê³¼ì˜ ì¢…ë¥˜
     public SkillType type;
-    // ½ºÅ³À» Àû¿ë¹ŞÀ» Å¸°Ù
+    // ìŠ¤í‚¬ì„ ì ìš©ë°›ì„ íƒ€ê²Ÿ
     public SkillTarget target;
-    // Ä«µå È¿°ú¿¡ Àû¿ëµÇ´Â ¼öÄ¡
+    // ì¹´ë“œ íš¨ê³¼ì— ì ìš©ë˜ëŠ” ìˆ˜ì¹˜
     public int amount;
-    // È¿°ú°¡ Áö¼ÓµÇ´Â ÅÏ ¼ö
+    // íš¨ê³¼ê°€ ì§€ì†ë˜ëŠ” í„´ ìˆ˜
     public int turnCount;
+    // ìŠ¤í‚¬ ì´í™íŠ¸
+    public ParticleSystem effectPrefeb;
 }
 
-// À¯´ÏÆ¼ ¿¡µğÅÍ, Project ºäÀÇ Create ¸Ş´º¿¡ ¾Æ·¡ Ç×¸ñÀ» Ãß°¡ÇÑ´Ù.
+// ìœ ë‹ˆí‹° ì—ë””í„°, Project ë·°ì˜ Create ë©”ë‰´ì— ì•„ë˜ í•­ëª©ì„ ì¶”ê°€í•œë‹¤.
 [CreateAssetMenu(fileName = "Card Data", menuName = "Scriptable Object/Card Data", order = 0)]
 public class CardData : ScriptableObject
 {
-    [Header("Ä«µå ¸ğ¾ç")]
-    // Ä«µå ÀÌ¸§
+    [Header("ì¹´ë“œ ëª¨ì–‘")]
+    // ì¹´ë“œ ì´ë¦„
     public new string name;
-    // Ä«µå ¼³¸í
+    // ì¹´ë“œ ì„¤ëª…
     [TextArea(3, 5)]
     public string description;
-    // Ä«µå ÀÏ·¯½ºÆ®
+    // ì¹´ë“œ ì¼ëŸ¬ìŠ¤íŠ¸
     public Sprite sprite;
 
-    [Header("Ä«µå ¼º´É")]
-    // Ä«µå ½ºÅ³
+    [Header("ì¹´ë“œ ì„±ëŠ¥")]
+    // ì¹´ë“œ ìŠ¤í‚¬
     public Skill[] skills;
-    // Ä«µå ¹ßµ¿¿¡ ÇÊ¿äÇÑ ÄÚ½ºÆ®
+    // ì¹´ë“œ ë°œë™ì— í•„ìš”í•œ ì½”ìŠ¤íŠ¸
     public int cost;
 }

@@ -46,7 +46,7 @@ public class Player : Character
         BattleInfo.Instance.isGameOver = true;
 
         currentHp = 0;
-        UpdateCurrentHP();
+        UpdateHPUI();
 
         GameManager.Instance.Notification("게임 오버");
     }

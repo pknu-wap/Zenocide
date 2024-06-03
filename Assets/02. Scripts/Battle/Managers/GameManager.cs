@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] NotificationPanel notificationPanel;
     [SerializeField] Transform enemiesParent;
-    [SerializeField] private Enemy[] enemies;
+    [SerializeField] public Enemy[] enemies;
 
     // 전투 시작 시 실행할 이벤트
     public UnityEvent onStartBattle;
@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
         enemies = enemiesParent.GetComponentsInChildren<Enemy>();
 
         // 시작은 스토리
-        SwitchToStoryScene();
+        // SwitchToStoryScene();
     }
 
     void Update()
@@ -60,6 +60,17 @@ public class GameManager : MonoBehaviour
 
         // TurnManager를 통해 게임 시작
         StartCoroutine(TurnManager.Instance.StartGameCo());
+    }
+
+    public void FinishTutorial()
+    {
+        // 다시 처음으로 돌리고
+        DiaryManager.Instance.currentDialogIndex = 0;
+        DiaryManager.Instance.currentPageIndex = 0;
+
+        // 스토리 시작
+        tutorialCamera.SetActive(false);
+        StartStory();
     }
 
     // 스토리를 시작한다.
@@ -102,6 +113,7 @@ public class GameManager : MonoBehaviour
     #region 카메라 전환
     [SerializeField] GameObject storyCamera;
     [SerializeField] GameObject battleCamera;
+    [SerializeField] GameObject tutorialCamera;
 
     private void SwitchToStoryScene()
     {

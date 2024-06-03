@@ -20,9 +20,8 @@ public class TurnManager : MonoBehaviour
     public bool myTurn;
 
     enum ETurnMode { Random, My, Other }
-    WaitForSeconds delay03 = new WaitForSeconds(0.3f);
     WaitForSeconds delay05 = new WaitForSeconds(0.5f);
-    WaitForSeconds delay07 = new WaitForSeconds(0.7f);
+    WaitForSeconds delay10 = new WaitForSeconds(1f);
 
     public static Action<bool> OnAddCard;
 
@@ -96,7 +95,7 @@ public class TurnManager : MonoBehaviour
         // 드로우 카드 수만큼 드로우
         for (int i = 0; i < count; i++)
         {
-            yield return delay03;
+            yield return delay10;   // 포커싱 + 얼라인 시간 기다리기
             OnAddCard?.Invoke(true);
         }
     }
@@ -156,7 +155,47 @@ public class TurnManager : MonoBehaviour
         // 적 턴일 때 호출
         else
         {
-            onEndEnemyTurn.Invoke();
+            #region 적 공격
+            // 적이 랜덤한 순서로 스킬을 사용함
+            // 더 깔끔한 알고리즘이 있지 않을까
+            int enemyIndex = Random.Range(0, 4);
+            int count = 0;
+            bool[] hasAttack = new bool[4]; // 변수 이름이 부적절한 거 같다.
+            Array.Fill(hasAttack, false);
+
+            while (count < 4)
+            {
+                Enemy enemy = GameManager.Instance.enemies[enemyIndex];
+
+                // 공격한 적은 체크
+                if (!hasAttack[enemyIndex])
+                {
+                    count++;
+                    hasAttack[enemyIndex] = true;
+                }
+                else
+                {
+                    enemyIndex = Random.Range(0, 4);
+                    continue;
+                }
+
+                // 비활성화 된 적은 패스
+                if (!enemy.gameObject.activeSelf)
+                {
+                    enemyIndex = Random.Range(0, 4);
+                    continue;
+                }
+
+                // 실제 스킬 사용
+                enemy.EndEnemyTurn();
+
+                // 스킬 모션
+                yield return StartCoroutine(enemy.SkillMotion());
+
+                enemyIndex = Random.Range(0, 4);
+            }
+            #endregion 적 공격
+
             onStartPlayerTurn.Invoke();
 
             // 플레이어 턴으로 변경
