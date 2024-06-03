@@ -141,9 +141,8 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
             }
 
             // 이벤트의 모든 요소 종료 이후 관련된 다음 이벤트가 존재 시 추가적으로 실행
-            if(loadedEvent.nextEvent != null)
+            if(loadedEvent.nextEvent.Length != 0)
             {
-                Debug.Log("관련 이벤트 발생");
                 EventData relationEvent = loadedEvent.nextEvent[selectManager.result];
                 for(int k = relationEvent.startIndex; k < relationEvent.endIndex + 1; k++)
                 {
@@ -261,7 +260,7 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
             string requireItem = csvData["RequireItem" + (i + 1)].ToString();
             if (requireItem != "")
             {
-                if(SearchItem(requireItem))
+                if(Items.Instance.items.ContainsKey(requireItem))
                 {
                     choiceRequireText[i].text = "필요한 아이템: <color=green>" + requireItem + "</color>";
                 }
@@ -331,16 +330,6 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         System.Random random = new System.Random();
         int randomIndex = random.Next(array.Count);
         return array[randomIndex];
-    }
-
-     public bool SearchItem(string itemName)
-    {
-        bool result = false;
-        foreach(TMP_Text item in Items.Instance.slots)
-        {
-            result = item.text == itemName ? true : false;
-        }
-        return result;
     }
 
     public void ShowIllust(List<string> names)
