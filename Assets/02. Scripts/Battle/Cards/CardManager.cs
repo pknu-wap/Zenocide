@@ -123,7 +123,14 @@ public class CardManager : MonoBehaviour
         deck.Add(cardDict[cardName]);
         UpdateDeckCount();
     }
-    
+
+    // 카드를 덱에 추가한다. (CardData)
+    public void AddCardToDeck(CardData card)
+    {
+        deck.Add(card);
+        UpdateDeckCount();
+    }
+
     // 카드를 덱에서 삭제한다.
     public void RemoveCardFromDeck(string cardName)
     {

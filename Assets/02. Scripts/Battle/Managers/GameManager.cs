@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
     private void Awake() => Instance = this;
 
+    [Header("컴포넌트 및 오브젝트")]
+    [SerializeField] private GameObject rewardPanel;
     [SerializeField] NotificationPanel notificationPanel;
     [SerializeField] Transform enemiesParent;
     [SerializeField] public Enemy[] enemies;
@@ -24,6 +26,10 @@ public class GameManager : MonoBehaviour
 
         // 시작은 스토리
         // SwitchToStoryScene();
+
+        // 변수를 찾아 등록한다.
+        EnrollComponent();
+        SetDefaultState();
     }
 
     void Update()
@@ -41,6 +47,18 @@ public class GameManager : MonoBehaviour
             StartCoroutine(CardManager.Instance.AddCardToHand(1));
         }
 
+    }
+
+    // 컴포넌트를 찾아 등록한다.
+    private void EnrollComponent()
+    {
+        rewardPanel = GameObject.Find("Reward Panel");
+    }
+
+    // 초기 상태를 지정한다.
+    private void SetDefaultState()
+    {
+        rewardPanel.SetActive(false);
     }
 
     /// <summary>
@@ -112,6 +130,49 @@ public class GameManager : MonoBehaviour
             enemies[i].gameObject.SetActive(false);
         }
     }
+
+    public void WinBattle()
+    {
+        Notification("승리");
+        StartCoroutine(GiveRewardCard());
+    }
+
+    #region 보상 지급
+    [SerializeField] private int selectedRewardIndex = -1;
+
+    // 보상 카드를 지급한다.
+    public IEnumerator GiveRewardCard()
+    {
+        // 변수 초기화
+        selectedRewardIndex = -1;
+        CardData[] rewardCards = new CardData[3];
+
+        // 보상 카드 선택
+
+        // UI 최신화
+
+
+        // 패널 열기
+        rewardPanel.SetActive(true);
+
+        // 선택될 때까지 대기
+        while(selectedRewardIndex == -1)
+        {
+            yield return null;
+        }
+
+        // 선택되면 덱에 선택한 카드를 추가한다.
+        CardManager.Instance.AddCardToDeck(rewardCards[selectedRewardIndex]);
+
+        // 패널을 닫는다.
+        rewardPanel.SetActive(false);
+    }
+
+    public void SelectReward(int index)
+    {
+        selectedRewardIndex = index;
+    }
+    #endregion 보상 지급
 
     public void Notification(string message)
     {

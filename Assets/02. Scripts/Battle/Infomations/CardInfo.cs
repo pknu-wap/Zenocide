@@ -1,14 +1,11 @@
-// 김민철
 using UnityEngine;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 public class CardInfo : MonoBehaviour
 {
     #region 싱글톤
     public static CardInfo Instance { get; set; }
-    private static CardInfo instance;
 
     public void Awake()
     {

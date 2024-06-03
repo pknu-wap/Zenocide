@@ -15,7 +15,7 @@ public class PageScripter : MonoBehaviour
     public bool isTyping = false;
     public bool cancelTyping = false;
     // 현재까지 적힌 텍스트
-    private string currentDialog = "";
+    [SerializeField] private string currentDialog = "";
     // 선택된 단어
     [SerializeField] private string selectedWord;
 
