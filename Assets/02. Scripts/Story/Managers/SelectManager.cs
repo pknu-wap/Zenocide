@@ -1,63 +1,59 @@
+using System.Collections;
 using UnityEngine;
 
 public class SelectManager : MonoBehaviour
 {
-    public static SelectManager instance;
+    private const int NotSelected = -1;
 
     [Header("선택지 오브젝트")]
-    public GameObject ChoiceUp;
-    public GameObject ChoiceDown;
+    public GameObject[] Choices = new GameObject[4];
 
-    [Header("대화창 오브젝트")]
-    public GameObject Dialogue;
+    [Header("선택지 가림막 오브젝트")]
+    public GameObject[] ChoiceBlinder = new GameObject[4];
 
-    [Header("위 선택지 표시 오브젝트")]
-    public GameObject UpSignLeft;
-    public GameObject UpSignRight;
+    [Header("대화창 가림막 오브젝트")]
+    public GameObject DialogueBlinder;
 
-    [Header("아래 선택지 표시 오브젝트")]
-    public GameObject DownSignLeft;
-    public GameObject DownSignRight;
+    [Header("선택지 갯수 저장 변수")]
+    public int choiceCount = 4;
 
-    private void Awake()
-    {
-        if (instance == null) instance = this;
-        // 기존에 instance가 존재하면 현재 오브젝트를 파괴
-        else Destroy(gameObject); 
-        DontDestroyOnLoad(gameObject);
-    }
-
-    public Choice currentChoice;
-    public bool Selected = false;
-
-    void Start()
-    {
-        // 모든 선택지 표시 비활성화
-        SetSignVisibility(false, false); 
-    }
+    [Header("선택지 결과 저장 변수")]
+    public int result = NotSelected;
 
     void Update()
     {
-        if (currentChoice != null)
-        {
-            if (Choice.Selected != 0)
-            {
-                ChoiceUp.SetActive(false);
-                ChoiceDown.SetActive(false);
-                Dialogue.SetActive(true);
-                Selected = true;
-            }
-            // 선택지에 따라 선택 표시 함수 호출
-            SetSignVisibility(currentChoice.name == "ChoiceBoxUp", 
-                              currentChoice.name == "ChoiceBoxDown");
-        }
+        CheckChoice();
     }
 
-    private void SetSignVisibility(bool isUpSelected, bool isDownSelected)
+    public void CheckChoice()
     {
-        UpSignLeft.SetActive(isUpSelected);
-        UpSignRight.SetActive(isUpSelected);
-        DownSignLeft.SetActive(isDownSelected);
-        DownSignRight.SetActive(isDownSelected);
+        for (int i = 0; i < choiceCount; i++)
+        {
+            if (Choices[i].GetComponent<Choice>().selected)
+            {
+                DisableChoices();
+                result = i;
+            }
+        }
+    }   
+
+    public void ResetChoice()
+    {
+        for (int i = 0; i < choiceCount; i++)
+        {
+            Choices[i].GetComponent<Choice>().selected = false;
+        }
+        result = NotSelected;
     }
+
+    public void DisableChoices()
+    {
+        for (int i = 0; i < choiceCount; i++)
+        {
+            Choices[i].SetActive(false);
+            ChoiceBlinder[i].SetActive(false);
+        }
+        DialogueBlinder.SetActive(false);
+    }
+
 }

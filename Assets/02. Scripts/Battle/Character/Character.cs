@@ -126,9 +126,15 @@ public class Character : MonoBehaviour
 
     #region HP
     // 이 오브젝트의 hp를 반환한다.
-    public int GetHP()
+    public int GetCurrentHP()
     {
         return currentHp;
+    }
+    
+    // 이 오브젝트의 최대 HP를 반환한다.
+    public int GetMaxHP()
+    {
+        return maxHp;
     }
 
     // 현재 HP를 갱신한다.
