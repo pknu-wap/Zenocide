@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -22,8 +21,6 @@ public class TurnManager : MonoBehaviour
     enum ETurnMode { Random, My, Other }
     WaitForSeconds delay05 = new WaitForSeconds(0.5f);
     WaitForSeconds delay10 = new WaitForSeconds(1f);
-
-    public static Action<bool> OnAddCard;
 
     // 턴 이벤트
     public UnityEvent onStartPlayerTurn;    // 플레이어 턴이 시작할 때
@@ -47,29 +44,23 @@ public class TurnManager : MonoBehaviour
         }
     }
 
+    // 게임을 시작한다.
     public IEnumerator StartGameCo()
     {
         // 게임 세팅
         GameSetup();
-        
-        // 플레이어 턴으로 시작한다. 이벤트 호출
-        onStartPlayerTurn.Invoke();
 
+        // 로딩을 시작한다.
         isLoading = true;
 
-        // 드로우 카드 수만큼 드로우
-        for (int i = 0; i < drawCardCount; i++)
-        {
-/*            yield return delay05;
-            OnAddCard?.Invoke(false);*/
-            yield return delay05;
-            OnAddCard?.Invoke(true);
-        }
+        // 플레이어 턴을 시작하고, 끝날 때까지 기다린다.
+        yield return StartCoroutine(StartPlayerTurnCo());
 
-        yield return delay05;
+        // 로딩을 종료한다.
         isLoading = false;
     }
 
+    // 플레이어 턴을 시작한다.
     IEnumerator StartPlayerTurnCo()
     {
         // 턴 시작 UI 출력, 이 부분도 추후 수정해야 합니다.
@@ -78,26 +69,14 @@ public class TurnManager : MonoBehaviour
         // 플레이어 턴 시작 시 이벤트 호출
         onStartPlayerTurn.Invoke();
 
-        // 우리 게임은 오직 플레이어만 드로우합니다.
-        // 드로우 카드 수만큼 드로우
-        for (int i = 0; i < drawCardCount; i++)
-        {
-            yield return delay05;
-            OnAddCard?.Invoke(myTurn);
-        }
-
-        yield return delay05;
+        // 드로우 카드 수만큼 드로우, 끝날 때까지 대기
+        yield return StartCoroutine(CardManager.Instance.AddCardToHand(drawCardCount));
     }
 
-    // 카드를 count 장 드로우 합니다.
-    public IEnumerator DrawCard(int count)
+    // 적 턴을 시작한다.
+    IEnumerator StartEnemyTurnCo()
     {
-        // 드로우 카드 수만큼 드로우
-        for (int i = 0; i < count; i++)
-        {
-            yield return delay10;   // 포커싱 + 얼라인 시간 기다리기
-            OnAddCard?.Invoke(true);
-        }
+        yield break;
     }
 
     public void EndTurn()

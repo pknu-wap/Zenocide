@@ -35,7 +35,11 @@ public class GameManager : MonoBehaviour
     void InputCheatKey()
     {
         if (Input.GetKeyDown(KeyCode.S) && TurnManager.Instance.myTurn)
-            TurnManager.OnAddCard?.Invoke(true);
+        {
+            // 1장 드로우
+            StartCoroutine(CardManager.Instance.AddCardToHand(1));
+        }
+
     }
 
     /// <summary>

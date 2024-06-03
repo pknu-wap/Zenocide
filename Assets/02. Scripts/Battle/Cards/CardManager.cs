@@ -4,35 +4,40 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using TMPro;
+using System.Linq;
 
 public class CardManager : MonoBehaviour
 {
     public static CardManager Instance { get; private set; }
     void Awake() => Instance = this;
 
-    // 카드 풀
+    [Header("카드 풀")]
     [SerializeField] CardList cardList;
     [SerializeField] CardList defaultDeck;
     Dictionary<string, CardData> cardDict;
 
-    // 카드 프리팹
+    [Header("카드 프리팹")]
     [SerializeField] GameObject cardPrefab;
     [SerializeField] GameObject cardBackPrefab;
 
-    // 핸드
+    [Header("드로우 버퍼")]
+    // 덱에서 패로 이동하기 전, 드로우 될 카드들이 모여 있는 곳
+    public List<Card> drawBuffer;
+
+    [Header("핸드")]
     public List<Card> hand;
     [SerializeField] int maxHand = 10;
     [SerializeField] Transform handGroup;
     [SerializeField] Transform handLeft;
     [SerializeField] Transform handRight;
 
-    // 카드 관련 트랜스폼
+    [Header("카드 위치")]
     [SerializeField] public Transform cardSpawnPoint;
     [SerializeField] public Transform cardDrawPoint;
     [SerializeField] public Transform cardResetPoint;
     [SerializeField] public Transform cardDumpPoint;
 
-    // 덱, 묘지
+    [Header("덱, 묘지")]
     public List<CardData> deck;
     public List<CardData> dump;
     List<GameObject> cardBackObjectList;
@@ -40,26 +45,26 @@ public class CardManager : MonoBehaviour
     [SerializeField] TMP_Text dumpCountTMP;
     [SerializeField] Transform cardBackGroup;
 
-    // 이펙트
+    [Header("이펙트")]
     [SerializeField] public Transform effectGroup;
 
+    // 선택된 카드
+    [SerializeField] Card selectCard;
 
-    Card selectCard;
-
-    // 상수
+    [Header("상수")]
     int listSize = 100;
-    float delay01 = 0.1f;
-    float delay03 = 0.3f;
-    float delay05 = 0.5f;
     float focusOffset = 100f;
-
     public Vector3 focusPos;
+
+    [Header("딜레이")]
+    [SerializeField] float drawDelay = 0.5f;
+    [SerializeField] float discardDelay = 0.2f;
+    [SerializeField] float resetDelay = 0.1f;
+    [SerializeField] float resetMoveDelay = 0.1f;
+    [SerializeField] float moveDelay = 0.5f;
 
     void Start()
     {
-        // 동적 참조를 줄이기 위해 싱글톤 대신 Action으로 호출
-        TurnManager.OnAddCard += AddCardToHand;
-
         focusPos = new Vector3(0f, handLeft.position.y + focusOffset, -3f);
 
         // 지금은 게임과 전투가 동시에 시작
@@ -95,6 +100,16 @@ public class CardManager : MonoBehaviour
         GameManager.Instance.onStartBattle.AddListener(StartBattle);
     }
 
+    private void Update()
+    {
+        // 마우스 우클릭 시
+        if (Input.GetMouseButtonDown(1))
+        {
+            // 선택한 카드를 취소한다.
+            selectCard.CancelWithRightClick();
+        }
+    }
+
     private void StartBattle()
     {
         UpdateDeckCount();
@@ -102,37 +117,14 @@ public class CardManager : MonoBehaviour
         SetUpDeck();
     }
 
-    private void Update()
-    {
-        string[] dummyCards =
-        {
-            "더미1",
-            "더미2",
-            "더미3"
-        };
-
-        if (Input.GetKeyDown(KeyCode.Q) && TurnManager.Instance.myTurn)
-        {
-            AddCardToDeck(dummyCards[Random.Range(0, 3)]);
-            SetUpDeck();
-        }
-    }
-
-    // 덱 카운트가 0인지 확인하고 사용해야 함
-    CardData DrawCard()
-    {
-        CardData card = deck[0];
-        deck.RemoveAt(0);
-        UpdateDeckCount();
-        return card;
-    }
-
+    // 카드를 덱에 추가한다. (string)
     public void AddCardToDeck(string cardName)
     {
         deck.Add(cardDict[cardName]);
         UpdateDeckCount();
     }
-
+    
+    // 카드를 덱에서 삭제한다.
     public void RemoveCardFromDeck(string cardName)
     {
         CardData target = null;
@@ -162,46 +154,83 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    void OnDestroy()
+    public IEnumerator AddCardToHand(int count)
     {
-        TurnManager.OnAddCard -= AddCardToHand;
-    }
-
-    void AddCardToHand(bool isMine)
-    {
-        if (!isMine || hand.Count > maxHand || deck.Count + dump.Count == 0)
+        int drawCount = count;
+        // Draw Count 조정
+        if (hand.Count + drawCount > maxHand)            
         {
-            return;
+            drawCount = maxHand - hand.Count;
         }
 
-        var cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI, handGroup);
-        var card = cardObject.GetComponent<Card>();
-
-        // DrawCard() 호출 전에 덱이 비었는지 확인
-        if (deck.Count == 0)
+        // 덱과 묘지 전부 카드가 없을 경우
+        if (deck.Count + dump.Count == 0)
         {
-            StartCoroutine(ResetDeckAnimationCo(dump.Count));
-            ResetDeck();
-            MergeDumpToDeck();
+            // 뽑지 않는다.
+            drawCount = 0;
         }
 
-        card.effectGroup = effectGroup;
-        card.Setup(DrawCard());
-        card.transform.localScale = Vector3.zero;
-        hand.Add(card);
+        // drawBuffer에 개수만큼 등록한다. (데이터적으로, 한 번에 drawBuffer에 추가된다.)
+        for (int i = 0; i < drawCount; ++i)
+        {
+            GameObject cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI, handGroup);
+            Card card = cardObject.GetComponent<Card>();
 
-        SetOriginOrder();
-        StartCoroutine(DrawAnimationCo(card));
+            // DrawCard() 호출 전에 덱이 비었는지 확인
+            if (deck.Count == 0)
+            {
+                StartCoroutine(ResetDeckAnimationCo(dump.Count));
+                ResetDeck();
+            }
+
+            card.effectGroup = effectGroup;
+            card.Setup(DrawCard());
+            card.transform.localScale = Vector3.zero;
+            drawBuffer.Add(card);
+        }
+
+        // 애니메이션을 순차적으로 실행한다.
+        for(int i = 0; i < drawCount; ++i)
+        {
+
+            // 드로우 버퍼의 첫 장을 골라
+            Card card = drawBuffer[0];
+
+            // 드로우 애니메이션을 실행하고, 끝나면 버퍼에서 삭제, hand에 추가한다.
+            StartCoroutine(DrawAnimationCo(card));
+            drawBuffer.RemoveAt(0);
+            hand.Add(card);
+
+            // Hand 카드 순서 정렬
+            SetOriginOrder();
+            // 덱 텍스트를 변경해준다.
+            UpdateDeckCount();
+
+            // drawDelay만큼 딜레이를 준다.
+            yield return new WaitForSeconds(drawDelay);
+        }
     }
 
+    // 덱 카운트가 0인지 확인하고 사용해야 함
+    // AddCardToHand 호출 시 함께 사용된다.
+    CardData DrawCard()
+    {
+        CardData card = deck[0];
+        deck.RemoveAt(0);
+        UpdateDeckCount();
+        return card;
+    }
+
+    // 드로우 애니메이션을 실행한다.
     IEnumerator DrawAnimationCo(Card card)
     {
         Sequence sequence = DOTween.Sequence()
-                .Append(card.transform.DOMove(cardDrawPoint.position, delay05))
-                .Join(card.transform.DOScale(Vector3.one * 15f, delay05))
+                .Append(card.transform.DOMove(cardDrawPoint.position, drawDelay))
+                .Join(card.transform.DOScale(Vector3.one * 15f, drawDelay))
                 .SetEase(Ease.OutCubic);
 
-        yield return new WaitForSeconds(delay05);
+        // DOTween이 끝날 때까지 기다린다.
+        yield return sequence.WaitForCompletion();
 
         CardAlignment();
     }
@@ -216,7 +245,8 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    void CardAlignment()
+    // 0번 카드부터 last번 째 카드까지 정렬시킨다.
+    public void CardAlignment()
     {
         List<PRS> originCardPRSs = new List<PRS>();
         float radius = handRight.position.x - handLeft.position.x;
@@ -227,11 +257,11 @@ public class CardManager : MonoBehaviour
             var targetCard = hand[i];
 
             targetCard.originPRS = originCardPRSs[hand.Count - i - 1];
-            targetCard.MoveTransform(targetCard.originPRS, true, delay05);
+            targetCard.MoveTransform(targetCard.originPRS, true, moveDelay);
         }
     }
 
-    // 이해하기를 포기함...
+    // 카드를 원형으로 정렬시킨다. (위치 배열 반환)
     List<PRS> RoundAlignment(Transform leftTr, Transform rightTr, int objCount, float radius, Vector3 scale)
     {
         float[] objLerps = new float[objCount];
@@ -277,16 +307,18 @@ public class CardManager : MonoBehaviour
 
     public void DiscardCard(Card card)
     {
-        hand.Remove(card);
         dump.Add(card.cardData);
         UpdateDumpCount();
 
         card.transform.DOKill();
 
+        // 추후 풀링 예정
         DestroyImmediate(card.gameObject);
-        selectCard = null;
+    }
 
-        CardAlignment();
+    public void ClearSelectCard()
+    {
+        selectCard = null;
     }
 
     // dump와 hand를 덱으로 모아서 셔플
@@ -341,17 +373,17 @@ public class CardManager : MonoBehaviour
         {
             // 포물선 이동
             Sequence sequence = DOTween.Sequence()
-                .Append(cardBackObjectList[i].transform.DOMoveX(cardResetPoint.position.x, delay03))
-                .Join(cardBackObjectList[i].transform.DOMoveY(cardResetPoint.position.y, delay03)).SetEase(Ease.OutCubic)
-                .Append(cardBackObjectList[i].transform.DOMoveX(cardSpawnPoint.position.x, delay03))
-                .Join(cardBackObjectList[i].transform.DOMoveY(cardSpawnPoint.position.y, delay03));
+                .Append(cardBackObjectList[i].transform.DOMoveX(cardResetPoint.position.x, resetMoveDelay).SetEase(Ease.Linear))
+                .Join(cardBackObjectList[i].transform.DOMoveY(cardResetPoint.position.y, resetMoveDelay).SetEase(Ease.OutCubic))
+                .Append(cardBackObjectList[i].transform.DOMoveX(cardSpawnPoint.position.x, resetMoveDelay).SetEase(Ease.Linear))
+                .Join(cardBackObjectList[i].transform.DOMoveY(cardSpawnPoint.position.y, resetMoveDelay).SetEase(Ease.InCubic));
 
             // 각 카드에 딜레이 주기
-            yield return new WaitForSeconds(delay01);
+            yield return new WaitForSeconds(resetDelay);
         }
 
         // 전체 애니메이션 종료까지 대기
-        yield return new WaitForSeconds(delay03 * 2 + delay01 * dumpCount);
+        yield return new WaitForSeconds(resetMoveDelay * 2 + resetDelay * dumpCount);
 
         for (int i = 0; i < dumpCount; i++)
         {
@@ -364,37 +396,60 @@ public class CardManager : MonoBehaviour
 
     public IEnumerator DiscardHandCo()
     {
-        int handCount = hand.Count;
-        for (int i = 0; i < handCount; i++)
+        // drawBuffer가 남아 있다면 빌 때까지 기다린다.
+        while (drawBuffer.Any())
         {
+            yield return null;
+        }
+
+        // 패 버리기가 시작되면 모든 카드의 클릭을 막는다.
+        for(int i = 0; i < hand.Count; ++i)
+        {
+            hand[i].isDiscarded = true;
+        }
+
+        // hand가 남아 있다면 반복
+        while (hand.Any())
+        {
+            // 맨 끝의 카드를 가져오고 캐싱
             Card card = hand[0];
-
-            // 묘지로 카드 이동
-            Sequence sequence = DOTween.Sequence()
-                .Append(card.transform.DOMove(cardDumpPoint.position, delay03))
-                .Join(card.transform.DORotateQuaternion(Utils.QI, delay03))
-                .Join(card.transform.DOScale(Vector3.one, delay03))
-                .SetEase(Ease.OutQuad);
-
+            // 패에서 바로 삭제한다.
             hand.RemoveAt(0);
+            // 카드가 사라지는 순간 정렬한다.
             CardAlignment();
 
+            // 카드의 실행 중인 애니메이션을 종료하고
+            card.moveSequence.Kill();
+
+            // 묘지로 카드 이동
+            Sequence move = DOTween.Sequence()
+                .Append(card.transform.DOMove(cardDumpPoint.position, discardDelay))
+                .Join(card.transform.DORotateQuaternion(Utils.QI, discardDelay))
+                .Join(card.transform.DOScale(Vector3.one, discardDelay))
+                .SetEase(Ease.OutQuad);
+
             // sequence 끝나기 전까지 기다리기
-            yield return new WaitForSeconds(delay03);
+            yield return move.WaitForCompletion();
 
             // sequence가 끝나면 오브젝트 파괴
             dump.Add(card.cardData);
             UpdateDumpCount();
+            // 추후 오브젝트 풀링 예정
             DestroyImmediate(card.gameObject);
+            // 카드의 클릭 허용
+            //card.EnableCollider();
+            //hand[i].isDiscarded = false;
         }
 
+        // 패를 전부 비우고
         hand.Clear();
+        // 선택된 카드도 비운다.
         selectCard = null;
     }
 
     void UpdateDeckCount()
     {
-        deckCountTMP.text = deck.Count.ToString();
+        deckCountTMP.text = (deck.Count + drawBuffer.Count).ToString();
     }
 
     void UpdateDumpCount()
@@ -413,12 +468,6 @@ public class CardManager : MonoBehaviour
     public void CardMouseExit(Card card)
     {
         EnlargeCard(false, card);
-    }
-
-    public void CardMouseDown()
-    {
-        if (TurnManager.Instance.myTurn)
-            DiscardCard(selectCard);
     }
 
     void EnlargeCard(bool isEnlarge, Card card)
