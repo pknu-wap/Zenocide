@@ -20,6 +20,10 @@ public class CardManager : MonoBehaviour
     [SerializeField] GameObject cardPrefab;
     [SerializeField] GameObject cardBackPrefab;
 
+    [Header("드로우 버퍼")]
+    // 덱에서 패로 이동하기 전, 드로우 될 카드들이 모여 있는 곳
+    public List<Card> drawBuffer;
+
     [Header("핸드")]
     public List<Card> hand;
     [SerializeField] int maxHand = 10;
@@ -156,36 +160,39 @@ public class CardManager : MonoBehaviour
             drawCount = 0;
         }
 
-        // 드로우 한 카드들을 캐싱해둔다.
-        Card[] drawedCard = new Card[drawCount];
-
-        // 개수만큼 뽑는다. (데이터적으로, 한 번에 패에 추가된다.)
-        for (int i = 0; i < drawedCard.Length; ++i)
+        // drawBuffer에 개수만큼 등록한다. (데이터적으로, 한 번에 drawBuffer에 추가된다.)
+        for (int i = 0; i < drawCount; ++i)
         {
             GameObject cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI, handGroup);
-            drawedCard[i] = cardObject.GetComponent<Card>();
+            Card card = cardObject.GetComponent<Card>();
 
             // DrawCard() 호출 전에 덱이 비었는지 확인
             if (deck.Count == 0)
             {
                 StartCoroutine(ResetDeckAnimationCo(dump.Count));
                 ResetDeck();
-                MergeDumpToDeck();
             }
 
-            drawedCard[i].effectGroup = effectGroup;
-            drawedCard[i].Setup(DrawCard());
-            drawedCard[i].transform.localScale = Vector3.zero;
-            hand.Add(drawedCard[i]);
+            card.effectGroup = effectGroup;
+            card.Setup(DrawCard());
+            card.transform.localScale = Vector3.zero;
+            drawBuffer.Add(card);
         }
 
-        // Hand 카드 순서 정렬
-        SetOriginOrder();
-
         // 애니메이션을 순차적으로 실행한다.
-        for (int i = 0; i < drawedCard.Length; ++i)
+        for(int i = 0; i < drawCount; ++i)
         {
-            StartCoroutine(DrawAnimationCo(drawedCard[i]));
+            // Hand 카드 순서 정렬
+            SetOriginOrder();
+
+            // 드로우 버퍼의 첫 장을 골라
+            Card card = drawBuffer[0];
+
+            // 드로우 애니메이션을 실행하고, 끝나면 버퍼에서 삭제, hand에 추가한다.
+            StartCoroutine(DrawAnimationCo(card));
+            drawBuffer.RemoveAt(0);
+            hand.Add(card);
+
             // drawDelay만큼 딜레이를 준다.
             yield return new WaitForSeconds(drawDelay);
         }
@@ -376,10 +383,15 @@ public class CardManager : MonoBehaviour
 
     public IEnumerator DiscardHandCo()
     {
+        // drawBuffer가 남아 있다면 빌 때까지 기다린다.
+        while (drawBuffer.Any())
+        {
+            yield return null;
+        }
+
         // 패 버리기가 시작되면 모든 카드의 클릭을 막는다.
         for(int i = 0; i < hand.Count; ++i)
         {
-            //hand[i].DisableCollider();
             hand[i].isDiscarded = true;
         }
 
