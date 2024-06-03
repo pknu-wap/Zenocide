@@ -49,7 +49,7 @@ public class CardManager : MonoBehaviour
     [SerializeField] public Transform effectGroup;
 
     // 선택된 카드
-    Card selectCard;
+    [SerializeField] Card selectCard;
 
     [Header("상수")]
     int listSize = 100;
@@ -98,6 +98,16 @@ public class CardManager : MonoBehaviour
         #endregion
 
         GameManager.Instance.onStartBattle.AddListener(StartBattle);
+    }
+
+    private void Update()
+    {
+        // 마우스 우클릭 시
+        if (Input.GetMouseButtonDown(1))
+        {
+            // 선택한 카드를 취소한다.
+            selectCard.CancelWithRightClick();
+        }
     }
 
     private void StartBattle()

@@ -157,7 +157,7 @@ public class Card : MonoBehaviour
     // 드래그 중일 때 계속 호출된다.
     public void OnMouseDrag()
     {
-        if (BattleInfo.Instance.isGameOver || isDiscarded)
+        if (BattleInfo.Instance.isGameOver || isDiscarded || isDragging == false)
         {
             return;
         }
@@ -182,7 +182,7 @@ public class Card : MonoBehaviour
     // 드래그가 끝날 때 호출된다.
     public void OnMouseUp()
     {
-        if (BattleInfo.Instance.isGameOver || isDiscarded)
+        if (BattleInfo.Instance.isGameOver || isDiscarded || isDragging == false)
         {
             return;
         }
@@ -362,11 +362,41 @@ public class Card : MonoBehaviour
     }
 
     // 카드 발동을 취소한다.
-    void CancelUsingCard()
+    public void CancelUsingCard()
     {
         MoveTransform(originPRS, true, 0.5f);
         cardOrder.SetMostFrontOrder(false);
     }
+
+    // 카드 발동을 취소한다.
+    public void CancelWithRightClick()
+    {
+        if (BattleInfo.Instance.isGameOver || isDiscarded || isDragging == false)
+        {
+            return;
+        }
+
+        if (isTargetingCard)
+        {
+            // 화살표를 숨긴다.
+            CardArrow.Instance.HideArrow();
+        }
+
+        // 다른 카드가 마우스 이벤트를 받게 한다.
+        CardArrow.Instance.HideBlocker();
+
+        // 드래그가 끝남을 표시
+        isDragging = false;
+
+        // 이동
+        moveSequence = DOTween.Sequence()
+            .Append(transform.DOMove(originPRS.pos, 0.5f))
+            .Join(transform.DORotateQuaternion(originPRS.rot, 0.5f))
+            .Join(transform.DOScale(originPRS.scale, 0.5f));
+
+        cardOrder.SetMostFrontOrder(false);
+    }
+
     // 클릭된(드래그 후 마우스를 뗀 순간) 오브젝트를 가져온다.
     GameObject GetClickedObject(LayerMask layer)
     {
