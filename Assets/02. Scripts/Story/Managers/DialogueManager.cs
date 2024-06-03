@@ -135,14 +135,14 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         choiceUpText.text = choiceUpContent[currentChoice];
         choiceDownText.text = choiceDownContent[currentChoice];
 
-        if (Items.items.Contains("총"))
+        /*if (Items.items.Contains("총"))
         {
             choiceDownRequireText.text = "필요한 아이템: <color=red>총</color>";
         }
         else
         {
             choiceDownRequireText.text = "필요한 아이템: <color=green>총</color>/보상: 빵";
-        }
+        }*/
 
         currentChoice++;
     }

@@ -15,15 +15,15 @@ public class Inventory : MonoBehaviour
     public List<TMP_Text> slots = new List<TMP_Text>();
     private void Start()
     {
-        // °ÔÀÓ ½ÃÀÛ ½Ã ÀÎº¥Åä¸® ¾È º¸ÀÌ°Ô
+        // ê²Œì„ ì‹œì‘ ì‹œ ì¸ë²¤í† ë¦¬ ì•ˆ ë³´ì´ê²Œ
         inventoryPanel.SetActive(activeInventory);
-        slots = transform.GetChild(1).GetChild(0).GetChild(0).GetComponentsInChildren<TMP_Text>().ToList();
+        slots = transform.GetChild(0).GetChild(0).GetChild(0).GetComponentsInChildren<TMP_Text>().ToList();
     }
     public void ToggleInventory()
     {
-        // Pointer Enter, Exit½Ã false -> true, true -> false·Î ¹Ù²Û´Ù
+        // Pointer Enter, Exitì‹œ false -> true, true -> falseë¡œ ë°”ê¾¼ë‹¤
         activeInventory = !activeInventory;
-        // activeInventory°¡ falseÀÎÁö trueÀÎÁö¿¡ µû¶ó PanelÀÌ º¸ÀÏÁö ¸»Áö °áÁ¤ÇÑ´Ù.
+        // activeInventoryê°€ falseì¸ì§€ trueì¸ì§€ì— ë”°ë¼ Panelì´ ë³´ì¼ì§€ ë§ì§€ ê²°ì •í•œë‹¤.
         inventoryPanel.SetActive(activeInventory); 
     }
 }
