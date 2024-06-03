@@ -192,8 +192,6 @@ public class CardManager : MonoBehaviour
         // 애니메이션을 순차적으로 실행한다.
         for(int i = 0; i < drawCount; ++i)
         {
-            // Hand 카드 순서 정렬
-            SetOriginOrder();
 
             // 드로우 버퍼의 첫 장을 골라
             Card card = drawBuffer[0];
@@ -203,6 +201,8 @@ public class CardManager : MonoBehaviour
             drawBuffer.RemoveAt(0);
             hand.Add(card);
 
+            // Hand 카드 순서 정렬
+            SetOriginOrder();
             // 덱 텍스트를 변경해준다.
             UpdateDeckCount();
 
