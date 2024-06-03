@@ -191,6 +191,7 @@ public class Card : MonoBehaviour
         {
             // 화살표를 숨긴다.
             CardArrow.Instance.HideArrow();
+            moveSequence.Kill();
         }
 
         // 다른 카드가 마우스 이벤트를 받게 한다.
@@ -368,7 +369,7 @@ public class Card : MonoBehaviour
         cardOrder.SetMostFrontOrder(false);
     }
 
-    // 카드 발동을 취소한다.
+    // 우클릭으로 카드 선택을 취소한다.
     public void CancelWithRightClick()
     {
         if (BattleInfo.Instance.isGameOver || isDiscarded || isDragging == false)
