@@ -161,6 +161,7 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
 
+        Debug.Log("선택: " + selectedRewardIndex);
         // 선택되면 덱에 선택한 카드를 추가한다.
         CardManager.Instance.AddCardToDeck(rewardCards[selectedRewardIndex]);
 
