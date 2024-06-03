@@ -152,7 +152,7 @@ public class DiaryManager : MonoBehaviour
         string[] classItems = supplier.classCardDeck[selectedWord];
         for (int j = 0; j < classItems.Length; ++j)
         {
-            Items.instance.AddItem(classItems[j]);
+            Items.Instance.AddItem(classItems[j]);
         }
 
         choiceParent.gameObject.SetActive(false);
