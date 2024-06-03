@@ -11,6 +11,7 @@ public enum SkillType
     RestoreCost,    // 코스트 회복
     Draw,           // 카드 드로우
     Bleed,          // 출혈
+    AddExtraDamage, // 추가 데미지 제공
 }
 
 public enum SkillTarget
@@ -33,6 +34,8 @@ public class Skill
     public int amount;
     // 효과가 지속되는 턴 수
     public int turnCount;
+    // 스킬 이펙트
+    public ParticleSystem effectPrefeb;
 }
 
 // 유니티 에디터, Project 뷰의 Create 메뉴에 아래 항목을 추가한다.
@@ -47,8 +50,6 @@ public class CardData : ScriptableObject
     public string description;
     // 카드 일러스트
     public Sprite sprite;
-    // 카드 이펙트
-    public ParticleSystem effectPrefeb;
 
     [Header("카드 성능")]
     // 카드 스킬

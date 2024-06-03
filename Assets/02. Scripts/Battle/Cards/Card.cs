@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using DG.Tweening;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Card : MonoBehaviour
 {
@@ -28,8 +29,9 @@ public class Card : MonoBehaviour
     public Character[] selectedCharacter;
 
     [Header("이펙트")]
-    ParticleSystem effectObject;
+    ParticleSystem[] effectObject = new ParticleSystem[10];
     public Transform effectGroup;
+    bool isPlaying = false;
 
     // DOTween 시퀀스
     Sequence moveSequence;
@@ -52,9 +54,32 @@ public class Card : MonoBehaviour
 
         isTargetingCard = CardInfo.Instance.IsTargetingCard(cardData.skills);
 
-        if(item.effectPrefeb != null)
+        // CardData 안의 각 skill들의 이펙트 생성
+        for(int i = 0; i < item.skills.Length; i++)
         {
-            effectObject = Instantiate(item.effectPrefeb, effectGroup).GetComponent<ParticleSystem>();
+            if (item.skills[i].effectPrefeb != null)
+            {
+                effectObject[i] = Instantiate(item.skills[i].effectPrefeb, effectGroup).GetComponent<ParticleSystem>();
+            }
+            else
+            {
+                // 이펙트가 없는 스킬은 null 처리
+                effectObject[i] = (null);
+            }
+        }
+    }
+    
+    // 카드를 버릴 때 오브젝트를 파괴한다
+    // 이펙트 출력 도중 카드가 파괴되면 이펙트도 같이 사라진다
+    // -> isPlaying으로 방지
+    private void OnDestroy()
+    {
+        foreach(ParticleSystem particle in effectObject)
+        {
+            if(particle != null && !isPlaying)
+            {
+                Destroy(particle.gameObject);
+            }
         }
     }
 
@@ -178,7 +203,7 @@ public class Card : MonoBehaviour
     #endregion 마우스 상호작용
 
     #region 카드 사용
-    [SerializeField] private float skillDelay = 0.2f;
+    private float skillDelay = 0.5f;
 
     // 카드를 사용한다. (마우스가 놓아지는 시점에 호출)
     private IEnumerator UseCard()
@@ -191,6 +216,9 @@ public class Card : MonoBehaviour
 
             yield break;
         }
+
+        // 애니메이션이 끝났는지 검사하는 변수
+        bool isAnimationDone = false;
 
         // 타겟팅 스킬일 때
         if (isTargetingCard)
@@ -215,8 +243,6 @@ public class Card : MonoBehaviour
             // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
             cardCollider.enabled = false;
 
-            // 애니메이션이 끝났는지 검사하는 변수
-            bool isAnimationDone = false;
             // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
             moveSequence = DOTween.Sequence()
                 .Append(transform.DOMove(CardManager.Instance.cardDumpPoint.position, dotweenTime))
@@ -231,12 +257,6 @@ public class Card : MonoBehaviour
             // 적 오브젝트의 Enemy 스크립트를 가져온다
             Enemy selectedEnemy = selectedObject.GetComponent<Enemy>();
 
-            if(effectObject != null)
-            {
-                effectObject.transform.position = selectedEnemy.transform.position;
-                effectObject.Play();
-            }
-
             // 카드의 모든 효과를 발동한다.
             for (int i = 0; i < cardData.skills.Length; ++i)
             {
@@ -244,20 +264,19 @@ public class Card : MonoBehaviour
                 selectedCharacter = CardInfo.Instance.GetTarget(cardData.skills[i].target, selectedEnemy);
 
                 // 해당 타겟에게 스킬을 시전한다.
-                CardInfo.Instance.ActivateSkill(cardData.skills[i], selectedCharacter);
+                CardInfo.Instance.ActivateSkill(cardData.skills[i], selectedCharacter, Player.Instance);
+
+                // 이펙트 출력
+                if (effectObject[i] != null)
+                {
+                    effectObject[i].transform.position = selectedEnemy.transform.position;
+                    effectObject[i].Play();
+                    isPlaying = true;
+                }
 
                 // 딜레이를 주면 좀 더 자연스럽다. -> 코루틴의 필요
                 yield return new WaitForSeconds(skillDelay);
             }
-
-            // 애니메이션이 끝날 때까지 기다린다.
-            while (isAnimationDone == false)
-            {
-                yield return null;
-            }
-
-            // 카드를 삭제한다.
-            CardManager.Instance.DiscardCard(this);
         }
 
         // 논타겟 스킬일 때
@@ -284,8 +303,6 @@ public class Card : MonoBehaviour
             // 카드를 묘지로 보낸다. 보내는 거 잡아채지 못하게 Collider도 잠깐 꺼둔다.
             cardCollider.enabled = false;
 
-            // 애니메이션이 끝났는지 검사하는 변수
-            bool isAnimationDone = false;
             // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
             moveSequence = DOTween.Sequence()
                 // 중앙으로 이동하고
@@ -303,32 +320,34 @@ public class Card : MonoBehaviour
                     isAnimationDone = true;
                 }); // 애니메이션 끝나면 알림
 
-            if(effectObject != null)
-            {
-                effectObject.Play();
-            }
-
             // 카드의 모든 효과를 발동한다.
             for (int i = 0; i < cardData.skills.Length; ++i)
             {
                 // 타겟을 정한다. 타겟팅 카드가 아니니, selectedEnemy는 없다.
                 selectedCharacter = CardInfo.Instance.GetTarget(cardData.skills[i].target);
 
-                CardInfo.Instance.ActivateSkill(cardData.skills[i], selectedCharacter);
+                CardInfo.Instance.ActivateSkill(cardData.skills[i], selectedCharacter, Player.Instance);
+
+                // 이펙트 출력
+                if (effectObject[i] != null)
+                {
+                    effectObject[i].Play();
+                    isPlaying = true;
+                }
 
                 // 딜레이를 주면 좀 더 자연스럽다. -> 코루틴의 필요
                 yield return new WaitForSeconds(skillDelay);
             }
-
-            // 애니메이션이 끝날 때까지 기다린다.
-            while (isAnimationDone == false)
-            {
-                yield return null;
-            }
-
-            // 카드를 삭제한다.
-            CardManager.Instance.DiscardCard(this);
         }
+
+        // 애니메이션이 끝날 때까지 기다린다.
+        while (isAnimationDone == false)
+        {
+            yield return null;
+        }
+
+        // 카드를 삭제한다.
+        CardManager.Instance.DiscardCard(this);
     }
 
     // 카드 발동을 취소한다.
