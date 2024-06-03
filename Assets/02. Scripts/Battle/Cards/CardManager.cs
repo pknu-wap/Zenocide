@@ -203,6 +203,9 @@ public class CardManager : MonoBehaviour
             drawBuffer.RemoveAt(0);
             hand.Add(card);
 
+            // 덱 텍스트를 변경해준다.
+            UpdateDeckCount();
+
             // drawDelay만큼 딜레이를 준다.
             yield return new WaitForSeconds(drawDelay);
         }
@@ -446,7 +449,7 @@ public class CardManager : MonoBehaviour
 
     void UpdateDeckCount()
     {
-        deckCountTMP.text = deck.Count.ToString();
+        deckCountTMP.text = (deck.Count + drawBuffer.Count).ToString();
     }
 
     void UpdateDumpCount()
