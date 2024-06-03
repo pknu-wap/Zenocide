@@ -209,7 +209,7 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
             }
             CardManager.Instance.MergeDumpToDeck();
             CardManager.Instance.SetUpDeck();
-            GameManager.Instance.StartBattle(Enemys.ToArray());   
+            GameManager.Instance.StartBattle(Enemys.ToArray(), "Level 1");
         }
 
         if (csvData["ChoiceCount"].ToString() != "")

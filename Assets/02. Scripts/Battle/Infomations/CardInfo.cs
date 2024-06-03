@@ -2,6 +2,7 @@
 using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CardInfo : MonoBehaviour
 {
@@ -24,8 +25,36 @@ public class CardInfo : MonoBehaviour
         // 카드 효과를 델리게이트에 모두 등록
         EnrollAllSkills();
         EnrollLayerDict();
+
+        // 정보 검색용 딕셔너리 생성
+        CreateRewardCardListDictionary();
     }
     #endregion 싱글톤
+
+    #region 카드 검색
+    [Header("보상 카드 리스트")]
+    // 코드에서 접근하는, listName을 받아 CardList를 반환하는 딕셔너리
+    public Dictionary<string, CardList> rewardCardListDict;
+    // 개발자가 등록하는 CardList의 종류
+    public CardList[] rewardCardListArray;
+
+    // listName을 키로, CardList를 밸류로 갖는 Dictionary를 생성한다.
+    private void CreateRewardCardListDictionary()
+    {
+        rewardCardListDict = new Dictionary<string, CardList>();
+
+        foreach (CardList data in rewardCardListArray)
+        {
+            rewardCardListDict.Add(data.listName, data);
+        }
+    }
+
+    // listName에 맞는 CardList를 반환한다.
+    public CardList GetRewardCardListData(string listName)
+    {
+        return rewardCardListDict[listName];
+    }
+    #endregion 카드 검색
 
     #region 카드 UI 데이터
     // 통합하고 싶다...
@@ -33,7 +62,7 @@ public class CardInfo : MonoBehaviour
     public Sprite[] debuffIcons;
     #endregion 카드 UI 데이터
 
-    #region 정보 검색
+    #region 레이어 정보 검색
     // 카드 타입을 넣으면 레이어를 뱉어주는 배열
     private LayerMask[] layerDict;
 
@@ -107,7 +136,7 @@ public class CardInfo : MonoBehaviour
     public bool IsTargetingCard(Skill[] data)
     {
         // 카드가 타겟팅 스킬을 갖고 있다면 true를 리턴한다.
-        for(int i = 0; i < data.Length; ++i)
+        for (int i = 0; i < data.Length; ++i)
         {
             if (data[i].target == SkillTarget.Enemy)
             {
@@ -129,7 +158,7 @@ public class CardInfo : MonoBehaviour
         skillText.name = skillTexts.text[(int)skill.type].name;
 
         // 스킬 설명을 효과량, 턴 수와 함께 저장한다.
-        if(skill.turnCount != 0)
+        if (skill.turnCount != 0)
         {
             // 턴 수가 0이 아니라면 설명에 추가한다.
             skillText.description = skill.turnCount + "턴 간 ";
@@ -145,7 +174,7 @@ public class CardInfo : MonoBehaviour
 
         return skillText;
     }
-    #endregion 정보 검색
+    #endregion 레이어 정보 검색
 
     #region 카드 효과
     // 카드 효과 함수들을 담아둘 델리게이트

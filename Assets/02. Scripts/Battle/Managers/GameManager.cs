@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] NotificationPanel notificationPanel;
     [SerializeField] Transform enemiesParent;
     [SerializeField] public Enemy[] enemies;
+    [SerializeField] CardList rewardCardList;
 
     // 전투 시작 시 실행할 이벤트
     public UnityEvent onStartBattle;
@@ -46,7 +47,7 @@ public class GameManager : MonoBehaviour
     /// 전투를 시작한다.
     /// </summary>
     /// <param name="enemyNames">전투 시작 시 생성할 적 ID</param>
-    public void StartBattle(string[] enemyNames)
+    public void StartBattle(string[] enemyNames, string rewardCardListName)
     {
         if(enemyNames.Length > 4)
         {
@@ -58,6 +59,9 @@ public class GameManager : MonoBehaviour
 
         // 적, 플레이어의 시작 이벤트 호출
         onStartBattle.Invoke();
+
+        // 보상 카드 리스트 등록
+        rewardCardList = CardInfo.Instance.GetRewardCardListData(rewardCardListName);
 
         // 배틀 카메라로 전환
         SwitchToBattleScene();
@@ -86,7 +90,7 @@ public class GameManager : MonoBehaviour
     // StartBattle 함수를 테스트하는 함수
     public void TestStartBattle()
     {
-        StartBattle(new string[] { "NormalZombie", "NormalZombie" });
+        StartBattle(new string[] { "NormalZombie", "NormalZombie" }, "rewardCardList");
     }
 
     // 모든 적 정보를 등록, 소환한다
