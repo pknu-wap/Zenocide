@@ -60,7 +60,7 @@ public class CardManager : MonoBehaviour
     [SerializeField] float drawDelay = 0.5f;
     [SerializeField] float discardDelay = 0.2f;
     [SerializeField] float resetDelay = 0.1f;
-    [SerializeField] float resetMoveDelay = 0.3f;
+    [SerializeField] float resetMoveDelay = 0.1f;
     [SerializeField] float moveDelay = 0.5f;
 
     void Start()
@@ -370,10 +370,10 @@ public class CardManager : MonoBehaviour
         {
             // 포물선 이동
             Sequence sequence = DOTween.Sequence()
-                .Append(cardBackObjectList[i].transform.DOMoveX(cardResetPoint.position.x, resetMoveDelay))
-                .Join(cardBackObjectList[i].transform.DOMoveY(cardResetPoint.position.y, resetMoveDelay)).SetEase(Ease.OutCubic)
-                .Append(cardBackObjectList[i].transform.DOMoveX(cardSpawnPoint.position.x, resetMoveDelay))
-                .Join(cardBackObjectList[i].transform.DOMoveY(cardSpawnPoint.position.y, resetMoveDelay));
+                .Append(cardBackObjectList[i].transform.DOMoveX(cardResetPoint.position.x, resetMoveDelay).SetEase(Ease.Linear))
+                .Join(cardBackObjectList[i].transform.DOMoveY(cardResetPoint.position.y, resetMoveDelay).SetEase(Ease.OutCubic))
+                .Append(cardBackObjectList[i].transform.DOMoveX(cardSpawnPoint.position.x, resetMoveDelay).SetEase(Ease.Linear))
+                .Join(cardBackObjectList[i].transform.DOMoveY(cardSpawnPoint.position.y, resetMoveDelay).SetEase(Ease.InCubic));
 
             // 각 카드에 딜레이 주기
             yield return new WaitForSeconds(resetDelay);
