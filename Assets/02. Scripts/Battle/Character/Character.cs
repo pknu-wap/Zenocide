@@ -53,7 +53,6 @@ public class Character : MonoBehaviour
     protected TMP_Text[] debuffDescription;
     // 데미지 텍스트
     [SerializeField] protected GameObject damageTextPrefab;
-    protected DamageText damageText;
 
     [Header("상태이상")]
     protected Transform debuffIconContainer;
@@ -132,17 +131,15 @@ public class Character : MonoBehaviour
         
         UpdateCurrentHP();
 
-        if(damage > 0)
-        {
-            GameObject damageTextObj = Instantiate(damageTextPrefab, transform.GetChild(0));
-            damageText = damageTextObj.GetComponent<DamageText>();
-            StartCoroutine(damageText.PrintDamageText(damage));
-        }
-
-        // 적이 피격될 때 모션 출력
+        // 적이 피격될 때
         if(this != Player.Instance && damage > 0)
         {
+            // 모션 출력
             imageComponent.transform.DOShakePosition(0.5f, 10f);
+
+            // 데미지 텍스트 출력
+            DamageText damageText = Instantiate(damageTextPrefab, transform.GetChild(0)).GetComponent<DamageText>();
+            StartCoroutine(damageText.PrintDamageText(damage));
         }
 
         // hp가 0 이하가 될 경우

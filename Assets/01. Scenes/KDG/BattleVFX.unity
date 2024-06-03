@@ -10071,6 +10071,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHp: 100
+  damageTextPrefab: {fileID: 6785870830239296495, guid: 829249fb6ce714f4e8cf8aa21f3dcdec, type: 3}
 --- !u!1001 &911120302
 PrefabInstance:
   m_ObjectHideFlags: 0

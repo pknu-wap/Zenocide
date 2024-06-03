@@ -27,7 +27,7 @@ public class Enemy : Character
 
     // 상수
     float fadeDelay = 2f;
-    float skillDelay = 0.5f;   // 0.5의 배수로 해줘야 함
+    float skillDelay = 0.5f;
 
     public override void Awake()
     {

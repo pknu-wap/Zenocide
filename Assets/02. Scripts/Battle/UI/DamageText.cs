@@ -6,21 +6,18 @@ using UnityEngine;
 
 public class DamageText : MonoBehaviour
 {
-    [SerializeField] TMP_Text textTmp;
+    [SerializeField] TextMeshProUGUI textTmp;
     Sequence sequence;
     [SerializeField] float distance = 50f;
     [SerializeField] float lifeTime = 1f;
-
-    private void Start()
-    {
-        textTmp = GetComponent<TMP_Text>();
-        
-        // 생성 위치 랜덤하게 주기
-    }
+    [SerializeField] float randomPositionOffset = 50f;
 
     public IEnumerator PrintDamageText(int damage)
     {
+        textTmp = GetComponent<TextMeshProUGUI>();
         textTmp.text = damage.ToString();
+        textTmp.transform.position += (Random.Range(-randomPositionOffset, randomPositionOffset) * new Vector3(1, 0, 0));
+        textTmp.transform.position += (Random.Range(0, randomPositionOffset) * new Vector3(0, 1, 0));
 
         sequence = DOTween.Sequence()
             .Append(transform.DOLocalMoveY(distance, lifeTime))
