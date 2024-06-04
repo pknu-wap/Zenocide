@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -137,16 +138,19 @@ public class TurnManager : MonoBehaviour
             #region 적 공격
             // 적이 랜덤한 순서로 스킬을 사용함
             // 더 깔끔한 알고리즘이 있지 않을까
-            int enemyIndex = Random.Range(0, 4);
+            // int enemyIndex = Random.Range(0, 4);
             int count = 0;
             bool[] hasAttack = new bool[4]; // 변수 이름이 부적절한 거 같다.
             Array.Fill(hasAttack, false);
 
-            while (count < 4)
+            // while (count < 4)
+            List<Enemy> enemies = BattleInfo.Instance.remainingEnemies;
+            for (int i = 0; i < enemies.Count; ++i)
             {
-                Enemy enemy = GameManager.Instance.enemies[enemyIndex];
+                //Enemy enemy = GameManager.Instance.enemies[enemyIndex];
+                Enemy enemy = enemies[i];
 
-                // 공격한 적은 체크
+/*                // 공격한 적은 체크
                 if (!hasAttack[enemyIndex])
                 {
                     count++;
@@ -156,14 +160,14 @@ public class TurnManager : MonoBehaviour
                 {
                     enemyIndex = Random.Range(0, 4);
                     continue;
-                }
+                }*/
 
-                // 비활성화 된 적은 패스
+/*                // 비활성화 된 적은 패스
                 if (!enemy.gameObject.activeSelf)
                 {
                     enemyIndex = Random.Range(0, 4);
                     continue;
-                }
+                }*/
 
                 // 실제 스킬 사용
                 enemy.EndEnemyTurn();
@@ -171,7 +175,7 @@ public class TurnManager : MonoBehaviour
                 // 스킬 모션
                 yield return StartCoroutine(enemy.SkillMotion());
 
-                enemyIndex = Random.Range(0, 4);
+                //enemyIndex = Random.Range(0, 4);
             }
             #endregion 적 공격
 
