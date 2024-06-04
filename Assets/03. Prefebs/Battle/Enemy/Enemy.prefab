@@ -91,6 +91,7 @@ MonoBehaviour:
   statePanel: {fileID: 0}
   statePanelImage: {fileID: 0}
   uiCanvas: {fileID: 0}
+  mouseEventBlocker: {fileID: 0}
 --- !u!1 &1266317981181027096
 GameObject:
   m_ObjectHideFlags: 0

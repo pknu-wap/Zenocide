@@ -9,6 +9,7 @@ public class StatePanelOpener : MonoBehaviour, IPointerEnterHandler, IPointerExi
     [SerializeField] GameObject statePanel;
     [SerializeField] Image statePanelImage;
     [SerializeField] protected Canvas uiCanvas;
+    public GameObject mouseEventBlocker;
 
     private void Awake()
     {
@@ -29,10 +30,14 @@ public class StatePanelOpener : MonoBehaviour, IPointerEnterHandler, IPointerExi
         //statePanelImage.DOFade(1, duration)
         //    .OnComplete(() => statePanel.SetActive(true));
 
-        // 강조된 캔버스의 order를 맨 앞으로 변경하고
-        uiCanvas.sortingOrder = 10;
-        // 패널을 활성화 시킨다.
-        statePanel.SetActive(true);
+        // 카드를 드래그 중일 땐 표시하지 않음
+        if (!mouseEventBlocker.activeSelf)
+        {
+            // 강조된 캔버스의 order를 맨 앞으로 변경하고
+            uiCanvas.sortingOrder = 10;
+            // 패널을 활성화 시킨다.
+            statePanel.SetActive(true);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
