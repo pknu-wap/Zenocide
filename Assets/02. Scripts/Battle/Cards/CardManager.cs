@@ -104,11 +104,14 @@ public class CardManager : MonoBehaviour
 
     private void Update()
     {
-        // 마우스 우클릭 시
-        if (Input.GetMouseButtonDown(1))
+        if(selectCard != null)
         {
-            // 선택한 카드를 취소한다.
-            selectCard.CancelWithRightClick();
+            // 마우스 우클릭 시
+            if (Input.GetMouseButtonDown(1))
+            {
+                // 선택한 카드를 취소한다.
+                selectCard.CancelWithRightClick();
+            }
         }
     }
 
