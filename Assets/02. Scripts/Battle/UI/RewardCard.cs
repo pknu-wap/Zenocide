@@ -28,8 +28,6 @@ public class RewardCard : MonoBehaviour
 
     public void Setup(CardData item)
     {
-        Debug.Log(item.name);
-
         cardData = item;
 
         illust.sprite = cardData.sprite;

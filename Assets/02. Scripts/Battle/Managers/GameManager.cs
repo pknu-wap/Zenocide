@@ -168,6 +168,10 @@ public class GameManager : MonoBehaviour
         yield return StartCoroutine(GiveRewardCard());
         // 스토리 씬으로 넘어간다.
         SwitchToStoryScene();
+        // 묘지와 핸드를 덱으로 다시 넣는다.
+        CardManager.Instance.SetUpDeck();
+        // UI도 갱신 (덱이 켜진 채 진입한 경우를 고려)
+        CardInventory.instance.UpdateAllCardSlot();
     }
 
     #region 보상 지급
@@ -180,7 +184,6 @@ public class GameManager : MonoBehaviour
         selectedRewardIndex = -1;
         // 카드 데이터 배열을, 새로운 리스트로 만든다. (값 복사)
         List<CardData> cardList = rewardCardList.items.ToList();
-        Debug.Log(cardList.Count);
 
         // UI 최신화
         for(int i = 0; i < rewardCards.Length; ++i)
@@ -201,7 +204,6 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
 
-        Debug.Log("선택: " + selectedRewardIndex);
         // 선택되면 덱에 선택한 카드를 추가한다.
         CardManager.Instance.AddCardToDeck(rewardCards[selectedRewardIndex].cardData);
 

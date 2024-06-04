@@ -124,7 +124,6 @@ public class DialogueManager : MonoBehaviour
     {
         for(int i = 0; i < TotalEventList.Count; i++)
         {
-            Debug.Log("이벤트 시작");
             EventData loadedEvent = TotalEventList[i];
             // 이벤트 종류에 따라 불러오는 CSV 데이터 변경
             switch(loadedEvent.eventID)
