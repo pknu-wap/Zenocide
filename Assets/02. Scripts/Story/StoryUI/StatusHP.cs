@@ -13,8 +13,9 @@ public class StatusHP : MonoBehaviour
     void Update()
     {
         int currentHP = Player.Instance.GetCurrentHP();
-        currentHPText.text = currentHP.ToString();
-        slider.value = currentHP / Player.Instance.GetMaxHP();
+        int maxHP = Player.Instance.GetMaxHP();
+        currentHPText.text = (currentHP + "/" + maxHP).ToString();
+        slider.value = currentHP / maxHP;
     }
 
 }

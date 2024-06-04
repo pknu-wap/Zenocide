@@ -58,7 +58,7 @@ public class BattleInfo : MonoBehaviour
             // 게임을 종료한다.
             isGameOver = true;
 
-            GameManager.Instance.Notification("승리");
+            StartCoroutine(GameManager.Instance.WinBattle());
 
             // 이후 스토리로 복귀한다.
         }

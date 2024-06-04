@@ -124,7 +124,6 @@ public class DialogueManager : MonoBehaviour
     {
         for(int i = 0; i < TotalEventList.Count; i++)
         {
-            Debug.Log("이벤트 시작");
             EventData loadedEvent = TotalEventList[i];
             // 이벤트 종류에 따라 불러오는 CSV 데이터 변경
             switch(loadedEvent.eventID)
@@ -225,6 +224,18 @@ public class DialogueManager : MonoBehaviour
         // 전투 시작
         if(csvData["Enemy1"].ToString() != "")
         {
+            List<string> Enemys = new List<string>();
+            for(int i = 1; i < 4; i++)
+            {
+                if(csvData["Enemy" + i].ToString() != "")
+                {
+                   Enemys.Add(csvData["Enemy" + i].ToString());
+                }
+            }
+            CardManager.Instance.MergeDumpToDeck();
+            CardManager.Instance.SetUpDeck();
+            GameManager.Instance.StartBattle(Enemys.ToArray(), "Level 1");
+            
             StartCoroutine(WaitToEnterBattle(csvData));
         }
 
@@ -285,7 +296,7 @@ public class DialogueManager : MonoBehaviour
         yield return new WaitUntil(() => isClicked);
         CardManager.Instance.MergeDumpToDeck();
         CardManager.Instance.SetUpDeck();
-        GameManager.Instance.StartBattle(Enemys.ToArray());   
+        GameManager.Instance.StartBattle(Enemys.ToArray(), "Level 1");   
     }
 
      private void LoadSOs()
