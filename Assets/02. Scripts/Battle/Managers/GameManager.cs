@@ -147,7 +147,9 @@ public class GameManager : MonoBehaviour
         selectedRewardIndex = -1;
         CardData[] rewardCards = new CardData[3];
 
+
         // 보상 카드 선택
+        //Random.Range(0, );
 
         // UI 최신화
 
