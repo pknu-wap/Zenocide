@@ -15,6 +15,7 @@ public class Choice : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private Button choiceButton;
     private TMP_Text choiceText;
     private TMP_Text requireItemText;
+    private GameObject shadow;
 
     void Start()
     {
@@ -31,6 +32,7 @@ public class Choice : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         choiceButton = GetComponent<Button>();
         choiceText = transform.GetChild(0).GetComponent<TMP_Text>();
         requireItemText = transform.GetChild(1).GetComponent<TMP_Text>();
+        shadow = transform.GetChild(4).gameObject;
 }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -60,7 +62,7 @@ public class Choice : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             if (Items.Instance.items.ContainsKey(requireItemText))
             {
                 this.requireItemText.text = "필요한 아이템: <color=green>" + requireItemText + "</color>";
-
+                EnableInteractable();
             }
 
             else
@@ -90,11 +92,15 @@ public class Choice : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void EnableInteractable()
     {
         choiceButton.interactable = true;
+        shadow.SetActive(false);
+        canSelect = true;
     }
 
     public void DisableInteractable()
     {
         choiceButton.interactable = false;
+        shadow.SetActive(true);
+        canSelect = false;
     }
 
     void ShowSelectUI()
