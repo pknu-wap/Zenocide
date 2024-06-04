@@ -42,17 +42,13 @@ public class DialogueManager : MonoBehaviour
     private List<Dictionary<string, object>> dataCSV;
 
     [Header("이벤트 SO 데이터 폴더 경로")]
-    private string mainEventPath          = "Assets/02. Scripts/Story/EventData SO/MainEvent";
-    private string subEventPath           = "Assets/02. Scripts/Story/EventData SO/SubEvent";
+    private string EventPath = "Assets/02. Scripts/Story/EventData SO/Events";
 
     [Header("전체 이벤트 데이터")]
     public List<EventData> TotalEventList = new List<EventData>();
 
     [Header("메인 SO 이벤트 데이터")]
-    private List<EventData> MainSOs = new List<EventData>();
-
-    [Header("서브 SO 이벤트 데이터")]
-    private List<EventData> SubSOs = new List<EventData>();
+    private List<EventData> MainAndSubSOs = new List<EventData>();
 
     [Header("서브 이벤트 개수 변수")]
     public int subEventCount = 7;
@@ -78,6 +74,12 @@ public class DialogueManager : MonoBehaviour
 
     [Header("마우스 입력 감지 변수")]
     public bool isClicked = false;
+
+    [Header("빈 String 값 저장")]
+    private const string empty = "";
+
+    [Header("대화 출력 완료 변수")]
+    private bool dialoguePrintDone = true;
 
     public GameObject dialogButton;
 
@@ -119,13 +121,18 @@ public class DialogueManager : MonoBehaviour
 
     }
 
-    // 이벤트 처리 함수
     private IEnumerator EventProcess()
     {
-        for(int i = 0; i < TotalEventList.Count; i++)
+        while(dialoguePrintDone is true)
         {
-            EventData loadedEvent = TotalEventList[i];
-            // 이벤트 종류에 따라 불러오는 CSV 데이터 변경
+            // 전체 이벤트에서 무작위 변수 생성
+            int randomIndex = UnityEngine.Random.Range(0, TotalEventList.Count);
+            EventData loadedEvent = TotalEventList[randomIndex];
+            //무작위로 뽑은 인덱스 삭제 후 무작위 이벤트 리스트에 추가
+            TotalEventList.RemoveAt(randomIndex);
+            TotalEventList.Add(MainAndSubSOs[randomIndex]);
+
+             // 이벤트 종류에 따라 불러오는 CSV 데이터 변경
             switch(loadedEvent.eventID)
             {
                 case MainEventID:
@@ -134,15 +141,43 @@ public class DialogueManager : MonoBehaviour
                 case SubEventID:
                     dataCSV = dataSubCSV;
                     break;
-                case RelationEventID:
-                    dataCSV = dataRelationCSV;
-                    break;
             }
 
+            // 이벤트 별로 SO에 저장된 시작과 끝 인덱스를 따라 대화 진행
             for(int j = loadedEvent.startIndex; j < loadedEvent.endIndex + 1; j++)
             {
                 Dictionary<string, object> presentData = dataCSV[j]; 
                 // 대화 출력 함수
+
+                // 이벤트의 끝이면 이벤트 종료 후 다음 이벤트 진행을 위해 함수 종료
+                if (dataCSV[j]["Name1"].ToString() == "END")
+                {
+                   break;
+                }
+                // 연계 이벤트 발생 시 연계 이벤트 우선 실행
+                if (dataCSV[j]["Name1"].ToString() == "RELATION")
+                {
+                    int relationIndex = 0;
+                    // 이전 이벤트가 선택지라면
+                    if(dataCSV[j - 1]["ChoiceCount"].ToString() is not empty)
+                    {
+                        //선택지 결과에 따라 연계 이벤트 변경
+                        //relationIndex;
+                    }
+                    // 연계 이벤트 로드
+                    EventData relationEvent = loadedEvent.nextEvent[relationIndex];
+
+                    for(int k = relationEvent.startIndex; k < relationEvent.endIndex + 1; k++)
+                    {
+                        Dictionary<string, object> relationData = dataRelationCSV[k];
+                        DisplayDialogue(relationData);
+                        // 마우스 입력 대기
+                        while (isClicked == false)
+                        {
+                            yield return null;
+                        }
+                    }
+                }
                 DisplayDialogue(presentData);
 
                 // 마우스 입력 대기
@@ -154,21 +189,7 @@ public class DialogueManager : MonoBehaviour
                 // 클릭이 끝나면 false로 돌린다.
                 isClicked = false;
             }
-
-            // 이벤트의 모든 요소 종료 이후 관련된 다음 이벤트가 존재 시 추가적으로 실행
-            if(loadedEvent.nextEvent.Length != 0)
-            {
-                EventData relationEvent = loadedEvent.nextEvent[SelectManager.Instance.result];
-                for(int k = relationEvent.startIndex; k < relationEvent.endIndex + 1; k++)
-                {
-                    Dictionary<string, object> relationCSVData = dataRelationCSV[k];
-                    DisplayDialogue(relationCSVData);
-                    yield return new WaitUntil(() => isClicked);
-                    isClicked = false;
-                }
-            }
         }
-            
     }
 
     // 대화 출력 함수
@@ -301,50 +322,19 @@ public class DialogueManager : MonoBehaviour
 
      private void LoadSOs()
     {
-        string[] mainEventNames = AssetDatabase.FindAssets("t:EventData", new[] { mainEventPath });
-        int mainEventCount = mainEventNames.Length;
-        Array.Sort(mainEventNames);
-        Array.Reverse(mainEventNames);
+       // 메인, 서브 이벤트 SO 데이터 이름을 불러와 저장
+       string[] EventNames = AssetDatabase.FindAssets("t:EventData", new[] { EventPath });
+       int mainEventCount = EventNames.Length;
 
-        string[] subEventNames  = AssetDatabase.FindAssets("t:EventData", new[] { subEventPath });
-        Array.Sort(subEventNames);
-        Array.Reverse(subEventNames);
-
-        for (int i = 0; i < mainEventNames.Length; i++)
-        {
-            string assetPath = AssetDatabase.GUIDToAssetPath(mainEventNames[i]);
-            EventData so = AssetDatabase.LoadAssetAtPath<EventData>(assetPath);
-            if (so != null)
-            {
-                MainSOs.Add(so);
-            }
-        }
-
-        for (int i = 0; i < subEventNames.Length; i++)
-        {
-            string assetPath = AssetDatabase.GUIDToAssetPath(subEventNames[i]);
-            EventData so = AssetDatabase.LoadAssetAtPath<EventData>(assetPath);
-            if (so != null)
-            {
-               SubSOs.Add(so);
-            }
-        }
-  
-        for(int i = 0; i < mainEventCount; i++)
-        {
-            // 메인 이벤트 리스트에서 데이터 추출
-            EventData presentEvent = MainSOs[i];
-            TotalEventList.Add(presentEvent);
-
-            //서브 이벤트 랜덤 로드
-            for(int j = 0; j < subEventCount; j++)
-            {
-                EventData randomSubEvent = PickRandomElement(SubSOs);
-                TotalEventList.Add(randomSubEvent);
-            }
-
-        }            
-
+       for (int i = 0; i < EventNames.Length; i++)
+       {
+           string assetPath = AssetDatabase.GUIDToAssetPath(EventNames[i]);
+           EventData so = AssetDatabase.LoadAssetAtPath<EventData>(assetPath);
+           // 무작위 이벤트 추출용 so 리스트
+           MainAndSubSOs.Add(so);
+           // 초기 무작위 이벤트 리스트
+           TotalEventList.Add(so);
+       }
     }
 
     // 제네릭 함수를 사용하여 리스트에서 랜덤 요소를 뽑기
