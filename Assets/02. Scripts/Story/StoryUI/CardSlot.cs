@@ -13,8 +13,6 @@ public class CardSlot : MonoBehaviour
     [SerializeField] TMP_Text descriptionTMP;
     public void Setup(CardData item)
     {
-        Debug.Log(item.name);
-
         cardData = item;
 
         illust.sprite = cardData.sprite;
