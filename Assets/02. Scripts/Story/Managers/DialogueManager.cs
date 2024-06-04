@@ -297,7 +297,7 @@ public class DialogueManager : MonoBehaviour
         yield return new WaitUntil(() => isClicked);
         CardManager.Instance.MergeDumpToDeck();
         CardManager.Instance.SetUpDeck();
-        GameManager.Instance.StartBattle(Enemys.ToArray());   
+        GameManager.Instance.StartBattle(Enemys.ToArray(), "Level 1");   
     }
 
      private void LoadSOs()

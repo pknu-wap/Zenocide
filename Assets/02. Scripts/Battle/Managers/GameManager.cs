@@ -25,19 +25,9 @@ public class GameManager : MonoBehaviour
         EnrollComponent();
 
         // 시작은 스토리
-        SwitchToStoryScene();
-    }
-
-    private void EnrollComponent()
-    {
-        // 알림 패널 할당
-        notificationPanel = GameObject.Find("Notification Panel").GetComponent<NotificationPanel>();
-
-        // Enemy 프리팹들을 미리 등록해둔다.
-        enemies = enemiesParent.GetComponentsInChildren<Enemy>();
-
-        // 시작은 스토리
         // SwitchToStoryScene();
+        // 시작은 배틀
+        TestStartBattle();
 
         // 변수를 찾아 등록한다.
         EnrollComponent();
@@ -65,7 +55,12 @@ public class GameManager : MonoBehaviour
     private void EnrollComponent()
     {
         rewardPanel = GameObject.Find("Reward Panel");
-        
+        // 알림 패널 할당
+        notificationPanel = GameObject.Find("Notification Panel").GetComponent<NotificationPanel>();
+
+        // Enemy 프리팹들을 미리 등록해둔다.
+        enemies = enemiesParent.GetComponentsInChildren<Enemy>();
+
         // 카메라 할당
         storyCamera = GameObject.Find("Story Camera");
         battleCamera = GameObject.Find("Battle Camera");
@@ -125,7 +120,7 @@ public class GameManager : MonoBehaviour
     // StartBattle 함수를 테스트하는 함수
     public void TestStartBattle()
     {
-        StartBattle(new string[] { "NormalZombie", "NormalZombie" }, "rewardCardList");
+        StartBattle(new string[] { "NormalZombie", "NormalZombie" }, "Level 1");
     }
 
     // 모든 적 정보를 등록, 소환한다
