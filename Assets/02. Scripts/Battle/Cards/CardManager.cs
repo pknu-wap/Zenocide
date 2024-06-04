@@ -67,8 +67,6 @@ public class CardManager : MonoBehaviour
     {
         focusPos = new Vector3(0f, handLeft.position.y + focusOffset, -3f);
 
-        // 지금은 게임과 전투가 동시에 시작
-        // InitDeck은 게임 시작 시, SetUpDeck과 InitDump는 전투 시작 시 호출해야 함
         #region CreateDict
         cardDict = new Dictionary<string, CardData>();
         foreach (CardData card in cardList.items)

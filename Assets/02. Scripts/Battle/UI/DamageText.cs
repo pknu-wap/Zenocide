@@ -19,10 +19,10 @@ public class DamageText : MonoBehaviour
         textTmp.transform.position += (Random.Range(-randomPositionOffset, randomPositionOffset) * new Vector3(1, 0, 0));
         textTmp.transform.position += (Random.Range(0, randomPositionOffset) * new Vector3(0, 1, 0));
 
+
         sequence = DOTween.Sequence()
             .Append(transform.DOLocalMoveY(distance, lifeTime))
             .Join(textTmp.DOFade(0f, lifeTime));
-
         yield return new WaitForSeconds(lifeTime);
 
         Destroy(gameObject);

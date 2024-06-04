@@ -1117,6 +1117,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 100
   shield: 0
+  bonusAttackStat: 0
+  bonusDamage: 0
+  bonusArmor: 0
+  damageTextPrefab: {fileID: 4272445659923317628, guid: 829249fb6ce714f4e8cf8aa21f3dcdec, type: 3}
   enemyData: {fileID: 0}
   currentSkill:
     type: 0
