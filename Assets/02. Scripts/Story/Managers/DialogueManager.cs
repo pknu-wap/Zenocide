@@ -142,7 +142,7 @@ public class DialogueManager : MonoBehaviour
                     dataCSV = dataSubCSV;
                     break;
             }
-
+            Debug.Log(loadedEvent.eventID + " " + loadedEvent.name);
             // 이벤트 별로 SO에 저장된 시작과 끝 인덱스를 따라 대화 진행
             for(int j = loadedEvent.startIndex; j < loadedEvent.endIndex + 1; j++)
             {
