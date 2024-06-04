@@ -143,9 +143,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void WinBattle()
+    public IEnumerator WinBattle()
     {
-        Notification("승리");
+        // 승리를 띄우고, 완료될 때까지 기다린 후 보상을 지급한다.
+        //Notification("승리");
+        yield return StartCoroutine(notificationPanel.Show("승리", true));
         StartCoroutine(GiveRewardCard());
     }
 
