@@ -26,27 +26,27 @@ public class CardManager : MonoBehaviour
 
     [Header("핸드")]
     public List<Card> hand;
-    [SerializeField] int maxHand = 10;
-    [SerializeField] Transform handGroup;
-    [SerializeField] Transform handLeft;
-    [SerializeField] Transform handRight;
+    private int maxHand = 10;
+    private Transform handGroup;
+    private Transform handLeft;
+    private Transform handRight;
 
     [Header("카드 위치")]
-    [SerializeField] public Transform cardSpawnPoint;
-    [SerializeField] public Transform cardDrawPoint;
-    [SerializeField] public Transform cardResetPoint;
-    [SerializeField] public Transform cardDumpPoint;
+    private Transform cardSpawnPoint;
+    private Transform cardDrawPoint;
+    private Transform cardResetPoint;
+    public Transform cardDumpPoint;
 
     [Header("덱, 묘지")]
     public List<CardData> deck;
     public List<CardData> dump;
-    List<GameObject> cardBackObjectList;
-    [SerializeField] TMP_Text deckCountTMP;
-    [SerializeField] TMP_Text dumpCountTMP;
-    [SerializeField] Transform cardBackGroup;
+    private List<GameObject> cardBackObjectList;
+    private TMP_Text deckCountTMP;
+    private TMP_Text dumpCountTMP;
+    private Transform cardBackGroup;
 
     [Header("이펙트")]
-    [SerializeField] public Transform effectGroup;
+    private Transform effectGroup;
 
     // 선택된 카드
     [SerializeField] Card selectCard;
@@ -57,14 +57,16 @@ public class CardManager : MonoBehaviour
     public Vector3 focusPos;
 
     [Header("딜레이")]
-    [SerializeField] float drawDelay = 0.5f;
-    [SerializeField] float discardDelay = 0.2f;
-    [SerializeField] float resetDelay = 0.1f;
-    [SerializeField] float resetMoveDelay = 0.1f;
-    [SerializeField] float moveDelay = 0.5f;
+    private float drawDelay = 0.5f;
+    private float discardDelay = 0.2f;
+    private float resetDelay = 0.1f;
+    private float resetMoveDelay = 0.1f;
+    private float moveDelay = 0.5f;
 
     void Start()
     {
+        // 컴포넌트를 할당한다.
+        EnrollComponent();
         focusPos = new Vector3(0f, handLeft.position.y + focusOffset, -3f);
 
         // 지금은 게임과 전투가 동시에 시작
@@ -108,6 +110,23 @@ public class CardManager : MonoBehaviour
             // 선택한 카드를 취소한다.
             selectCard.CancelWithRightClick();
         }
+    }
+
+    private void EnrollComponent()
+    {
+        handGroup = GameObject.Find("Hand Group").transform;
+        handLeft = GameObject.Find("Hand Left").transform;
+        handRight = GameObject.Find("Hand Right").transform;
+
+        cardSpawnPoint = GameObject.Find("Card Spawn Point").transform;
+        cardDrawPoint = GameObject.Find("Card Draw Point").transform;
+        cardResetPoint = GameObject.Find("Card Reset Point").transform;
+        cardDumpPoint = GameObject.Find("Card Dump Point").transform;
+        
+        deckCountTMP = GameObject.Find("Deck Count TMP").GetComponent<TMP_Text>();
+        dumpCountTMP = GameObject.Find("Dump Count TMP").GetComponent<TMP_Text>();
+        cardBackGroup = GameObject.Find("Card Back Group").transform;
+        effectGroup = GameObject.Find("Effect Group").transform;
     }
 
     private void StartBattle()
