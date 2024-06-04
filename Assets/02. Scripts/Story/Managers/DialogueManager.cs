@@ -12,6 +12,24 @@ using Unity.VisualScripting;
 
 public class DialogueManager : MonoBehaviour, IPointerDownHandler
 {
+    [Header("메인 스토리 CSV")]
+    // 메인 CSV 파일을 읽어올 리스트
+    private List<Dictionary<string, object>> dataMainCSV;
+    [SerializeField] private TextAsset MainCSV;
+    
+    [Header("서브 스토리 CSV")]
+    // 서브 CSV 파일을 읽어올 리스트
+    private List<Dictionary<string, object>> dataSubCSV;
+    [SerializeField] private TextAsset SubCSV;
+
+    [Header("연계 스토리 CSV")]
+    // 연계 CSV 파일을 읽어올 리스트
+    private List<Dictionary<string, object>> dataRelationCSV;
+    [SerializeField] private TextAsset RelationCSV;
+
+    [Header("스토리 카메라 오브젝트")]
+    [SerializeField] GameObject storyCamera;
+
     [Header("Text 오브젝트")]
     public TMP_Text dialogueText;               
     public TMP_Text dialogueName;
@@ -39,29 +57,23 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
     public GameObject waitCursor;
 
     [Header("CSV 데이터")]
-    public List<Dictionary<string, object>> dataCSV;
-    public List<Dictionary<string, object>> dataMainCSV;
-    public List<Dictionary<string, object>> dataSubCSV;
-    public List<Dictionary<string, object>> dataMainRelationCSV;
+    private List<Dictionary<string, object>> dataCSV;
 
-    [Header("이벤트 데이터 폴더 경로")]
-    public string mainEventPath          = "Assets/02. Scripts/Story/EventData SO/MainEvent";
-    public string subEventPath           = "Assets/02. Scripts/Story/EventData SO/SubEvent";
+    [Header("이벤트 SO 데이터 폴더 경로")]
+    private string mainEventPath          = "Assets/02. Scripts/Story/EventData SO/MainEvent";
+    private string subEventPath           = "Assets/02. Scripts/Story/EventData SO/SubEvent";
 
     [Header("전체 이벤트 데이터")]
     public List<EventData> TotalEventList = new List<EventData>();
 
-    [Header("메인 이벤트 데이터")]
-    public List<EventData> MainSOs = new List<EventData>();
+    [Header("메인 SO 이벤트 데이터")]
+    private List<EventData> MainSOs = new List<EventData>();
 
-    [Header("관계 이벤트 데이터")]
-    public List<EventData> RelationSOs = new List<EventData>();
-
-    [Header("서브 이벤트 데이터")]
-    public List<EventData> SubSOs = new List<EventData>();
+    [Header("서브 SO 이벤트 데이터")]
+    private List<EventData> SubSOs = new List<EventData>();
 
     [Header("서브 이벤트 개수 변수")]
-    int subEventCount = 7;
+    public int subEventCount = 7;
 
     [Header("이벤트별 ID 저장 변수")]
     public const int MainEventID = 0;
@@ -70,16 +82,20 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
 
     [Header("캐릭터 이미지 데이터")]               
     public Image[] IllustsObjects;                 
-    public Sprite[] illustImages;                 
+    public Sprite[] illustImages;            
+
+    [Header("캐릭터 이미지 데이터")]               
+    public Image    BackgroundCanvas;                 
+    public Sprite[] BackgroundImages;      
 
     [Header("대화 텍스트 출력 진행 확인 변수")]            
-    private bool isTyping = false;
+    public bool isTyping = false;
 
     [Header("대화 텍스트 출력 중단 요청 확인 변수")]              
-    private bool cancelTyping = false;          
+    public bool cancelTyping = false;          
 
     [Header("마우스 입력 감지 변수")]
-    private bool isClicked = false;
+    public bool isClicked = false;
 
     [Header("일러스트 데이터")]
     public Dictionary<string, int> illustTable = new Dictionary<string, int>()
@@ -89,12 +105,20 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         {"주인공",2}
     };
 
+    [Header("배경 데이터")]
+    public Dictionary<string, int> backgroundTable = new Dictionary<string, int>()
+    {
+        {"배경1", 0},
+        {"배경2", 1},
+        {"배경3", 2}
+    };
+
     void Start()
     {
         // CSV 파일 읽기
-        dataMainCSV         = CSVReader.Read("MainScript");
-        dataSubCSV          = CSVReader.Read("SubScript");
-        dataMainRelationCSV = CSVReader.Read("RelationScript");    
+        dataMainCSV         = CSVReader.Read(MainCSV);
+        dataSubCSV          = CSVReader.Read(SubCSV);
+        dataRelationCSV     = CSVReader.Read(RelationCSV);    
         // 대화창 가림막 비활성화
         dialogueBlinder.SetActive(false);    
         // 선택지 비활성화
@@ -125,10 +149,9 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
                     dataCSV = dataSubCSV;
                     break;
                 case RelationEventID:
-                    dataCSV = dataMainRelationCSV;
+                    dataCSV = dataRelationCSV;
                     break;
             }
-            Debug.Log(loadedEvent.name + " 이벤트 발생");
             for(int j = loadedEvent.startIndex; j < loadedEvent.endIndex + 1; j++)
             {
                 Dictionary<string, object> presentData = dataCSV[j]; 
@@ -146,7 +169,7 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
                 EventData relationEvent = loadedEvent.nextEvent[selectManager.result];
                 for(int k = relationEvent.startIndex; k < relationEvent.endIndex + 1; k++)
                 {
-                Dictionary<string, object> relationCSVData = dataMainRelationCSV[k];
+                Dictionary<string, object> relationCSVData = dataRelationCSV[k];
                 DisplayDialogue(relationCSVData);
                 yield return new WaitUntil(() => isClicked);
                 isClicked = false;
@@ -166,7 +189,20 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         dialogueName.text = csvData["Name1"].ToString();
         string text = csvData["Text1"].ToString();
         // 일러스트 표시 함수
-        ShowIllust(illustNames);
+        DisplayIllust(illustNames);
+        // 배경 설정
+        Debug.Log(csvData["Background"].ToString());
+        switch(csvData["Background"].ToString())
+        {
+            case "":
+                break;
+            case "배경1":
+                BackgroundCanvas.sprite = BackgroundImages[backgroundTable["배경1"]];
+                break;
+            case "배경2":
+                BackgroundCanvas.sprite = BackgroundImages[backgroundTable["배경2"]];
+                break;
+        }
 
         if (isTyping && !cancelTyping)
         {
@@ -198,17 +234,7 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         // 전투 시작
         if(csvData["Enemy1"].ToString() != "")
         {
-            List<string> Enemys = new List<string>();
-            for(int i = 1; i < 4; i++)
-            {
-                if(csvData["Enemy" + i].ToString() != "")
-                {
-                   Enemys.Add(csvData["Enemy" + i].ToString());
-                }
-            }
-            CardManager.Instance.MergeDumpToDeck();
-            CardManager.Instance.SetUpDeck();
-            GameManager.Instance.StartBattle(Enemys.ToArray());   
+            StartCoroutine(WaitToEnterBattle(csvData));
         }
 
         if (csvData["ChoiceCount"].ToString() != "")
@@ -244,6 +270,21 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         // 대화 진행 종료
         isTyping = false;
         waitCursor.SetActive(true);
+    }
+
+    private IEnumerator WaitToEnterBattle(Dictionary<string, object> csvData){
+        List<string> Enemys = new List<string>();
+        for(int i = 1; i < 4; i++)
+        {
+            if(csvData["Enemy" + i].ToString() != "")
+            {
+               Enemys.Add(csvData["Enemy" + i].ToString());
+            }
+        }
+        yield return new WaitUntil(() => isClicked);
+        CardManager.Instance.MergeDumpToDeck();
+        CardManager.Instance.SetUpDeck();
+        GameManager.Instance.StartBattle(Enemys.ToArray());   
     }
 
     private IEnumerator DisplayChoices(Dictionary<string, object> csvData)
@@ -332,7 +373,7 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
         return array[randomIndex];
     }
 
-    public void ShowIllust(List<string> names)
+    public void DisplayIllust(List<string> names)
     {
 
         List<string> Names = new List<string>();

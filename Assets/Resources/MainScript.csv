@@ -1,8 +1,8 @@
-﻿Index,Name1,Name2,Name3,Text1,Text2,Event,StartIndex,EndIndex,ChoiceCount,Choice1,Choice2,Choice3,Choice4,RequireItem1,RequireItem2,RequireItem3,RequireItem4,EquipItem,EquipCard,Enemy1,Enemy2,Enemy3,Enemy4
-0,???,,,을(를) 얻었다.,,A,0,4,,,,,,,,,,총,,,,,
-1,좀비,좀비,,을(를) 얻었다.,,A,,,,,,,,,,,,,전통적인 무기,,,,
-2,???,,,저건…좀비?,,,,,,,,,,,,,,,,,,,
-3,???,주인공,주인공,어쩌지?,,A,,,2,싸운다,도망간다,,,총,,,,,,,,,
-4,,,,,,,,,,,,,,,,,,,,,,,
-5,,,,,,,,,,,,,,,,,,,,,,,
-6,,,,,,,,,,,,,,,,,,,,,,,
+﻿Index,Name1,Name2,Name3,Text1,Text2,Event,ChoiceCount,Choice1,Choice2,Choice3,Choice4,RequireItem1,RequireItem2,RequireItem3,RequireItem4,EquipItem,EquipCard,Enemy1,Enemy2,Enemy3,Enemy4
+0,???,,,을(를) 얻었다.,,A,,,,,,,,,,총,,,,,
+1,좀비,좀비,,을(를) 얻었다.,,A,,,,,,,,,,,전통적인 무기,,,,
+2,???,,,저건…좀비?,,,,,,,,,,,,,,,,,
+3,???,주인공,주인공,어쩌지?,,A,2,싸운다,도망간다,,,총,,,,,,,,,
+4,,,,,,,,,,,,,,,,,,,,,
+5,,,,,,,,,,,,,,,,,,,,,
+6,,,,,,,,,,,,,,,,,,,,,
