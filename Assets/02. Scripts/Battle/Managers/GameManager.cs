@@ -1,7 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using Random = UnityEngine.Random;
 
 // 치트, UI, 랭킹, 게임오버
 public class GameManager : MonoBehaviour
@@ -11,6 +14,7 @@ public class GameManager : MonoBehaviour
 
     [Header("컴포넌트 및 오브젝트")]
     [SerializeField] private GameObject rewardPanel;
+    [SerializeField] private RewardCard[] rewardCards;
     [SerializeField] NotificationPanel notificationPanel;
     [SerializeField] Transform enemiesParent;
     [SerializeField] public Enemy[] enemies;
@@ -25,9 +29,9 @@ public class GameManager : MonoBehaviour
         EnrollComponent();
 
         // 시작은 스토리
-        // SwitchToStoryScene();
+        SwitchToStoryScene();
         // 시작은 배틀
-        TestStartBattle();
+        // TestStartBattle();
 
         // 변수를 찾아 등록한다.
         EnrollComponent();
@@ -54,7 +58,9 @@ public class GameManager : MonoBehaviour
     // 컴포넌트를 찾아 등록한다.
     private void EnrollComponent()
     {
+        // 리워드 오브젝트 할당
         rewardPanel = GameObject.Find("Reward Panel");
+        rewardCards = rewardPanel.GetComponentsInChildren<RewardCard>();
         // 알림 패널 할당
         notificationPanel = GameObject.Find("Notification Panel").GetComponent<NotificationPanel>();
 
@@ -159,14 +165,19 @@ public class GameManager : MonoBehaviour
     {
         // 변수 초기화
         selectedRewardIndex = -1;
-        CardData[] rewardCards = new CardData[3];
-
-
-        // 보상 카드 선택
-        //Random.Range(0, );
+        // 카드 데이터 배열을, 새로운 리스트로 만든다. (값 복사)
+        List<CardData> cardList = rewardCardList.items.ToList();
+        Debug.Log(cardList.Count);
 
         // UI 최신화
+        for(int i = 0; i < rewardCards.Length; ++i)
+        {
+            // 보상 카드 선택
+            int randomIndex = Random.Range(0, cardList.Count);
 
+            rewardCards[i].Setup(cardList[randomIndex]);
+            cardList.RemoveAt(randomIndex);
+        }
 
         // 패널 열기
         rewardPanel.SetActive(true);
@@ -179,7 +190,7 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("선택: " + selectedRewardIndex);
         // 선택되면 덱에 선택한 카드를 추가한다.
-        CardManager.Instance.AddCardToDeck(rewardCards[selectedRewardIndex]);
+        CardManager.Instance.AddCardToDeck(rewardCards[selectedRewardIndex].cardData);
 
         // 패널을 닫는다.
         rewardPanel.SetActive(false);
