@@ -18,11 +18,25 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        // 컴포넌트를 미리 할당한다.
+        EnrollComponent();
+
+        // 시작은 스토리
+        SwitchToStoryScene();
+    }
+
+    private void EnrollComponent()
+    {
+        // 알림 패널 할당
+        notificationPanel = GameObject.Find("Notification Panel").GetComponent<NotificationPanel>();
+
         // Enemy 프리팹들을 미리 등록해둔다.
         enemies = enemiesParent.GetComponentsInChildren<Enemy>();
 
-        // 시작은 스토리
-        // SwitchToStoryScene();
+        // 카메라 할당
+        storyCamera = GameObject.Find("Story Camera");
+        battleCamera = GameObject.Find("Battle Camera");
+        tutorialCamera = GameObject.Find("Tutorial Camera");
     }
 
     void Update()

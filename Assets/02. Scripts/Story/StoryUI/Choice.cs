@@ -1,36 +1,116 @@
 using UnityEngine.EventSystems;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
+using TMPro;
 
-public class Choice : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class Choice : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    public bool canSelect = true;
     public bool marked = false;
     public bool selected = false;
+
     [Header("선택 표시 오브젝트")]
-    public GameObject[] Sign = new GameObject[2];
+    public GameObject[] sign = new GameObject[2];
+    private Button choiceButton;
+    private TMP_Text choiceText;
+    private TMP_Text requireItemText;
+    private GameObject shadow;
 
     void Start()
     {
-        Sign[0].SetActive(false);
-        Sign[1].SetActive(false);
+        EnrollComponent();
+        HideSelectUI();
+        DisableChoiceObject();
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    private void EnrollComponent()
     {
-        selected = marked ? true : false;
-    }
+        sign[0] = transform.GetChild(2).gameObject;
+        sign[1] = transform.GetChild(3).gameObject;
+
+        choiceButton = GetComponent<Button>();
+        choiceText = transform.GetChild(0).GetComponent<TMP_Text>();
+        requireItemText = transform.GetChild(1).GetComponent<TMP_Text>();
+        shadow = transform.GetChild(4).gameObject;
+}
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        marked = true;       
-        Sign[0].SetActive(true);
-        Sign[1].SetActive(true);
+        if (canSelect == false)
+        {
+            return;
+        }
+
+        marked = true;
+        ShowSelectUI();
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         marked = false;
-        Sign[0].SetActive(false);
-        Sign[1].SetActive(false);
+        HideSelectUI();
+    }
+
+    public void UpdateText(string choiceText, string requireItemText = "")
+    {
+        this.choiceText.text = choiceText;
+        this.requireItemText.text = "";
+
+        if (requireItemText != "")
+        {
+            if (Items.Instance.items.ContainsKey(requireItemText))
+            {
+                this.requireItemText.text = "필요한 아이템: <color=green>" + requireItemText + "</color>";
+                EnableInteractable();
+            }
+
+            else
+            {
+                this.requireItemText.text = "필요한 아이템: <color=red>" + requireItemText + "</color>";
+                DisableInteractable();
+            }
+        }
+    }
+
+    // 버튼 이벤트 등록용
+    public void SelectChoice(int i)
+    {
+        SelectManager.Instance.result = i;
+    }
+
+    public void EnableChoiceObject()
+    {
+        gameObject.SetActive(true);
+    }
+
+    public void DisableChoiceObject()
+    {
+        gameObject.SetActive(false);
+    }
+
+    public void EnableInteractable()
+    {
+        choiceButton.interactable = true;
+        shadow.SetActive(false);
+        canSelect = true;
+    }
+
+    public void DisableInteractable()
+    {
+        choiceButton.interactable = false;
+        shadow.SetActive(true);
+        canSelect = false;
+    }
+
+    void ShowSelectUI()
+    {
+        sign[0].SetActive(true);
+        sign[1].SetActive(true);
+    }
+    void HideSelectUI()
+    {
+        sign[0].SetActive(false);
+        sign[1].SetActive(false);
     }
 }
