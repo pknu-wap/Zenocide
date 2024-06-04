@@ -10,7 +10,24 @@ using Random = UnityEngine.Random;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-    private void Awake() => Instance = this;
+    private void Awake()
+    {
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
+        // 컴포넌트를 미리 할당한다.
+        EnrollComponent();
+
+        // 변수를 찾아 등록한다.
+        EnrollComponent();
+        SetDefaultState();
+    }
 
     [Header("컴포넌트 및 오브젝트")]
     [SerializeField] private GameObject rewardPanel;
@@ -25,17 +42,10 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        // 컴포넌트를 미리 할당한다.
-        EnrollComponent();
-
         // 시작은 스토리
         SwitchToStoryScene();
         // 시작은 배틀
         // TestStartBattle();
-
-        // 변수를 찾아 등록한다.
-        EnrollComponent();
-        SetDefaultState();
     }
 
     void Update()
@@ -154,7 +164,10 @@ public class GameManager : MonoBehaviour
         // 승리를 띄우고, 완료될 때까지 기다린 후 보상을 지급한다.
         //Notification("승리");
         yield return StartCoroutine(notificationPanel.Show("승리", true));
-        StartCoroutine(GiveRewardCard());
+        // 리워드 지급이 완료되길 기다린다.
+        yield return StartCoroutine(GiveRewardCard());
+        // 스토리 씬으로 넘어간다.
+        SwitchToStoryScene();
     }
 
     #region 보상 지급
