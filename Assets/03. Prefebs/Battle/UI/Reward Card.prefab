@@ -355,7 +355,7 @@ GameObject:
   - component: {fileID: 8506017119117085171}
   - component: {fileID: 8630697045794098676}
   m_Layer: 0
-  m_Name: RewardCard
+  m_Name: Reward Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -430,7 +430,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: SelectReward
+        m_MethodName: 
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
