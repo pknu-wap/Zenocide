@@ -2552,6 +2552,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4305881327545771759, guid: f13cf976d1ca6b8419a5f9458e64ae8b, type: 3}
+      propertyPath: damageTextPrefab
+      value: 
+      objectReference: {fileID: 4272445659923317628, guid: 829249fb6ce714f4e8cf8aa21f3dcdec, type: 3}
     - target: {fileID: 4400738759247151835, guid: f13cf976d1ca6b8419a5f9458e64ae8b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
