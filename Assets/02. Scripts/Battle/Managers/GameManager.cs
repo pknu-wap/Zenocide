@@ -42,6 +42,8 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        // 시작은 튜토리얼
+        // SwitchToTutorialScene();
         // 시작은 스토리
         SwitchToStoryScene();
         // 시작은 배틀
@@ -237,6 +239,13 @@ public class GameManager : MonoBehaviour
     {
         storyCamera.SetActive(false);
         battleCamera.SetActive(true);
+    }
+
+    public void SwitchToTutorialScene()
+    {
+        tutorialCamera.SetActive(true);
+        storyCamera.SetActive(false);
+        battleCamera.SetActive(false);
     }
     #endregion 카메라 전환
 }
