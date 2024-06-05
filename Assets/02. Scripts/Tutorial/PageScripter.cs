@@ -33,7 +33,7 @@ public class PageScripter : MonoBehaviour
     {
         diaryText = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<TMP_Text>();
         book = transform.parent.GetComponent<PageCurl>();
-        waitCursor = transform.parent.parent.GetChild(1).gameObject;
+        waitCursor = transform.parent.parent.GetChild(2).gameObject;
     }
 
     // 스크립트를 보여준다.
