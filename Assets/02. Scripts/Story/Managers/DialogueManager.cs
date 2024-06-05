@@ -182,6 +182,8 @@ public class DialogueManager : MonoBehaviour
                     }
                     continue;
                 }
+
+                isClicked = false;
                 DisplayDialogue(presentData);
                 
                 // 마우스 입력 대기
