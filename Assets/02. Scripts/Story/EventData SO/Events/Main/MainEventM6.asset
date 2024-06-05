@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: MainEventM6
   m_EditorClassIdentifier: 
   eventID: 0
-  eventName: M6
-  startIndex: 75
-  endIndex: 95
-  nextEvent: []
+  eventName: M4
+  startIndex: 65
+  endIndex: 72
+  nextEvent:
+  - {fileID: 0}
+  - {fileID: 0}
