@@ -62,9 +62,9 @@ public class DialogueManager : MonoBehaviour
     public Sprite[] illustImages;            
 
     [Header("배경 이미지 데이터")]               
-    public Image    StoryBackgroundObject;
-    public Image    BattleBackgroundObject;                 
-    public Sprite[] BackgroundImages;      
+    public Image    storyBackgroundObject;
+    public Image    battleBackgroundObject;                 
+    public Sprite[] backgroundImages;      
 
     [Header("대화 텍스트 출력 진행 확인 변수")]            
     public bool isTyping = false;
@@ -120,7 +120,8 @@ public class DialogueManager : MonoBehaviour
 
     private void EnrollComponent()
     {
-
+        storyBackgroundObject = GameObject.Find("Story BG").GetComponent<Image>();
+        battleBackgroundObject = GameObject.Find("Battle BG").GetComponent<Image>();
     }
 
     private IEnumerator EventProcess()
@@ -209,7 +210,7 @@ public class DialogueManager : MonoBehaviour
         // 배경 설정
         if(csvData["Background"].ToString() is not empty)
         {
-            StoryBackgroundObject.sprite = BackgroundImages[backgroundTable[csvData["Background"].ToString()]];
+            storyBackgroundObject.sprite = backgroundImages[backgroundTable[csvData["Background"].ToString()]];
             //BattleBackgroundObject.sprite = BackgroundImages[backgroundTable[csvData["Background"].ToString()]]; 
         }
                 
