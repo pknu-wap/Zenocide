@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: RM2-4
   m_EditorClassIdentifier: 
   eventID: 2
-  eventName: RelationM1-1
-  startIndex: 61
-  endIndex: 62
-  nextEvent: []
+  startIndex: 51
+  endIndex: 52
+  relationEvent: []
+  nextEvent: {fileID: 0}
+  addEvent:
+  - {fileID: 11400000, guid: 258642fd384db614fbb7fc7fa075158e, type: 2}

@@ -1,14 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
-using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using System.Linq;
-using System;
-using Unity.VisualScripting.FullSerializer;
-using Unity.VisualScripting;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -138,10 +134,10 @@ public class DialogueManager : MonoBehaviour
              // 이벤트 종류에 따라 불러오는 CSV 데이터 변경
             switch(loadedEvent.eventID)
             {
-                case MainEventID:
+                case EventType.Main:
                     dataCSV = dataMainCSV;
                     break;
-                case SubEventID:
+                case EventType.Sub:
                     dataCSV = dataSubCSV;
                     break;
             }
@@ -167,7 +163,7 @@ public class DialogueManager : MonoBehaviour
                         relationIndex = SelectManager.Instance.result;
                     }
                     // 연계 이벤트 로드
-                    EventData relationEvent = loadedEvent.nextEvent[relationIndex];
+                    EventData relationEvent = loadedEvent.relationEvent[relationIndex];
 
                     for(int k = relationEvent.startIndex; k < relationEvent.endIndex + 1; k++)
                     {
@@ -327,15 +323,9 @@ public class DialogueManager : MonoBehaviour
        }
     }
 
-    private void AddEvent(string eventName)
+    private void AddEvent(EventData eventData)
     {
-        foreach (EventData so in MainAndSubSOs)
-        {
-            if (so.eventName == eventName)
-            {
-                TotalEventList.Add(so);
-            }
-        }
+        TotalEventList.Add(eventData);
     }
 
     // 제네릭 함수를 사용하여 리스트에서 랜덤 요소를 뽑기
