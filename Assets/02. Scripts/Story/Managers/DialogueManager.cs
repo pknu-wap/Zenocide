@@ -173,23 +173,21 @@ public class DialogueManager : MonoBehaviour
                     {
                         Debug.Log(relationEvent.eventID + " " + relationEvent.name);
                         Dictionary<string, object> relationData = dataRelationCSV[k];
-                        DisplayDialogue(relationData);
-                        // 마우스 입력 대기
-                        while (isClicked == false)
+                        isClicked = false;
+                        while(isClicked == false)
                         {
-                            yield return null;
+                            yield return StartCoroutine(DisplayDialogue(relationData));
                         }
+                        isClicked = false;
                     }
                     continue;
                 }
 
                 isClicked = false;
-                DisplayDialogue(presentData);
-                
                 // 마우스 입력 대기
                 while (isClicked == false)
                 {
-                    yield return null;
+                    yield return StartCoroutine(DisplayDialogue(presentData));;
                 }
 
                 // 클릭이 끝나면 false로 돌린다.
@@ -199,7 +197,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 대화 출력 함수
-    private void DisplayDialogue(Dictionary<string, object> csvData)
+    private IEnumerator DisplayDialogue(Dictionary<string, object> csvData)
     {
         List<string> illustNames = new List<string>(){csvData["Image1"].ToString(),
                                                       csvData["Image2"].ToString(), 
@@ -221,7 +219,6 @@ public class DialogueManager : MonoBehaviour
         {
             string equipItem = csvData["EquipItem"].ToString();
             Items.Instance.AddItem(equipItem);
-            text = csvData["EquipItem"].ToString() + " " + text;
         }
 
         // 획득 카드가 존재 한다면 카드 지급
@@ -229,19 +226,12 @@ public class DialogueManager : MonoBehaviour
         {
             string equipCard = csvData["EquipCard"].ToString();
             CardManager.Instance.AddCardToDeck(equipCard);
-            text = csvData["EquipCard"].ToString() + " " + text;
         }
 
-        if (isTyping && !cancelTyping)
-        {
-            cancelTyping = true;
-            return;
-        }
-        
         // 대화 출력
-        dialogueText.text = text;   
-        StartCoroutine(TypeSentence(dialogueText.text));
-
+        dialogueText.text = text;
+        isClicked = false;
+        yield return StartCoroutine(TypeSentence(dialogueText.text));
         // 전투 시작
         if(csvData["Enemy1"].ToString() is not empty)
         {
@@ -276,17 +266,18 @@ public class DialogueManager : MonoBehaviour
 
         // 선택지 띄우기 후 처리
         dialogButton.SetActive(true);
+        if(csvData["RequireItem" + (SelectManager.Instance.result + 1)].ToString() != "")
+        {
+            Items.Instance.RemoveItem(csvData["RequireItem" + (SelectManager.Instance.result + 1)].ToString());
+        }
     }
 
     // 텍스트 출력 효과 함수
     private IEnumerator TypeSentence(string sentence)
     {   
-        // 대화 진행 시작
-        isTyping = true;
         // 다음 대화로 넘어가기 전에 기다리는 커서 비활성화
         waitCursor.SetActive(false);
         // 마우스 입력 시 출력 취소 변수 초기화
-        cancelTyping = false;
         dialogueText.text = "";
 
         foreach (char letter in sentence)
@@ -294,15 +285,14 @@ public class DialogueManager : MonoBehaviour
             dialogueText.text += letter;
             yield return new WaitForSeconds(0.03f);
             // 타이핑 효과 취소 시 대화를 한번에 출력
-            if (cancelTyping)
+            if (isClicked)
             {
                 dialogueText.text = sentence;
                 break;
             }
         }
-        // 대화 진행 종료
-        isTyping = false;
         waitCursor.SetActive(true);
+        yield return new WaitUntil(() => isClicked);
     }
 
     private IEnumerator WaitToEnterBattle(Dictionary<string, object> csvData){
