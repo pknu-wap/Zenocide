@@ -62,6 +62,9 @@ public class Character : MonoBehaviour
     protected List<buffIconComponent> buffIcons;
     protected TMP_Text[] buffName;
     protected TMP_Text[] buffDescription;
+    
+    // 데미지 텍스트
+    [SerializeField] protected GameObject damageTextPrefab;
 
     [Header("상태이상")]
     protected Transform buffIconContainer;
@@ -199,9 +202,11 @@ public class Character : MonoBehaviour
         UpdateShieldUI();
         UpdateHPUI();
 
-        // 적이 피격될 때 모션 출력
+        // 적이 피격될 때 모션, 데미지 텍스트 출력
         if(this != Player.Instance && currentDamage > 0)
         {
+            DamageText damageText = Instantiate(damageTextPrefab, transform.GetChild(0)).GetComponent<DamageText>();
+            StartCoroutine(damageText.PrintDamageText(currentDamage));
             imageComponent.transform.DOShakePosition(0.5f, 10f);
         }
 
