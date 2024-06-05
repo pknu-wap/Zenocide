@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f3fb2f9dcc44ce4682722928048a3fe, type: 3}
+  m_Name: Police Deck
+  m_EditorClassIdentifier: 
+  listName: Police Deck
+  items:
+  - {fileID: 11400000, guid: 664cee9063f13b74eab292f2006f6fd9, type: 2}
+  - {fileID: 11400000, guid: 5cb0d93a4abf916429d5fa861ee2ea9c, type: 2}
+  - {fileID: 11400000, guid: 2b098fed143c4b44fb18fc2423d847b3, type: 2}
