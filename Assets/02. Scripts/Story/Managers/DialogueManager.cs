@@ -215,13 +215,7 @@ public class DialogueManager : MonoBehaviour
             BattleBackgroundObject.sprite = BackgroundImages[backgroundTable[csvData["Background"].ToString()]]; 
         }
                 
-        if (isTyping && !cancelTyping)
-        {
-            cancelTyping = true;
-            return;
-        }
-        
-        // 획득 아이템이 존재 한다면 아이템 지급
+         // 획득 아이템이 존재 한다면 아이템 지급
         if(csvData["EquipItem"].ToString() != "")
         {
             string equipItem = csvData["EquipItem"].ToString();
@@ -235,6 +229,12 @@ public class DialogueManager : MonoBehaviour
             string equipCard = csvData["EquipCard"].ToString();
             CardManager.Instance.AddCardToDeck(equipCard);
             text = csvData["EquipCard"].ToString() + " " + text;
+        }
+
+        if (isTyping && !cancelTyping)
+        {
+            cancelTyping = true;
+            return;
         }
         
         // 대화 출력
