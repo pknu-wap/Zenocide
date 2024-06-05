@@ -16,6 +16,7 @@ public class StatePanelOpener : MonoBehaviour, IPointerEnterHandler, IPointerExi
         statePanel = transform.parent.GetChild(0).gameObject;
         statePanelImage = statePanel.GetComponent<Image>();
         uiCanvas = transform.parent.GetComponent<Canvas>();
+        mouseEventBlocker = GameObject.Find("Mouse Event Blocker");
 
         statePanel.SetActive(false);
     }
