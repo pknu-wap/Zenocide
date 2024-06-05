@@ -53,6 +53,7 @@ public class SelectManager : MonoBehaviour
         {
             choices[i].DisableChoiceObject();
         }
+        yield return true;
     }
 
     public void ResetChoice()

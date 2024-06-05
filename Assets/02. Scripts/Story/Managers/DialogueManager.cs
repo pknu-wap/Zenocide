@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using TMPro;
 using System;
 using Unity.VisualScripting.FullSerializer;
+using Unity.VisualScripting;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -162,8 +163,7 @@ public class DialogueManager : MonoBehaviour
                 {
                     int relationIndex = 0;
                     // 이전 이벤트가 선택지라면
-                    int selectNum = SelectManager.Instance.result;
-                    if(selectNum != -1)
+                    if(SelectManager.Instance.result != -1)
                     {
                         relationIndex = SelectManager.Instance.result;
                     }
@@ -181,11 +181,9 @@ public class DialogueManager : MonoBehaviour
                             yield return null;
                         }
                     }
+                    continue;
                 }
-                else
-                {
-                    DisplayDialogue(presentData);
-                }
+                DisplayDialogue(presentData);
                 
                 // 마우스 입력 대기
                 while (isClicked == false)
@@ -244,7 +242,7 @@ public class DialogueManager : MonoBehaviour
         StartCoroutine(TypeSentence(dialogueText.text));
 
         // 전투 시작
-        if(csvData["Enemy1"].ToString() != "")
+        if(csvData["Enemy1"].ToString() is not empty)
         {
             List<string> Enemys = new List<string>();
             for(int i = 1; i < 4; i++)
