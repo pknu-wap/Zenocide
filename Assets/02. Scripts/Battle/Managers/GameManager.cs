@@ -10,6 +10,23 @@ using Random = UnityEngine.Random;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+
+    [Header("컴포넌트 및 오브젝트")]
+    [SerializeField] private GameObject rewardPanel;
+    [SerializeField] private RewardCard[] rewardCards;
+    [SerializeField] NotificationPanel notificationPanel;
+    [SerializeField] Transform enemiesParent;
+    [SerializeField] public Enemy[] enemies;
+    [SerializeField] CardList rewardCardList;
+
+    [Header("블로커")]
+    [SerializeField] private GameObject storyScene;
+    [SerializeField] private GameObject battleScene;
+    [SerializeField] private GameObject tutorialScene;
+
+    // 전투 시작 시 실행할 이벤트
+    public UnityEvent onStartBattle;
+
     private void Awake()
     {
         if(Instance == null)
@@ -29,23 +46,12 @@ public class GameManager : MonoBehaviour
         SetDefaultState();
     }
 
-    [Header("컴포넌트 및 오브젝트")]
-    [SerializeField] private GameObject rewardPanel;
-    [SerializeField] private RewardCard[] rewardCards;
-    [SerializeField] NotificationPanel notificationPanel;
-    [SerializeField] Transform enemiesParent;
-    [SerializeField] public Enemy[] enemies;
-    [SerializeField] CardList rewardCardList;
-
-    // 전투 시작 시 실행할 이벤트
-    public UnityEvent onStartBattle;
-
     void Start()
     {
         // 시작은 튜토리얼
-        // SwitchToTutorialScene();
+        SwitchToTutorialScene();
         // 시작은 스토리
-        SwitchToStoryScene();
+        // SwitchToStoryScene();
         // 시작은 배틀
         // TestStartBattle();
     }
@@ -79,10 +85,10 @@ public class GameManager : MonoBehaviour
         // Enemy 프리팹들을 미리 등록해둔다.
         enemies = enemiesParent.GetComponentsInChildren<Enemy>();
 
-        // 카메라 할당
-        storyCamera = GameObject.Find("Story Camera");
-        battleCamera = GameObject.Find("Battle Camera");
-        tutorialCamera = GameObject.Find("Tutorial Camera");
+        // 씬 할당
+        storyScene = GameObject.Find("Story Scene");
+        battleScene = GameObject.Find("Battle Scene");
+        tutorialScene = GameObject.Find("Tutorial Scene");
     }
 
     // 초기 상태를 지정한다.
@@ -114,6 +120,9 @@ public class GameManager : MonoBehaviour
         // 배틀 카메라로 전환
         SwitchToBattleScene();
 
+        // isGameOver를 false로 변경
+        BattleInfo.Instance.isGameOver = false;
+
         // TurnManager를 통해 게임 시작
         StartCoroutine(TurnManager.Instance.StartGameCo());
     }
@@ -125,7 +134,7 @@ public class GameManager : MonoBehaviour
         DiaryManager.Instance.currentPageIndex = 0;
 
         // 스토리 시작
-        tutorialCamera.SetActive(false);
+        tutorialScene.SetActive(false);
         StartStory();
     }
 
@@ -225,27 +234,23 @@ public class GameManager : MonoBehaviour
     }
 
     #region 카메라 전환
-    [SerializeField] GameObject storyCamera;
-    [SerializeField] GameObject battleCamera;
-    [SerializeField] GameObject tutorialCamera;
-
     private void SwitchToStoryScene()
     {
-        storyCamera.SetActive(true);
-        battleCamera.SetActive(false);
+        storyScene.SetActive(true);
+        battleScene.SetActive(false);
     }
 
     private void SwitchToBattleScene()
     {
-        storyCamera.SetActive(false);
-        battleCamera.SetActive(true);
+        storyScene.SetActive(false);
+        battleScene.SetActive(true);
     }
 
     public void SwitchToTutorialScene()
     {
-        tutorialCamera.SetActive(true);
-        storyCamera.SetActive(false);
-        battleCamera.SetActive(false);
+        tutorialScene.SetActive(true);
+        storyScene.SetActive(false);
+        battleScene.SetActive(false);
     }
     #endregion 카메라 전환
 }
