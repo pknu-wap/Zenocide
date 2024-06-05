@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -44,30 +45,39 @@ public class DiaryManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        // Scripter 들을 받아온다.
-        scripter = new PageScripter[bookObject.childCount];
-        for (int i = 0; i < bookObject.childCount; ++i)
-        {
-            scripter[i] = bookObject.GetChild(bookObject.childCount - 1 - i).GetComponent<PageScripter>();
-        }
-        // 스크립트도 받아온다.
-        book = bookObject.GetComponent<PageCurl>();
-
-        // 선택지 오브젝트들을 캐싱해둔다.
-        choiceButtons = new TMP_Text[choiceParent.childCount];
-        for(int i = 0; i < choiceParent.childCount; ++i)
-        {
-            choiceButtons[i] = choiceParent.GetChild(i).GetChild(0).GetComponent<TMP_Text>();
-        }
-        choiceParent.gameObject.SetActive(false);
-
-        // CSV를 읽어온다.
-        diaryDialog = CSVReader.Read(diaryCSV);
+        EnrollComponent();
     }
 
     private void Start()
     {
         StartCoroutine(StartTutorial());
+    }
+
+    private void EnrollComponent()
+    {
+        // bookObject를 받아온다.
+        bookObject = GameObject.Find("Book").transform;
+        // 스크립트도 받아온다.
+        book = bookObject.GetComponent<PageCurl>();
+
+        // Scripter 들을 밑에서부터 받아온다.
+        scripter = new PageScripter[bookObject.childCount];
+        for (int i = 0; i < bookObject.childCount; ++i)
+        {
+            scripter[i] = bookObject.GetChild(bookObject.childCount - 1 - i).GetComponent<PageScripter>();
+        }
+
+        // 선택지 오브젝트들을 캐싱해둔다.
+        choiceButtons = new TMP_Text[choiceParent.childCount];
+        for (int i = 0; i < choiceParent.childCount; ++i)
+        {
+            choiceButtons[i] = choiceParent.GetChild(i).GetChild(0).GetComponent<TMP_Text>();
+        }
+        // 시작하면 선택지는 꺼둔다.
+        choiceParent.gameObject.SetActive(false);
+
+        // CSV를 읽어온다.
+        diaryDialog = CSVReader.Read(diaryCSV);
     }
 
     private IEnumerator StartTutorial()

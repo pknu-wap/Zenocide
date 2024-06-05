@@ -88,6 +88,12 @@ public class Enemy : Character
         // 스킬을 사용한다. 이때, 애니메이션이 모두 끝나야 이후 명령들을 시작한다.
         CastSkill();
     }
+    
+    // 적 상태를 초기화한다.
+    public void ResetEnemyState()
+    {
+        imageComponent.color = Color.white;
+    }
 
     // 적 정보를 갱신한다.
     public void UpdateEnemyData(EnemyData data)
@@ -101,6 +107,8 @@ public class Enemy : Character
         maxHp = enemyData.maxHp;
         currentHp = maxHp;
         UpdateHPUI();
+
+        ResetEnemyState();
     }
 
     [Header("런타임 변수")]

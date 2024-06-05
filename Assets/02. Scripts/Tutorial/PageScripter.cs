@@ -15,7 +15,7 @@ public class PageScripter : MonoBehaviour
     public bool isTyping = false;
     public bool cancelTyping = false;
     // 현재까지 적힌 텍스트
-    private string currentDialog = "";
+    [SerializeField] private string currentDialog = "";
     // 선택된 단어
     [SerializeField] private string selectedWord;
 
@@ -33,7 +33,7 @@ public class PageScripter : MonoBehaviour
     {
         diaryText = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<TMP_Text>();
         book = transform.parent.GetComponent<PageCurl>();
-        waitCursor = transform.parent.parent.GetChild(1).gameObject;
+        waitCursor = transform.parent.parent.GetChild(2).gameObject;
     }
 
     // 스크립트를 보여준다.

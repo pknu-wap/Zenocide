@@ -8,12 +8,18 @@ public class CardInventory : MonoBehaviour
     public Transform slotsParent;
     public List<CardSlot> slots = new List<CardSlot>();
 
-    private void Awake() => instance = this;
-
-    private void Start()
+    private void Awake()
     {
-        slots = slotsParent.GetComponentsInChildren<CardSlot>().ToList<CardSlot>();
-        UpdateAllCardSlot();
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
+        slots = slotsParent.GetComponentsInChildren<CardSlot>().ToList();
     }
 
     public void UpdateAllCardSlot()
