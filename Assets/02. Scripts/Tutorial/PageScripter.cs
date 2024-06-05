@@ -77,10 +77,11 @@ public class PageScripter : MonoBehaviour
         for (int i = 0; i < sentence.Length; ++i)
         {
             // 한 글자만 떼온다.
-            char letter = sentence[i];
+            string letter = "";
+            letter += sentence[i];
 
             // 해당 글자가 %라면
-            if(letter == '%')
+            if(letter == "%")
             {
                 // 선택이 있었음을 체크한다.
                 isSelectHappened = true;
@@ -89,9 +90,25 @@ public class PageScripter : MonoBehaviour
                 yield return StartCoroutine(DiaryManager.Instance.ShowChoiceButton());
 
                 // letter는 띄어쓰기로
-                letter = ' ';
+                letter = " ";
                 diaryText.text += selectedWord;
             }
+
+            if(letter == "<")
+            {
+                ++i;
+                while (sentence[i] != '>')
+                {
+                    letter += sentence[i];
+                    ++i;
+                }
+                if (sentence[i] == '>')
+                {
+                    letter += sentence[i];
+                }
+            }
+
+            Debug.Log(letter);
 
             // letter를 추가하고
             diaryText.text += letter;
@@ -99,9 +116,9 @@ public class PageScripter : MonoBehaviour
             // delay를 준다.
             float delay = typingTime;
             // 문장 부호로 끝난다면 더 길게 준다.
-            if (markTypingTime.ContainsKey(letter))
+            if (markTypingTime.ContainsKey(sentence[i]))
             {
-                delay = markTypingTime[letter];
+                delay = markTypingTime[sentence[i]];
             }
 
             yield return new WaitForSeconds(delay);
