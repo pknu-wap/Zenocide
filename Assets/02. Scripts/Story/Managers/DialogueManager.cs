@@ -91,7 +91,7 @@ public class DialogueManager : MonoBehaviour
     {
         {"소피아", 0},
         {"좀비", 1},
-        {"주인공",2},
+        {"에단",2},
         {"???",3}
     };
 
