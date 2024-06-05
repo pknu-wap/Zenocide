@@ -5,10 +5,12 @@ public class DebuffInfo
 {
     public static Dictionary<SkillType, string> debuffNameDict = new Dictionary<SkillType, string>
     {
-        { SkillType.Bleed, "ÃâÇ÷" }
+        { SkillType.Bleed, "ì¶œí˜ˆ" },
+        { SkillType.Burn, "í™”ìƒ" },
     };
     public static Dictionary<SkillType, string> debuffDescriptionDict = new Dictionary<SkillType, string>
     {
-        { SkillType.Bleed, "ÅÏ °£ 2ÀÇ ÇÇÇØ¸¦ ÀÔ½À´Ï´Ù." }
+        { SkillType.Bleed, "í„´ ê°„ 2ì˜ í”¼í•´ë¥¼ ì…ìŠµë‹ˆë‹¤." },
+        { SkillType.Burn, "í„´ ê°„ 6ì˜ í”¼í•´ë¥¼ ë°›ìŠµë‹ˆë‹¤." },
     };
 }
