@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using System.Linq;
 using System;
 using Unity.VisualScripting.FullSerializer;
 using Unity.VisualScripting;
@@ -50,9 +51,6 @@ public class DialogueManager : MonoBehaviour
 
     [Header("메인 SO 이벤트 데이터")]
     private List<EventData> MainAndSubSOs = new List<EventData>();
-
-    [Header("서브 이벤트 개수 변수")]
-    public int subEventCount = 7;
 
     [Header("이벤트별 ID 저장 변수")]
     public const int MainEventID = 0;
@@ -154,12 +152,12 @@ public class DialogueManager : MonoBehaviour
                 // 대화 출력 함수
 
                 // 이벤트의 끝이면 이벤트 종료 후 다음 이벤트 진행을 위해 함수 종료
-                if (dataCSV[j]["Name1"].ToString() == "END")
+                if (dataCSV[j]["Name"].ToString() == "END")
                 {
                    break;
                 }
                 // 연계 이벤트 발생 시 연계 이벤트 우선 실행
-                if (dataCSV[j]["Name1"].ToString() == "RELATION")
+                if (dataCSV[j]["Name"].ToString() == "RELATION")
                 {
                     int relationIndex = 0;
                     // 이전 이벤트가 선택지라면
@@ -200,19 +198,19 @@ public class DialogueManager : MonoBehaviour
     // 대화 출력 함수
     private void DisplayDialogue(Dictionary<string, object> csvData)
     {
-        List<string> illustNames = new List<string>(){csvData["Name1"].ToString(),
-                                                      csvData["Name2"].ToString(), 
-                                                      csvData["Name3"].ToString()};
+        List<string> illustNames = new List<string>(){csvData["Image1"].ToString(),
+                                                      csvData["Image2"].ToString(), 
+                                                      csvData["Image3"].ToString()};
         
-        dialogueName.text = csvData["Name1"].ToString();
-        string text = csvData["Text1"].ToString();
+        dialogueName.text = csvData["Name"].ToString();
+        string text = csvData["Text"].ToString();
         // 일러스트 표시 함수
         DisplayIllust(illustNames);
         // 배경 설정
         if(csvData["Background"].ToString() is not empty)
         {
             StoryBackgroundObject.sprite = BackgroundImages[backgroundTable[csvData["Background"].ToString()]];
-            BattleBackgroundObject.sprite = BackgroundImages[backgroundTable[csvData["Background"].ToString()]]; 
+            //BattleBackgroundObject.sprite = BackgroundImages[backgroundTable[csvData["Background"].ToString()]]; 
         }
                 
          // 획득 아이템이 존재 한다면 아이템 지급
@@ -358,35 +356,18 @@ public class DialogueManager : MonoBehaviour
     public void DisplayIllust(List<string> names)
     {
 
-        List<string> Names = new List<string>();
-
-        foreach (string name in names)
+        List<string> validNames = names.Where(name => illustTable.ContainsKey(name)).ToList();
+    
+        // Disable all illustrations initially
+        foreach (Image illustObject in IllustsObjects)
         {
-            if(name != ""){
-                Names.Add(name);
-            }
+            illustObject.enabled = false;
         }
-        // 일러스트 비활성화
-        IllustsObjects[0].enabled = true;
-        IllustsObjects[1].enabled = true;
-        IllustsObjects[2].enabled = true;
-        switch(Names.Count)
+
+        for (int i = 0; i < validNames.Count && i < IllustsObjects.Length; i++)
         {
-            case 1:
-                IllustsObjects[0].sprite = illustImages[illustTable[Names[0]]];
-                IllustsObjects[1].enabled = false;
-                IllustsObjects[2].enabled = false;
-                break;
-            case 2:
-                IllustsObjects[1].sprite = illustImages[illustTable[Names[0]]];
-                IllustsObjects[2].sprite = illustImages[illustTable[Names[1]]];
-                IllustsObjects[0].enabled = false;
-                break;
-            case 3:
-                IllustsObjects[0].sprite = illustImages[illustTable[Names[0]]];
-                IllustsObjects[1].sprite = illustImages[illustTable[Names[1]]];
-                IllustsObjects[2].sprite = illustImages[illustTable[Names[2]]];
-                break;
+            IllustsObjects[i].sprite = illustImages[illustTable[validNames[i]]];
+            IllustsObjects[i].enabled = true;
         }
     }
 
