@@ -62,8 +62,9 @@ public class DialogueManager : MonoBehaviour
     public Image[] IllustsObjects;                 
     public Sprite[] illustImages;            
 
-    [Header("캐릭터 이미지 데이터")]               
-    public Image    BackgroundObject;                 
+    [Header("배경 이미지 데이터")]               
+    public Image    StoryBackgroundObject;
+    public Image    BattleBackgroundObject;                 
     public Sprite[] BackgroundImages;      
 
     [Header("대화 텍스트 출력 진행 확인 변수")]            
@@ -75,27 +76,29 @@ public class DialogueManager : MonoBehaviour
     [Header("마우스 입력 감지 변수")]
     public bool isClicked = false;
 
-    [Header("빈 String 값 저장")]
-    private const string empty = "";
-
     [Header("대화 출력 완료 변수")]
     private bool dialoguePrintDone = true;
 
+    [Header("null string 변수")]
+    private const string empty = "";
+
+    [Header("대화 버튼 오브젝트")]
     public GameObject dialogButton;
 
     [Header("일러스트 데이터")]
     public Dictionary<string, int> illustTable = new Dictionary<string, int>()
     {
-        {"???", 0},
+        {"소피아", 0},
         {"좀비", 1},
-        {"주인공",2}
+        {"주인공",2},
+        {"???",3}
     };
 
     [Header("배경 데이터")]
     public Dictionary<string, int> backgroundTable = new Dictionary<string, int>()
     {
-        {"배경1", 0},
-        {"배경2", 1},
+        {"Basement", 0},
+        {"ZombieTown", 1},
         {"배경3", 2}
     };
 
@@ -159,16 +162,17 @@ public class DialogueManager : MonoBehaviour
                 {
                     int relationIndex = 0;
                     // 이전 이벤트가 선택지라면
-                    if(dataCSV[j - 1]["ChoiceCount"].ToString() is not empty)
+                    int selectNum = SelectManager.Instance.result;
+                    if(selectNum != -1)
                     {
-                        //선택지 결과에 따라 연계 이벤트 변경
-                        //relationIndex;
+                        relationIndex = SelectManager.Instance.result;
                     }
                     // 연계 이벤트 로드
                     EventData relationEvent = loadedEvent.nextEvent[relationIndex];
 
                     for(int k = relationEvent.startIndex; k < relationEvent.endIndex + 1; k++)
                     {
+                        Debug.Log(relationEvent.eventID + " " + relationEvent.name);
                         Dictionary<string, object> relationData = dataRelationCSV[k];
                         DisplayDialogue(relationData);
                         // 마우스 입력 대기
@@ -178,8 +182,11 @@ public class DialogueManager : MonoBehaviour
                         }
                     }
                 }
-                DisplayDialogue(presentData);
-
+                else
+                {
+                    DisplayDialogue(presentData);
+                }
+                
                 // 마우스 입력 대기
                 while (isClicked == false)
                 {
@@ -204,18 +211,12 @@ public class DialogueManager : MonoBehaviour
         // 일러스트 표시 함수
         DisplayIllust(illustNames);
         // 배경 설정
-        switch(csvData["Background"].ToString())
+        if(csvData["Background"].ToString() is not empty)
         {
-            case "":
-                break;
-            case "배경1":
-                BackgroundObject.sprite = BackgroundImages[backgroundTable["배경1"]];
-                break;
-            case "배경2":
-                BackgroundObject.sprite = BackgroundImages[backgroundTable["배경2"]];
-                break;
+            StoryBackgroundObject.sprite = BackgroundImages[backgroundTable[csvData["Background"].ToString()]];
+            BattleBackgroundObject.sprite = BackgroundImages[backgroundTable[csvData["Background"].ToString()]]; 
         }
-
+                
         if (isTyping && !cancelTyping)
         {
             cancelTyping = true;
@@ -335,6 +336,17 @@ public class DialogueManager : MonoBehaviour
            // 초기 무작위 이벤트 리스트
            TotalEventList.Add(so);
        }
+    }
+
+    private void AddEvent(string eventName)
+    {
+        foreach (EventData so in MainAndSubSOs)
+        {
+            if (so.eventName == eventName)
+            {
+                TotalEventList.Add(so);
+            }
+        }
     }
 
     // 제네릭 함수를 사용하여 리스트에서 랜덤 요소를 뽑기
