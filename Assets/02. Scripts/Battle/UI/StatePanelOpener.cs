@@ -7,14 +7,14 @@ using UnityEngine.UI;
 public class StatePanelOpener : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] GameObject statePanel;
-    [SerializeField] Image statePanelImage;
+    // [SerializeField] Image statePanelImage;
     [SerializeField] protected Canvas uiCanvas;
     public GameObject mouseEventBlocker;
 
     private void Awake()
     {
         statePanel = transform.parent.GetChild(0).gameObject;
-        statePanelImage = statePanel.GetComponent<Image>();
+        // statePanelImage = statePanel.GetComponent<Image>();
         uiCanvas = transform.parent.GetComponent<Canvas>();
         mouseEventBlocker = GameObject.Find("Mouse Event Blocker");
 
