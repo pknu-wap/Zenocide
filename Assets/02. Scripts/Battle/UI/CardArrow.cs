@@ -6,32 +6,32 @@ using UnityEngine.UIElements;
 
 public class CardArrow : MonoBehaviour
 {
-    #region ½Ì±ÛÅæ
+    #region ì‹±ê¸€í†¤
     public static CardArrow Instance { get; private set; }
     void Awake() => Instance = this;
-    #endregion ½Ì±ÛÅæ
+    #endregion ì‹±ê¸€í†¤
 
-    #region È­»ìÇ¥ »ı¼º
+    #region í™”ì‚´í‘œ ìƒì„±
     public GameObject[] points;
 
-    [Header("È­»ìÇ¥ Á¤º¸")]
-    // È­»ìÇ¥ ¼Ó ¸öÅë °³¼ö
+    [Header("í™”ì‚´í‘œ ì •ë³´")]
+    // í™”ì‚´í‘œ ì† ëª¸í†µ ê°œìˆ˜
     public int numberOfPoints;
-    // ¸öÅë °£°İ
+    // ëª¸í†µ ê°„ê²©
     public float space;
-    // ¸öÅë ÇÁ¸®ÆÕ
+    // ëª¸í†µ í”„ë¦¬íŒ¹
     public GameObject point;
-    // ³¡ºÎºĞ ÇÁ¸®ÆÕ
+    // ëë¶€ë¶„ í”„ë¦¬íŒ¹
     public GameObject arrow;
-    // º£Áö¿¡ °î¼± Áß°£ ÁÂÇ¥
+    // ë² ì§€ì— ê³¡ì„  ì¤‘ê°„ ì¢Œí‘œ
     public Vector3 startPosition;
-    // º£Áö¿¡ °î¼± Áß°£ ÁÂÇ¥
+    // ë² ì§€ì— ê³¡ì„  ì¤‘ê°„ ì¢Œí‘œ
     public Transform middlePosition;
 
-    // ¸¶¿ì½º ÀÌº¥Æ®¸¦ ¸·´Â ¿ÀºêÁ§Æ®
+    // ë§ˆìš°ìŠ¤ ì´ë²¤íŠ¸ë¥¼ ë§‰ëŠ” ì˜¤ë¸Œì íŠ¸
     public GameObject mouseEventBlocker;
 
-    // ºÎ¸ğ È­»ìÇ¥ ¿ÀºêÁ§Æ®, ½ÃÀÛ À§Ä¡´Â transformÀ» ±âÁØÀ¸·Î ÇÑ´Ù.
+    // ë¶€ëª¨ í™”ì‚´í‘œ ì˜¤ë¸Œì íŠ¸, ì‹œì‘ ìœ„ì¹˜ëŠ” transformì„ ê¸°ì¤€ìœ¼ë¡œ í•œë‹¤.
 
     public void Start()
     {
@@ -39,16 +39,16 @@ public class CardArrow : MonoBehaviour
 
         points = new GameObject[numberOfPoints + 1];
 
-        // ¸öÅëÀ» numberOfPoints °³ »ı¼ºÇÏ°í
+        // ëª¸í†µì„ numberOfPoints ê°œ ìƒì„±í•˜ê³ 
         for(int i = 0; i < numberOfPoints; ++i)
         {
             points[i] = Instantiate(point, transform);
         }
 
-        // ³¡ºÎºĞµµ »ı¼ºÇÑ´Ù.
+        // ëë¶€ë¶„ë„ ìƒì„±í•œë‹¤.
         points[numberOfPoints] = Instantiate(arrow, transform);
 
-        // ½ÃÀÛ ¼³Á¤Àº ¼û±è »óÅÂ´Ù.
+        // ì‹œì‘ ì„¤ì •ì€ ìˆ¨ê¹€ ìƒíƒœë‹¤.
         HideArrow();
     }
 
@@ -65,15 +65,15 @@ public class CardArrow : MonoBehaviour
 
     public void MoveArrow(Vector2 targetPosition)
     {
-        // for¹® ¾È¿¡ ¿¹¿Ü Ã³¸®¸¦ ÇÏÁö ¾ÊÀ¸·Á ¹ÛÀ¸·Î »°´Ù. (È¸ÀüÀ» ¾È ÁÖ±â À§ÇÔ
+        // forë¬¸ ì•ˆì— ì˜ˆì™¸ ì²˜ë¦¬ë¥¼ í•˜ì§€ ì•Šìœ¼ë ¤ ë°–ìœ¼ë¡œ ëºë‹¤. (íšŒì „ì„ ì•ˆ ì£¼ê¸° ìœ„í•¨
         points[0].transform.position = startPosition;
 
         for(int i = 1; i < numberOfPoints + 1; ++i)
         {
-            // º£Áö¿¡ °î¼± À§, ÀÚ½ÅÀÇ À§Ä¡¸¦ Ã£¾Æ ÀÌµ¿ÇÑ´Ù.
+            // ë² ì§€ì— ê³¡ì„  ìœ„, ìì‹ ì˜ ìœ„ì¹˜ë¥¼ ì°¾ì•„ ì´ë™í•œë‹¤.
             points[i].transform.position = GetBezierLerp(startPosition, middlePosition.position, targetPosition, (float)i / numberOfPoints);
 
-            // ¹æÇâÀº ÀÚ±â ÀÚ½ÅÀÇ À§Ä¡ - ÀÌÀü Æ÷ÀÎÆ®ÀÇ À§Ä¡·Î °áÁ¤ÇÑ´Ù.
+            // ë°©í–¥ì€ ìê¸° ìì‹ ì˜ ìœ„ì¹˜ - ì´ì „ í¬ì¸íŠ¸ì˜ ìœ„ì¹˜ë¡œ ê²°ì •í•œë‹¤.
             Vector2 delta = points[i].transform.position - points[i - 1].transform.position;
             float angle = Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg;
 
@@ -94,9 +94,9 @@ public class CardArrow : MonoBehaviour
             + 2f * oneMinusT * t * middle
             + t * t * end;
     }
-    #endregion È­»ìÇ¥ »ı¼º
+    #endregion í™”ì‚´í‘œ ìƒì„±
 
-    #region ÀÌº¥Æ® ºí·ÎÄ¿
+    #region ì´ë²¤íŠ¸ ë¸”ë¡œì»¤
     public void ShowBlocker()
     {
         mouseEventBlocker.SetActive(true);
@@ -106,5 +106,5 @@ public class CardArrow : MonoBehaviour
     {
         mouseEventBlocker.SetActive(false);
     }
-    #endregion ÀÌº¥Æ® ºí·ÎÄ¿
+    #endregion ì´ë²¤íŠ¸ ë¸”ë¡œì»¤
 }

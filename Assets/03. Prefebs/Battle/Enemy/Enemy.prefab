@@ -91,6 +91,7 @@ MonoBehaviour:
   statePanel: {fileID: 0}
   statePanelImage: {fileID: 0}
   uiCanvas: {fileID: 0}
+  mouseEventBlocker: {fileID: 0}
 --- !u!1 &1266317981181027096
 GameObject:
   m_ObjectHideFlags: 0
@@ -1120,6 +1121,7 @@ MonoBehaviour:
   bonusAttackStat: 0
   bonusDamage: 0
   bonusArmor: 0
+  damageTextPrefab: {fileID: 4272445659923317628, guid: 829249fb6ce714f4e8cf8aa21f3dcdec, type: 3}
   enemyData: {fileID: 0}
   currentSkill:
     type: 0
