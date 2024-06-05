@@ -18,11 +18,6 @@ public class TargetLockOpener : MonoBehaviour, IPointerEnterHandler, IPointerExi
         float width = illust.rectTransform.sizeDelta.x;
         float height = illust.rectTransform.sizeDelta.y;
 
-        targetLock.transform.GetChild(0).localPosition = new Vector2(-width / 2, height / 2);
-        targetLock.transform.GetChild(1).localPosition = new Vector2(width / 2, height / 2);
-        targetLock.transform.GetChild(2).localPosition = new Vector2(-width / 2, -height / 2);
-        targetLock.transform.GetChild(3).localPosition = new Vector2(width / 2, -height / 2);
-
         targetLock.SetActive(false);
     }
 
