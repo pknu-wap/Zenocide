@@ -12,6 +12,7 @@ public enum SkillType
     Draw,           // 카드 드로우
     Bleed,          // 출혈
     AddExtraDamage, // 추가 데미지 제공
+    Burn,           // 화상
 }
 
 public enum SkillTarget

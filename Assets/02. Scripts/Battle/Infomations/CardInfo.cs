@@ -54,9 +54,7 @@ public class CardInfo : MonoBehaviour
     #endregion 카드 검색
 
     #region 카드 UI 데이터
-    // 통합하고 싶다...
     public Sprite[] skillIcons;
-    public Sprite[] debuffIcons;
     #endregion 카드 UI 데이터
 
     #region 레이어 정보 검색
@@ -195,6 +193,7 @@ public class CardInfo : MonoBehaviour
         effects[(int)SkillType.Draw] += Draw;
         effects[(int)SkillType.Bleed] += Bleed;
         effects[(int)SkillType.AddExtraDamage] += AddExtraDamage;
+        effects[(int)SkillType.Burn] += Burn;
     }
 
 
@@ -257,14 +256,23 @@ public class CardInfo : MonoBehaviour
         StartCoroutine(CardManager.Instance.AddCardToHand(amount));
     }
 
+    // 출혈
     public void Bleed(int amount, int turnCount, Character target, Character caller)
     {
-        target.EnrollBleed(new BleedEffect(SkillType.Bleed, amount, turnCount));
+        target.EnrollBuff(new BuffEffect(SkillType.Bleed, amount, turnCount));
     }
 
+    // 추가 데미지
     public void AddExtraDamage(int amount, int turnCount, Character target, Character caller)
     {
+        target.EnrollBuff(new BuffEffect(SkillType.AddExtraDamage, amount, turnCount));
         target.GetBonusDamage(amount);
+    }
+
+    // 화상
+    public void Burn(int amount, int turnCount, Character target, Character caller)
+    {
+        target.EnrollBuff(new BuffEffect(SkillType.Burn, amount, turnCount));
     }
     #endregion 카드 효과
 }
