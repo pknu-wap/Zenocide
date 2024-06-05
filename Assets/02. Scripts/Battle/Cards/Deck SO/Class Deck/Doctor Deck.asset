@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f3fb2f9dcc44ce4682722928048a3fe, type: 3}
+  m_Name: Doctor Deck
+  m_EditorClassIdentifier: 
+  listName: Doctor Deck
+  items:
+  - {fileID: 11400000, guid: a02a150c2dbd3d94781b7c459ba7be76, type: 2}
+  - {fileID: 11400000, guid: a02a150c2dbd3d94781b7c459ba7be76, type: 2}
+  - {fileID: 11400000, guid: db3bd501b67001e4f8c14953287417ac, type: 2}

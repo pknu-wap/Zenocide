@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -152,14 +151,14 @@ public class DiaryManager : MonoBehaviour
         selectedWord = diaryDialog[currentDialogIndex][i.ToString()].ToString();
 
         // 선택한 직업의 카드를 추가한다.
-        string[] classCards = supplier.classCardDeck[selectedWord];
-        for(int j = 0; j < classCards.Length; ++j)
+        CardList classCards = supplier.classCardDeck[selectedWord];
+        for(int j = 0; j < classCards.items.Length; ++j)
         {
-            CardManager.Instance.AddCardToDeck(classCards[j]);
+            CardManager.Instance.AddCardToDeck(classCards.items[j]);
         }
 
         // 선택한 직업의 아이템을 추가한다.
-        string[] classItems = supplier.classCardDeck[selectedWord];
+        string[] classItems = supplier.classItemList[selectedWord];
         for (int j = 0; j < classItems.Length; ++j)
         {
             Items.Instance.AddItem(classItems[j]);
