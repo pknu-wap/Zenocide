@@ -2,20 +2,22 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 using DG.Tweening;
+using System.Collections;
+using UnityEditor.Experimental.GraphView;
+
 public class BuffEffect
 {
-    public BuffEffect(SkillType type, int damagePerTurn, int remainingTurns)
+    public BuffEffect(SkillType type, int amount, int remainingTurns)
     {
         this.type = type;
-        this.damagePerTurn = damagePerTurn;
+        this.amount = amount;
         this.remainingTurns = remainingTurns;
     }
 
     public SkillType type;
-    public int damagePerTurn;
+    public int amount;
     public int remainingTurns;
 }
 
@@ -114,9 +116,7 @@ public class Character : MonoBehaviour
     public virtual void ResetState()
     {
         // 스탯을 초기화한다.
-        bonusAttackStat = 0;
-        bonusDamage = 0;
-        bonusArmor = 0;
+        ResetStat();
 
         // 체력 데이터 및 UI를 초기화한다.
         currentHp = maxHp;
@@ -292,7 +292,7 @@ public class Character : MonoBehaviour
 
         // 출혈 디버프 UI 추가
         int i = buffs.Count - 1;
-
+        
         UpdateBuffIcon(i);
     }
 
@@ -306,14 +306,21 @@ public class Character : MonoBehaviour
 
     public void UpdateBuffIcon(int index)
     {
+        if (buffs[index].remainingTurns <= 0)
+        {
+            return;
+        }
+
         // i번째 아이콘와 숫자를 변경하고
         buffIcons[index].image.sprite = CardInfo.Instance.skillIcons[(int)buffs[index].type];
         buffIcons[index].tmp_Text.text = buffs[index].remainingTurns.ToString();
 
         // i번째 디버프창의 내용을 갱신한다
-        buffName[index].text = DebuffInfo.debuffNameDict[buffs[index].type];
-        // 이렇게 $와 {}를 쓰면 변수명과 문자열을 섞어쓸 수 있다.
-        buffDescription[index].text = $"{buffs[index].remainingTurns}{DebuffInfo.debuffDescriptionDict[buffs[index].type]}";
+        // 스킬 텍스트를 만든다.
+        SkillText buffText = DebuffInfo.GetSkillText(buffs[index]);
+        // 텍스트를 변경한다.
+        buffName[index].text = buffText.name;
+        buffDescription[index].text = buffText.description;
 
         // 오브젝트 활성화
         // 이 구문들은 리팩토링이 필요해보인다.
@@ -343,40 +350,47 @@ public class Character : MonoBehaviour
         }
     }
 
-    // 출혈 효과를 발생시킨다.
-    public void GetBleedAll()
+    public void GetBuffAll()
     {
-        // 받게 될 전체 데미지
-        int totalDamage = 0;
+        // 스탯 초기화
+        ResetStat();
 
         // 모든 적용 중인 출혈 효과에 대해
-        for(int i = 0; i < buffs.Count; ++i)
+        for (int i = 0; i < buffs.Count; ++i)
         {
-            totalDamage += buffs[i].damagePerTurn;
+            // 스킬 발동
+            CardInfo.Instance.ActivateSkill(buffs[i], this, this);
 
             // 남은 턴 1 감소
             --buffs[i].remainingTurns;
             // 남은 턴이 0 이하라면
             if (buffs[i].remainingTurns <= 0)
             {
-                // 해당 출혈 효과를 삭제한다.
+                // 해당 효과를 삭제한다.
                 buffs.RemoveAt(i);
                 // 뒤의 디버프들이 1칸씩 앞으로 땡겨졌으니, 인덱스도 1 앞으로 조정
                 --i;
             }
+
+            // 아이콘 최신화
+            UpdateBuffIcon(i);
+
+            // 이펙트 재생
+
+            // 0.1초 딜레이
+            // yield return new WaitForSeconds(0.1f);
         }
-
-        // 출혈 이펙트 재생
-
-        // 체력을 감소시킨다.
-        DecreaseHP(totalDamage);
-
-        // 아이콘을 업데이트 한다.
-        UpdateAllBuffIcon();
     }
     #endregion 디버프
 
     #region 스텟
+    public void ResetStat()
+    {
+        bonusAttackStat = 0;
+        bonusDamage = 0;
+        bonusArmor = 0;
+    }
+
     public void GetBonusAttackStat(int amount)
     {
         bonusAttackStat += amount;

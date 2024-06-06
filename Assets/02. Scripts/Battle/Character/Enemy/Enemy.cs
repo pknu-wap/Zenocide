@@ -64,7 +64,9 @@ public class Enemy : Character
         // BattleInfo에 자신 추가
         BattleInfo.Instance.EnrollEnemy(this);
 
-        // TurnManager에 이벤트 등록
+        // 이벤트 등록
+        TurnManager.Instance.onEndEnemyTurn.AddListener(EndEnemyTurn);
+
         TurnManager.Instance.onStartPlayerTurn.AddListener(ReadySkill);
 
         // 데이터를 넣고
@@ -94,7 +96,7 @@ public class Enemy : Character
     public void EndEnemyTurn()
     {
         // 디버프(출혈 등)가 전부 적용된다.
-        GetBleedAll();
+        GetBuffAll();
 
         // 죽고 나서 스킬 사용하는 걸 방지
         if(currentHp <= 0)
@@ -155,15 +157,21 @@ public class Enemy : Character
                     .Append(transform.DOScale(1.5f, skillDelay * 2 / 5))
                     .Append(imageComponent.transform.DOShakePosition(skillDelay * 1 / 5, 100f))
                     .Append(transform.DOScale(0.9f, skillDelay * 2 / 5));    // enemy 원래 스케일이 0.9로 돼있다.
+                yield return skillSequence.WaitForCompletion();
                 break;
+
             case (SkillType.Shield):
                 skillSequence = DOTween.Sequence()
                     .Append(shieldMask.DOFade(0.7f, skillDelay / 2))
                     .Append(shieldMask.DOFade(0f, skillDelay / 2));
+                yield return skillSequence.WaitForCompletion();
+                break;
+
+            default:
                 break;
         }
 
-        yield return new WaitForSeconds(skillDelay);
+        // yield return new WaitForSeconds(skillDelay);
     }
 
     // 죽는다.

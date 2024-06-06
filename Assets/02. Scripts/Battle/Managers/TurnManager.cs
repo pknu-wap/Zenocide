@@ -146,32 +146,31 @@ public class TurnManager : MonoBehaviour
             for (int i = 0; i < enemies.Count; ++i)
             {
                 //Enemy enemy = GameManager.Instance.enemies[enemyIndex];
-                Enemy enemy = enemies[i];
 
-/*                // 공격한 적은 체크
-                if (!hasAttack[enemyIndex])
-                {
-                    count++;
-                    hasAttack[enemyIndex] = true;
-                }
-                else
-                {
-                    enemyIndex = Random.Range(0, 4);
-                    continue;
-                }*/
+                /*                // 공격한 적은 체크
+                                if (!hasAttack[enemyIndex])
+                                {
+                                    count++;
+                                    hasAttack[enemyIndex] = true;
+                                }
+                                else
+                                {
+                                    enemyIndex = Random.Range(0, 4);
+                                    continue;
+                                }*/
 
-/*                // 비활성화 된 적은 패스
-                if (!enemy.gameObject.activeSelf)
-                {
-                    enemyIndex = Random.Range(0, 4);
-                    continue;
-                }*/
+                /*                // 비활성화 된 적은 패스
+                                if (!enemy.gameObject.activeSelf)
+                                {
+                                    enemyIndex = Random.Range(0, 4);
+                                    continue;
+                                }*/
 
                 // 실제 스킬 사용
-                enemy.EndEnemyTurn();
+                enemies[i].EndEnemyTurn();
 
                 // 스킬 모션
-                yield return StartCoroutine(enemy.SkillMotion());
+                yield return StartCoroutine(enemies[i].SkillMotion());
 
                 //enemyIndex = Random.Range(0, 4);
             }

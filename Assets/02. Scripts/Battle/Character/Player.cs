@@ -30,7 +30,7 @@ public class Player : Character
 
     public void EndPlayerTurn()
     {
-        GetBleedAll();
+        GetBuffAll();
     }
 
     public override void Die()
