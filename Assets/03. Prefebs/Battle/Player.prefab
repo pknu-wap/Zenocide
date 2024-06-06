@@ -2939,6 +2939,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Debuff Panel
       objectReference: {fileID: 0}
+    - target: {fileID: 3840272971175969434, guid: bf6b75d7863292b48aef5803ed42740b, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7757369989355618139, guid: bf6b75d7863292b48aef5803ed42740b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
