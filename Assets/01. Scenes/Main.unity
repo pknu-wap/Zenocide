@@ -4712,7 +4712,7 @@ GameObject:
   - component: {fileID: 398638988}
   - component: {fileID: 398638987}
   m_Layer: 5
-  m_Name: PlayerHP
+  m_Name: Player HP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10558,6 +10558,7 @@ MonoBehaviour:
   enemiesParent: {fileID: 28907997}
   enemies: []
   rewardCardList: {fileID: 0}
+  storyHP: {fileID: 0}
   storyScene: {fileID: 0}
   battleScene: {fileID: 0}
   tutorialScene: {fileID: 0}
@@ -24408,22 +24409,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 930973510}
     m_Modifications:
-    - target: {fileID: 551558281895791637, guid: f13cf976d1ca6b8419a5f9458e64ae8b, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 500
-      objectReference: {fileID: 0}
-    - target: {fileID: 551558281895791637, guid: f13cf976d1ca6b8419a5f9458e64ae8b, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 551558281895791637, guid: f13cf976d1ca6b8419a5f9458e64ae8b, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 551558281895791637, guid: f13cf976d1ca6b8419a5f9458e64ae8b, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -92.5
-      objectReference: {fileID: 0}
     - target: {fileID: 615529619156790423, guid: f13cf976d1ca6b8419a5f9458e64ae8b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] Transform enemiesParent;
     [SerializeField] public Enemy[] enemies;
     [SerializeField] CardList rewardCardList;
+    [SerializeField] StatusHP storyHP;
 
     [Header("블로커")]
     [SerializeField] private GameObject storyScene;
@@ -66,6 +67,9 @@ public class GameManager : MonoBehaviour
         storyScene = GameObject.Find("Story Scene");
         battleScene = GameObject.Find("Battle Scene");
         tutorialScene = GameObject.Find("Tutorial Scene");
+
+        // 스토리 씬의 HP 바 할당
+        storyHP = GameObject.Find("Player HP").GetComponent<StatusHP>();
     }
 
     // 초기 상태를 지정한다.
@@ -114,6 +118,27 @@ public class GameManager : MonoBehaviour
         StartCoroutine(TurnManager.Instance.StartGameCo());
     }
 
+    public IEnumerator WinBattle()
+    {
+        // 승리를 띄우고, 완료될 때까지 기다린 후 보상을 지급한다.
+        //Notification("승리");
+        yield return StartCoroutine(notificationPanel.Show("승리", true));
+        // 리워드 지급이 완료되길 기다린다.
+        yield return StartCoroutine(GiveRewardCard());
+
+        // 스토리의 HP 바를 갱신한다.
+        storyHP.UpdateHPUI();
+        // 배틀이 끝났음을 알린다.
+        DialogueManager.Instance.isBattleDone = true;
+        // 스토리 씬으로 넘어간다.
+        SwitchToStoryScene();
+
+        // 묘지와 핸드를 덱으로 다시 넣는다.
+        CardManager.Instance.ResetDeck();
+        // UI도 갱신 (덱이 켜진 채 진입한 경우를 고려)
+        CardInventory.instance.UpdateAllCardSlot();
+    }
+
     public void FinishTutorial()
     {
         // 다시 처음으로 돌리고
@@ -135,25 +160,6 @@ public class GameManager : MonoBehaviour
             EnemyData enemyData = EnemyInfo.Instance.GetEnemyData(enemyNames[i]);
             enemies[i].EnrollEnemy(enemyData);
         }
-    }
-
-    public IEnumerator WinBattle()
-    {
-        // 승리를 띄우고, 완료될 때까지 기다린 후 보상을 지급한다.
-        //Notification("승리");
-        yield return StartCoroutine(notificationPanel.Show("승리", true));
-        // 리워드 지급이 완료되길 기다린다.
-        yield return StartCoroutine(GiveRewardCard());
-
-        // 배틀이 끝났음을 알린다.
-        DialogueManager.Instance.isBattleDone = true;
-        // 스토리 씬으로 넘어간다.
-        SwitchToStoryScene();
-
-        // 묘지와 핸드를 덱으로 다시 넣는다.
-        CardManager.Instance.ResetDeck();
-        // UI도 갱신 (덱이 켜진 채 진입한 경우를 고려)
-        CardInventory.instance.UpdateAllCardSlot();
     }
 
     #region 보상 지급
