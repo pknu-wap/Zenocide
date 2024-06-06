@@ -7,7 +7,7 @@ public enum EventType
     Relation
 };
 
-[CreateAssetMenu(fileName = "EventData", menuName = "Scriptable Object/EventData", order = 1)]
+[CreateAssetMenu(fileName = "EventData", menuName = "Scriptable Object/Event Data", order = 10)]
 public class EventData: ScriptableObject
 {
     [Header("Event 종류 식별 ID")]

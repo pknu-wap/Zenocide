@@ -93,11 +93,20 @@ public class Enemy : Character
     public void ResetEnemyState()
     {
         imageComponent.color = Color.white;
+        currentHp = maxHp;
+        UpdateHPUI();
     }
 
     // 적 정보를 갱신한다.
     public void UpdateEnemyData(EnemyData data)
     {
+        // null이 들어오면 비활성화하고 종료
+        if (data == null)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+
         enemyData = data;
 
         // 이미지 변경
@@ -105,10 +114,12 @@ public class Enemy : Character
 
         // 최대 HP 변경 및 현재 체력을 maxHp와 같게 변경
         maxHp = enemyData.maxHp;
-        currentHp = maxHp;
-        UpdateHPUI();
 
+        // 상태를 초기화하고
         ResetEnemyState();
+        
+        // 활성화한다.
+        gameObject.SetActive(true);
     }
 
     [Header("런타임 변수")]
