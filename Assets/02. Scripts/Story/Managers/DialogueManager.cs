@@ -6,71 +6,40 @@ using TMPro;
 
 public class DialogueManager : MonoBehaviour
 {
+    #region 변수
     // 싱글톤
     public static DialogueManager Instance { get; set; }
 
+    [Header("진행 중인 이벤트")]
     public EventData currentEvent = null;
 
-    [Header("메인 스토리 CSV")]
+    [Header("현재 사용 중인 CSV 데이터")]
+    private List<Dictionary<string, object>> dataCSV;
+
+    [Header("상수 값")]
+    private const string emptyString = "";
+    private const float typeTime = 0.03f;
+    // 이벤트 SO 데이터 폴더 경로
+    private string EventPath = "Assets/02. Scripts/Story/EventData SO/Events";
+
+    [Header("상태 체크")]
+    // 클릭됐는지 확인한다.
+    public bool isClicked = true;
+    // 전투가 끝났는지 확인한다.
+    public bool isBattleDone = false;
+    // 게임이 엔딩에 다다랐는지 검사한다.
+    private bool isGameCleared = false;
+
+    [Header("스토리 CSV")]
     // 메인 CSV 파일을 읽어올 리스트
     private List<Dictionary<string, object>> dataMainCSV;
     [SerializeField] private TextAsset MainCSV;
-    
-    [Header("서브 스토리 CSV")]
     // 서브 CSV 파일을 읽어올 리스트
     private List<Dictionary<string, object>> dataSubCSV;
     [SerializeField] private TextAsset SubCSV;
-
-    [Header("연계 스토리 CSV")]
     // 연계 CSV 파일을 읽어올 리스트
     private List<Dictionary<string, object>> dataRelationCSV;
     [SerializeField] private TextAsset RelationCSV;
-
-    [Header("스토리 카메라 오브젝트")]
-    [SerializeField] GameObject storyCamera;
-
-    [Header("Text 오브젝트")]
-    public TMP_Text dialogueText;
-    public TMP_Text dialogueName;
-
-    [Header("대화창 오브젝트")]
-    public GameObject dialoguePanel;
-
-    [Header("대화창 출력 완료 시 대기 표시")]
-    public GameObject waitCursor;
-
-    [Header("CSV 데이터")]
-    private List<Dictionary<string, object>> dataCSV;
-
-    [Header("이벤트 SO 데이터 폴더 경로")]
-    private string EventPath = "Assets/02. Scripts/Story/EventData SO/Events";
-
-    [Header("전체 이벤트 데이터")]
-    public List<EventData> processableEventList = new List<EventData>();
-    public EventDataList startEventList;
-
-    [Header("메인 SO 이벤트 데이터")]
-    private List<EventData> mainAndSubSOs = new List<EventData>();
-
-    [Header("이벤트별 ID 저장 변수")]
-    public const int MainEventID = 0;
-    public const int SubEventID = 1;
-    public const int RelationEventID = 2;
-
-    [Header("캐릭터 이미지 데이터")]
-    public Image[] IllustsObjects;
-    public Sprite[] illustImages;
-
-    [Header("배경 이미지 데이터")]
-    public Image    storyBackgroundObject;
-    public Image    battleBackgroundObject;
-    public Sprite[] backgroundImages;
-
-    [Header("마우스 입력 감지 변수")]
-    public bool isClicked = true;
-
-    [Header("대화 버튼 오브젝트")]
-    public GameObject dialogButton;
 
     [Header("일러스트 데이터")]
     // 이름 - 이미지 딕셔너리
@@ -81,6 +50,7 @@ public class DialogueManager : MonoBehaviour
         {"에단",2},
         {"???",3}
     };
+    public Sprite[] illustImages;
 
     [Header("배경 데이터")]
     public Dictionary<string, int> backgroundTable = new Dictionary<string, int>()
@@ -89,15 +59,31 @@ public class DialogueManager : MonoBehaviour
         {"ZombieTown", 1},
         {"배경3", 2}
     };
+    public Sprite[] backgroundImages;
 
-    [Header("상수 값")]
-    private const string emptyString = "";
-    private const float typeTime = 0.03f;
+    [Header("대화창 오브젝트")]
+    // 대화창 전체 오브젝트
+    public GameObject dialoguePanel;
+    // 대화창 이름
+    public TMP_Text dialogueName;
+    // 대화창 내용
+    public TMP_Text dialogueText;
+    // 클릭받을 버튼
+    public GameObject dialogButton;
+    // 대기 커서
+    public GameObject waitCursor;
 
-    // 전투가 끝났는지 확인한다.
-    public bool isBattleDone = false;
-    // 게임이 엔딩에 다다랐는지 검사한다.
-    private bool isGameCleared = false;
+    [Header("진행 가능한 이벤트 데이터")]
+    public List<EventData> processableEventList = new List<EventData>();
+    public EventDataList startEventList;
+
+    [Header("캐릭터 이미지 데이터")]
+    public Image[] IllustsObjects;
+
+    [Header("배경 이미지 데이터")]
+    public Image    storyBackgroundObject;
+    public Image    battleBackgroundObject;
+    #endregion 변수
 
     private void Awake()
     {
@@ -296,7 +282,6 @@ public class DialogueManager : MonoBehaviour
                 }
 
                 // 끝나면 다음 줄로 이동한다.
-                continue;
             }
         }
 
