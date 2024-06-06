@@ -4,15 +4,19 @@ using UnityEngine;
 // 카드의 종류
 public enum SkillType
 {
-    Attack,         // 공격
-    Shield,         // 실드 생성
-    Heal,           // 체력 회복
-    Cleanse,        // 디버프 제거
-    RestoreCost,    // 코스트 회복
-    Draw,           // 카드 드로우
-    Bleed,          // 출혈
-    AddExtraDamage, // 추가 데미지 제공
-    Burn,           // 화상
+    Attack = 0,                 // 공격
+    Shield = 1,                 // 실드 생성
+    Heal = 2,                   // 체력 회복
+    Cleanse = 3,                // 디버프 제거
+    RestoreCost = 4,            // 코스트 회복
+    Draw = 5,                   // 카드 드로우
+    Bleed = 6,                  // 출혈 데미지 (한 턴)
+    Burn = 7,                   // 화상 데미지 (한 턴)
+    AddExtraDamage = 8,         // 추가 데미지 제공 (한 턴)
+    LingeringHeal = 9,          // 지속 회복
+    LingeringBleed = 10,         // 출혈 (지속)
+    LingeringBurn = 11,          // 화상 (지속)
+    LingeringExtraDamage = 12,   // 추가 데미지 제공 (지속)
 }
 
 public enum SkillTarget

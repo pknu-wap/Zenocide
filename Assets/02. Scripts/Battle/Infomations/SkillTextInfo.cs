@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// °¢ ½ºÅ³º° ÀÌ¸§°ú ¼³¸íÀ» ´ã¾ÆµÎ´Â Å¬·¡½º (ÀûÀÇ ´ÙÀ½ Çàµ¿À» ¶ç¿ï ¶§ »ç¿ë)
+// ê° ìŠ¤í‚¬ë³„ ì´ë¦„ê³¼ ì„¤ëª…ì„ ë‹´ì•„ë‘ëŠ” í´ë˜ìŠ¤ (ì ì˜ ë‹¤ìŒ í–‰ë™ì„ ë„ìš¸ ë•Œ ì‚¬ìš©)
 [System.Serializable]
 public class SkillText
 {
-    public string name;
-    public string description;
+    public string name = "";
+    public string description = "";
 }
 
 [CreateAssetMenu(fileName = "SkillInfo", menuName = "Scriptable Object/Skill Info")]

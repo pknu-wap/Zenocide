@@ -1,12 +1,12 @@
 // 김민철
+using UnityEngine;
 
 public class Player : Character
 {
     #region 싱글톤
     public static Player Instance { get; set; }
-    private static Player instance;
 
-    public override void Awake()
+    public void Awake()
     {
         if (Instance == null)
         {
@@ -24,20 +24,13 @@ public class Player : Character
 
     public void Start()
     {
-        GameManager.Instance.onStartBattle.AddListener(StartBattle);
-
+        // 배틀을 시작하면 상태를 초기화한다.
         TurnManager.Instance.onEndPlayerTurn.AddListener(EndPlayerTurn);
-    }
-
-    // 전투를 시작할 때 실행할 함수들
-    protected override void StartBattle()
-    {
-        base.StartBattle();
     }
 
     public void EndPlayerTurn()
     {
-        GetBleedAll();
+        GetBuffAll();
     }
 
     public override void Die()

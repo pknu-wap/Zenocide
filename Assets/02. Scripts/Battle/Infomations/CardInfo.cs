@@ -21,7 +21,6 @@ public class CardInfo : MonoBehaviour
 
         // 카드 효과를 델리게이트에 모두 등록
         EnrollAllSkills();
-        EnrollLayerDict();
 
         // 정보 검색용 딕셔너리 생성
         CreateRewardCardListDictionary();
@@ -57,31 +56,7 @@ public class CardInfo : MonoBehaviour
     public Sprite[] skillIcons;
     #endregion 카드 UI 데이터
 
-    #region 레이어 정보 검색
-    // 카드 타입을 넣으면 레이어를 뱉어주는 배열
-    private LayerMask[] layerDict;
-
-    // 배열에 타입 - 레이어 정보를 등록한다.
-    private void EnrollLayerDict()
-    {
-        layerDict = new LayerMask[Enum.GetValues(typeof(SkillType)).Length];
-
-        layerDict[(int)SkillType.Attack] = LayerMask.GetMask("Enemy");
-        layerDict[(int)SkillType.Shield] = LayerMask.GetMask("Field");
-        layerDict[(int)SkillType.Heal] = LayerMask.GetMask("Field");
-        layerDict[(int)SkillType.Cleanse] = LayerMask.GetMask("Field");
-        layerDict[(int)SkillType.RestoreCost] = LayerMask.GetMask("Field");
-        layerDict[(int)SkillType.Draw] = LayerMask.GetMask("Field");
-        layerDict[(int)SkillType.Bleed] = LayerMask.GetMask("Enemy");
-        layerDict[(int)SkillType.AddExtraDamage] = LayerMask.GetMask("Field");
-    }
-
-    // 타입에 맞는 레이어를 반환한다.
-    public LayerMask ReturnLayer(SkillType type)
-    {
-        return layerDict[(int)type];
-    }
-
+    #region 정보 검색
     // 타겟을 반환한다.
     public Character[] GetTarget(SkillTarget target, Enemy selectedEnemy)
     {
@@ -156,20 +131,20 @@ public class CardInfo : MonoBehaviour
         if (skill.turnCount != 0)
         {
             // 턴 수가 0이 아니라면 설명에 추가한다.
-            skillText.description = skill.turnCount + "턴 간 ";
+            skillText.description += (skill.turnCount + "턴 간 ");
         }
 
         if (skill.amount != 0)
         {
             // 효과량이 0이 아니라면 추가한다.
-            skillText.description = skill.amount + "의 ";
+            skillText.description += (skill.amount + "의 ");
         }
         // 타입에 맞는 설명을 추가한다.
         skillText.description += skillTexts.text[(int)skill.type].description;
 
         return skillText;
     }
-    #endregion 레이어 정보 검색
+    #endregion 정보 검색
 
     #region 카드 효과
     // 카드 효과 함수들을 담아둘 델리게이트
@@ -192,8 +167,12 @@ public class CardInfo : MonoBehaviour
         effects[(int)SkillType.RestoreCost] += RestoreCost;
         effects[(int)SkillType.Draw] += Draw;
         effects[(int)SkillType.Bleed] += Bleed;
-        effects[(int)SkillType.AddExtraDamage] += AddExtraDamage;
         effects[(int)SkillType.Burn] += Burn;
+        effects[(int)SkillType.AddExtraDamage] += AddExtraDamage;
+        effects[(int)SkillType.LingeringHeal] += LingeringHeal;
+        effects[(int)SkillType.LingeringBleed] += LingeringBleed;
+        effects[(int)SkillType.LingeringBurn] += LingeringBurn;
+        effects[(int)SkillType.LingeringExtraDamage] += LingeringExtraDamage;
     }
 
 
@@ -202,9 +181,16 @@ public class CardInfo : MonoBehaviour
     {
         for (int i = 0; i < target.Length; ++i)
         {
-            // 모든 타겟에게 skill을 사용한다.
+            // 모든 타겟에게 스킬을 사용한다.
             effects[(int)skill.type](skill.amount, skill.turnCount, target[i], caller);
         }
+    }
+
+    // 버프로 호출, 한 사람에게 사용한다.
+    public void ActivateSkill(BuffEffect buff, Character target, Character caller)
+    {
+        // 스킬을 사용한다.
+        effects[(int)buff.type](buff.amount, 0, target, caller);
     }
 
     // target이 null인 경우는 Card의 OnEndDrag에서 검사했으므로, 검사하지 않는다.
@@ -256,23 +242,50 @@ public class CardInfo : MonoBehaviour
         StartCoroutine(CardManager.Instance.AddCardToHand(amount));
     }
 
-    // 출혈
+    // 출혈 데미지 (한 턴)
     public void Bleed(int amount, int turnCount, Character target, Character caller)
     {
-        target.EnrollBuff(new BuffEffect(SkillType.Bleed, amount, turnCount));
+        // 출혈 데미지는 2로 고정
+        target.DecreaseHP(2);
+    }
+
+    // 화상 데미지 (한 턴)
+    public void Burn(int amount, int turnCount, Character target, Character caller)
+    {
+        target.DecreaseHP(amount);
     }
 
     // 추가 데미지
     public void AddExtraDamage(int amount, int turnCount, Character target, Character caller)
     {
-        target.EnrollBuff(new BuffEffect(SkillType.AddExtraDamage, amount, turnCount));
         target.GetBonusDamage(amount);
     }
 
-    // 화상
-    public void Burn(int amount, int turnCount, Character target, Character caller)
+    // 지속 효과
+    // 지속 회복
+    public void LingeringHeal(int amount, int turnCount, Character target, Character caller)
+    {
+        target.EnrollBuff(new BuffEffect(SkillType.Heal, amount, turnCount));
+    }
+
+    // 출혈 (지속)
+    public void LingeringBleed(int amount, int turnCount, Character target, Character caller)
+    {
+        // 출혈 데미지는 2로 고정
+        target.EnrollBuff(new BuffEffect(SkillType.Bleed, 2, turnCount));
+    }
+
+    // 화상 (지속)
+    public void LingeringBurn(int amount, int turnCount, Character target, Character caller)
     {
         target.EnrollBuff(new BuffEffect(SkillType.Burn, amount, turnCount));
+    }
+
+    // 추가 데미지 (지속, 즉발)
+    public void LingeringExtraDamage(int amount, int turnCount, Character target, Character caller)
+    {
+        target.EnrollBuff(new BuffEffect(SkillType.AddExtraDamage, amount, turnCount - 1));
+        target.GetBonusDamage(amount);
     }
     #endregion 카드 효과
 }

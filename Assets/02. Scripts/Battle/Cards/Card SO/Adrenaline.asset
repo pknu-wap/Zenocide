@@ -16,9 +16,9 @@ MonoBehaviour:
   description: "2\uD134 \uB3D9\uC548 \uACF5\uACA9\uB825\uC774 5 \uC99D\uAC00\uD569\uB2C8\uB2E4."
   sprite: {fileID: 21300000, guid: 59f9b61088bf9154db61e42630ed947e, type: 3}
   skills:
-  - type: 7
+  - type: 12
     target: 0
     amount: 5
-    turnCount: 0
+    turnCount: 2
     effectPrefeb: {fileID: 3675006101537835259, guid: 2e5ad2beaf55e9f4b9c3ebc4a7a2d823, type: 3}
   cost: 3
