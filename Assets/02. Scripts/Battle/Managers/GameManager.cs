@@ -176,7 +176,6 @@ public class GameManager : MonoBehaviour
 
         // 배틀이 끝났음을 알린다.
         DialogueManager.Instance.isBattleDone = true;
-        Debug.Log("전투 종료 알림 완료");
         // 스토리 씬으로 넘어간다.
         SwitchToStoryScene();
 
