@@ -52,8 +52,8 @@ public class Character : MonoBehaviour
     // 스프라이트
     protected Image imageComponent;
     // HP 바
-    protected Image hpBar;
-    protected TMP_Text hpText;
+    [SerializeField] protected Image hpBar;
+    [SerializeField] protected TMP_Text hpText;
     // 실드 바
     protected Image shieldBar;
     // 버프 아이콘 생성기 구현 예정 -> 오브젝트 풀링으로 대체

@@ -23,7 +23,7 @@ public class SelectManager : MonoBehaviour
         // 선택지 초기화
         ResetChoice();
 
-        int choiceCount = (int)csvData["ChoiceCount"];
+        int choiceCount = (int)csvData["Choice Count"];
         // 필요한 선택지 개수만큼 반복
         for (int i = 0; i < choiceCount; i++)
         {
@@ -31,7 +31,7 @@ public class SelectManager : MonoBehaviour
             choices[i].EnableInteractable();
 
             string choiceText = csvData["Choice" + (i + 1)].ToString();
-            string requireItem = csvData["RequireItem" + (i + 1)].ToString();
+            string requireItem = csvData["Require Item" + (i + 1)].ToString();
 
             choices[i].UpdateText(choiceText, requireItem);
         }
@@ -53,7 +53,6 @@ public class SelectManager : MonoBehaviour
         {
             choices[i].DisableChoiceObject();
         }
-        yield return true;
     }
 
     public void ResetChoice()

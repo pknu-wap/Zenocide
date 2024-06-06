@@ -17,6 +17,7 @@ public class PageCurl : MonoBehaviour
     public bool isCurling = false;
     // 넘길 페이지 번호. 한 장 넘긴 후 증가시켜 다음 장을 넘긴다.
     private int pageNumber = 0;
+    private GameObject waitCursor;
 
     // 책의 너비와 높이
     private float bookWidth;
@@ -55,6 +56,9 @@ public class PageCurl : MonoBehaviour
             gradient[i] = backPage[i].GetChild(0);
         }
 
+        // 대기 커서를 불러온다.
+        waitCursor = transform.parent.GetChild(2).gameObject;
+
         // 책의 너비와 높이를 구한다.
         RectTransform bookRect = GetComponent<RectTransform>();
         bookWidth = bookRect.rect.width;
@@ -86,7 +90,9 @@ public class PageCurl : MonoBehaviour
         }
 
         isCurling = true;
+        waitCursor.SetActive(false);
         yield return StartCoroutine(MoveBackPage(pageNumber));
+        waitCursor.SetActive(true);
     }
 
     // 페이지를 움직인다.

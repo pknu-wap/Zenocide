@@ -32,6 +32,11 @@ public class EnemyInfo : MonoBehaviour
     // enemyId에 맞는 EnemyData를 반환한다.
     public EnemyData GetEnemyData(string enemyId)
     {
+        if (enemyList.ContainsKey(enemyId) == false)
+        {
+            return null;
+        }
+
         return enemyList[enemyId];
     }
 }

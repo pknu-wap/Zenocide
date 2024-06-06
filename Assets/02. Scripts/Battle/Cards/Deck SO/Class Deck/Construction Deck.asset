@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f3fb2f9dcc44ce4682722928048a3fe, type: 3}
-  m_Name: Soldier Deck
+  m_Name: Construction Deck
   m_EditorClassIdentifier: 
-  listName: Soldier Deck
+  listName: Construction Deck
   items:
-  - {fileID: 11400000, guid: f342696b5dfe28c4cb24b29993e1e0bb, type: 2}
-  - {fileID: 11400000, guid: db3bd501b67001e4f8c14953287417ac, type: 2}
-  - {fileID: 11400000, guid: a02a150c2dbd3d94781b7c459ba7be76, type: 2}
+  - {fileID: 11400000, guid: ea49938c693a62143936eb71b7b7478a, type: 2}
+  - {fileID: 11400000, guid: 5486b1e3e1685b049b28e26db764145f, type: 2}
+  - {fileID: 11400000, guid: dc18f59901d44824a9c3ac03983ac960, type: 2}
