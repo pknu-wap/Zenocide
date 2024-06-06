@@ -213,8 +213,11 @@ public class DialogueManager : MonoBehaviour
                 yield break;
             }
 
+            // 대화창을 갱신한다. 이 이후의 조건문은, 대화창을 변경하며 실행되는 애들이다.
+            yield return StartCoroutine(DisplayDialogue(dataCSV[i]));
+
             // 선택지가 나타나면 선택지 이벤트를 실행한다.
-            else if (dataCSV[i]["Choice Count"].ToString() is not emptyString)
+            if (dataCSV[i]["Choice Count"].ToString() is not emptyString)
             {
                 // 선택이 끝날 때까지 대기
                 yield return DisplayChoices(dataCSV[i]);
@@ -229,9 +232,6 @@ public class DialogueManager : MonoBehaviour
                 // 종료 (ProcessRandomEvent로 이동)
                 yield break;
             }
-
-            // 대화창을 갱신한다. 이 이후의 조건문은, 대화창을 변경하며 실행되는 애들이다.
-            yield return StartCoroutine(DisplayDialogue(dataCSV[i]));
 
             // 획득 아이템이 존재 한다면 아이템 지급
             if (dataCSV[i]["Equip Item"].ToString() is not emptyString)

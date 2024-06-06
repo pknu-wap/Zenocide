@@ -4,8 +4,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-using System.Collections;
-using UnityEditor.Experimental.GraphView;
 
 public class BuffEffect
 {
