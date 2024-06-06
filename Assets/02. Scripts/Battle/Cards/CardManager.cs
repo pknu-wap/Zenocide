@@ -96,8 +96,6 @@ public class CardManager : MonoBehaviour
             cardBackObjectList[i].SetActive(false);
         }
         #endregion
-
-        GameManager.Instance.onStartBattle.AddListener(StartBattle);
     }
 
     private void Update()
@@ -128,13 +126,6 @@ public class CardManager : MonoBehaviour
         dumpCountTMP = GameObject.Find("Dump Count TMP").GetComponent<TMP_Text>();
         cardBackGroup = GameObject.Find("Card Back Group").transform;
         effectGroup = GameObject.Find("Effect Group").transform;
-    }
-
-    private void StartBattle()
-    {
-        UpdateDeckCount();
-        MergeDumpToDeck();
-        SetUpDeck();
     }
 
     // 카드를 덱에 추가한다. (string)
@@ -349,7 +340,7 @@ public class CardManager : MonoBehaviour
     }
 
     // dump와 hand를 덱으로 모아서 셔플
-    public void SetUpDeck()
+    public void ResetDeck()
     {
         // hand의 카드들을 deck에 추가하고 오브젝트 파괴
         for (int i = 0; i < hand.Count; i++)
@@ -363,14 +354,6 @@ public class CardManager : MonoBehaviour
         hand.Clear();
         UpdateDeckCount();
         selectCard = null;
-
-        ShuffleDeck();
-    }
-
-    // dump를 deck에 모아 셔플
-    void ResetDeck()
-    {
-        MergeDumpToDeck();
 
         ShuffleDeck();
     }

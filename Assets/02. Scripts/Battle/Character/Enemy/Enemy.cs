@@ -29,14 +29,9 @@ public class Enemy : Character
     float fadeDelay = 2f;
     float skillDelay = 0.5f;   // 0.5의 배수로 해줘야 함
 
-    public override void Awake()
+    public void Awake()
     {
         EnrollComponents();
-    }
-
-    public void Start()
-    {
-        GameManager.Instance.onStartBattle.AddListener(StartBattle);
     }
 
     // 자신의 컴포넌트들을 할당한다.
@@ -56,28 +51,52 @@ public class Enemy : Character
         shieldMask = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Image>();
     }
 
-    // 전투를 시작할 때 호출한다.
-    protected override void StartBattle()
+    // 적을 등록한다.
+    public void EnrollEnemy(EnemyData data)
     {
-        // 비활성화된 적은 이벤트를 등록하지 않는다.
-        if(gameObject.activeSelf == false)
+        // null이 들어오면 비활성화하고 종료
+        if (data == null)
         {
+            gameObject.SetActive(false);
             return;
         }
-
-        base.StartBattle();
 
         // BattleInfo에 자신 추가
         BattleInfo.Instance.EnrollEnemy(this);
 
-        // BattleManager에 이벤트 등록
+        // 이벤트 등록
+        TurnManager.Instance.onEndEnemyTurn.AddListener(EndEnemyTurn);
+
         TurnManager.Instance.onStartPlayerTurn.AddListener(ReadySkill);
+
+        // 데이터를 넣고
+        enemyData = data;
+
+        // 이미지 변경
+        imageComponent.sprite = enemyData.illust;
+
+        // 최대 HP 변경
+        maxHp = enemyData.maxHp;
+
+        // 상태 초기화
+        ResetState();
+
+        // 활성화한다.
+        gameObject.SetActive(true);
+    }
+
+    // 적 상태를 초기화한다.
+    public override void ResetState()
+    {
+        base.ResetState();
+
+        imageComponent.color = Color.white;
     }
 
     public void EndEnemyTurn()
     {
         // 디버프(출혈 등)가 전부 적용된다.
-        GetBleedAll();
+        GetBuffAll();
 
         // 죽고 나서 스킬 사용하는 걸 방지
         if(currentHp <= 0)
@@ -87,39 +106,6 @@ public class Enemy : Character
 
         // 스킬을 사용한다. 이때, 애니메이션이 모두 끝나야 이후 명령들을 시작한다.
         CastSkill();
-    }
-    
-    // 적 상태를 초기화한다.
-    public void ResetEnemyState()
-    {
-        imageComponent.color = Color.white;
-        currentHp = maxHp;
-        UpdateHPUI();
-    }
-
-    // 적 정보를 갱신한다.
-    public void UpdateEnemyData(EnemyData data)
-    {
-        // null이 들어오면 비활성화하고 종료
-        if (data == null)
-        {
-            gameObject.SetActive(false);
-            return;
-        }
-
-        enemyData = data;
-
-        // 이미지 변경
-        imageComponent.sprite = enemyData.illust;
-
-        // 최대 HP 변경 및 현재 체력을 maxHp와 같게 변경
-        maxHp = enemyData.maxHp;
-
-        // 상태를 초기화하고
-        ResetEnemyState();
-        
-        // 활성화한다.
-        gameObject.SetActive(true);
     }
 
     [Header("런타임 변수")]
@@ -171,15 +157,21 @@ public class Enemy : Character
                     .Append(transform.DOScale(1.5f, skillDelay * 2 / 5))
                     .Append(imageComponent.transform.DOShakePosition(skillDelay * 1 / 5, 100f))
                     .Append(transform.DOScale(0.9f, skillDelay * 2 / 5));    // enemy 원래 스케일이 0.9로 돼있다.
+                yield return skillSequence.WaitForCompletion();
                 break;
+
             case (SkillType.Shield):
                 skillSequence = DOTween.Sequence()
                     .Append(shieldMask.DOFade(0.7f, skillDelay / 2))
                     .Append(shieldMask.DOFade(0f, skillDelay / 2));
+                yield return skillSequence.WaitForCompletion();
+                break;
+
+            default:
                 break;
         }
 
-        yield return new WaitForSeconds(skillDelay);
+        // yield return new WaitForSeconds(skillDelay);
     }
 
     // 죽는다.
