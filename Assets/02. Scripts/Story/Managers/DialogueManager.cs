@@ -46,7 +46,7 @@ public class DialogueManager : MonoBehaviour
     private string EventPath = "Assets/02. Scripts/Story/EventData SO/Events";
 
     [Header("전체 이벤트 데이터")]
-    public List<EventData> totalEventList = new List<EventData>();
+    public List<EventData> processableEventList = new List<EventData>();
     public EventDataList startEventList;
 
     [Header("메인 SO 이벤트 데이터")]
@@ -140,7 +140,7 @@ public class DialogueManager : MonoBehaviour
     {
         for(int i = 0; i < startEventList.list.Length; ++i)
         {
-            totalEventList.Add(startEventList.list[i]);
+            processableEventList.Add(startEventList.list[i]);
         }
     }
 
@@ -154,11 +154,11 @@ public class DialogueManager : MonoBehaviour
             if(currentEvent == null)
             {
                 // 랜덤한 숫자 하나를 고르고
-                int randomIndex = Random.Range(0, totalEventList.Count);
+                int randomIndex = Random.Range(0, processableEventList.Count);
 
                 // 해당 이벤트를 리스트에서 가져와 넣는다. (삭제)
-                currentEvent = totalEventList[randomIndex];
-                totalEventList.RemoveAt(randomIndex);
+                currentEvent = processableEventList[randomIndex];
+                processableEventList.RemoveAt(randomIndex);
             }
 
             // 이벤트를 진행한다.
@@ -171,6 +171,12 @@ public class DialogueManager : MonoBehaviour
     // 이벤트를 진행한다.
     private IEnumerator ProcessEvent(EventData loadedEvent)
     {
+        // null이 들어오면 바로 종료한다.
+        if (loadedEvent == null)
+        {
+            yield break;
+        }
+
         // 이벤트가 들어있는 CSV 오브젝트를 찾는다.
         switch (loadedEvent.eventID)
         {
@@ -185,15 +191,12 @@ public class DialogueManager : MonoBehaviour
                 break;
         }
 
+        // 첫 문장은 바로 띄운다.
+        isClicked = true;
+
         // 이벤트 진행
         for (int i = loadedEvent.startIndex; i <= loadedEvent.endIndex; ++i)
         {
-            // 첫 문장은 바로 띄운다.
-            if (i == loadedEvent.startIndex)
-            {
-                isClicked = true;
-            }
-
             // 클릭을 기다린다.
             while (isClicked == false)
             {
@@ -217,11 +220,8 @@ public class DialogueManager : MonoBehaviour
                     }
                 }
 
-                if(loadedEvent.nextEvent != null)
-                {
-                    // 바로 이어질 이벤트가 있다면, 거기로 이동한다.
-                    currentEvent = loadedEvent.nextEvent;
-                }
+                // 바로 이어질 이벤트가 있다면 거기로 이동한다. 없으면 알아서 null이 된다.
+                currentEvent = loadedEvent.nextEvent;
 
                 // 현재 이벤트를 종료한다. (ProcessRandomEvent로 이동)
                 yield break;
@@ -332,22 +332,26 @@ public class DialogueManager : MonoBehaviour
         yield return StartCoroutine(TypeSentence(sentence));
     }
 
-    private IEnumerator DisplayChoices(Dictionary<string, object> csvData)
+    // 일러스트를 띄운다.
+    public void DisplayIllust(string[] illustNames)
     {
-        // 선택지 띄우기 전 처리
-        // 선택지를 제외한 입력을 받지 않는다.
-        dialogButton.SetActive(false);
+        // names엔 ""를 포함해 3개가 들어온다.
 
-        // 선택이 끝날 때까지 대기
-        yield return StartCoroutine(SelectManager.Instance.DisplayChoices(csvData));
-
-        // 선택지 띄우기 후 처리
-        // 다시 기존 입력을 받기 시작한다.
-        dialogButton.SetActive(true);
-        // 사용한 아이템을 제거한다.
-        if(csvData["Require Item" + (SelectManager.Instance.result + 1)].ToString() != "")
+        // 적용한다.
+        for (int i = 0; i < IllustsObjects.Length; ++i)
         {
-            Items.Instance.RemoveItem(csvData["Require Item" + (SelectManager.Instance.result + 1)].ToString());
+            // 비었거나, 리스트에 없다면 비활성화
+            if (illustNames[i] == "" || illustTable.ContainsKey(illustNames[i]) == false)
+            {
+                IllustsObjects[i].gameObject.SetActive(false);
+            }
+
+            // 있다면 바꾸고 활성화
+            else
+            {
+                IllustsObjects[i].sprite = illustImages[illustTable[illustNames[i]]];
+                IllustsObjects[i].gameObject.SetActive(true);
+            }
         }
     }
 
@@ -401,32 +405,30 @@ public class DialogueManager : MonoBehaviour
         waitCursor.SetActive(true);
     }
 
-    private void AddEventToList(EventData eventData)
+    // 선택지를 띄운다.
+    private IEnumerator DisplayChoices(Dictionary<string, object> csvData)
     {
-        totalEventList.Add(eventData);
+        // 선택지 띄우기 전 처리
+        // 선택지를 제외한 입력을 받지 않는다.
+        dialogButton.SetActive(false);
+
+        // 선택이 끝날 때까지 대기
+        yield return StartCoroutine(SelectManager.Instance.DisplayChoices(csvData));
+
+        // 선택지 띄우기 후 처리
+        // 다시 기존 입력을 받기 시작한다.
+        dialogButton.SetActive(true);
+        // 사용한 아이템을 제거한다.
+        if (csvData["Require Item" + (SelectManager.Instance.result + 1)].ToString() != "")
+        {
+            Items.Instance.RemoveItem(csvData["Require Item" + (SelectManager.Instance.result + 1)].ToString());
+        }
     }
 
-    // 일러스트를 띄운다.
-    public void DisplayIllust(string[] illustNames)
+    // 리스트에 이벤트를 추가한다.
+    private void AddEventToList(EventData eventData)
     {
-        // names엔 ""를 포함해 3개가 들어온다.
-
-        // 적용한다.
-        for (int i = 0; i < IllustsObjects.Length; ++i)
-        {
-            // 비었거나, 리스트에 없다면 비활성화
-            if (illustNames[i] == "" || illustTable.ContainsKey(illustNames[i]) == false)
-            {
-                IllustsObjects[i].gameObject.SetActive(false);
-            }
-
-            // 있다면 바꾸고 활성화
-            else
-            {
-                IllustsObjects[i].sprite = illustImages[illustTable[illustNames[i]]];
-                IllustsObjects[i].gameObject.SetActive(true);
-            }
-        }
+        processableEventList.Add(eventData);
     }
 
     // 마우스 좌클릭 감지 함수
