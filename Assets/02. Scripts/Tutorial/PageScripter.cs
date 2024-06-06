@@ -55,6 +55,7 @@ public class PageScripter : MonoBehaviour
         if (sentence == "$")
         {
             GameManager.Instance.FinishTutorial();
+            yield break;
         }
 
         yield return StartCoroutine(TypeSentence(sentence));
@@ -107,8 +108,6 @@ public class PageScripter : MonoBehaviour
                     letter += sentence[i];
                 }
             }
-
-            Debug.Log(letter);
 
             // letter를 추가하고
             diaryText.text += letter;

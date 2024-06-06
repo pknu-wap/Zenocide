@@ -117,6 +117,9 @@ public class GameManager : MonoBehaviour
         // 보상 카드 리스트 등록
         rewardCardList = CardInfo.Instance.GetRewardCardListData(rewardCardListName);
 
+        // 덱으로 카드를 전부 모은다.
+        CardManager.Instance.SetUpDeck();
+
         // 배틀 카메라로 전환
         SwitchToBattleScene();
 
@@ -141,6 +144,7 @@ public class GameManager : MonoBehaviour
     // 스토리를 시작한다.
     public void StartStory()
     {
+        StartCoroutine(DialogueManager.Instance.ProcessRandomEvent());
         SwitchToStoryScene();
     }
 
@@ -154,19 +158,11 @@ public class GameManager : MonoBehaviour
     public void EnrollEnemies(string[] enemyNames)
     {
         // enemyNames로 받은 값들은
-        int i = 0;
-        for(; i < enemyNames.Length; ++i)
+        for(int i = 0; i < enemyNames.Length; ++i)
         {
-            // 데이터를 갱신하고 활성화한다.
-            enemies[i].UpdateEnemyData(EnemyInfo.Instance.GetEnemyData(enemyNames[i]));
-            enemies[i].gameObject.SetActive(true);
-        }
-
-        // enemyNames가 없는, 빈 껍데기들은
-        for(; i < enemies.Length; ++i)
-        {
-            // 비활성화한다.
-            enemies[i].gameObject.SetActive(false);
+            // 데이터를 갱신하고 활성화한다. null은 Enemy가 처리한다.
+            EnemyData enemyData = EnemyInfo.Instance.GetEnemyData(enemyNames[i]);
+            enemies[i].UpdateEnemyData(enemyData);
         }
     }
 
@@ -177,8 +173,13 @@ public class GameManager : MonoBehaviour
         yield return StartCoroutine(notificationPanel.Show("승리", true));
         // 리워드 지급이 완료되길 기다린다.
         yield return StartCoroutine(GiveRewardCard());
+
+        // 배틀이 끝났음을 알린다.
+        DialogueManager.Instance.isBattleDone = true;
+        Debug.Log("전투 종료 알림 완료");
         // 스토리 씬으로 넘어간다.
         SwitchToStoryScene();
+
         // 묘지와 핸드를 덱으로 다시 넣는다.
         CardManager.Instance.SetUpDeck();
         // UI도 갱신 (덱이 켜진 채 진입한 경우를 고려)

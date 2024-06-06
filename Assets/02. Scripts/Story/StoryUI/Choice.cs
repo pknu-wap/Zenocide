@@ -93,6 +93,7 @@ public class Choice : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         choiceButton.interactable = true;
         shadow.SetActive(false);
+        HideSelectUI();
         canSelect = true;
     }
 

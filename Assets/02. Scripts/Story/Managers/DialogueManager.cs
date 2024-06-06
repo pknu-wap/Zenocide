@@ -1,17 +1,16 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEditor;
-using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using System.Linq;
-using System;
-using Unity.VisualScripting.FullSerializer;
-using Unity.VisualScripting;
 
 public class DialogueManager : MonoBehaviour
 {
+    // 싱글톤
+    public static DialogueManager Instance { get; set; }
+
+    public EventData currentEvent = null;
+
     [Header("메인 스토리 CSV")]
     // 메인 CSV 파일을 읽어올 리스트
     private List<Dictionary<string, object>> dataMainCSV;
@@ -31,13 +30,13 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] GameObject storyCamera;
 
     [Header("Text 오브젝트")]
-    public TMP_Text dialogueText;               
+    public TMP_Text dialogueText;
     public TMP_Text dialogueName;
 
-    [Header("대화창 오브젝트")]              
+    [Header("대화창 오브젝트")]
     public GameObject dialoguePanel;
 
-    [Header("대화창 출력 완료 시 대기 표시")]          
+    [Header("대화창 출력 완료 시 대기 표시")]
     public GameObject waitCursor;
 
     [Header("CSV 데이터")]
@@ -47,44 +46,34 @@ public class DialogueManager : MonoBehaviour
     private string EventPath = "Assets/02. Scripts/Story/EventData SO/Events";
 
     [Header("전체 이벤트 데이터")]
-    public List<EventData> TotalEventList = new List<EventData>();
+    public List<EventData> processableEventList = new List<EventData>();
+    public EventDataList startEventList;
 
     [Header("메인 SO 이벤트 데이터")]
-    private List<EventData> MainAndSubSOs = new List<EventData>();
+    private List<EventData> mainAndSubSOs = new List<EventData>();
 
     [Header("이벤트별 ID 저장 변수")]
     public const int MainEventID = 0;
     public const int SubEventID = 1;
     public const int RelationEventID = 2;
 
-    [Header("캐릭터 이미지 데이터")]               
-    public Image[] IllustsObjects;                 
-    public Sprite[] illustImages;            
+    [Header("캐릭터 이미지 데이터")]
+    public Image[] IllustsObjects;
+    public Sprite[] illustImages;
 
-    [Header("배경 이미지 데이터")]               
+    [Header("배경 이미지 데이터")]
     public Image    storyBackgroundObject;
-    public Image    battleBackgroundObject;                 
-    public Sprite[] backgroundImages;      
-
-    [Header("대화 텍스트 출력 진행 확인 변수")]            
-    public bool isTyping = false;
-
-    [Header("대화 텍스트 출력 중단 요청 확인 변수")]              
-    public bool cancelTyping = false;          
+    public Image    battleBackgroundObject;
+    public Sprite[] backgroundImages;
 
     [Header("마우스 입력 감지 변수")]
-    public bool isClicked = false;
-
-    [Header("대화 출력 완료 변수")]
-    private bool dialoguePrintDone = true;
-
-    [Header("null string 변수")]
-    private const string empty = "";
+    public bool isClicked = true;
 
     [Header("대화 버튼 오브젝트")]
     public GameObject dialogButton;
 
     [Header("일러스트 데이터")]
+    // 이름 - 이미지 딕셔너리
     public Dictionary<string, int> illustTable = new Dictionary<string, int>()
     {
         {"소피아", 0},
@@ -101,10 +90,35 @@ public class DialogueManager : MonoBehaviour
         {"배경3", 2}
     };
 
+    [Header("상수 값")]
+    private const string emptyString = "";
+    private const float typeTime = 0.03f;
+
+    // 전투가 끝났는지 확인한다.
+    public bool isBattleDone = false;
+    // 게임이 엔딩에 다다랐는지 검사한다.
+    private bool isGameCleared = false;
+
+    private void Awake()
+    {
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+
+        else
+        {
+            Destroy(this);
+        }
+
+        // 컴포넌트 할당
+        EnrollComponent();
+        // Total Event List 채우기
+        SetTotalEventList();
+    }
+
     void Start()
     {
-        EnrollComponent();
-
         // CSV 파일 읽기
         dataMainCSV         = CSVReader.Read(MainCSV);
         dataSubCSV          = CSVReader.Read(SubCSV);
@@ -112,103 +126,406 @@ public class DialogueManager : MonoBehaviour
 
         // 대화창 활성화
         dialogButton.SetActive(true);
-        // 이벤트 데이터 로드
-        LoadSOs();
-        // 대화 이벤트 시작
-        StartCoroutine(EventProcess());                        
     }
 
+    // 컴포넌트를 할당한다.
     private void EnrollComponent()
     {
         storyBackgroundObject = GameObject.Find("Story BG").GetComponent<Image>();
         battleBackgroundObject = GameObject.Find("Battle BG").GetComponent<Image>();
     }
 
-    private IEnumerator EventProcess()
+    // 시작 이벤트 리스트를 전체 이벤트 리스트에 가져온다.
+    private void SetTotalEventList()
     {
-        while(dialoguePrintDone is true)
+        for(int i = 0; i < startEventList.list.Length; ++i)
         {
-            // 전체 이벤트에서 무작위 변수 생성
-            int randomIndex = UnityEngine.Random.Range(0, TotalEventList.Count);
-            EventData loadedEvent = TotalEventList[randomIndex];
-            //무작위로 뽑은 인덱스 삭제 후 무작위 이벤트 리스트에 추가
-            TotalEventList.RemoveAt(randomIndex);
-            TotalEventList.Add(MainAndSubSOs[randomIndex]);
+            processableEventList.Add(startEventList.list[i]);
+        }
+    }
 
-             // 이벤트 종류에 따라 불러오는 CSV 데이터 변경
-            switch(loadedEvent.eventID)
+    // 랜덤 이벤트를 선택해 진행한다.
+    public IEnumerator ProcessRandomEvent()
+    {
+        // 게임이 끝나지 않았다면 무한 반복
+        while (isGameCleared == false)
+        {
+            // 현재 이벤트가 없다면
+            if(currentEvent == null)
             {
-                case MainEventID:
-                    dataCSV = dataMainCSV;
-                    break;
-                case SubEventID:
-                    dataCSV = dataSubCSV;
-                    break;
+                // 랜덤한 숫자 하나를 고르고
+                int randomIndex = Random.Range(0, processableEventList.Count);
+
+                // 해당 이벤트를 리스트에서 가져와 넣는다. (삭제)
+                currentEvent = processableEventList[randomIndex];
+                processableEventList.RemoveAt(randomIndex);
             }
-            Debug.Log(loadedEvent.eventID + " " + loadedEvent.name);
-            // 이벤트 별로 SO에 저장된 시작과 끝 인덱스를 따라 대화 진행
-            for(int j = loadedEvent.startIndex; j < loadedEvent.endIndex + 1; j++)
+
+            // 이벤트를 진행한다.
+            yield return StartCoroutine(ProcessEvent(currentEvent));
+        }
+
+        // 끝나면 엔딩.
+    }
+
+    // 이벤트를 진행한다.
+    private IEnumerator ProcessEvent(EventData loadedEvent)
+    {
+        // null이 들어오면 바로 종료한다.
+        if (loadedEvent == null)
+        {
+            yield break;
+        }
+
+        // 이벤트가 들어있는 CSV 오브젝트를 찾는다.
+        switch (loadedEvent.eventID)
+        {
+            case EventType.Main:
+                dataCSV = dataMainCSV;
+                break;
+            case EventType.Sub:
+                dataCSV = dataSubCSV;
+                break;
+            case EventType.Relation:
+                dataCSV = dataRelationCSV;
+                break;
+        }
+
+        // 첫 문장은 바로 띄운다.
+        isClicked = true;
+
+        // 이벤트 진행
+        for (int i = loadedEvent.startIndex; i <= loadedEvent.endIndex; ++i)
+        {
+            // 클릭을 기다린다.
+            while (isClicked == false)
             {
-                Dictionary<string, object> presentData = dataCSV[j]; 
-                // 대화 출력 함수
+                yield return null;
+            }
+            // 클릭이 감지되면, 재사용을 위해 원상태로 돌린다.
+            isClicked = false;
 
-                // 이벤트의 끝이면 이벤트 종료 후 다음 이벤트 진행을 위해 함수 종료
-                if (dataCSV[j]["Name"].ToString() == "END")
-                {
-                   break;
-                }
-                // 연계 이벤트 발생 시 연계 이벤트 우선 실행
-                if (dataCSV[j]["Name"].ToString() == "RELATION")
-                {
-                    int relationIndex = 0;
-                    // 이전 이벤트가 선택지라면
-                    if(SelectManager.Instance.result != -1)
-                    {
-                        relationIndex = SelectManager.Instance.result;
-                    }
-                    // 연계 이벤트 로드
-                    EventData relationEvent = loadedEvent.nextEvent[relationIndex];
+            // 이벤트의 끝이면 함수를 종료한다.
+            if (dataCSV[i]["Name"].ToString() == "END")
+            {
+                // nextEvent는 별 일 없다면 비워진다.
+                currentEvent = null;
 
-                    for(int k = relationEvent.startIndex; k < relationEvent.endIndex + 1; k++)
+                // 추가할 이벤트가 있다면 리스트에 전부 추가한다.
+                if (loadedEvent.addEvent != null)
+                {
+                    for (int j = 0; j < loadedEvent.addEvent.Length; ++j)
                     {
-                        Debug.Log(relationEvent.eventID + " " + relationEvent.name);
-                        Dictionary<string, object> relationData = dataRelationCSV[k];
-                        isClicked = false;
-                        while(isClicked == false)
-                        {
-                            yield return StartCoroutine(DisplayDialogue(relationData));
-                        }
-                        isClicked = false;
+                        AddEventToList(loadedEvent.addEvent[j]);
                     }
-                    continue;
                 }
 
+                // 바로 이어질 이벤트가 있다면 거기로 이동한다. 없으면 알아서 null이 된다.
+                currentEvent = loadedEvent.nextEvent;
+
+                // 현재 이벤트를 종료한다. (ProcessRandomEvent로 이동)
+                yield break;
+            }
+
+            // 선택지가 나타나면 선택지 이벤트를 실행한다.
+            else if (dataCSV[i]["Choice Count"].ToString() is not emptyString)
+            {
+                // 선택이 끝날 때까지 대기
+                yield return DisplayChoices(dataCSV[i]);
+
+                // 고른 선택지 이벤트 로드
+                int result = SelectManager.Instance.result;
+                EventData relationEvent = loadedEvent.relationEvent[result];
+
+                // 선택지 이벤트를 넣어두고
+                currentEvent = relationEvent;
+
+                // 종료 (ProcessRandomEvent로 이동)
+                yield break;
+            }
+
+            // 대화창을 갱신한다. 이 이후의 조건문은, 대화창을 변경하며 실행되는 애들이다.
+            yield return StartCoroutine(DisplayDialogue(dataCSV[i]));
+
+            // 획득 아이템이 존재 한다면 아이템 지급
+            if (dataCSV[i]["Equip Item"].ToString() is not emptyString)
+            {
+                string equipItem = dataCSV[i]["Equip Item"].ToString();
+                Items.Instance.AddItem(equipItem);
+            }
+
+            // 획득 카드가 존재 한다면 카드 지급
+            if (dataCSV[i]["Equip Card"].ToString() is not emptyString)
+            {
+                string equipCard = dataCSV[i]["Equip Card"].ToString();
+                CardManager.Instance.AddCardToDeck(equipCard);
+            }
+
+            // 전투가 있다면 시작한다.
+            if (dataCSV[i]["Enemy1"].ToString() is not emptyString)
+            {
+                // 배틀이 끝나지 않았음을 체크
+                isBattleDone = false;
+
+                // 이름들을 배열로 받아온다.
+                string[] enemies = new string[4];
+                for (int j = 0; j < enemies.Length; ++j)
+                {
+                    // Enemy는 1, 2, 3, 4가 존재
+                    enemies[j] = dataCSV[i]["Enemy" + (j + 1)].ToString();
+                }
+
+                // 보상 카드 리스트를 불러온다.
+                string rewardCardList = dataCSV[i]["Reward Card List"].ToString();
+
+                // 준비가 끝나면 클릭을 기다린다.
                 isClicked = false;
-                // 마우스 입력 대기
                 while (isClicked == false)
                 {
-                    yield return StartCoroutine(DisplayDialogue(presentData));;
+                    yield return null;
+                }
+                isClicked = false;
+
+                //클릭되면 배틀을 시작한다.
+                GameManager.Instance.StartBattle(enemies, rewardCardList);
+
+                // 전투가 끝날 때까지 기다린다.
+                while (isBattleDone == false)
+                {
+                    yield return null;
                 }
 
-                // 클릭이 끝나면 false로 돌린다.
-                isClicked = false;
+                // 끝나면 다음 줄로 이동한다.
+                continue;
             }
         }
+
+        // endIndex를 벗어나며 종료된다.
     }
 
     // 대화 출력 함수
     private IEnumerator DisplayDialogue(Dictionary<string, object> csvData)
     {
-        List<string> illustNames = new List<string>(){csvData["Image1"].ToString(),
-                                                      csvData["Image2"].ToString(), 
-                                                      csvData["Image3"].ToString()};
+        // 일러스트 배열로 만들어두고
+        string[] illustNames = new string[] {
+            csvData["Left Image"].ToString(),
+            csvData["Center Image"].ToString(),
+            csvData["Right Image"].ToString()
+        };
+        // 일러스트 표시
+        DisplayIllust(illustNames);
+
+        // 배경 설정
+        if (csvData["Background"].ToString() is not emptyString)
+        {
+            // 스토리와 전투를 함께 바꾼다.
+            storyBackgroundObject.sprite = backgroundImages[backgroundTable[csvData["Background"].ToString()]];
+            battleBackgroundObject.sprite = backgroundImages[backgroundTable[csvData["Background"].ToString()]];
+        }
+
+        // 이름 변경 (비어있어도 상관 X)
+        dialogueName.text = csvData["Name"].ToString();
+
+        // 내용을 받아오고 (비어있어도 상관 X)
+        string sentence = csvData["Text"].ToString();
+        // 타이핑 출력
+        yield return StartCoroutine(TypeSentence(sentence));
+    }
+
+    // 일러스트를 띄운다.
+    public void DisplayIllust(string[] illustNames)
+    {
+        // names엔 ""를 포함해 3개가 들어온다.
+
+        // 적용한다.
+        for (int i = 0; i < IllustsObjects.Length; ++i)
+        {
+            // 비었거나, 리스트에 없다면 비활성화
+            if (illustNames[i] == "" || illustTable.ContainsKey(illustNames[i]) == false)
+            {
+                IllustsObjects[i].gameObject.SetActive(false);
+            }
+
+            // 있다면 바꾸고 활성화
+            else
+            {
+                IllustsObjects[i].sprite = illustImages[illustTable[illustNames[i]]];
+                IllustsObjects[i].gameObject.SetActive(true);
+            }
+        }
+    }
+
+    // 텍스트 출력 효과 함수
+    private IEnumerator TypeSentence(string sentence)
+    {
+        // 다음 대화로 넘어가기 전에 기다리는 커서 비활성화
+        waitCursor.SetActive(false);
+        // 대화창을 비운다.
+        dialogueText.text = "";
+
+        // 출력 취소(캔슬)를 위한 변수 초기화
+        isClicked = false;
+        for(int i = 0; i < sentence.Length; ++i)
+        {
+            // 타이핑 효과 취소 시
+            if (isClicked == true)
+            {
+                // 대화를 한 번에 출력
+                dialogueText.text = sentence;
+                // 클릭 감지를 했으니, 다시 원상태로 돌린다.
+                isClicked = false;
+                break;
+            }
+
+            // 출력할 글자
+            string letter = "";
+            letter += sentence[i];
+
+            // 만약 html 태그를 만난다면, 한 번에 출력을 위해 letter에 전부 담는다.
+            if (letter == "<")
+            {
+                ++i;
+                while (sentence[i] != '>')
+                {
+                    letter += sentence[i];
+                    ++i;
+                }
+                if (sentence[i] == '>')
+                {
+                    letter += sentence[i];
+                }
+            }
+
+            // 한 글자 추가 후 잠시 기다린다.
+            dialogueText.text += letter;
+            yield return new WaitForSeconds(typeTime);
+        }
+
+        // 출력이 끝나면 출력 커서를 띄운다.
+        waitCursor.SetActive(true);
+    }
+
+    // 선택지를 띄운다.
+    private IEnumerator DisplayChoices(Dictionary<string, object> csvData)
+    {
+        // 선택지 띄우기 전 처리
+        // 선택지를 제외한 입력을 받지 않는다.
+        dialogButton.SetActive(false);
+
+        // 선택이 끝날 때까지 대기
+        yield return StartCoroutine(SelectManager.Instance.DisplayChoices(csvData));
+
+        // 선택지 띄우기 후 처리
+        // 다시 기존 입력을 받기 시작한다.
+        dialogButton.SetActive(true);
+        // 사용한 아이템을 제거한다.
+        if (csvData["Require Item" + (SelectManager.Instance.result + 1)].ToString() != "")
+        {
+            Items.Instance.RemoveItem(csvData["Require Item" + (SelectManager.Instance.result + 1)].ToString());
+        }
+    }
+
+    // 리스트에 이벤트를 추가한다.
+    private void AddEventToList(EventData eventData)
+    {
+        processableEventList.Add(eventData);
+    }
+
+    // 마우스 좌클릭 감지 함수
+    public void ClickDialogButton()
+    {
+        isClicked = true;
+    }
+
+    #region Legacy
+    // Legacy
+    /*    private IEnumerator EventProcess()
+        {
+            while (dialoguePrintDone is true)
+            {
+                // 전체 이벤트에서 무작위 변수 생성
+                int randomIndex = Random.Range(0, totalEventList.Count);
+                EventData loadedEvent = totalEventList[randomIndex];
+                //무작위로 뽑은 인덱스 삭제 후 무작위 이벤트 리스트에 추가
+                totalEventList.RemoveAt(randomIndex);
+                totalEventList.Add(mainAndSubSOs[randomIndex]);
+
+                // 이벤트 종류에 따라 불러오는 CSV 데이터 변경
+                switch (loadedEvent.eventID)
+                {
+                    case EventType.Main:
+                        dataCSV = dataMainCSV;
+                        break;
+                    case EventType.Sub:
+                        dataCSV = dataSubCSV;
+                        break;
+                }
+                Debug.Log(loadedEvent.eventID + " " + loadedEvent.name);
+                // 이벤트 별로 SO에 저장된 시작과 끝 인덱스를 따라 대화 진행
+                for (int j = loadedEvent.startIndex; j < loadedEvent.endIndex + 1; j++)
+                {
+                    Dictionary<string, object> presentData = dataCSV[j];
+                    // 대화 출력 함수
+
+                    // 이벤트의 끝이면 이벤트 종료 후 다음 이벤트 진행을 위해 함수 종료
+                    if (dataCSV[j]["Name"].ToString() == "END")
+                    {
+                        break;
+                    }
+                    // 연계 이벤트 발생 시 연계 이벤트 우선 실행
+                    if (dataCSV[j]["Name"].ToString() == "RELATION")
+                    {
+                        int relationIndex = 0;
+                        // 이전 이벤트가 선택지라면
+                        if (SelectManager.Instance.result != -1)
+                        {
+                            relationIndex = SelectManager.Instance.result;
+                        }
+                        // 연계 이벤트 로드
+                        EventData relationEvent = loadedEvent.relationEvent[relationIndex];
+
+                        for (int k = relationEvent.startIndex; k < relationEvent.endIndex + 1; k++)
+                        {
+                            Debug.Log(relationEvent.eventID + " " + relationEvent.name);
+                            Dictionary<string, object> relationData = dataRelationCSV[k];
+                            isClicked = false;
+                            while (isClicked == false)
+                            {
+                                yield return StartCoroutine(DisplayDialogue(relationData));
+                            }
+                            isClicked = false;
+                        }
+                        continue;
+                    }
+
+                    isClicked = false;
+                    // 마우스 입력 대기
+                    while (isClicked == false)
+                    {
+                        yield return StartCoroutine(DisplayDialogue(presentData)); ;
+                    }
+
+                    // 클릭이 끝나면 false로 돌린다.
+                    isClicked = false;
+                }
+            }
+        }*/
+
+    // Legacy
+    /*private IEnumerator DisplayDialogue(Dictionary<string, object> csvData)
+    {
+        List<string> illustNames = new List<string>(){
+            csvData["Left Image"].ToString(),
+            csvData["Center Image"].ToString(), 
+            csvData["Right Image"].ToString()
+        };
         
         dialogueName.text = csvData["Name"].ToString();
         string text = csvData["Text"].ToString();
         // 일러스트 표시 함수
         DisplayIllust(illustNames);
         // 배경 설정
-        if(csvData["Background"].ToString() is not empty)
+        if(csvData["Background"].ToString() is not emptyString)
         {
             storyBackgroundObject.sprite = backgroundImages[backgroundTable[csvData["Background"].ToString()]];
             //BattleBackgroundObject.sprite = BackgroundImages[backgroundTable[csvData["Background"].ToString()]]; 
@@ -233,7 +550,7 @@ public class DialogueManager : MonoBehaviour
         isClicked = false;
         yield return StartCoroutine(TypeSentence(dialogueText.text));
         // 전투 시작
-        if(csvData["Enemy1"].ToString() is not empty)
+        if(csvData["Enemy1"].ToString() is not emptyString)
         {
             List<string> Enemys = new List<string>();
             for(int i = 1; i < 4; i++)
@@ -255,25 +572,10 @@ public class DialogueManager : MonoBehaviour
             StartCoroutine(DisplayChoices(csvData));
         }
         
-    }
+    }*/
 
-    private IEnumerator DisplayChoices(Dictionary<string, object> csvData)
-    {
-        // 선택지 띄우기 전 처리
-        dialogButton.SetActive(false);
-
-        yield return StartCoroutine(SelectManager.Instance.DisplayChoices(csvData));
-
-        // 선택지 띄우기 후 처리
-        dialogButton.SetActive(true);
-        if(csvData["RequireItem" + (SelectManager.Instance.result + 1)].ToString() != "")
-        {
-            Items.Instance.RemoveItem(csvData["RequireItem" + (SelectManager.Instance.result + 1)].ToString());
-        }
-    }
-
-    // 텍스트 출력 효과 함수
-    private IEnumerator TypeSentence(string sentence)
+    // Legacy
+    /*private IEnumerator TypeSentence(string sentence)
     {   
         // 다음 대화로 넘어가기 전에 기다리는 커서 비활성화
         waitCursor.SetActive(false);
@@ -293,80 +595,49 @@ public class DialogueManager : MonoBehaviour
         }
         waitCursor.SetActive(true);
         yield return new WaitUntil(() => isClicked);
-    }
+    }*/
 
-    private IEnumerator WaitToEnterBattle(Dictionary<string, object> csvData){
-        List<string> Enemys = new List<string>();
-        for(int i = 1; i < 4; i++)
-        {
-            if(csvData["Enemy" + i].ToString() != "")
+    // Legacy
+    /*    private IEnumerator WaitToEnterBattle(Dictionary<string, object> csvData){
+            List<string> Enemys = new List<string>();
+            for(int i = 1; i < 4; i++)
             {
-               Enemys.Add(csvData["Enemy" + i].ToString());
+                if(csvData["Enemy" + i].ToString() != "")
+                {
+                   Enemys.Add(csvData["Enemy" + i].ToString());
+                }
             }
-        }
-        yield return new WaitUntil(() => isClicked);
-        CardManager.Instance.MergeDumpToDeck();
-        CardManager.Instance.SetUpDeck();
-        GameManager.Instance.StartBattle(Enemys.ToArray(), "Level 1");   
-    }
+            yield return new WaitUntil(() => isClicked);
+            CardManager.Instance.MergeDumpToDeck();
+            CardManager.Instance.SetUpDeck();
+            GameManager.Instance.StartBattle(Enemys.ToArray(), "Level 1");   
+        }*/
 
-     private void LoadSOs()
-    {
-       // 메인, 서브 이벤트 SO 데이터 이름을 불러와 저장
-       string[] EventNames = AssetDatabase.FindAssets("t:EventData", new[] { EventPath });
-       int mainEventCount = EventNames.Length;
-
-       for (int i = 0; i < EventNames.Length; i++)
-       {
-           string assetPath = AssetDatabase.GUIDToAssetPath(EventNames[i]);
-           EventData so = AssetDatabase.LoadAssetAtPath<EventData>(assetPath);
-           // 무작위 이벤트 추출용 so 리스트
-           MainAndSubSOs.Add(so);
-           // 초기 무작위 이벤트 리스트
-           TotalEventList.Add(so);
-       }
-    }
-
-    private void AddEvent(string eventName)
-    {
-        foreach (EventData so in MainAndSubSOs)
+    // Legacy
+    /*    public void DisplayIllust(List<string> names)
         {
-            if (so.eventName == eventName)
+
+            List<string> validNames = names.Where(name => illustTable.ContainsKey(name)).ToList();
+
+            // Disable all illustrations initially
+            foreach (Image illustObject in IllustsObjects)
             {
-                TotalEventList.Add(so);
+                illustObject.enabled = false;
             }
-        }
-    }
+
+            for (int i = 0; i < validNames.Count && i < IllustsObjects.Length; i++)
+            {
+                IllustsObjects[i].sprite = illustImages[illustTable[validNames[i]]];
+                IllustsObjects[i].enabled = true;
+            }
+        }*/
 
     // 제네릭 함수를 사용하여 리스트에서 랜덤 요소를 뽑기
-    public T PickRandomElement<T>(List<T> array)
+/*    public T PickRandomElement<T>(List<T> array)
     {
         System.Random random = new System.Random();
         int randomIndex = random.Next(array.Count);
         return array[randomIndex];
-    }
-
-    public void DisplayIllust(List<string> names)
-    {
-
-        List<string> validNames = names.Where(name => illustTable.ContainsKey(name)).ToList();
-    
-        // Disable all illustrations initially
-        foreach (Image illustObject in IllustsObjects)
-        {
-            illustObject.enabled = false;
-        }
-
-        for (int i = 0; i < validNames.Count && i < IllustsObjects.Length; i++)
-        {
-            IllustsObjects[i].sprite = illustImages[illustTable[validNames[i]]];
-            IllustsObjects[i].enabled = true;
-        }
-    }
-
-    // 마우스 좌클릭 감지 함수
-    public void ClickDialogButton()
-    {
-        isClicked = true;
-    }
+    }*/
+    #endregion Legacy
 }
