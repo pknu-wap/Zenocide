@@ -10,10 +10,15 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     // 커질 때의 크기 배율을 설정
     public float scaleMultiplier = 1.2f;
 
-    void Start()
+    void Awake()
     {
         // 현재 카드 슬롯의 원래 크기 저장
         originalScale = transform.localScale;
+    }
+
+    private void OnEnable()
+    {
+        transform.localScale = originalScale;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
