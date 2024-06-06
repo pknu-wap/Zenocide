@@ -372,14 +372,14 @@ public class Character : MonoBehaviour
                 --i;
             }
 
-            // 아이콘 최신화
-            UpdateBuffIcon(i);
-
             // 이펙트 재생
 
             // 0.1초 딜레이
             // yield return new WaitForSeconds(0.1f);
         }
+
+        // 아이콘 최신화
+        UpdateAllBuffIcon();
     }
     #endregion 디버프
 
