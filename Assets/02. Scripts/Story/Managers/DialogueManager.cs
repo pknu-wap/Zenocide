@@ -9,7 +9,7 @@ public class DialogueManager : MonoBehaviour
     // 싱글톤
     public static DialogueManager Instance { get; set; }
 
-    public EventData nextEvent = null;
+    public EventData currentEvent = null;
 
     [Header("메인 스토리 CSV")]
     // 메인 CSV 파일을 읽어올 리스트
@@ -151,19 +151,18 @@ public class DialogueManager : MonoBehaviour
         while (isGameCleared == false)
         {
             // 현재 이벤트가 없다면
-            if(nextEvent == null)
+            if(currentEvent == null)
             {
                 // 랜덤한 숫자 하나를 고르고
                 int randomIndex = Random.Range(0, totalEventList.Count);
 
                 // 해당 이벤트를 리스트에서 가져와 넣는다. (삭제)
-                nextEvent = totalEventList[randomIndex];
-                //EventData loadedEvent = totalEventList[randomIndex];
+                currentEvent = totalEventList[randomIndex];
                 totalEventList.RemoveAt(randomIndex);
             }
 
             // 이벤트를 진행한다.
-            yield return StartCoroutine(ProcessEvent(nextEvent));
+            yield return StartCoroutine(ProcessEvent(currentEvent));
         }
 
         // 끝나면 엔딩.
@@ -190,7 +189,7 @@ public class DialogueManager : MonoBehaviour
         for (int i = loadedEvent.startIndex; i <= loadedEvent.endIndex; ++i)
         {
             // 첫 문장은 바로 띄운다.
-            if(i == loadedEvent.startIndex)
+            if (i == loadedEvent.startIndex)
             {
                 isClicked = true;
             }
@@ -207,7 +206,7 @@ public class DialogueManager : MonoBehaviour
             if (dataCSV[i]["Name"].ToString() == "END")
             {
                 // nextEvent는 별 일 없다면 비워진다.
-                nextEvent = null;
+                currentEvent = null;
 
                 // 추가할 이벤트가 있다면 리스트에 전부 추가한다.
                 if (loadedEvent.addEvent != null)
@@ -221,7 +220,7 @@ public class DialogueManager : MonoBehaviour
                 if(loadedEvent.nextEvent != null)
                 {
                     // 바로 이어질 이벤트가 있다면, 거기로 이동한다.
-                    nextEvent = loadedEvent.nextEvent;
+                    currentEvent = loadedEvent.nextEvent;
                 }
 
                 // 현재 이벤트를 종료한다. (ProcessRandomEvent로 이동)
@@ -239,8 +238,7 @@ public class DialogueManager : MonoBehaviour
                 EventData relationEvent = loadedEvent.relationEvent[result];
 
                 // 선택지 이벤트를 넣어두고
-                nextEvent = relationEvent;
-                //StartCoroutine(ProcessEvent(relationEvent));
+                currentEvent = relationEvent;
 
                 // 종료 (ProcessRandomEvent로 이동)
                 yield break;
@@ -286,7 +284,8 @@ public class DialogueManager : MonoBehaviour
                 {
                     yield return null;
                 }
-                
+                isClicked = false;
+
                 //클릭되면 배틀을 시작한다.
                 GameManager.Instance.StartBattle(enemies, rewardCardList);
 
@@ -295,7 +294,9 @@ public class DialogueManager : MonoBehaviour
                 {
                     yield return null;
                 }
+
                 // 끝나면 다음 줄로 이동한다.
+                continue;
             }
         }
 

@@ -173,10 +173,13 @@ public class GameManager : MonoBehaviour
         yield return StartCoroutine(notificationPanel.Show("승리", true));
         // 리워드 지급이 완료되길 기다린다.
         yield return StartCoroutine(GiveRewardCard());
+
         // 배틀이 끝났음을 알린다.
         DialogueManager.Instance.isBattleDone = true;
+        Debug.Log("전투 종료 알림 완료");
         // 스토리 씬으로 넘어간다.
         SwitchToStoryScene();
+
         // 묘지와 핸드를 덱으로 다시 넣는다.
         CardManager.Instance.SetUpDeck();
         // UI도 갱신 (덱이 켜진 채 진입한 경우를 고려)
