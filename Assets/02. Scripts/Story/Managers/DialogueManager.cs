@@ -281,7 +281,8 @@ public class DialogueManager : MonoBehaviour
                     yield return null;
                 }
 
-                // 끝나면 다음 줄로 이동한다.
+                // 끝나면 다음 줄로 바로 이동한다.
+                isClicked = true;
             }
         }
 
