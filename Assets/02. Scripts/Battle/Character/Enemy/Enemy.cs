@@ -25,8 +25,6 @@ public class Enemy : Character
     ParticleSystem healEffect;
     Image shieldMask;
 
-    TargetLockOpener targetLock;
-
     // 상수
     float fadeDelay = 2f;
     float skillDelay = 0.5f;   // 0.5의 배수로 해줘야 함
