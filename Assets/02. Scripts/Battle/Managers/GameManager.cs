@@ -1,10 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-using Random = UnityEngine.Random;
 
 // 치트, UI, 랭킹, 게임오버
 public class GameManager : MonoBehaviour
@@ -24,9 +22,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject battleScene;
     [SerializeField] private GameObject tutorialScene;
 
-    // 전투 시작 시 실행할 이벤트
-    public UnityEvent onStartBattle;
-
     private void Awake()
     {
         if(Instance == null)
@@ -35,15 +30,12 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            Debug.Log("두 개임");
             Destroy(gameObject);
         }
 
         // 컴포넌트를 미리 할당한다.
         EnrollComponent();
-
-        // 변수를 찾아 등록한다.
-        EnrollComponent();
-        SetDefaultState();
     }
 
     void Start()
@@ -54,23 +46,8 @@ public class GameManager : MonoBehaviour
         // SwitchToStoryScene();
         // 시작은 배틀
         // TestStartBattle();
-    }
 
-    void Update()
-    {
-#if UNITY_EDITOR
-        InputCheatKey();
-#endif
-    }
-
-    void InputCheatKey()
-    {
-        if (Input.GetKeyDown(KeyCode.S) && TurnManager.Instance.myTurn)
-        {
-            // 1장 드로우
-            StartCoroutine(CardManager.Instance.AddCardToHand(1));
-        }
-
+        SetDefaultState();
     }
 
     // 컴포넌트를 찾아 등록한다.
@@ -97,13 +74,20 @@ public class GameManager : MonoBehaviour
         rewardPanel.SetActive(false);
     }
 
+    // 스토리를 시작한다.
+    public void StartStory()
+    {
+        StartCoroutine(DialogueManager.Instance.ProcessRandomEvent());
+        SwitchToStoryScene();
+    }
+
     /// <summary>
     /// 전투를 시작한다.
     /// </summary>
     /// <param name="enemyNames">전투 시작 시 생성할 적 ID</param>
     public void StartBattle(string[] enemyNames, string rewardCardListName)
     {
-        if(enemyNames.Length > 4)
+        if (enemyNames.Length > 4)
         {
             Debug.LogError("적의 숫자가 너무 많습니다. (최대 4)");
         }
@@ -111,14 +95,14 @@ public class GameManager : MonoBehaviour
         // 적 생성 및 정보 갱신, 추후 분리 예정
         EnrollEnemies(enemyNames);
 
-        // 적, 플레이어의 시작 이벤트 호출
-        onStartBattle.Invoke();
+        // 플레이어 초기화
+        Player.Instance.ResetState();
 
         // 보상 카드 리스트 등록
         rewardCardList = CardInfo.Instance.GetRewardCardListData(rewardCardListName);
 
-        // 덱으로 카드를 전부 모은다.
-        CardManager.Instance.SetUpDeck();
+        // 덱을 초기화 한다.
+        CardManager.Instance.ResetDeck();
 
         // 배틀 카메라로 전환
         SwitchToBattleScene();
@@ -141,19 +125,6 @@ public class GameManager : MonoBehaviour
         StartStory();
     }
 
-    // 스토리를 시작한다.
-    public void StartStory()
-    {
-        StartCoroutine(DialogueManager.Instance.ProcessRandomEvent());
-        SwitchToStoryScene();
-    }
-
-    // StartBattle 함수를 테스트하는 함수
-    public void TestStartBattle()
-    {
-        StartBattle(new string[] { "NormalZombie", "NormalZombie" }, "Level 1");
-    }
-
     // 모든 적 정보를 등록, 소환한다
     public void EnrollEnemies(string[] enemyNames)
     {
@@ -162,7 +133,7 @@ public class GameManager : MonoBehaviour
         {
             // 데이터를 갱신하고 활성화한다. null은 Enemy가 처리한다.
             EnemyData enemyData = EnemyInfo.Instance.GetEnemyData(enemyNames[i]);
-            enemies[i].UpdateEnemyData(enemyData);
+            enemies[i].EnrollEnemy(enemyData);
         }
     }
 
@@ -180,7 +151,7 @@ public class GameManager : MonoBehaviour
         SwitchToStoryScene();
 
         // 묘지와 핸드를 덱으로 다시 넣는다.
-        CardManager.Instance.SetUpDeck();
+        CardManager.Instance.ResetDeck();
         // UI도 갱신 (덱이 켜진 채 진입한 경우를 고려)
         CardInventory.instance.UpdateAllCardSlot();
     }

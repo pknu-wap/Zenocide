@@ -20,8 +20,6 @@ public class TurnManager : MonoBehaviour
     public bool myTurn;
 
     enum ETurnMode { Random, My, Other }
-    WaitForSeconds delay05 = new WaitForSeconds(0.5f);
-    WaitForSeconds delay10 = new WaitForSeconds(1f);
 
     // 턴 이벤트
     public UnityEvent onStartPlayerTurn;    // 플레이어 턴이 시작할 때
@@ -139,7 +137,7 @@ public class TurnManager : MonoBehaviour
             // 적이 랜덤한 순서로 스킬을 사용함
             // 더 깔끔한 알고리즘이 있지 않을까
             // int enemyIndex = Random.Range(0, 4);
-            int count = 0;
+            // int count = 0;
             bool[] hasAttack = new bool[4]; // 변수 이름이 부적절한 거 같다.
             Array.Fill(hasAttack, false);
 

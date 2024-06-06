@@ -47,36 +47,29 @@ public class Character : MonoBehaviour
     // 추가 방어력. 데미지 계산 식에 적용
     public int bonusArmor = 0;
 
-    // 디버그용, 추후 삭제
-    [Header("컴포넌트")]
+    [Header("일러스트")]
     // 스프라이트
     protected Image imageComponent;
+
+    [Header("HP 바")]
     // HP 바
     [SerializeField] protected Image hpBar;
     [SerializeField] protected TMP_Text hpText;
     // 실드 바
-    protected Image shieldBar;
-    // 버프 아이콘 생성기 구현 예정 -> 오브젝트 풀링으로 대체
-    protected Transform statusPanel;
-    // 디버프창
-    protected List<buffIconComponent> buffIcons;
-    protected TMP_Text[] buffName;
-    protected TMP_Text[] buffDescription;
+    [SerializeField] protected Image shieldBar;
     
     // 데미지 텍스트
     [SerializeField] protected GameObject damageTextPrefab;
 
     [Header("상태이상")]
-    protected Transform buffIconContainer;
-    protected List<BuffEffect> buffs;
-
-    [Header("이벤트")]
-    protected UnityEvent onTurnStarted;
-
-    public virtual void Awake()
-    {
-
-    }
+    [SerializeField] protected Transform buffIconContainer;
+    [SerializeField] protected List<BuffEffect> buffs;
+    // 버프 아이콘 생성기 구현 예정 -> 오브젝트 풀링으로 대체
+    [SerializeField] protected Transform statusPanel;
+    // 디버프창
+    [SerializeField] protected List<buffIconComponent> buffIcons;
+    [SerializeField] protected TMP_Text[] buffName;
+    [SerializeField] protected TMP_Text[] buffDescription;
 
     // 컴포넌트들을 등록한다.
     protected virtual void EnrollComponents()
@@ -118,13 +111,21 @@ public class Character : MonoBehaviour
         }
     }
 
-    protected virtual void StartBattle()
+    public virtual void ResetState()
     {
-        UpdateShieldUI();
-        UpdateHPUI();
+        // 스탯을 초기화한다.
+        bonusAttackStat = 0;
+        bonusDamage = 0;
+        bonusArmor = 0;
 
+        // 체력 데이터 및 UI를 초기화한다.
+        currentHp = maxHp;
+        shield = 0;
+        UpdateHPUI();
+        UpdateShieldUI();
+
+        // 버프를 제거한다.
         CleanseDebuff();
-        ResetStat();
     }
 
     #region HP
@@ -335,8 +336,10 @@ public class Character : MonoBehaviour
         for (; i < buffIconContainer.childCount; ++i)
         {
             // 비활성화한다.
+            // 아이콘 비활성화
             buffIconContainer.GetChild(i).gameObject.SetActive(false);
-            buffName[i].gameObject.transform.parent.gameObject.SetActive(false);
+            // 상세정보창 비활성화
+            buffName[i].transform.parent.gameObject.SetActive(false);
         }
     }
 
@@ -374,15 +377,6 @@ public class Character : MonoBehaviour
     #endregion 디버프
 
     #region 스텟
-
-    // 모든 능력치 값을 초기화한다.
-    public void ResetStat()
-    {
-        bonusAttackStat = 0;
-        bonusDamage = 0;
-        bonusArmor = 0;
-    }
-
     public void GetBonusAttackStat(int amount)
     {
         bonusAttackStat += amount;
