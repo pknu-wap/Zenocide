@@ -198,7 +198,7 @@ public class CardManager : MonoBehaviour
             if (deck.Count == 0)
             {
                 StartCoroutine(ResetDeckAnimationCo(dump.Count));
-                ResetDeck();
+                MergeDumpToDeck();
             }
 
             card.effectGroup = effectGroup;
