@@ -36,8 +36,13 @@ MonoBehaviour:
     amount: 3
     turnCount: 0
     effectPrefeb: {fileID: 0}
-  - type: 6
+  - type: 10
     target: 0
     amount: 2
+    turnCount: 3
+    effectPrefeb: {fileID: 0}
+  - type: 12
+    target: 1
+    amount: 5
     turnCount: 3
     effectPrefeb: {fileID: 0}

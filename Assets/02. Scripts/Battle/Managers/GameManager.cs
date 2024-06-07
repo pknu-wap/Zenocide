@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
 
 // 치트, UI, 랭킹, 게임오버
 public class GameManager : MonoBehaviour
@@ -17,6 +16,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] public Enemy[] enemies;
     [SerializeField] CardList rewardCardList;
     [SerializeField] StatusHP storyHP;
+    [SerializeField] GameObject gameOverPanel;
 
     [Header("블로커")]
     [SerializeField] private GameObject storyScene;
@@ -70,12 +70,16 @@ public class GameManager : MonoBehaviour
 
         // 스토리 씬의 HP 바 할당
         storyHP = GameObject.Find("Player HP").GetComponent<StatusHP>();
+
+        // 게임 오버 패널 할당
+        gameOverPanel = GameObject.Find("GameOver Panel");
     }
 
     // 초기 상태를 지정한다.
     private void SetDefaultState()
     {
         rewardPanel.SetActive(false);
+        gameOverPanel.SetActive(false);
     }
 
     // 스토리를 시작한다.
@@ -137,6 +141,15 @@ public class GameManager : MonoBehaviour
         CardManager.Instance.ResetDeck();
         // UI도 갱신 (덱이 켜진 채 진입한 경우를 고려)
         CardInventory.instance.UpdateAllCardSlot();
+    }
+
+    public IEnumerator GameOver()
+    {
+        Time.timeScale = 0.5f;
+
+        yield return new WaitForSecondsRealtime(3f);
+
+        gameOverPanel.SetActive(true);
     }
 
     public void FinishTutorial()
