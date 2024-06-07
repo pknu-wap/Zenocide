@@ -117,7 +117,6 @@ public class Character : MonoBehaviour
         ResetStat();
 
         // 체력 데이터 및 UI를 초기화한다.
-        currentHp = maxHp;
         shield = 0;
         UpdateHPUI();
         UpdateShieldUI();

@@ -90,6 +90,8 @@ public class Enemy : Character
     {
         base.ResetState();
 
+        currentHp = maxHp;
+        UpdateHPUI();
         imageComponent.color = Color.white;
     }
 
