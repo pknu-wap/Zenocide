@@ -117,7 +117,6 @@ public class Character : MonoBehaviour
         ResetStat();
 
         // 체력 데이터 및 UI를 초기화한다.
-        currentHp = maxHp;
         shield = 0;
         UpdateHPUI();
         UpdateShieldUI();
@@ -212,6 +211,9 @@ public class Character : MonoBehaviour
         // hp가 0 이하가 될 경우
         if (currentHp <= 0)
         {
+            currentHp = 0;
+            UpdateHPUI();
+
             // 죽음 이벤트 실행
             Die();
         }

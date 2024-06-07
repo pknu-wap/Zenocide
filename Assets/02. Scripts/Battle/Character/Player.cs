@@ -38,9 +38,10 @@ public class Player : Character
         // 플레이어의 사망을 알림
         BattleInfo.Instance.isGameOver = true;
 
+        // 깔끔하게 보이기 위한 클램핑
         currentHp = 0;
         UpdateHPUI();
 
-        GameManager.Instance.Notification("게임 오버");
+        StartCoroutine(GameManager.Instance.GameOver());
     }
 }
