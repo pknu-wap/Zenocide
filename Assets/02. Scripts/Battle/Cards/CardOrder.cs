@@ -32,6 +32,11 @@ public class CardOrder : MonoBehaviour
         SetOrder(isMostFront ? 100 : originOrder);
     }
 
+    public void SetMiddleFrontOrder()
+    {
+        SetOrder(50);
+    }
+
     public void SetOrder(int order)
     {
         int mulOrder = order * 10;

@@ -212,6 +212,9 @@ public class Character : MonoBehaviour
         // hp가 0 이하가 될 경우
         if (currentHp <= 0)
         {
+            currentHp = 0;
+            UpdateHPUI();
+
             // 죽음 이벤트 실행
             Die();
         }
