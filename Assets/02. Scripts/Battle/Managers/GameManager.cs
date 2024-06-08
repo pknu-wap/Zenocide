@@ -145,9 +145,12 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator GameOver()
     {
+        // 슬로우 모션 연출
         Time.timeScale = 0.5f;
 
         yield return new WaitForSecondsRealtime(3f);
+
+        Time.timeScale = 1f;
 
         gameOverPanel.SetActive(true);
     }
