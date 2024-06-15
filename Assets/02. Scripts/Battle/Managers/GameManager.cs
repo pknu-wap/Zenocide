@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour
         rewardPanel = GameObject.Find("Reward Panel");
         rewardCards = rewardPanel.GetComponentsInChildren<RewardCard>();
         // 알림 패널 할당
-        notificationPanel = GameObject.Find("Notification Panel").GetComponent<NotificationPanel>();
+        notificationPanel = GameObject.Find("Battle Notification Panel").GetComponent<NotificationPanel>();
 
         // Enemy 프리팹들을 미리 등록해둔다.
         enemies = enemiesParent.GetComponentsInChildren<Enemy>();

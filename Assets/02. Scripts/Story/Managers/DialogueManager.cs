@@ -73,6 +73,9 @@ public class DialogueManager : MonoBehaviour
     // 대기 커서
     public GameObject waitCursor;
 
+    [Header("알림창 오브젝트")]
+    public StoryNotification notification;
+
     [Header("진행 가능한 이벤트 데이터")]
     public List<EventData> processableEventList = new List<EventData>();
     public EventDataList startEventList;
@@ -119,6 +122,7 @@ public class DialogueManager : MonoBehaviour
     {
         storyBackgroundObject = GameObject.Find("Story BG").GetComponent<Image>();
         battleBackgroundObject = GameObject.Find("Battle BG").GetComponent<Image>();
+        notification = GameObject.Find("Story Notification Panel").GetComponent<StoryNotification>();
     }
 
     // 시작 이벤트 리스트를 전체 이벤트 리스트에 가져온다.
@@ -238,6 +242,8 @@ public class DialogueManager : MonoBehaviour
             {
                 string equipItem = dataCSV[i]["Equip Item"].ToString();
                 Items.Instance.AddItem(equipItem);
+
+                notification.ShowGetItemMessage(equipItem);
             }
 
             // 획득 카드가 존재 한다면 카드 지급
@@ -245,6 +251,8 @@ public class DialogueManager : MonoBehaviour
             {
                 string equipCard = dataCSV[i]["Equip Card"].ToString();
                 CardManager.Instance.AddCardToDeck(equipCard);
+
+                notification.ShowGetCardMessage(equipCard);
             }
 
             // 전투가 있다면 시작한다.
@@ -405,9 +413,12 @@ public class DialogueManager : MonoBehaviour
         // 다시 기존 입력을 받기 시작한다.
         dialogButton.SetActive(true);
         // 사용한 아이템을 제거한다.
-        if (csvData["Require Item" + (SelectManager.Instance.result + 1)].ToString() != "")
+        string requiredItem = csvData["Require Item" + (SelectManager.Instance.result + 1)].ToString();
+        if (requiredItem is not emptyString)
         {
-            Items.Instance.RemoveItem(csvData["Require Item" + (SelectManager.Instance.result + 1)].ToString());
+            Items.Instance.RemoveItem(requiredItem);
+
+            notification.ShowRemoveItemMessage(requiredItem);
         }
     }
 
