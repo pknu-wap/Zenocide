@@ -21,6 +21,18 @@ public class Items : MonoBehaviour
             slot.text = "";
         }
         UpdateToSlot();
+
+        #if UNITY_EDITOR
+            TestItem();
+        #endif
+    }
+
+    void TestItem()
+    {
+        items.Add("관찰력", 1);
+        items.Add("빵", 1);
+
+        UpdateToSlot();
     }
 
     public void AddItem(string itemName)
