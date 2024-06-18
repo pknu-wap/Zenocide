@@ -413,7 +413,7 @@ public class DialogueManager : MonoBehaviour
         // 다시 기존 입력을 받기 시작한다.
         dialogButton.SetActive(true);
         // 사용한 아이템을 제거한다.
-        string requiredItem = csvData["Require Item" + (SelectManager.Instance.result + 1)].ToString();
+        string requiredItem = csvData["Remove Item" + (SelectManager.Instance.result + 1)].ToString();
         if (requiredItem is not emptyString)
         {
             Items.Instance.RemoveItem(requiredItem);
