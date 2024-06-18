@@ -48,7 +48,8 @@ public class DialogueManager : MonoBehaviour
         {"소피아", 0},
         {"좀비", 1},
         {"에단",2},
-        {"???",3}
+        {"???",3},
+        {"???아이",4},
     };
     public Sprite[] illustImages;
 
