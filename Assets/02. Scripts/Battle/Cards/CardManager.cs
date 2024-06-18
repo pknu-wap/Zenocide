@@ -131,6 +131,12 @@ public class CardManager : MonoBehaviour
     // 카드를 덱에 추가한다. (string)
     public void AddCardToDeck(string cardName)
     {
+        if (cardDict.ContainsKey(cardName) == false)
+        {
+            Debug.LogError("해당하는 카드가 없습니다. 이름을 확인해주세요.");
+            return;
+        }
+
         deck.Add(cardDict[cardName]);
         UpdateDeckCount();
     }

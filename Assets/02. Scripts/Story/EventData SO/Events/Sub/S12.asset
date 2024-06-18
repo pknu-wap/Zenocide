@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41e3f233dbcc0434fbc8a44a7763d9bd, type: 3}
+  m_Name: S12
+  m_EditorClassIdentifier: 
+  eventID: 1
+  startIndex: 124
+  endIndex: 126
+  relationEvent:
+  - {fileID: 11400000, guid: bae822e21e04e8a4f993abf9d3bcc681, type: 2}
+  - {fileID: 11400000, guid: aa4225c0cbc29a448a19e983be72e16a, type: 2}
+  nextEvent: {fileID: 0}
+  addEvent: []
