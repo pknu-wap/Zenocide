@@ -474,10 +474,18 @@ public class CardManager : MonoBehaviour
     }
 
     #region MyCard
+    public bool IsCardSelected()
+    {
+        return selectCard != null;
+    }
+
+    public void SelectCard(Card card)
+    {
+        selectCard = card;
+    }
 
     public void CardMouseEnter(Card card)
     {
-        selectCard = card;
         EnlargeCard(true, card);
     }
 
