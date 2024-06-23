@@ -88,7 +88,7 @@ public class Card : MonoBehaviour
     // 마우스를 카드 위에 올릴 떄 실행된다.
     void OnMouseEnter()
     {
-        if (BattleInfo.Instance.isGameOver || isDiscarded)
+        if (BattleInfo.Instance.isGameOver || isDiscarded || CardManager.Instance.IsCardSelected())
         {
             return;
         }
@@ -102,12 +102,7 @@ public class Card : MonoBehaviour
     // 마우스가 카드를 벗어날 떄 실행된다.
     void OnMouseExit()
     {
-        if (BattleInfo.Instance.isGameOver || isDiscarded)
-        {
-            return;
-        }
-
-        if(isDragging == true)
+        if (BattleInfo.Instance.isGameOver || isDiscarded || isDragging == true)
         {
             return;
         }
@@ -120,7 +115,7 @@ public class Card : MonoBehaviour
     // 드래그가 시작될 때 호출된다.
     public void OnMouseDown()
     {
-        if (BattleInfo.Instance.isGameOver || isDiscarded)
+        if (BattleInfo.Instance.isGameOver || isDiscarded || CardManager.Instance.IsCardSelected())
         {
             return;
         }
@@ -128,8 +123,8 @@ public class Card : MonoBehaviour
         // 실행 중인 moveSequence가 있다면 종료한다.
         moveSequence.Kill();
 
-        // 다른 카드의 마우스 이벤트를 막는다.
-        CardArrow.Instance.ShowBlocker();
+        // 클릭된 카드를 선택한다.
+        CardManager.Instance.SelectCard(this);
 
         // 공격 카드일 경우
         if (isTargetingCard)
@@ -194,11 +189,12 @@ public class Card : MonoBehaviour
             moveSequence.Kill();
         }
 
-        // 다른 카드가 마우스 이벤트를 받게 한다.
-        CardArrow.Instance.HideBlocker();
-
         // 드래그가 끝남을 표시
         isDragging = false;
+
+        // 카드를 해제한다.
+        CardManager.Instance.SelectCard(null);
+
         // 카드를 사용한다.
         StartCoroutine(UseCard());
     }
@@ -383,8 +379,8 @@ public class Card : MonoBehaviour
             CardArrow.Instance.HideArrow();
         }
 
-        // 다른 카드가 마우스 이벤트를 받게 한다.
-        CardArrow.Instance.HideBlocker();
+        // 선택된 카드를 비운다.
+        CardManager.Instance.SelectCard(null);
 
         // 드래그가 끝남을 표시
         isDragging = false;
