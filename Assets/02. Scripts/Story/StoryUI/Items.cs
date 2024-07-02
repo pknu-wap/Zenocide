@@ -7,7 +7,6 @@ public class Items : MonoBehaviour
     public static Items Instance { get; private set; }
     public Transform slotsParent;
     public List<TMP_Text> slots = new List<TMP_Text>();
-    // public static List<string> items = new List<string>(); 
     // items를 아이템과 그 수량을 관리할 Dictionary로 제작
     public Dictionary<string, int> items = new Dictionary<string, int>(); 
 
@@ -18,7 +17,8 @@ public class Items : MonoBehaviour
         foreach (TMP_Text slot in slotsParent.GetComponentsInChildren<TMP_Text>())
         {
             slots.Add(slot);
-            slot.text = "";
+            // 게임 시작 시 모든 슬롯을 비활성화
+            slot.gameObject.SetActive(false);
         }
         UpdateToSlot();
 
@@ -70,10 +70,10 @@ public class Items : MonoBehaviour
 
     private void UpdateToSlot()
     {
-        // 모든 슬롯을 초기화
+        // 모든 슬롯 초기화 및 비활성화
         foreach (TMP_Text slot in slots)
         {
-            slot.text = "";
+            slot.gameObject.SetActive(false);
         }
 
         int i = 0;
@@ -83,6 +83,7 @@ public class Items : MonoBehaviour
             if (i >= slots.Count) break;
 
             slots[i].text = item.Value > 1 ? $"{item.Key} x {item.Value}" : item.Key;
+            slots[i].gameObject.SetActive(true); // 해당 슬롯 활성화
             i++;
         }
     }

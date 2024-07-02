@@ -27049,6 +27049,7 @@ MonoBehaviour:
   arrow: {fileID: 6675103717197680705, guid: 1970f8f0302e7354d82bbb56f08591ce, type: 3}
   startPosition: {x: 0, y: 0, z: 0}
   middlePosition: {fileID: 1394622558}
+  mouseEventBlocker: {fileID: 0}
 --- !u!1001 &2041160278
 PrefabInstance:
   m_ObjectHideFlags: 0
