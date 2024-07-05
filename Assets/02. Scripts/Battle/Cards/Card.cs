@@ -4,7 +4,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Card : MonoBehaviour
+public class Card : Poolable
 {
     #region 변수
     [Header("카드 정보")]

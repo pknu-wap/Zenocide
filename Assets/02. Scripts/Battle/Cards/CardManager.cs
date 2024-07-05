@@ -197,7 +197,8 @@ public class CardManager : MonoBehaviour
         // drawBuffer에 개수만큼 등록한다. (데이터적으로, 한 번에 drawBuffer에 추가된다.)
         for (int i = 0; i < drawCount; ++i)
         {
-            GameObject cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI, handGroup);
+            GameObject cardObject = ObjectPoolManager.Instance.GetGo("Card");
+            cardObject.transform.position = cardSpawnPoint.position;
             Card card = cardObject.GetComponent<Card>();
 
             // DrawCard() 호출 전에 덱이 비었는지 확인
@@ -336,8 +337,8 @@ public class CardManager : MonoBehaviour
 
         card.transform.DOKill();
 
-        // 추후 풀링 예정
-        DestroyImmediate(card.gameObject);
+        // 카드 자원을 풀에 반환
+        card.ReleaseObject();
     }
 
     public void ClearSelectCard()
@@ -450,8 +451,8 @@ public class CardManager : MonoBehaviour
             // sequence가 끝나면 오브젝트 파괴
             dump.Add(card.cardData);
             UpdateDumpCount();
-            // 추후 오브젝트 풀링 예정
-            DestroyImmediate(card.gameObject);
+            // 카드 자원을 풀에 반환
+            card.ReleaseObject();
             // 카드의 클릭 허용
             //card.EnableCollider();
             //hand[i].isDiscarded = false;
