@@ -71,18 +71,18 @@ public class CardManager : MonoBehaviour
 
         #region CreateDict
         cardDict = new Dictionary<string, CardData>();
-        foreach (CardData card in cardList.items)
+        for(int i = 0; i < cardList.items.Length; i++)
         {
-            cardDict.Add(card.name, card);
+            cardDict.Add(cardList.items[i].name, cardList.items[i]);
         }
         #endregion
 
         #region InitDeck
         deck = new List<CardData>(listSize);
         // 기본 카드들을 deck에 추가
-        foreach (CardData card in defaultDeck.items)
+        for(int i = 0; i < defaultDeck.items.Length; i++)
         {
-            AddCardToDeck(card.name);
+            AddCardToDeck(defaultDeck.items[i].name);
         }
         #endregion
 
@@ -152,13 +152,13 @@ public class CardManager : MonoBehaviour
     public void RemoveCardFromDeck(string cardName)
     {
         CardData target = null;
-        foreach (CardData card in deck)
+        for(int i = 0;  i < deck.Count; i++)
         {
             // 일치하는 이름 중 첫번째 카드를 가져온다.
             // 중복 카드가 있어도 하나만 선택
-            if (card.name == cardName)
+            if (deck[i].name == cardName)
             {
-                target = card;
+                target = deck[i];
                 break;
             }
         }

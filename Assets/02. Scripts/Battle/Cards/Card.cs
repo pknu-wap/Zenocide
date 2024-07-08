@@ -3,6 +3,7 @@ using TMPro;
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using static UnityEngine.ParticleSystem;
 
 public class Card : Poolable
 {
@@ -75,11 +76,11 @@ public class Card : Poolable
     // -> isPlaying으로 방지
     private void OnDestroy()
     {
-        foreach(ParticleSystem particle in effectObject)
+        for(int i = 0; i < effectObject.Length; i++)
         {
-            if(particle != null && !isPlaying)
+            if (effectObject[i] != null && !isPlaying)
             {
-                Destroy(particle.gameObject);
+                Destroy(effectObject[i].gameObject);
             }
         }
     }

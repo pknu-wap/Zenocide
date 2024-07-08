@@ -23,9 +23,9 @@ public class EnemyInfo : MonoBehaviour
     {
         enemyList = new Dictionary<string, EnemyData>();
 
-        foreach (EnemyData data in enemies)
+        for(int i = 0; i <  enemies.Length; i++)
         {
-            enemyList.Add(data.enemyId, data);
+                enemyList.Add(enemies[i].enemyId, enemies[i]);
         }
     }
 
