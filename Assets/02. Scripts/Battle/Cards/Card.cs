@@ -24,7 +24,7 @@ public class Card : Poolable
     [SerializeField] bool isDragging = false;
     [SerializeField] bool isTargetingCard = false;
     // 카드가 버려졌는가?
-    public bool isDiscarded = false;
+    public bool isDiscarded;
     public PRS originPRS;
 
     [Header("런타임 변수")]
@@ -55,6 +55,8 @@ public class Card : Poolable
         cardCollider = GetComponent<Collider2D>();
 
         isTargetingCard = CardInfo.Instance.IsTargetingCard(cardData.skills);
+        // pool에서 꺼냈을 때 초기화
+        isDiscarded = false;
 
         // CardData 안의 각 skill들의 이펙트 생성
         for(int i = 0; i < item.skills.Length; i++)
