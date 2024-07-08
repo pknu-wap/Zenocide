@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] CardList rewardCardList;
     [SerializeField] StatusHP storyHP;
     [SerializeField] GameObject gameOverPanel;
+    [SerializeField] int enemyLeft;
+    [SerializeField] int enemyRight;
 
     [Header("블로커")]
     [SerializeField] private GameObject storyScene;
@@ -103,6 +105,9 @@ public class GameManager : MonoBehaviour
         // 적 생성 및 정보 갱신, 추후 분리 예정
         EnrollEnemies(enemyNames);
 
+        // 적 정렬
+        AlignEnemies(enemyNames);
+
         // 플레이어 초기화
         Player.Instance.ResetState();
 
@@ -176,6 +181,46 @@ public class GameManager : MonoBehaviour
             EnemyData enemyData = EnemyInfo.Instance.GetEnemyData(enemyNames[i]);
             enemies[i].EnrollEnemy(enemyData);
         }
+    }
+
+    public void AlignEnemies(string[] enemyNames)
+    {
+        int enemyCount = 0;
+        int interval;
+
+        for (int i = 0; i < enemyNames.Length; i++)
+        {
+            if (enemyNames[i] != "")
+            {
+                enemyCount++;
+            }
+        }
+
+        if(enemyCount == 4)
+        {
+            interval = (Mathf.Abs(enemyLeft) + Mathf.Abs(enemyRight)) / (enemyCount - 1);
+            for (int i = 0; i < enemyCount; i++)
+            {
+                enemies[i].transform.position = new Vector3(enemyLeft + i * interval, 0, 0);
+            }
+        }
+        else
+        {
+            interval = (Mathf.Abs(enemyLeft) + Mathf.Abs(enemyRight)) / (2 * enemyCount);
+            for (int i = 0; i < enemyCount; i++)
+            {
+                if(i == 0)
+                {
+                    enemies[i].transform.position = new Vector3(enemyLeft + interval, 0, 0);
+                }
+                else
+                {
+                    enemies[i].transform.position = new Vector3(enemyLeft + (2 * i + 1)  * interval, 0, 0);
+                }
+            }
+        }
+        Debug.Log(enemyCount);
+        Debug.Log(interval);
     }
 
     #region 보상 지급
