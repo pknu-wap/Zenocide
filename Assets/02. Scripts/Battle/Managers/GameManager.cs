@@ -219,8 +219,6 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
-        Debug.Log(enemyCount);
-        Debug.Log(interval);
     }
 
     #region 보상 지급

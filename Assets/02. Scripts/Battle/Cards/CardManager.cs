@@ -194,6 +194,9 @@ public class CardManager : MonoBehaviour
             drawCount = 0;
         }
 
+        int resetCount = drawCount - deck.Count;
+        int dumpCount = 0;
+
         // drawBuffer에 개수만큼 등록한다. (데이터적으로, 한 번에 drawBuffer에 추가된다.)
         for (int i = 0; i < drawCount; ++i)
         {
@@ -204,7 +207,7 @@ public class CardManager : MonoBehaviour
             // DrawCard() 호출 전에 덱이 비었는지 확인
             if (deck.Count == 0)
             {
-                StartCoroutine(ResetDeckAnimationCo(dump.Count));
+                dumpCount = dump.Count;
                 MergeDumpToDeck();
             }
 
@@ -217,6 +220,11 @@ public class CardManager : MonoBehaviour
         // 애니메이션을 순차적으로 실행한다.
         for(int i = 0; i < drawCount; ++i)
         {
+            if(i == resetCount)
+            {
+                Debug.Log(resetCount);
+                yield return StartCoroutine(ResetDeckAnimationCo(dumpCount));
+            }
 
             // 드로우 버퍼의 첫 장을 골라
             Card card = drawBuffer[0];
@@ -380,6 +388,7 @@ public class CardManager : MonoBehaviour
 
     IEnumerator ResetDeckAnimationCo(int dumpCount)
     {
+        Debug.Log("hi" + dumpCount);
         // 카드 뒷면 오브젝트 활성화
         for (int i = 0; i < dumpCount; i++)
         {
