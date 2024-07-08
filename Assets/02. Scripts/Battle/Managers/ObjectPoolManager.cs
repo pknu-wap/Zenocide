@@ -5,6 +5,7 @@ using UnityEngine.Pool;
 
 public class ObjectPoolManager : MonoBehaviour
 {
+    [SerializeField] Transform poolGroup;
     [System.Serializable]
     private class ObjectInfo
     {
@@ -15,7 +16,6 @@ public class ObjectPoolManager : MonoBehaviour
         // 몇개를 미리 생성 해놓을건지
         public int count;
     }
-
 
     public static ObjectPoolManager Instance;
 
@@ -78,7 +78,7 @@ public class ObjectPoolManager : MonoBehaviour
     // 생성
     private GameObject CreatePooledItem()
     {
-        GameObject poolGo = Instantiate(goDic[objectName]);
+        GameObject poolGo = Instantiate(goDic[objectName], poolGroup);
         poolGo.GetComponent<Poolable>().Pool = objectPoolDic[objectName];
         return poolGo;
     }
