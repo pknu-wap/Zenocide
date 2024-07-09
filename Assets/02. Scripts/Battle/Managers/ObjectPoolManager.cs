@@ -5,7 +5,6 @@ using UnityEngine.Pool;
 
 public class ObjectPoolManager : MonoBehaviour
 {
-    [SerializeField] Transform poolGroup;
     [System.Serializable]
     private class ObjectInfo
     {
@@ -15,7 +14,11 @@ public class ObjectPoolManager : MonoBehaviour
         public GameObject perfab;
         // 몇개를 미리 생성 해놓을건지
         public int count;
+        // 풀 오브젝트
+        public Transform group;
     }
+
+    Transform currentGroup;
 
     public static ObjectPoolManager Instance;
 
@@ -51,12 +54,14 @@ public class ObjectPoolManager : MonoBehaviour
 
         for (int idx = 0; idx < objectInfos.Length; idx++)
         {
+            currentGroup = null;
+
             IObjectPool<GameObject> pool = new ObjectPool<GameObject>(CreatePooledItem, OnTakeFromPool, OnReturnedToPool,
             OnDestroyPoolObject, true, objectInfos[idx].count, objectInfos[idx].count);
 
+            // 이미 등록된 오브젝트 처리
             if (goDic.ContainsKey(objectInfos[idx].objectName))
             {
-                Debug.LogFormat("{0} 이미 등록된 오브젝트입니다.", objectInfos[idx].objectName);
                 return;
             }
 
@@ -67,6 +72,7 @@ public class ObjectPoolManager : MonoBehaviour
             for (int i = 0; i < objectInfos[idx].count; i++)
             {
                 objectName = objectInfos[idx].objectName;
+                currentGroup = objectInfos[idx].group;
                 Poolable poolAbleGo = CreatePooledItem().GetComponent<Poolable>();
                 poolAbleGo.Pool.Release(poolAbleGo.gameObject);
             }
@@ -78,7 +84,7 @@ public class ObjectPoolManager : MonoBehaviour
     // 생성
     private GameObject CreatePooledItem()
     {
-        GameObject poolGo = Instantiate(goDic[objectName], poolGroup);
+        GameObject poolGo = Instantiate(goDic[objectName], currentGroup);
         poolGo.GetComponent<Poolable>().Pool = objectPoolDic[objectName];
         return poolGo;
     }
