@@ -6362,6 +6362,10 @@ MonoBehaviour:
     perfab: {fileID: 506362370436929090, guid: f5f89aef295c6f942ba47b056382eaa2, type: 3}
     count: 100
     group: {fileID: 552572905}
+  - objectName: CardBack
+    perfab: {fileID: 1718778536131844245, guid: 4ed7848acc13fc74dae6e8f35b07a235, type: 3}
+    count: 100
+    group: {fileID: 1453823496}
 --- !u!1 &510434605
 GameObject:
   m_ObjectHideFlags: 0
@@ -9594,8 +9598,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardList: {fileID: 11400000, guid: cc7407feaf5c0954196ac24a8c2d1af4, type: 2}
   defaultDeck: {fileID: 11400000, guid: 1aed5b90fdc6bb745b3516e62d716ef0, type: 2}
-  cardPrefab: {fileID: 506362370436929090, guid: f5f89aef295c6f942ba47b056382eaa2, type: 3}
-  cardBackPrefab: {fileID: 227734258949264060, guid: 6024536deded88249a005d18d341dcb1, type: 3}
   drawBuffer: []
   hand: []
   cardDumpPoint: {fileID: 0}

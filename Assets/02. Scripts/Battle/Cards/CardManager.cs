@@ -16,10 +16,6 @@ public class CardManager : MonoBehaviour
     [SerializeField] CardList defaultDeck;
     Dictionary<string, CardData> cardDict;
 
-    [Header("카드 프리팹")]
-    [SerializeField] GameObject cardPrefab;
-    [SerializeField] GameObject cardBackPrefab;
-
     [Header("드로우 버퍼")]
     // 덱에서 패로 이동하기 전, 드로우 될 카드들이 모여 있는 곳
     public List<Card> drawBuffer;
@@ -40,7 +36,6 @@ public class CardManager : MonoBehaviour
     [Header("덱, 묘지")]
     public List<CardData> deck;
     public List<CardData> dump;
-    private List<GameObject> cardBackObjectList;
     private TMP_Text deckCountTMP;
     private TMP_Text dumpCountTMP;
     private Transform cardBackGroup;
@@ -83,17 +78,6 @@ public class CardManager : MonoBehaviour
         for(int i = 0; i < defaultDeck.items.Length; i++)
         {
             AddCardToDeck(defaultDeck.items[i].name);
-        }
-        #endregion
-
-        #region ResetDeckInitiation
-        cardBackObjectList = new List<GameObject>(listSize);
-
-        // 카드 뒷면 오브젝트 생성해서 리스트에 추가하고 enable 처리
-        for (int i = 0; i < listSize; i++)
-        {
-            cardBackObjectList.Add(Instantiate(cardBackPrefab, cardDumpPoint.position, Utils.QI, cardBackGroup));
-            cardBackObjectList[i].SetActive(false);
         }
         #endregion
     }
@@ -222,7 +206,6 @@ public class CardManager : MonoBehaviour
         {
             if(i == resetCount)
             {
-                Debug.Log(resetCount);
                 yield return StartCoroutine(ResetDeckAnimationCo(dumpCount));
             }
 
@@ -388,35 +371,29 @@ public class CardManager : MonoBehaviour
 
     IEnumerator ResetDeckAnimationCo(int dumpCount)
     {
-        Debug.Log("hi" + dumpCount);
-        // 카드 뒷면 오브젝트 활성화
+        CardBack[] cardBack = new CardBack[dumpCount];
+
+        // 카드 뒷면 자원 가져오기
         for (int i = 0; i < dumpCount; i++)
         {
-            cardBackObjectList[i].SetActive(true);
+            cardBack[i] = ObjectPoolManager.Instance.GetGo("CardBack").GetComponent<CardBack>();
         }
 
         for (int i = 0; i < dumpCount; i++)
         {
             // 포물선 이동
-            Sequence sequence = DOTween.Sequence()
-                .Append(cardBackObjectList[i].transform.DOMoveX(cardResetPoint.position.x, resetMoveDelay).SetEase(Ease.Linear))
-                .Join(cardBackObjectList[i].transform.DOMoveY(cardResetPoint.position.y, resetMoveDelay).SetEase(Ease.OutCubic))
-                .Append(cardBackObjectList[i].transform.DOMoveX(cardSpawnPoint.position.x, resetMoveDelay).SetEase(Ease.Linear))
-                .Join(cardBackObjectList[i].transform.DOMoveY(cardSpawnPoint.position.y, resetMoveDelay).SetEase(Ease.InCubic));
-
             // 각 카드에 딜레이 주기
-            yield return new WaitForSeconds(resetDelay);
+            yield return StartCoroutine(cardBack[i].move(cardResetPoint, cardSpawnPoint, cardDumpPoint));
         }
 
         // 전체 애니메이션 종료까지 대기
         yield return new WaitForSeconds(resetMoveDelay * 2 + resetDelay * dumpCount);
 
+        // 카드 뒷면 자원 반환
         for (int i = 0; i < dumpCount; i++)
         {
-            // 카드 뒷면 오브젝트 다시 숨기기
-            cardBackObjectList[i].SetActive(false);
-            // 덱으로 옮겨놓은 오브젝트 다시 묘지로 원위치
-            cardBackObjectList[i].transform.position = cardDumpPoint.position;
+            cardBack[i].resetPosition(cardDumpPoint);
+            cardBack[i].ReleaseObject();
         }
     }
 
