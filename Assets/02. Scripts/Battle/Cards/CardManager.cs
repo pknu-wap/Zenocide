@@ -196,15 +196,16 @@ public class CardManager : MonoBehaviour
             }
 
             card.effectGroup = effectGroup;
-            card.Setup(DrawCard());
             card.transform.localScale = Vector3.zero;
+            card.Setup(DrawCard());
             drawBuffer.Add(card);
         }
 
         // 애니메이션을 순차적으로 실행한다.
         for(int i = 0; i < drawCount; ++i)
         {
-            if(i == resetCount)
+            // 덱 리셋 애니메이션 출력
+            if(i == resetCount - 1)
             {
                 yield return StartCoroutine(ResetDeckAnimationCo(dumpCount));
             }
@@ -217,10 +218,11 @@ public class CardManager : MonoBehaviour
             drawBuffer.RemoveAt(0);
             hand.Add(card);
 
+            // 덱 텍스트를 변경해준다.
+            UpdateDeckCount(-1);
+
             // Hand 카드 순서 정렬
             SetOriginOrder();
-            // 덱 텍스트를 변경해준다.
-            UpdateDeckCount();
 
             // drawDelay만큼 딜레이를 준다.
             yield return new WaitForSeconds(drawDelay);
@@ -233,7 +235,6 @@ public class CardManager : MonoBehaviour
     {
         CardData card = deck[0];
         deck.RemoveAt(0);
-        UpdateDeckCount();
         return card;
     }
 
@@ -349,6 +350,7 @@ public class CardManager : MonoBehaviour
         }
 
         MergeDumpToDeck();
+        UpdateDumpCount();
         hand.Clear();
         UpdateDeckCount();
         selectCard = null;
@@ -356,9 +358,10 @@ public class CardManager : MonoBehaviour
         ShuffleDeck();
     }
 
+    // dump의 카드들을 deck에 추가
+    // dumpCount와 deckCount는 따로 갱신해줘야 한다.
     public void MergeDumpToDeck()
     {
-        // dump의 카드들을 deck에 추가
         for (int i = 0; i < dump.Count; i++)
         {
             CardData card = dump[i];
@@ -366,7 +369,6 @@ public class CardManager : MonoBehaviour
         }
 
         dump = new List<CardData>(listSize);
-        UpdateDumpCount();
     }
 
     IEnumerator ResetDeckAnimationCo(int dumpCount)
@@ -381,9 +383,15 @@ public class CardManager : MonoBehaviour
 
         for (int i = 0; i < dumpCount; i++)
         {
+            // dumpCount 갱신
+            UpdateDumpCount(-1);
+
             // 포물선 이동
             // 각 카드에 딜레이 주기
             yield return StartCoroutine(cardBack[i].move(cardResetPoint, cardSpawnPoint, cardDumpPoint));
+
+            // deckCount 갱신
+            UpdateDeckCount(1);
         }
 
         // 전체 애니메이션 종료까지 대기
@@ -455,9 +463,19 @@ public class CardManager : MonoBehaviour
         deckCountTMP.text = (deck.Count + drawBuffer.Count).ToString();
     }
 
+    void UpdateDeckCount(int amount)
+    {
+        deckCountTMP.text = (int.Parse(deckCountTMP.text) + amount).ToString();
+    }
+
     void UpdateDumpCount()
     {
         dumpCountTMP.text = dump.Count.ToString();
+    }
+
+    void UpdateDumpCount(int amount)
+    {
+        dumpCountTMP.text = (int.Parse(dumpCountTMP.text) + amount).ToString();
     }
 
     #region MyCard
