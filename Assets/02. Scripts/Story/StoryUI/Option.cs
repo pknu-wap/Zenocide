@@ -5,15 +5,22 @@ using UnityEngine;
 public class Option : MonoBehaviour
 {
     public GameObject OptionPanel;
-    bool activeInventory = false;
+    bool activeOption = false;
     void Start()
     {
-        OptionPanel.SetActive(activeInventory);
+        OptionPanel.SetActive(activeOption);
     }
-
-    public void ToggleInventory()
+    private void Update()
     {
-        activeInventory = !activeInventory;
-        OptionPanel.SetActive(activeInventory);
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            activeOption = !activeOption;
+            OptionPanel.SetActive(activeOption);
+        }
+    }
+    public void ToggleOption()
+    {
+        activeOption = !activeOption;
+        OptionPanel.SetActive(activeOption);
     }
 }

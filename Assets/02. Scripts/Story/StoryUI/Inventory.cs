@@ -14,6 +14,14 @@ public class Inventory : MonoBehaviour
         inventoryPanel.SetActive(activeInventory);
         slots = transform.GetChild(0).GetChild(0).GetChild(0).GetComponentsInChildren<TMP_Text>().ToList();
     }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            activeInventory = !activeInventory;
+            inventoryPanel.SetActive(activeInventory);
+        }
+    }
     public void ToggleInventory()
     {
         // Pointer Enter, Exit시 false -> true, true -> false로 바꾼다

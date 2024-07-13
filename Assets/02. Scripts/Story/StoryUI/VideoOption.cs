@@ -30,7 +30,7 @@ public class VideoOption : MonoBehaviour
             }
         }
         // Dropdown에 옵션들을 추가하고 현재 해상도를 선택함
-        resolutionDropdown.AddOptions(options);
+        resolutionDropdown.AddOptions(options); 
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
         // 전체화면 설정을 Toggle에 반영
