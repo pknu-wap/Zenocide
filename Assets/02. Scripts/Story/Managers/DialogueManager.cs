@@ -148,7 +148,7 @@ public class DialogueManager : MonoBehaviour
             // 딜레이 적용
             var events = delayDictionary.Keys.ToList();
 
-            for (int i=0; i<delayDictionary.Count; i++)
+            for (int i = 0; i < delayDictionary.Count; ++i)
             {
                 // 딜레이 만큼 기다렸다면
                 if (delayDictionary[events[i]] == 0)
@@ -226,22 +226,13 @@ public class DialogueManager : MonoBehaviour
                 // nextEvent는 별 일 없다면 비워진다.
                 currentEvent = null;
 
-                // 추가할 이벤트가 있다면 리스트에 전부 추가한다.
+                // 추가할 이벤트가 있다면
                 if (loadedEvent.addEvent != null)
                 {
+                    // 딜레이 딕셔너리에 전부 추가한다.
                     for (int j = 0; j < loadedEvent.addEvent.Length; ++j)
                     {
-                        // 딜레이가 있는 이벤트는
-                        if(loadedEvent.addEvent[j].delay > 0)
-                        {
-                            // 딜레이 딕셔너리에 삽입
-                            delayDictionary.Add(loadedEvent.addEvent[j], loadedEvent.addEvent[j].delay);
-                        }
-                        else
-                        {
-                            // 아니면 바로 리스트에 삽입
-                            AddEventToList(loadedEvent.addEvent[j]);
-                        }
+                        delayDictionary.Add(loadedEvent.addEvent[j], loadedEvent.addEvent[j].delay);
                     }
                 }
 
