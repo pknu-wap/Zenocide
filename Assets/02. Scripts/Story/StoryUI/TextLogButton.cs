@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using Unity.VisualScripting;
 using UnityEngine;
 using TMPro;
@@ -8,10 +9,20 @@ public class TextLogButton : MonoBehaviour
 {
 
     public static TextLogButton Instance { get; set; }
+    public GameObject LogPannel;
+    public Image LogButtonIcon;
+    public GameObject[] LogBoxes;
+
+    [Header("버튼 Sprite 저장 변수")]
+    public Sprite[] Sprites = new Sprite[2];
+
+    [Header("최대 로그 수 저장 변수")]
+    public static int MaxLog = 30;
+    
+    [Header("현재 로그 인덱스")]
+    public int CurrentLog = 0;
 
     [Header("로그 기록 오브젝트")]
-    public GameObject LogPannel;
-    public GameObject[] LogBoxes;
     public TMP_Text NameTMP;
     public TMP_Text TextTMP;
 
@@ -30,10 +41,16 @@ public class TextLogButton : MonoBehaviour
         {
             Destroy(this);
         }
-        LogBoxes = GameObject.FindGameObjectsWithTag("Dialogue Log");
-        foreach (GameObject Log in LogBoxes)
+        LogPannel = GameObject.FindWithTag("Log Pannel");
+        LogButtonIcon = GameObject.FindWithTag("Log Button Icon").GetComponent<Image>();
+        GameObject Logs = LogPannel.transform.GetChild(0).GetChild(0).gameObject;
+        Debug.Log(Logs.transform.childCount);
+        LogBoxes = new GameObject[Logs.transform.childCount];
+        for (int i = Logs.transform.childCount - 1; i >= 0  ; i--)
         {
-            Log.SetActive(false);
+            LogBoxes[i] = Logs.transform.GetChild(i).gameObject;
+            LogBoxes[i].SetActive(false);
+            Debug.Log(LogBoxes[i].name);
         }
         LogPannel.SetActive(false);
     }
@@ -41,28 +58,26 @@ public class TextLogButton : MonoBehaviour
     public void ToggleObject()
     {
         LogPannel.SetActive(!LogPannel.activeSelf);
-
+        LogButtonIcon.sprite = LogPannel.activeSelf ? Sprites[0] : Sprites[1];
     }
 
     public void AddLog(string name, string text)
     {
-        if (Names.Count >= 10)
+        Debug.Log(name + " : " + text);
+        if (Names.Count >= MaxLog)
         {
             Names.RemoveAt(0);
             Texts.RemoveAt(0);
         }
         Names.Add(name);
         Texts.Add(text);
-        Debug.Log(name + " : " + text);
-        
-        for (int i = 0; i < Names.Count; i++)
-        {
-            LogBoxes[i].SetActive(true);
-            TextTMP = LogBoxes[i].transform.GetChild(1).GetComponent<TMP_Text>();
-            NameTMP = LogBoxes[i].transform.GetChild(2).GetComponent<TMP_Text>();
-            NameTMP.text = Names[i];
-            TextTMP.text = Texts[i];
-        }
+
+        CurrentLog = Names.Count - 1;
+        LogBoxes[CurrentLog].SetActive(true);
+        TextTMP = LogBoxes[CurrentLog].transform.GetChild(1).GetComponent<TMP_Text>();
+        NameTMP = LogBoxes[CurrentLog].transform.GetChild(2).GetComponent<TMP_Text>();
+        NameTMP.text = Names[CurrentLog];
+        TextTMP.text = Texts[CurrentLog];
     }
 
 }
