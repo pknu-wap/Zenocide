@@ -150,18 +150,16 @@ public class DialogueManager : MonoBehaviour
 
             for (int i = 0; i < delayDictionary.Count; i++)
             {
+                delayDictionary[events[i]] -= 1;
+                
                 // 딜레이 만큼 기다렸다면
-                if (delayDictionary[events[i]] <= 1)
+                if (delayDictionary[events[i]] <= 0)
                 {
                     // 리스트에 삽입
                     AddEventToList(events[i]);
 
                     // 딜레이 딕셔너리에서는 삭제
                     delayDictionary.Remove(events[i]);
-                }
-                else
-                {
-                    delayDictionary[events[i]] -= 1;
                 }
             }
 
