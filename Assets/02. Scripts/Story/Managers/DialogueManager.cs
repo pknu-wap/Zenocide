@@ -145,26 +145,6 @@ public class DialogueManager : MonoBehaviour
         // 게임이 끝나지 않았다면 무한 반복
         while (isGameCleared == false)
         {
-            // 딜레이 적용
-            var events = delayDictionary.Keys.ToList();
-
-            for (int i = 0; i < delayDictionary.Count; i++)
-            {
-                // 딜레이 만큼 기다렸다면
-                if (delayDictionary[events[i]] <= 0)
-                {
-                    // 리스트에 삽입
-                    AddEventToList(events[i]);
-
-                    // 딜레이 딕셔너리에서는 삭제
-                    delayDictionary.Remove(events[i]);
-                }
-                else
-                {
-                    delayDictionary[events[i]] -= 1;
-                }
-            }
-
             // 현재 이벤트가 없다면
             if(currentEvent == null)
             {
@@ -226,14 +206,25 @@ public class DialogueManager : MonoBehaviour
                 // nextEvent는 별 일 없다면 비워진다.
                 currentEvent = null;
 
+                // 딕셔너리에 있는 이벤트들을 처리한다.
+                ProcessDelay(loadedEvent);
                 // 추가할 이벤트가 있다면
                 if (loadedEvent.addEvent != null)
                 {
-                    // 딜레이 딕셔너리에 전부 추가한다.
                     for (int j = 0; j < loadedEvent.addEvent.Length; ++j)
                     {
-                        delayDictionary.Add(loadedEvent.addEvent[j], loadedEvent.addEvent[j].delay);
+                        if (loadedEvent.addEvent[j].delay != 0)
+                        {
+                            // 딜레이 딕셔너리에 추가한다.
+                            delayDictionary.Add(loadedEvent.addEvent[j], loadedEvent.addEvent[j].delay);
+                        }
+                        else
+                        {
+                            // 딜레이가 0이라면 바로 processableEventList에 추가
+                            AddEventToList(loadedEvent.addEvent[j]);
+                        }
                     }
+
                 }
 
                 // 바로 이어질 이벤트가 있다면 거기로 이동한다. 없으면 알아서 null이 된다.
@@ -458,6 +449,31 @@ public class DialogueManager : MonoBehaviour
     public void ClickDialogButton()
     {
         isClicked = true;
+    }
+
+    public void ProcessDelay(EventData loadedData)
+    {
+        var events = delayDictionary.Keys.ToList();
+
+        for (int i = 0; i < delayDictionary.Count; i++)
+        {
+            // 릴레이션 이벤트일 때는 딜레이 적용 안함
+            if (loadedData.eventID == EventType.Relation)
+            {
+                // 딜레이 감소
+                delayDictionary[events[i]] -= 1;
+            }
+
+            // 딜레이 만큼 기다렸다면
+            if (delayDictionary[events[i]] <= 0)
+            {
+                // 리스트에 삽입
+                AddEventToList(events[i]);
+
+                // 딜레이 딕셔너리에서는 삭제
+                delayDictionary.Remove(events[i]);
+            }
+        }
     }
 
     #region Legacy
