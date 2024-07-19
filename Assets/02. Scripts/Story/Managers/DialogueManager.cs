@@ -453,16 +453,18 @@ public class DialogueManager : MonoBehaviour
 
     public void ProcessDelay(EventData loadedData)
     {
+        // 릴레이션 이벤트일 때는 딜레이 적용 안함
+        if (loadedData.eventID == EventType.Relation)
+        {
+            return;
+        }
+
         var events = delayDictionary.Keys.ToList();
 
         for (int i = 0; i < delayDictionary.Count; i++)
         {
-            // 릴레이션 이벤트일 때는 딜레이 적용 안함
-            if (loadedData.eventID == EventType.Relation)
-            {
-                // 딜레이 감소
-                delayDictionary[events[i]] -= 1;
-            }
+            // 딜레이 감소
+            delayDictionary[events[i]] -= 1;
 
             // 딜레이 만큼 기다렸다면
             if (delayDictionary[events[i]] <= 0)
