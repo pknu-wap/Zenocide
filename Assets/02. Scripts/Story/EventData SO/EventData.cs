@@ -13,6 +13,9 @@ public class EventData: ScriptableObject
     [Header("Event 종류 식별 ID")]
     public EventType eventID;
 
+    [Header("Event 리스트에서 대기할 최소 딜레이")]
+    public int delay = 0;
+
     [Header("Text 데이터 인덱스")]
     public int startIndex;
     public int endIndex;
