@@ -478,6 +478,16 @@ public class CardManager : MonoBehaviour
         dumpCountTMP.text = (int.Parse(dumpCountTMP.text) + amount).ToString();
     }
 
+    // 선택한 직업의 카드를 추가한다.
+    public void GainJobCard()
+    {
+        CardList classCards = Supplier.Instance.classCardDeck[Player.Instance.job];
+        for (int j = 0; j < classCards.items.Length; ++j)
+        {
+            CardManager.Instance.AddCardToDeck(classCards.items[j]);
+        }
+    }
+
     #region MyCard
     public bool IsCardSelected()
     {

@@ -278,7 +278,14 @@ public class DialogueManager : MonoBehaviour
             if (dataCSV[i]["Equip Item"].ToString() is not emptyString)
             {
                 string equipItem = dataCSV[i]["Equip Item"].ToString();
-                Items.Instance.AddItem(equipItem);
+                if(equipItem == "직장에서 챙긴 물건들")
+                {
+                    GainJobItem();
+                }
+                else
+                {
+                    Items.Instance.AddItem(equipItem);
+                }
 
                 notification.ShowGetItemMessage(equipItem);
             }
@@ -287,7 +294,15 @@ public class DialogueManager : MonoBehaviour
             if (dataCSV[i]["Equip Card"].ToString() is not emptyString)
             {
                 string equipCard = dataCSV[i]["Equip Card"].ToString();
-                CardManager.Instance.AddCardToDeck(equipCard);
+
+                if(equipCard == "직업")
+                {
+                    CardManager.Instance.GainJobCard();
+                }
+                else
+                {
+                    CardManager.Instance.AddCardToDeck(equipCard);
+                }
 
                 notification.ShowGetCardMessage(equipCard);
             }
@@ -489,6 +504,16 @@ public class DialogueManager : MonoBehaviour
                 // 딜레이 딕셔너리에서는 삭제
                 delayDictionary.Remove(events[i]);
             }
+        }
+    }
+
+    void GainJobItem()
+    {
+        // 선택한 직업의 아이템을 추가한다.
+        string[] classItems = Supplier.Instance.classItemList[Player.Instance.job];
+        for (int j = 0; j < classItems.Length; ++j)
+        {
+            Items.Instance.AddItem(classItems[j]);
         }
     }
 
