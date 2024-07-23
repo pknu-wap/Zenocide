@@ -18,6 +18,7 @@ public class DiaryManager : MonoBehaviour
     [SerializeField] private PageScripter[] scripter;
     [SerializeField] private Transform choiceParent;
     [SerializeField] private TMP_Text[] choiceButtons;
+    [SerializeField] private GameObject skipButton;
 
     [Header("현재 다이얼로그 정보")]
     // 현재 출력 중인 텍스트 번호
@@ -28,9 +29,6 @@ public class DiaryManager : MonoBehaviour
     public int currentPageIndex = 0;
     // 선택된 단어
     [SerializeField] private string selectedWord;
-
-    [Header("보급병")]
-    public Supplier supplier;
 
     private void Awake()
     {
@@ -72,8 +70,10 @@ public class DiaryManager : MonoBehaviour
         {
             choiceButtons[i] = choiceParent.GetChild(i).GetChild(0).GetComponent<TMP_Text>();
         }
-        // 시작하면 선택지는 꺼둔다.
+        // 시작하면 선택지와
         choiceParent.gameObject.SetActive(false);
+        // 스킵 버튼을 꺼둔다.
+        skipButton.SetActive(false);
 
         // CSV를 읽어온다.
         diaryDialog = CSVReader.Read(diaryCSV);
@@ -150,20 +150,9 @@ public class DiaryManager : MonoBehaviour
     {
         selectedWord = diaryDialog[currentDialogIndex][i.ToString()].ToString();
 
-        // 선택한 직업의 카드를 추가한다.
-        CardList classCards = supplier.classCardDeck[selectedWord];
-        for(int j = 0; j < classCards.items.Length; ++j)
-        {
-            CardManager.Instance.AddCardToDeck(classCards.items[j]);
-        }
+        Player.Instance.job = selectedWord;
 
-        // 선택한 직업의 아이템을 추가한다.
-        string[] classItems = supplier.classItemList[selectedWord];
-        for (int j = 0; j < classItems.Length; ++j)
-        {
-            Items.Instance.AddItem(classItems[j]);
-        }
-
+        skipButton.SetActive(true);
         choiceParent.gameObject.SetActive(false);
         isSelected = true;
     }
