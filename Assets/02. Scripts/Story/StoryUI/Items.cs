@@ -14,11 +14,11 @@ public class Items : MonoBehaviour
 
     private void Start()
     {
-        foreach (TMP_Text slot in slotsParent.GetComponentsInChildren<TMP_Text>())
+        TMP_Text[] tSlot = slotsParent.GetComponentsInChildren<TMP_Text>();
+        for(int i = 0; i < tSlot.Length; i++)
         {
-            slots.Add(slot);
-            // 게임 시작 시 모든 슬롯을 비활성화
-            slot.gameObject.SetActive(false);
+            slots.Add(tSlot[i]);
+            tSlot[i].text = "";
         }
         UpdateToSlot();
 
@@ -70,21 +70,19 @@ public class Items : MonoBehaviour
 
     private void UpdateToSlot()
     {
-        // 모든 슬롯 초기화 및 비활성화
-        foreach (TMP_Text slot in slots)
+        // 모든 슬롯을 초기화
+        for(int i = 0; i< slots.Count; i++)
         {
-            slot.gameObject.SetActive(false);
+            slots[i].text = "";
         }
 
-        int i = 0;
+        int cnt = 0;
         // items 딕셔너리에 있는 아이템과 수량을 인벤토리 슬롯에 추가
         foreach (var item in items)
         {
-            if (i >= slots.Count) break;
-
-            slots[i].text = item.Value > 1 ? $"{item.Key} x {item.Value}" : item.Key;
-            slots[i].gameObject.SetActive(true); // 해당 슬롯 활성화
-            i++;
+            if (cnt >= slots.Count) break;
+            slots[cnt].text = item.Value > 1 ? $"{item.Key} x {item.Value}" : item.Key;
+            cnt++;
         }
     }
 }

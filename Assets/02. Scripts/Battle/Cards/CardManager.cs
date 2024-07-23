@@ -16,10 +16,6 @@ public class CardManager : MonoBehaviour
     [SerializeField] CardList defaultDeck;
     Dictionary<string, CardData> cardDict;
 
-    [Header("카드 프리팹")]
-    [SerializeField] GameObject cardPrefab;
-    [SerializeField] GameObject cardBackPrefab;
-
     [Header("드로우 버퍼")]
     // 덱에서 패로 이동하기 전, 드로우 될 카드들이 모여 있는 곳
     public List<Card> drawBuffer;
@@ -40,7 +36,6 @@ public class CardManager : MonoBehaviour
     [Header("덱, 묘지")]
     public List<CardData> deck;
     public List<CardData> dump;
-    private List<GameObject> cardBackObjectList;
     private TMP_Text deckCountTMP;
     private TMP_Text dumpCountTMP;
     private Transform cardBackGroup;
@@ -71,29 +66,18 @@ public class CardManager : MonoBehaviour
 
         #region CreateDict
         cardDict = new Dictionary<string, CardData>();
-        foreach (CardData card in cardList.items)
+        for(int i = 0; i < cardList.items.Length; i++)
         {
-            cardDict.Add(card.name, card);
+            cardDict.Add(cardList.items[i].name, cardList.items[i]);
         }
         #endregion
 
         #region InitDeck
         deck = new List<CardData>(listSize);
         // 기본 카드들을 deck에 추가
-        foreach (CardData card in defaultDeck.items)
+        for(int i = 0; i < defaultDeck.items.Length; i++)
         {
-            AddCardToDeck(card.name);
-        }
-        #endregion
-
-        #region ResetDeckInitiation
-        cardBackObjectList = new List<GameObject>(listSize);
-
-        // 카드 뒷면 오브젝트 생성해서 리스트에 추가하고 enable 처리
-        for (int i = 0; i < listSize; i++)
-        {
-            cardBackObjectList.Add(Instantiate(cardBackPrefab, cardDumpPoint.position, Utils.QI, cardBackGroup));
-            cardBackObjectList[i].SetActive(false);
+            AddCardToDeck(defaultDeck.items[i].name);
         }
         #endregion
     }
@@ -152,13 +136,13 @@ public class CardManager : MonoBehaviour
     public void RemoveCardFromDeck(string cardName)
     {
         CardData target = null;
-        foreach (CardData card in deck)
+        for(int i = 0;  i < deck.Count; i++)
         {
             // 일치하는 이름 중 첫번째 카드를 가져온다.
             // 중복 카드가 있어도 하나만 선택
-            if (card.name == cardName)
+            if (deck[i].name == cardName)
             {
-                target = card;
+                target = deck[i];
                 break;
             }
         }
@@ -194,28 +178,37 @@ public class CardManager : MonoBehaviour
             drawCount = 0;
         }
 
+        int resetCount = drawCount - deck.Count;
+        int dumpCount = 0;
+
         // drawBuffer에 개수만큼 등록한다. (데이터적으로, 한 번에 drawBuffer에 추가된다.)
         for (int i = 0; i < drawCount; ++i)
         {
-            GameObject cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI, handGroup);
+            GameObject cardObject = ObjectPoolManager.Instance.GetGo("Card");
+            cardObject.transform.position = cardSpawnPoint.position;
             Card card = cardObject.GetComponent<Card>();
 
             // DrawCard() 호출 전에 덱이 비었는지 확인
             if (deck.Count == 0)
             {
-                StartCoroutine(ResetDeckAnimationCo(dump.Count));
+                dumpCount = dump.Count;
                 MergeDumpToDeck();
             }
 
             card.effectGroup = effectGroup;
-            card.Setup(DrawCard());
             card.transform.localScale = Vector3.zero;
+            card.Setup(DrawCard());
             drawBuffer.Add(card);
         }
 
         // 애니메이션을 순차적으로 실행한다.
         for(int i = 0; i < drawCount; ++i)
         {
+            // 덱 리셋 애니메이션 출력
+            if(i == resetCount - 1)
+            {
+                yield return StartCoroutine(ResetDeckAnimationCo(dumpCount));
+            }
 
             // 드로우 버퍼의 첫 장을 골라
             Card card = drawBuffer[0];
@@ -225,10 +218,11 @@ public class CardManager : MonoBehaviour
             drawBuffer.RemoveAt(0);
             hand.Add(card);
 
+            // 덱 텍스트를 변경해준다.
+            UpdateDeckCount(-1);
+
             // Hand 카드 순서 정렬
             SetOriginOrder();
-            // 덱 텍스트를 변경해준다.
-            UpdateDeckCount();
 
             // drawDelay만큼 딜레이를 준다.
             yield return new WaitForSeconds(drawDelay);
@@ -241,7 +235,6 @@ public class CardManager : MonoBehaviour
     {
         CardData card = deck[0];
         deck.RemoveAt(0);
-        UpdateDeckCount();
         return card;
     }
 
@@ -336,8 +329,8 @@ public class CardManager : MonoBehaviour
 
         card.transform.DOKill();
 
-        // 추후 풀링 예정
-        DestroyImmediate(card.gameObject);
+        // 카드 자원을 풀에 반환
+        card.ReleaseObject();
     }
 
     public void ClearSelectCard()
@@ -357,6 +350,7 @@ public class CardManager : MonoBehaviour
         }
 
         MergeDumpToDeck();
+        UpdateDumpCount();
         hand.Clear();
         UpdateDeckCount();
         selectCard = null;
@@ -364,9 +358,10 @@ public class CardManager : MonoBehaviour
         ShuffleDeck();
     }
 
+    // dump의 카드들을 deck에 추가
+    // dumpCount와 deckCount는 따로 갱신해줘야 한다.
     public void MergeDumpToDeck()
     {
-        // dump의 카드들을 deck에 추가
         for (int i = 0; i < dump.Count; i++)
         {
             CardData card = dump[i];
@@ -374,39 +369,39 @@ public class CardManager : MonoBehaviour
         }
 
         dump = new List<CardData>(listSize);
-        UpdateDumpCount();
     }
 
     IEnumerator ResetDeckAnimationCo(int dumpCount)
     {
-        // 카드 뒷면 오브젝트 활성화
+        CardBack[] cardBack = new CardBack[dumpCount];
+
+        // 카드 뒷면 자원 가져오기
         for (int i = 0; i < dumpCount; i++)
         {
-            cardBackObjectList[i].SetActive(true);
+            cardBack[i] = ObjectPoolManager.Instance.GetGo("CardBack").GetComponent<CardBack>();
         }
 
         for (int i = 0; i < dumpCount; i++)
         {
-            // 포물선 이동
-            Sequence sequence = DOTween.Sequence()
-                .Append(cardBackObjectList[i].transform.DOMoveX(cardResetPoint.position.x, resetMoveDelay).SetEase(Ease.Linear))
-                .Join(cardBackObjectList[i].transform.DOMoveY(cardResetPoint.position.y, resetMoveDelay).SetEase(Ease.OutCubic))
-                .Append(cardBackObjectList[i].transform.DOMoveX(cardSpawnPoint.position.x, resetMoveDelay).SetEase(Ease.Linear))
-                .Join(cardBackObjectList[i].transform.DOMoveY(cardSpawnPoint.position.y, resetMoveDelay).SetEase(Ease.InCubic));
+            // dumpCount 갱신
+            UpdateDumpCount(-1);
 
+            // 포물선 이동
             // 각 카드에 딜레이 주기
-            yield return new WaitForSeconds(resetDelay);
+            yield return StartCoroutine(cardBack[i].move(cardResetPoint, cardSpawnPoint, cardDumpPoint));
+
+            // deckCount 갱신
+            UpdateDeckCount(1);
         }
 
         // 전체 애니메이션 종료까지 대기
         yield return new WaitForSeconds(resetMoveDelay * 2 + resetDelay * dumpCount);
 
+        // 카드 뒷면 자원 반환
         for (int i = 0; i < dumpCount; i++)
         {
-            // 카드 뒷면 오브젝트 다시 숨기기
-            cardBackObjectList[i].SetActive(false);
-            // 덱으로 옮겨놓은 오브젝트 다시 묘지로 원위치
-            cardBackObjectList[i].transform.position = cardDumpPoint.position;
+            cardBack[i].resetPosition(cardDumpPoint);
+            cardBack[i].ReleaseObject();
         }
     }
 
@@ -450,8 +445,8 @@ public class CardManager : MonoBehaviour
             // sequence가 끝나면 오브젝트 파괴
             dump.Add(card.cardData);
             UpdateDumpCount();
-            // 추후 오브젝트 풀링 예정
-            DestroyImmediate(card.gameObject);
+            // 카드 자원을 풀에 반환
+            card.ReleaseObject();
             // 카드의 클릭 허용
             //card.EnableCollider();
             //hand[i].isDiscarded = false;
@@ -468,9 +463,19 @@ public class CardManager : MonoBehaviour
         deckCountTMP.text = (deck.Count + drawBuffer.Count).ToString();
     }
 
+    void UpdateDeckCount(int amount)
+    {
+        deckCountTMP.text = (int.Parse(deckCountTMP.text) + amount).ToString();
+    }
+
     void UpdateDumpCount()
     {
         dumpCountTMP.text = dump.Count.ToString();
+    }
+
+    void UpdateDumpCount(int amount)
+    {
+        dumpCountTMP.text = (int.Parse(dumpCountTMP.text) + amount).ToString();
     }
 
     #region MyCard

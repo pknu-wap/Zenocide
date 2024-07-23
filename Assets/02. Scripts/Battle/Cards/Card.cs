@@ -3,8 +3,9 @@ using TMPro;
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using static UnityEngine.ParticleSystem;
 
-public class Card : MonoBehaviour
+public class Card : Poolable
 {
     #region 변수
     [Header("카드 정보")]
@@ -23,7 +24,7 @@ public class Card : MonoBehaviour
     [SerializeField] bool isDragging = false;
     [SerializeField] bool isTargetingCard = false;
     // 카드가 버려졌는가?
-    public bool isDiscarded = false;
+    public bool isDiscarded;
     public PRS originPRS;
 
     [Header("런타임 변수")]
@@ -54,6 +55,8 @@ public class Card : MonoBehaviour
         cardCollider = GetComponent<Collider2D>();
 
         isTargetingCard = CardInfo.Instance.IsTargetingCard(cardData.skills);
+        // pool에서 꺼냈을 때 초기화
+        isDiscarded = false;
 
         // CardData 안의 각 skill들의 이펙트 생성
         for(int i = 0; i < item.skills.Length; i++)
@@ -75,11 +78,11 @@ public class Card : MonoBehaviour
     // -> isPlaying으로 방지
     private void OnDestroy()
     {
-        foreach(ParticleSystem particle in effectObject)
+        for(int i = 0; i < effectObject.Length; i++)
         {
-            if(particle != null && !isPlaying)
+            if (effectObject[i] != null && !isPlaying)
             {
-                Destroy(particle.gameObject);
+                Destroy(effectObject[i].gameObject);
             }
         }
     }

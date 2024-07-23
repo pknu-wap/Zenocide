@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using System.Linq;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -47,9 +48,15 @@ public class DialogueManager : MonoBehaviour
     {
         {"소피아", 0},
         {"좀비", 1},
-        {"에단",2},
-        {"???",3},
-        {"???아이",4},
+        {"에단", 2},
+        {"???", 3},
+        {"???아이", 4},
+        {"여자 신도", 5},
+        {"남자 신도", 6},
+        {"옷 입은 좀비", 7},
+        {"교주", 8},
+        {"흑화 교주", 9},
+        {"인카니지 경비원", 10},
     };
     public Sprite[] illustImages;
 
@@ -80,6 +87,9 @@ public class DialogueManager : MonoBehaviour
     [Header("진행 가능한 이벤트 데이터")]
     public List<EventData> processableEventList = new List<EventData>();
     public EventDataList startEventList;
+
+    [Header("딜레이 딕셔너리")]
+    public Dictionary<EventData, int> delayDictionary = new Dictionary<EventData, int>();
 
     [Header("캐릭터 이미지 데이터")]
     public Image[] IllustsObjects;
@@ -199,19 +209,25 @@ public class DialogueManager : MonoBehaviour
             // 이벤트의 끝이면 함수를 종료한다.
             if (dataCSV[i]["Name"].ToString() == "END")
             {
-                // nextEvent는 별 일 없다면 비워진다.
-                currentEvent = null;
-
-                // 추가할 이벤트가 있다면 리스트에 전부 추가한다.
-                if (loadedEvent.addEvent != null)
+                // 추가할 이벤트가 있다면
+                for (int j = 0; j < loadedEvent.addEvent.Length; ++j)
                 {
-                    for (int j = 0; j < loadedEvent.addEvent.Length; ++j)
+                    if (loadedEvent.addEvent[j].delay > 0)
                     {
+                        // 딜레이 딕셔너리에 추가한다.
+                        delayDictionary.Add(loadedEvent.addEvent[j], loadedEvent.addEvent[j].delay);
+                    }
+                    else
+                    {
+                        // 딜레이가 0이라면 바로 processableEventList에 추가
                         AddEventToList(loadedEvent.addEvent[j]);
                     }
                 }
 
-                // 바로 이어질 이벤트가 있다면 거기로 이동한다. 없으면 알아서 null이 된다.
+                // 딕셔너리에 있는 이벤트들을 처리한다.
+                ProcessDelay(loadedEvent);
+
+                // 바로 이어질 이벤트가 있다면 거기로 이동한다. 없으면 null이 된다.
                 currentEvent = loadedEvent.nextEvent;
 
                 // 현재 이벤트를 종료한다. (ProcessRandomEvent로 이동)
@@ -229,9 +245,29 @@ public class DialogueManager : MonoBehaviour
 
                 // 고른 선택지 이벤트 로드
                 int result = SelectManager.Instance.result;
+
+                // 사용한 아이템을 제거한다.
+                string requiredItem = dataCSV[i]["Remove Item" + (result + 1)].ToString();
+                if (requiredItem is not emptyString)
+                {
+                    Items.Instance.RemoveItem(requiredItem);
+
+                    notification.ShowRemoveItemMessage(requiredItem);
+                }
+
+                // 선택된 이벤트를 캐싱해둔다.
                 EventData relationEvent = loadedEvent.relationEvent[result];
 
-                // 선택지 이벤트를 넣어두고
+                // 선택된 이벤트가 null일 경우
+                if(relationEvent == null)
+                {
+                    // 기존 이벤트를 이어서 진행한다.
+                    isClicked = true;
+
+                    continue;
+                }
+
+                // 그 외엔 선택지 이벤트로 교체하고
                 currentEvent = relationEvent;
 
                 // 종료 (ProcessRandomEvent로 이동)
@@ -413,14 +449,8 @@ public class DialogueManager : MonoBehaviour
         // 선택지 띄우기 후 처리
         // 다시 기존 입력을 받기 시작한다.
         dialogButton.SetActive(true);
-        // 사용한 아이템을 제거한다.
-        string requiredItem = csvData["Remove Item" + (SelectManager.Instance.result + 1)].ToString();
-        if (requiredItem is not emptyString)
-        {
-            Items.Instance.RemoveItem(requiredItem);
 
-            notification.ShowRemoveItemMessage(requiredItem);
-        }
+        // 사용한 아이템 제거는 이 함수를 호출한 곳으로 이동했습니다.
     }
 
     // 리스트에 이벤트를 추가한다.
@@ -433,6 +463,33 @@ public class DialogueManager : MonoBehaviour
     public void ClickDialogButton()
     {
         isClicked = true;
+    }
+
+    public void ProcessDelay(EventData loadedData)
+    {
+        // 릴레이션 이벤트일 때는 딜레이 적용 안함
+        if (loadedData.eventID == EventType.Relation)
+        {
+            return;
+        }
+
+        var events = delayDictionary.Keys.ToList();
+
+        for (int i = 0; i < delayDictionary.Count; i++)
+        {
+            // 딜레이 감소
+            delayDictionary[events[i]] -= 1;
+
+            // 딜레이 만큼 기다렸다면
+            if (delayDictionary[events[i]] <= 0)
+            {
+                // 리스트에 삽입
+                AddEventToList(events[i]);
+
+                // 딜레이 딕셔너리에서는 삭제
+                delayDictionary.Remove(events[i]);
+            }
+        }
     }
 
     #region Legacy
