@@ -9,8 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdecd344babab8a439197fc983e9a9dc, type: 3}
-  m_Name: TestEventList
+  m_Script: {fileID: 11500000, guid: 41e3f233dbcc0434fbc8a44a7763d9bd, type: 3}
+  m_Name: RS38-1
   m_EditorClassIdentifier: 
-  list:
-  - {fileID: 11400000, guid: 3d450f0a190422c40a5b8efa9961cc34, type: 2}
+  eventID: 2
+  delay: 0
+  startIndex: 564
+  endIndex: 565
+  relationEvent: []
+  nextEvent: {fileID: 11400000, guid: 0c5368f9dbf290344a6c87a7c32698c3, type: 2}
+  addEvent: []
