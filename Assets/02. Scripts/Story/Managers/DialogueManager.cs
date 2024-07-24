@@ -280,7 +280,7 @@ public class DialogueManager : MonoBehaviour
                 string equipItem = dataCSV[i]["Equip Item"].ToString();
                 if(equipItem == "직장에서 챙긴 물건들")
                 {
-                    GainJobItem();
+                    Items.Instance.GainJobItem();
                 }
                 else
                 {
@@ -506,17 +506,6 @@ public class DialogueManager : MonoBehaviour
             }
         }
     }
-
-    void GainJobItem()
-    {
-        // 선택한 직업의 아이템을 추가한다.
-        string[] classItems = Supplier.Instance.classItemList[Player.Instance.job];
-        for (int j = 0; j < classItems.Length; ++j)
-        {
-            Items.Instance.AddItem(classItems[j]);
-        }
-    }
-
     #region Legacy
     // Legacy
     /*    private IEnumerator EventProcess()
