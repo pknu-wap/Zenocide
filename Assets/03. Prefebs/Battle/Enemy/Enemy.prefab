@@ -1425,7 +1425,7 @@ MonoBehaviour:
   hpText: {fileID: 0}
   shieldBar: {fileID: 0}
   damageTextPrefab: {fileID: 4272445659923317628, guid: 829249fb6ce714f4e8cf8aa21f3dcdec, type: 3}
-  buffIconContainer: {fileID: 0}
+  buffIconContainer: {fileID: 4601323887850270465}
   statusPanel: {fileID: 0}
   buffName: []
   buffDescription: []
@@ -1504,7 +1504,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3487a98c5b37fbf4982d96f6086dcd56, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7759102ec90a40c49822dde502b826d2, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
