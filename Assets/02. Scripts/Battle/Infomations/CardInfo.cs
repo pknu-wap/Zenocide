@@ -39,9 +39,9 @@ public class CardInfo : MonoBehaviour
     {
         rewardCardListDict = new Dictionary<string, CardList>();
 
-        foreach (CardList data in rewardCardListArray)
+        for(int i = 0; i < rewardCardListArray.Length; i++)
         {
-            rewardCardListDict.Add(data.listName, data);
+                rewardCardListDict.Add(rewardCardListArray[i].listName, rewardCardListArray[i]);
         }
     }
 

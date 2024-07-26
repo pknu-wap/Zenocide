@@ -7401,6 +7401,12 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 6f0618a56df686e4fbc91771df72a28f, type: 3}
   - {fileID: 21300000, guid: 40a8d58788134224188c51c5f2a1ecae, type: 3}
   - {fileID: 21300000, guid: 55f9471afc4541b4f883d1a5c94d75c8, type: 3}
+  - {fileID: 21300000, guid: f6e4bc37ed5b6c44297f0a1a876743ae, type: 3}
+  - {fileID: 21300000, guid: cdfd0df37af3f9846be4e7393485b073, type: 3}
+  - {fileID: 21300000, guid: 7d035d041d125e449aab2f92381a2fc7, type: 3}
+  - {fileID: 21300000, guid: d1ac2f7b9dfe08449a82fae1961827fa, type: 3}
+  - {fileID: 21300000, guid: d1ac2f7b9dfe08449a82fae1961827fa, type: 3}
+  - {fileID: 21300000, guid: 80c640a1ad4ec464e8816c10caea30e2, type: 3}
   backgroundImages:
   - {fileID: 21300000, guid: 5c0883faf0a40d542b3af2e9a289d348, type: 3}
   - {fileID: 21300000, guid: e820291e9ba9db04185f0f2a2fc02e02, type: 3}
@@ -7412,7 +7418,7 @@ MonoBehaviour:
   waitCursor: {fileID: 1835410653}
   notification: {fileID: 0}
   processableEventList: []
-  startEventList: {fileID: 11400000, guid: 5b01fb8575bd8ca45a5ab40935b1dd2c, type: 2}
+  startEventList: {fileID: 11400000, guid: 1a2ac0fbe99b9ec4d9e9a2d19a435e7f, type: 2}
   IllustsObjects:
   - {fileID: 1319129626}
   - {fileID: 1031547556}
@@ -9545,8 +9551,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardList: {fileID: 11400000, guid: cc7407feaf5c0954196ac24a8c2d1af4, type: 2}
   defaultDeck: {fileID: 11400000, guid: 1aed5b90fdc6bb745b3516e62d716ef0, type: 2}
-  cardPrefab: {fileID: 506362370436929090, guid: f5f89aef295c6f942ba47b056382eaa2, type: 3}
-  cardBackPrefab: {fileID: 227734258949264060, guid: 6024536deded88249a005d18d341dcb1, type: 3}
   drawBuffer: []
   hand: []
   cardDumpPoint: {fileID: 0}
@@ -10992,6 +10996,8 @@ MonoBehaviour:
   rewardCardList: {fileID: 0}
   storyHP: {fileID: 0}
   gameOverPanel: {fileID: 0}
+  enemyLeft: 0
+  enemyRight: 0
   storyScene: {fileID: 0}
   battleScene: {fileID: 0}
   tutorialScene: {fileID: 0}
@@ -14553,7 +14559,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 6f0618a56df686e4fbc91771df72a28f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -14862,6 +14868,10 @@ MonoBehaviour:
   enemies:
   - {fileID: 11400000, guid: d00a3edd6e332fd4fbee6e79382db468, type: 2}
   - {fileID: 11400000, guid: 575479e4bff6c03498f8137ba8bcf71d, type: 2}
+  - {fileID: 11400000, guid: 872371c2296c0a34ba1bba2a3d721f5a, type: 2}
+  - {fileID: 11400000, guid: 59f928363fa3cd84e9fff2ec9bcd735c, type: 2}
+  - {fileID: 11400000, guid: a5c3e835d3f525f419bbc18f341ceeff, type: 2}
+  - {fileID: 11400000, guid: 6690813b70bf5ac4db73f4ce4ec200fa, type: 2}
 --- !u!1 &1045211277
 GameObject:
   m_ObjectHideFlags: 0
@@ -17147,7 +17157,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: d1ac2f7b9dfe08449a82fae1961827fa, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -19013,7 +19023,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: cdfd0df37af3f9846be4e7393485b073, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

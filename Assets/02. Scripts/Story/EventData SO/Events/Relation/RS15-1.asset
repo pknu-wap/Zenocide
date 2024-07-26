@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: RS15-1
   m_EditorClassIdentifier: 
   eventID: 2
+  delay: 0
   startIndex: 331
   endIndex: 332
   relationEvent: []
   nextEvent: {fileID: 0}
   addEvent:
-  - {fileID: 11400000, guid: bb80ff0e0549f7f44b6aa31a55408777, type: 2}
+  - {fileID: 11400000, guid: 3f55fcc39a902be4889afb6c72750f1d, type: 2}

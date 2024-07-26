@@ -39,7 +39,7 @@ public class StatePanelOpener : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
         targetLock.SetActive(false);
 
-        mouseEventBlocker = GameObject.Find("Mouse Event Blocker");
+        // mouseEventBlocker = GameObject.Find("Mouse Event Blocker");
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -53,7 +53,7 @@ public class StatePanelOpener : MonoBehaviour, IPointerEnterHandler, IPointerExi
         //    .OnComplete(() => statePanel.SetActive(true));
 
         // 카드를 드래그 중일 땐 표시하지 않음
-        if (!mouseEventBlocker.activeSelf)
+        if (CardManager.Instance.IsCardSelected() == false)
         {
             // 강조된 캔버스의 order를 맨 앞으로 변경하고
             uiCanvas.sortingOrder = 10;
