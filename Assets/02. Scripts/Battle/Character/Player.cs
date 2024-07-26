@@ -22,6 +22,8 @@ public class Player : Character
     }
     #endregion 싱글톤
 
+    public string job;
+
     public void Start()
     {
         // 배틀을 시작하면 상태를 초기화한다.
