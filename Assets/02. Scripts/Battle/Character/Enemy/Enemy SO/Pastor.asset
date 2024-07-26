@@ -10,39 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9329a161b0565444b9bfb0e43ad8ee1e, type: 3}
-  m_Name: Incarnage A
+  m_Name: Pastor
   m_EditorClassIdentifier: 
-  enemyId: Incarnage Guard
-  illust: {fileID: 21300000, guid: 80c640a1ad4ec464e8816c10caea30e2, type: 3}
-  maxHp: 20
+  enemyId: Pastor
+  illust: {fileID: 21300000, guid: cdfd0df37af3f9846be4e7393485b073, type: 3}
+  maxHp: 40
   skills:
-  - type: 0
-    target: 0
-    amount: 6
-    turnCount: 0
-    effectPrefeb: {fileID: 0}
   - type: 0
     target: 0
     amount: 8
     turnCount: 0
     effectPrefeb: {fileID: 0}
-  - type: 1
-    target: 1
-    amount: 6
+  - type: 0
+    target: 0
+    amount: 10
     turnCount: 0
-    effectPrefeb: {fileID: 5866499522501904739, guid: e66f604aade7d7440b0c14271fc9b1ba, type: 3}
+    effectPrefeb: {fileID: 0}
   - type: 2
     target: 1
-    amount: 5
+    amount: 15
     turnCount: 0
-    effectPrefeb: {fileID: 0}
-  - type: 10
-    target: 0
-    amount: 2
-    turnCount: 4
-    effectPrefeb: {fileID: 0}
-  - type: 12
-    target: 1
-    amount: 5
-    turnCount: 3
     effectPrefeb: {fileID: 0}
