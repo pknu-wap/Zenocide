@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIManager : MonoBehaviour
+public class ToggleManager : MonoBehaviour
 {
     public GameObject inventoryPanel;
     public GameObject deckPanel;
@@ -12,6 +12,8 @@ public class UIManager : MonoBehaviour
     private bool activeDeck = false;
     private bool activeOption = false;
 
+    public ResolutionManager resolutionManager;
+    public SoundManager soundManager;
     void Start()
     {
         inventoryPanel.SetActive(activeInventory);
@@ -36,6 +38,8 @@ public class UIManager : MonoBehaviour
         {
             activeOption = !activeOption;
             optionPanel.SetActive(activeOption);
+            resolutionManager.CancelResolutionSettings();
+            soundManager.CancelVolumeSettings();
         }
     }
     // aPanel이 켜진 상태에서 bPanel을 키면 aPanel 꺼지고 bPanel 켜짐
