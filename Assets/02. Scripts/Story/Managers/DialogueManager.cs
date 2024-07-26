@@ -346,7 +346,8 @@ public class DialogueManager : MonoBehaviour
             }
         }
 
-        // endIndex를 벗어나며 종료된다.
+        // 이벤트가 종료되지 않고 endIndex를 벗어난 경우 에러를 띄운다.
+        Debug.LogError("End Index가 틀렸습니다.");
     }
 
     // 대화 출력 함수
