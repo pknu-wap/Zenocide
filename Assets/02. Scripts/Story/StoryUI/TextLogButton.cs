@@ -15,9 +15,6 @@ public class TextLogButton : MonoBehaviour
 
     [Header("버튼 Sprite 저장 변수")]
     public Sprite[] Sprites = new Sprite[2];
-
-    [Header("최대 로그 수 저장 변수")]
-    public static int MaxLog = 30;
     
     [Header("현재 로그 인덱스")]
     public int CurrentLog = 0;
@@ -43,14 +40,12 @@ public class TextLogButton : MonoBehaviour
         }
         LogPannel = GameObject.FindWithTag("Log Pannel");
         LogButtonIcon = GameObject.FindWithTag("Log Button Icon").GetComponent<Image>();
-        GameObject Logs = LogPannel.transform.GetChild(0).GetChild(0).gameObject;
-        Debug.Log(Logs.transform.childCount);
+        GameObject Logs = LogPannel.transform.GetChild(2).GetChild(0).gameObject;
         LogBoxes = new GameObject[Logs.transform.childCount];
         for (int i = Logs.transform.childCount - 1; i >= 0  ; i--)
         {
             LogBoxes[i] = Logs.transform.GetChild(i).gameObject;
             LogBoxes[i].SetActive(false);
-            Debug.Log(LogBoxes[i].name);
         }
         LogPannel.SetActive(false);
     }
@@ -61,19 +56,27 @@ public class TextLogButton : MonoBehaviour
         LogButtonIcon.sprite = LogPannel.activeSelf ? Sprites[0] : Sprites[1];
     }
 
+    public void ResetLogs()
+    {
+        for (int i = 0; i < LogBoxes.Length; i++)
+        {
+            LogBoxes[i].SetActive(false);
+        }
+        Names.Clear();
+        Texts.Clear();
+    }
+
     public void AddLog(string name, string text)
     {
-        Debug.Log(name + " : " + text);
-        if (Names.Count >= MaxLog)
-        {
-            Names.RemoveAt(0);
-            Texts.RemoveAt(0);
-        }
+        if(text == "") return;
+         
         Names.Add(name);
         Texts.Add(text);
 
         CurrentLog = Names.Count - 1;
         LogBoxes[CurrentLog].SetActive(true);
+        LogBoxes[CurrentLog].transform.GetChild(0).gameObject.SetActive(name == "" ? false : true);
+        LogBoxes[CurrentLog].transform.GetChild(1).GetComponent<TMP_Text>().alignment = name == "" ? TextAlignmentOptions.TopLeft : TextAlignmentOptions.MidlineLeft;
         TextTMP = LogBoxes[CurrentLog].transform.GetChild(1).GetComponent<TMP_Text>();
         NameTMP = LogBoxes[CurrentLog].transform.GetChild(2).GetComponent<TMP_Text>();
         NameTMP.text = Names[CurrentLog];
