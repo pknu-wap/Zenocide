@@ -4,13 +4,16 @@ using UnityEngine.UI;
 using Unity.VisualScripting;
 using UnityEngine;
 using TMPro;
+using UnityEngine.EventSystems;
 
-public class TextLogButton : MonoBehaviour
+public class TextLogButton : MonoBehaviour,IPointerDownHandler,IPointerEnterHandler,IPointerExitHandler
 {
 
     public static TextLogButton Instance { get; set; }
     public GameObject LogPannel;
+    public GameObject LogButton;
     public Image LogButtonIcon;
+    public TMP_Text LogButtonText;
     public GameObject[] LogBoxes;
 
     [Header("버튼 Sprite 저장 변수")]
@@ -39,7 +42,9 @@ public class TextLogButton : MonoBehaviour
             Destroy(this);
         }
         LogPannel = GameObject.FindWithTag("Log Pannel");
-        LogButtonIcon = GameObject.FindWithTag("Log Button Icon").GetComponent<Image>();
+        LogButton = GameObject.FindWithTag("Log Button");
+        LogButtonIcon = LogButton.transform.GetChild(0).GetComponent<Image>();
+        LogButtonText = LogButton.transform.GetChild(1).GetComponent<TMP_Text>();
         GameObject Logs = LogPannel.transform.GetChild(2).GetChild(0).gameObject;
         LogBoxes = new GameObject[Logs.transform.childCount];
         for (int i = Logs.transform.childCount - 1; i >= 0  ; i--)
@@ -50,10 +55,36 @@ public class TextLogButton : MonoBehaviour
         LogPannel.SetActive(false);
     }
 
-    public void ToggleObject()
+    public void OnPointerDown(PointerEventData eventData)
     {
         LogPannel.SetActive(!LogPannel.activeSelf);
         LogButtonIcon.sprite = LogPannel.activeSelf ? Sprites[0] : Sprites[1];
+        LogButtonText.color  = LogPannel.activeSelf ? new Color(1, 0.92f, 0.016f, 1) : new Color(1, 1, 1, 1);
+        LogButtonIcon.color  = LogPannel.activeSelf ? new Color(1, 0.92f, 0.016f, 1) : new Color(1, 1, 1, 1);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+       if(LogPannel.activeSelf)
+       {
+            LogButtonText.color  = new Color(0.5f, 0.46f, 0.008f, 1);
+            LogButtonIcon.color  = new Color(0.5f, 0.46f, 0.008f, 1);
+            return;
+       }
+       LogButtonIcon.color = new Color(0.5f, 0.5f, 0.5f, 1);
+       LogButtonText.color = new Color(0.5f, 0.5f, 0.5f, 1);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if(LogPannel.activeSelf)
+        {
+            LogButtonText.color  = new Color(1, 0.92f, 0.016f, 1);
+            LogButtonIcon.color  = new Color(1, 0.92f, 0.016f, 1);
+            return;
+        }
+        LogButtonIcon.color = new Color(1, 1, 1, 1);
+        LogButtonText.color = new Color(1, 1, 1, 1);
     }
 
     public void ResetLogs()

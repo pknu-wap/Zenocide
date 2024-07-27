@@ -230,6 +230,8 @@ public class DialogueManager : MonoBehaviour
                 // 바로 이어질 이벤트가 있다면 거기로 이동한다. 없으면 null이 된다.
                 currentEvent = loadedEvent.nextEvent;
 
+                // 현재 이벤트의 대화 기록을 삭제한다.
+                TextLogButton.Instance.ResetLogs();
                 // 현재 이벤트를 종료한다. (ProcessRandomEvent로 이동)
                 yield break;
             }
