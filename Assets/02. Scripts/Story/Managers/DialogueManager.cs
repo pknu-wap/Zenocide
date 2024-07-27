@@ -85,8 +85,11 @@ public class DialogueManager : MonoBehaviour
     public StoryNotification notification;
 
     [Header("진행 가능한 이벤트 데이터")]
-    public List<EventData> processableEventList = new List<EventData>();
+    public List<EventData> processableMainEventList = new List<EventData>();
+    public List<EventData> processableSubEventList = new List<EventData>();
     public EventDataList startEventList;
+    // 메인 이벤트를 진행할 확률(백분률로 표기)
+    public int mainRate = 30;
 
     [Header("딜레이 딕셔너리")]
     public Dictionary<EventData, int> delayDictionary = new Dictionary<EventData, int>();
@@ -141,8 +144,43 @@ public class DialogueManager : MonoBehaviour
     {
         for(int i = 0; i < startEventList.list.Length; ++i)
         {
-            processableEventList.Add(startEventList.list[i]);
+            if (startEventList.list[i].eventID == EventType.Main)
+            {
+                processableMainEventList.Add(startEventList.list[i]);
+            }
+
+            else if (startEventList.list[i].eventID == EventType.Sub)
+            {
+                processableSubEventList.Add(startEventList.list[i]);
+            }
         }
+    }
+
+    private void GetRandomEvent()
+    {
+        // 확률 계산 (0~99)
+        int randomNumber = Random.Range(0, 100);
+        // 이벤트를 가져올 리스트
+        List<EventData> processableEventList;
+
+        Debug.Log(randomNumber);
+
+        // 메인 스토리가 선택되면
+        if (randomNumber < mainRate)
+        {
+            processableEventList = processableMainEventList;
+        }
+        else
+        {
+            processableEventList = processableSubEventList;
+        }
+
+        // 랜덤한 숫자 하나를 고르고
+        int randomIndex = Random.Range(0, processableEventList.Count);
+
+        // 해당 이벤트를 리스트에서 가져와 넣는다. (삭제)
+        currentEvent = processableEventList[randomIndex];
+        processableEventList.RemoveAt(randomIndex);
     }
 
     // 랜덤 이벤트를 선택해 진행한다.
@@ -154,12 +192,8 @@ public class DialogueManager : MonoBehaviour
             // 현재 이벤트가 없다면
             if(currentEvent == null)
             {
-                // 랜덤한 숫자 하나를 고르고
-                int randomIndex = Random.Range(0, processableEventList.Count);
-
-                // 해당 이벤트를 리스트에서 가져와 넣는다. (삭제)
-                currentEvent = processableEventList[randomIndex];
-                processableEventList.RemoveAt(randomIndex);
+                // 랜덤한 이벤트를 가져온다. (EventData 반환하게 하고 싶음)
+                GetRandomEvent();
             }
 
             // 이벤트를 진행한다.
@@ -212,6 +246,7 @@ public class DialogueManager : MonoBehaviour
                 // 추가할 이벤트가 있다면
                 for (int j = 0; j < loadedEvent.addEvent.Length; ++j)
                 {
+                    // 딜레이가 있는 경우
                     if (loadedEvent.addEvent[j].delay > 0)
                     {
                         // 딜레이 딕셔너리에 추가한다.
@@ -219,7 +254,7 @@ public class DialogueManager : MonoBehaviour
                     }
                     else
                     {
-                        // 딜레이가 0이라면 바로 processableEventList에 추가
+                        // 딜레이가 0이라면 바로 processableEventList에 추가 (함수 내에서 타입 검사)
                         AddEventToList(loadedEvent.addEvent[j]);
                     }
                 }
@@ -472,9 +507,21 @@ public class DialogueManager : MonoBehaviour
     // 리스트에 이벤트를 추가한다.
     private void AddEventToList(EventData eventData)
     {
-        processableEventList.Add(eventData);
+        // 딜레이 딕셔너리에 추가한다.
+        if (eventData.eventID == EventType.Main)
+        {
+            processableMainEventList.Add(eventData);
+        }
+        else if (eventData.eventID == EventType.Sub)
+        {
+            processableSubEventList.Add(eventData);
+        }
+        else
+        {
+            Debug.LogError("선택지 이벤트가 processable Event List에 추가되었습니다.");
+        }
     }
-
+    
     // 마우스 좌클릭 감지 함수
     public void ClickDialogButton()
     {
@@ -489,7 +536,8 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
-        var events = delayDictionary.Keys.ToList();
+        // 메인 리스트 딜레이 감소
+        List<EventData> events = delayDictionary.Keys.ToList();
 
         for (int i = 0; i < delayDictionary.Count; i++)
         {
@@ -499,7 +547,7 @@ public class DialogueManager : MonoBehaviour
             // 딜레이 만큼 기다렸다면
             if (delayDictionary[events[i]] <= 0)
             {
-                // 리스트에 삽입
+                // 리스트에 삽입 (이때 타입에 맞게 삽입된다.)
                 AddEventToList(events[i]);
 
                 // 딜레이 딕셔너리에서는 삭제
