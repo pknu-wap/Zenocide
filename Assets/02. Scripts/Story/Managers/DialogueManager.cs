@@ -267,6 +267,8 @@ public class DialogueManager : MonoBehaviour
                 // 바로 이어질 이벤트가 있다면 거기로 이동한다. 없으면 null이 된다.
                 currentEvent = loadedEvent.nextEvent;
 
+                // 현재 이벤트의 대화 기록을 삭제한다.
+                TextLogButton.Instance.ResetLogs();
                 // 현재 이벤트를 종료한다. (ProcessRandomEvent로 이동)
                 yield break;
             }
@@ -412,6 +414,8 @@ public class DialogueManager : MonoBehaviour
 
         // 내용을 받아오고 (비어있어도 상관 X)
         string sentence = csvData["Text"].ToString();
+        //대화 로그를 저장하는 함수 호출
+        TextLogButton.Instance.AddLog(csvData["Name"].ToString(), csvData["Text"].ToString()); 
         // 타이핑 출력
         yield return StartCoroutine(TypeSentence(sentence));
     }
