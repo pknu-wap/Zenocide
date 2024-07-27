@@ -156,7 +156,7 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    private void GetRandomEvent()
+    private EventData GetRandomEvent()
     {
         // 확률 계산 (0~99)
         int randomNumber = Random.Range(0, 100);
@@ -179,8 +179,10 @@ public class DialogueManager : MonoBehaviour
         int randomIndex = Random.Range(0, processableEventList.Count);
 
         // 해당 이벤트를 리스트에서 가져와 넣는다. (삭제)
-        currentEvent = processableEventList[randomIndex];
+        EventData selectedEvent = processableEventList[randomIndex];
         processableEventList.RemoveAt(randomIndex);
+
+        return selectedEvent;
     }
 
     // 랜덤 이벤트를 선택해 진행한다.
@@ -192,8 +194,8 @@ public class DialogueManager : MonoBehaviour
             // 현재 이벤트가 없다면
             if(currentEvent == null)
             {
-                // 랜덤한 이벤트를 가져온다. (EventData 반환하게 하고 싶음)
-                GetRandomEvent();
+                // 랜덤한 이벤트를 가져온다.
+                currentEvent = GetRandomEvent();
             }
 
             // 이벤트를 진행한다.
