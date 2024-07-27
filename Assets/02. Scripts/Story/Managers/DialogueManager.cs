@@ -278,7 +278,14 @@ public class DialogueManager : MonoBehaviour
             if (dataCSV[i]["Equip Item"].ToString() is not emptyString)
             {
                 string equipItem = dataCSV[i]["Equip Item"].ToString();
-                Items.Instance.AddItem(equipItem);
+                if(equipItem == "직장에서 챙긴 물건들")
+                {
+                    Items.Instance.GainJobItem();
+                }
+                else
+                {
+                    Items.Instance.AddItem(equipItem);
+                }
 
                 notification.ShowGetItemMessage(equipItem);
             }
@@ -287,7 +294,15 @@ public class DialogueManager : MonoBehaviour
             if (dataCSV[i]["Equip Card"].ToString() is not emptyString)
             {
                 string equipCard = dataCSV[i]["Equip Card"].ToString();
-                CardManager.Instance.AddCardToDeck(equipCard);
+
+                if(equipCard == "직업")
+                {
+                    CardManager.Instance.GainJobCard();
+                }
+                else
+                {
+                    CardManager.Instance.AddCardToDeck(equipCard);
+                }
 
                 notification.ShowGetCardMessage(equipCard);
             }
@@ -331,7 +346,8 @@ public class DialogueManager : MonoBehaviour
             }
         }
 
-        // endIndex를 벗어나며 종료된다.
+        // 이벤트가 종료되지 않고 endIndex를 벗어난 경우 에러를 띄운다.
+        Debug.LogError("End Index가 틀렸습니다.");
     }
 
     // 대화 출력 함수
@@ -493,7 +509,6 @@ public class DialogueManager : MonoBehaviour
             }
         }
     }
-
     #region Legacy
     // Legacy
     /*    private IEnumerator EventProcess()

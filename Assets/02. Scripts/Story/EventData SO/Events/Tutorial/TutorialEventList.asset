@@ -9,13 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41e3f233dbcc0434fbc8a44a7763d9bd, type: 3}
-  m_Name: RS8-2
+  m_Script: {fileID: 11500000, guid: bdecd344babab8a439197fc983e9a9dc, type: 3}
+  m_Name: TutorialEventList
   m_EditorClassIdentifier: 
-  eventID: 2
-  delay: 0
-  startIndex: 193
-  endIndex: 197
-  relationEvent: []
-  nextEvent: {fileID: 0}
-  addEvent: []
+  list:
+  - {fileID: 11400000, guid: 76d9cc53823d82a478071f78ca1f5bd3, type: 2}

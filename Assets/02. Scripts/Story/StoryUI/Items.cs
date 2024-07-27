@@ -87,4 +87,14 @@ public class Items : MonoBehaviour
             cnt++;
         }
     }
+
+    public void GainJobItem()
+    {
+        // 선택한 직업의 아이템을 추가한다.
+        string[] classItems = Supplier.Instance.classItemList[Player.Instance.job];
+        for (int j = 0; j < classItems.Length; ++j)
+        {
+            Items.Instance.AddItem(classItems[j]);
+        }
+    }
 }

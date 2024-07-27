@@ -3,6 +3,17 @@ using UnityEngine;
 
 public class Supplier : MonoBehaviour
 {
+    // 싱글톤
+    public static Supplier Instance;
+    private void Awake()
+    {
+        Instance = this;
+        for (int i = 0; i < classCardArray.Length; ++i)
+        {
+            classCardDeck[className[i]] = classCardArray[i];
+        }
+    }
+
     // 직업 순서
     public string[] className = new string[4];
 
@@ -19,12 +30,4 @@ public class Supplier : MonoBehaviour
         { "경찰", new string[] { "총", "수갑", "삼단봉" } },
         { "건설", new string[] { "작업복", "삽", "안전모" } },
     };
-
-    private void Awake()
-    {
-        for(int i = 0; i < classCardArray.Length; ++i)
-        {
-            classCardDeck[className[i]] = classCardArray[i];
-        }
-    }
 }
