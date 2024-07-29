@@ -122,6 +122,7 @@ public class CardManager : MonoBehaviour
         }
 
         deck.Add(cardDict[cardName]);
+        SortDeck();
         UpdateDeckCount();
     }
 
@@ -129,6 +130,7 @@ public class CardManager : MonoBehaviour
     public void AddCardToDeck(CardData card)
     {
         deck.Add(card);
+        SortDeck();
         UpdateDeckCount();
     }
 
@@ -151,7 +153,7 @@ public class CardManager : MonoBehaviour
         deck.Remove(target);
     }
 
-    void ShuffleDeck()
+    public void ShuffleDeck()
     {
         for (int i = 0; i < deck.Count; i++)
         {
@@ -486,6 +488,23 @@ public class CardManager : MonoBehaviour
         {
             CardManager.Instance.AddCardToDeck(classCards.items[j]);
         }
+    }
+
+    // 덱을 코스트, 이름 순으로 정렬한다.
+    // 묘지, 핸드 병합은 따로 호출해야한다.
+    public void SortDeck()
+    {
+        deck.Sort((CardData c1, CardData c2) =>
+        {
+            if (c1.cost != c2.cost)
+            {
+                return c1.cost.CompareTo(c2.cost);
+            }
+            else
+            {
+                return c1.name.CompareTo(c2?.name);
+            }
+        });
     }
 
     #region MyCard
