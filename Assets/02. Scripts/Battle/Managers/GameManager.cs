@@ -114,8 +114,8 @@ public class GameManager : MonoBehaviour
         // 보상 카드 리스트 등록
         rewardCardList = CardInfo.Instance.GetRewardCardListData(rewardCardListName);
 
-        // 덱을 초기화 한다.
-        CardManager.Instance.ResetDeck();
+        // 덱을 셔플 한다.
+        CardManager.Instance.ShuffleDeck();
 
         // 배틀 카메라로 전환
         SwitchToBattleScene();
@@ -142,8 +142,10 @@ public class GameManager : MonoBehaviour
         // 스토리 씬으로 넘어간다.
         SwitchToStoryScene();
 
-        // 묘지와 핸드를 덱으로 다시 넣는다.
+        // 묘지와 핸드를 덱으로 다시 넣고 정렬한다.
         CardManager.Instance.ResetDeck();
+        CardManager.Instance.SortDeck();
+
         // UI도 갱신 (덱이 켜진 채 진입한 경우를 고려)
         CardInventory.instance.UpdateAllCardSlot();
     }
