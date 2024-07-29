@@ -241,8 +241,7 @@ public class DialogueManager : MonoBehaviour
         if(loadedEvent.eventID != EventType.Relation)
         {
             yield return StartCoroutine(BGChangeEffectManager.Instance.FadeOut(fadeSpeed));
-            dialogueText.text = "";
-            yield return StartCoroutine(BGChangeEffectManager.Instance.FadeIn(fadeSpeed));
+            StartCoroutine(BGChangeEffectManager.Instance.FadeIn(fadeSpeed));
         }
 
         // 이벤트 진행
