@@ -97,6 +97,12 @@ public class DialogueManager : MonoBehaviour
     [Header("캐릭터 이미지 데이터")]
     public Image[] IllustsObjects;
 
+    [Header("대화 배속 조절 변수")]
+    public int dialogueSpeed = 1;
+
+    [Header("화면 전환 속도 변수")]
+    public float fadeSpeed = 1.0f;
+
     [Header("배경 이미지 데이터")]
     public Image    storyBackgroundObject;
     public Image    battleBackgroundObject;
@@ -230,6 +236,13 @@ public class DialogueManager : MonoBehaviour
 
         // 첫 문장은 바로 띄운다.
         isClicked = true;
+
+        //Relation 이벤트가 아닐 때만 화면 전환 효과를 준다.
+        if(loadedEvent.eventID != EventType.Relation)
+        {
+            yield return StartCoroutine(BGChangeEffectManager.Instance.FadeOut(fadeSpeed));
+            StartCoroutine(BGChangeEffectManager.Instance.FadeIn(fadeSpeed));
+        }
 
         // 이벤트 진행
         for (int i = loadedEvent.startIndex; i <= loadedEvent.endIndex; ++i)
@@ -486,7 +499,8 @@ public class DialogueManager : MonoBehaviour
 
             // 한 글자 추가 후 잠시 기다린다.
             dialogueText.text += letter;
-            yield return new WaitForSeconds(typeTime);
+            //typeTime: 0.03f/dialogueSpeed: 1로 dialogueSpeed 변수를 typeTime에 나누어 출력 속도를 조절한다. ex) 기본 값: 0.03f/1 = 0.03f 2배속: 0.03f/2 = 0.015f
+            yield return new WaitForSeconds(typeTime/dialogueSpeed);
         }
 
         // 출력이 끝나면 출력 커서를 띄운다.
@@ -528,6 +542,12 @@ public class DialogueManager : MonoBehaviour
         }
     }
     
+    //대화 배속 조절 함수
+    public void DialogueSpeedy(int speed)
+    {
+        dialogueSpeed = speed;
+    }
+
     // 마우스 좌클릭 감지 함수
     public void ClickDialogButton()
     {

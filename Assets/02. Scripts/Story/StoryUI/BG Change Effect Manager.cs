@@ -19,9 +19,6 @@ public class BGChangeEffectManager : MonoBehaviour
     private GameObject FirstEffectObject;
     private GameObject SecondEffectObject;
 
-    [Header("이전 배경화면 저장 변수")]
-    private string PreviousBGName;
-
     private void Awake()
     {
         if(Instance == null)
@@ -57,6 +54,12 @@ public class BGChangeEffectManager : MonoBehaviour
         }
     }
 
+    public void FadeEffect(float time)
+    {
+        StartCoroutine(FadeOut(time));
+        StartCoroutine(FadeIn(time));
+    }
+
     public IEnumerator FadeOut(float time)
     {
         if(isFading) yield break;
@@ -87,7 +90,7 @@ public class BGChangeEffectManager : MonoBehaviour
         
         for (int i = 0; i < LayerCount * 4; i++)
         {
-           Sequence sequence = DOTween.Sequence();
+            Sequence sequence = DOTween.Sequence();
             sequence.Append(Layers[i].transform.DOScale(Vector3.zero, fadeDelay));
             sequence.Join(LayerCanvasGroups[i].DOFade(0f, fadeDelay));
             yield return new WaitForSeconds(delay);
