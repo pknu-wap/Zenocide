@@ -54,7 +54,7 @@ public class CardManager : MonoBehaviour
     [Header("딜레이")]
     private float drawDelay = 0.5f;
     private float discardDelay = 0.2f;
-    public float resetDelay = 0.5f;
+    public float resetDelay = 0.05f;
     public float resetMoveDelay = 0.1f;
     private float moveDelay = 0.5f;
 
