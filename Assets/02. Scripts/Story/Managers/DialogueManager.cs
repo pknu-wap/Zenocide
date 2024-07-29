@@ -241,8 +241,7 @@ public class DialogueManager : MonoBehaviour
         if(loadedEvent.eventID != EventType.Relation)
         {
             yield return StartCoroutine(BGChangeEffectManager.Instance.FadeOut(fadeSpeed));
-            dialogueText.text = "";
-            yield return StartCoroutine(BGChangeEffectManager.Instance.FadeIn(fadeSpeed));
+            StartCoroutine(BGChangeEffectManager.Instance.FadeIn(fadeSpeed));
         }
 
         // 이벤트 진행
@@ -544,7 +543,7 @@ public class DialogueManager : MonoBehaviour
     }
     
     //대화 배속 조절 함수
-    public void DialogueSpeedUp(int speed)
+    public void DialogueSpeedy(int speed)
     {
         dialogueSpeed = speed;
     }
