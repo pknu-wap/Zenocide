@@ -27,6 +27,8 @@ public class CardArrow : MonoBehaviour
     public Vector3 startPosition;
     // 베지에 곡선 중간 좌표
     public Transform middlePosition;
+    // 몸통 랜덤 회전
+    public float[] pointRotation;
 
     // 부모 화살표 오브젝트, 시작 위치는 transform을 기준으로 한다.
 
@@ -35,11 +37,15 @@ public class CardArrow : MonoBehaviour
         startPosition = transform.position;
 
         points = new GameObject[numberOfPoints + 1];
+        pointRotation = new float[numberOfPoints + 1];
 
-        // 몸통을 numberOfPoints 개 생성하고
         for(int i = 0; i < numberOfPoints; ++i)
         {
+            // 몸통을 numberOfPoints 개 생성하고
             points[i] = Instantiate(point, transform);
+
+            // 랜덤한 회전을 준다.
+            pointRotation[i] = Random.Range(0, 360);
         }
 
         // 끝부분도 생성한다.
@@ -68,7 +74,7 @@ public class CardArrow : MonoBehaviour
             Vector2 delta = points[i].transform.position - points[i - 1].transform.position;
             float angle = Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg;
 
-            points[i].transform.rotation = Quaternion.Euler(0, 0, angle - 90);
+            points[i].transform.rotation = Quaternion.Euler(0, 0, angle - 90 + pointRotation[i]);
         }
     }
 

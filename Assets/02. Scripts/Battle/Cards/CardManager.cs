@@ -54,8 +54,8 @@ public class CardManager : MonoBehaviour
     [Header("딜레이")]
     private float drawDelay = 0.5f;
     private float discardDelay = 0.2f;
-    private float resetDelay = 0.1f;
-    private float resetMoveDelay = 0.1f;
+    public float resetDelay = 0.05f;
+    public float resetMoveDelay = 0.1f;
     private float moveDelay = 0.5f;
 
     void Start()
@@ -63,6 +63,7 @@ public class CardManager : MonoBehaviour
         // 컴포넌트를 할당한다.
         EnrollComponent();
         focusPos = new Vector3(0f, handLeft.position.y + focusOffset, -3f);
+        UpdateDumpCount();
 
         #region CreateDict
         cardDict = new Dictionary<string, CardData>();
@@ -122,6 +123,7 @@ public class CardManager : MonoBehaviour
         }
 
         deck.Add(cardDict[cardName]);
+        SortDeck();
         UpdateDeckCount();
     }
 
@@ -129,6 +131,7 @@ public class CardManager : MonoBehaviour
     public void AddCardToDeck(CardData card)
     {
         deck.Add(card);
+        SortDeck();
         UpdateDeckCount();
     }
 
@@ -151,7 +154,7 @@ public class CardManager : MonoBehaviour
         deck.Remove(target);
     }
 
-    void ShuffleDeck()
+    public void ShuffleDeck()
     {
         for (int i = 0; i < deck.Count; i++)
         {
@@ -388,7 +391,7 @@ public class CardManager : MonoBehaviour
 
             // 포물선 이동
             // 각 카드에 딜레이 주기
-            yield return StartCoroutine(cardBack[i].move(cardResetPoint, cardSpawnPoint, cardDumpPoint));
+            yield return StartCoroutine(cardBack[i].Move(cardResetPoint, cardSpawnPoint, cardDumpPoint));
 
             // deckCount 갱신
             UpdateDeckCount(1);
@@ -400,7 +403,7 @@ public class CardManager : MonoBehaviour
         // 카드 뒷면 자원 반환
         for (int i = 0; i < dumpCount; i++)
         {
-            cardBack[i].resetPosition(cardDumpPoint);
+            cardBack[i].ResetPosition(cardDumpPoint);
             cardBack[i].ReleaseObject();
         }
     }
@@ -486,6 +489,23 @@ public class CardManager : MonoBehaviour
         {
             CardManager.Instance.AddCardToDeck(classCards.items[j]);
         }
+    }
+
+    // 덱을 코스트, 이름 순으로 정렬한다.
+    // 묘지, 핸드 병합은 따로 호출해야한다.
+    public void SortDeck()
+    {
+        deck.Sort((CardData c1, CardData c2) =>
+        {
+            if (c1.cost != c2.cost)
+            {
+                return c1.cost.CompareTo(c2.cost);
+            }
+            else
+            {
+                return c1.name.CompareTo(c2?.name);
+            }
+        });
     }
 
     #region MyCard

@@ -5,12 +5,10 @@ using UnityEngine;
 
 public class CardBack : Poolable
 {
-    private float resetMoveDelay = 0.1f;
-    private WaitForSeconds resetDelay = new WaitForSeconds(0.1f);
-
-    public IEnumerator move(Transform cardResetPoint, Transform cardSpawnPoint, Transform cardDumpPoint)
+    public IEnumerator Move(Transform cardResetPoint, Transform cardSpawnPoint, Transform cardDumpPoint)
     {
         transform.position = cardDumpPoint.position;
+        float resetMoveDelay = CardManager.Instance.resetMoveDelay;
 
         Sequence sequence = DOTween.Sequence()
                 .Append(transform.DOMoveX(cardResetPoint.position.x, resetMoveDelay).SetEase(Ease.Linear))
@@ -18,10 +16,10 @@ public class CardBack : Poolable
                 .Append(transform.DOMoveX(cardSpawnPoint.position.x, resetMoveDelay).SetEase(Ease.Linear))
                 .Join(transform.DOMoveY(cardSpawnPoint.position.y, resetMoveDelay).SetEase(Ease.InCubic));
 
-        yield return resetDelay;
+        yield return new WaitForSeconds(CardManager.Instance.resetDelay);
     }
 
-    public void resetPosition(Transform cardDumpPoint)
+    public void ResetPosition(Transform cardDumpPoint)
     {
         transform.position = cardDumpPoint.position;
     }
