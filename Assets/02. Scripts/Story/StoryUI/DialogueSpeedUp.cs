@@ -30,15 +30,10 @@ public class DialogueSpeedUp : MonoBehaviour,IPointerDownHandler,IPointerEnterHa
         Color ButtonColor = new Color(1, 1, 1, 1);
         SpeedStep = SpeedStep % 2 + 1;
 
-        switch(SpeedStep)
+        if(SpeedStep == 2)
         {
-            case 1:
-                ButtonColor = new Color(1, 1, 1, 1);
-                break;
-            case 2:
-                ButtonColor = new Color(1, 0.92f, 0.016f, 1);
-                break;
-        }
+            ButtonColor = new Color(1, 0.92f, 0.016f, 1);
+        }   
 
         SpeedUpButtonIcon.sprite = Sprites[SpeedStep - 1];
         SpeedUpButtonText.color  = ButtonColor;
@@ -68,14 +63,9 @@ public class DialogueSpeedUp : MonoBehaviour,IPointerDownHandler,IPointerEnterHa
     {
         Color ButtonColor = new Color(1, 1, 1, 1);
         
-        switch(SpeedStep)
+        if(SpeedStep == 2)
         {
-            case 1:
-                ButtonColor = new Color(1, 1, 1, 1);
-                break;
-            case 2:
-                ButtonColor = new Color(1, 0.92f, 0.016f, 1);
-                break;
+            ButtonColor = new Color(1, 0.92f, 0.016f, 1);
         }
 
        SpeedUpButtonIcon.color = ButtonColor;
