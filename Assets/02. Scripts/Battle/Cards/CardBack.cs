@@ -6,9 +6,9 @@ using UnityEngine;
 public class CardBack : Poolable
 {
     private float resetMoveDelay = 0.1f;
-    private WaitForSeconds resetDelay = new WaitForSeconds(0.1f);
+    private WaitForSeconds resetDelay = new WaitForSeconds(0.05f);
 
-    public IEnumerator move(Transform cardResetPoint, Transform cardSpawnPoint, Transform cardDumpPoint)
+    public IEnumerator Move(Transform cardResetPoint, Transform cardSpawnPoint, Transform cardDumpPoint)
     {
         transform.position = cardDumpPoint.position;
 
@@ -21,7 +21,7 @@ public class CardBack : Poolable
         yield return resetDelay;
     }
 
-    public void resetPosition(Transform cardDumpPoint)
+    public void ResetPosition(Transform cardDumpPoint)
     {
         transform.position = cardDumpPoint.position;
     }

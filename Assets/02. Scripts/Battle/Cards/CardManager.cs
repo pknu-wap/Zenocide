@@ -54,7 +54,7 @@ public class CardManager : MonoBehaviour
     [Header("딜레이")]
     private float drawDelay = 0.5f;
     private float discardDelay = 0.2f;
-    private float resetDelay = 0.1f;
+    private float resetDelay = 0.05f;
     private float resetMoveDelay = 0.1f;
     private float moveDelay = 0.5f;
 
@@ -63,6 +63,7 @@ public class CardManager : MonoBehaviour
         // 컴포넌트를 할당한다.
         EnrollComponent();
         focusPos = new Vector3(0f, handLeft.position.y + focusOffset, -3f);
+        UpdateDumpCount();
 
         #region CreateDict
         cardDict = new Dictionary<string, CardData>();
@@ -390,7 +391,7 @@ public class CardManager : MonoBehaviour
 
             // 포물선 이동
             // 각 카드에 딜레이 주기
-            yield return StartCoroutine(cardBack[i].move(cardResetPoint, cardSpawnPoint, cardDumpPoint));
+            yield return StartCoroutine(cardBack[i].Move(cardResetPoint, cardSpawnPoint, cardDumpPoint));
 
             // deckCount 갱신
             UpdateDeckCount(1);
@@ -402,7 +403,7 @@ public class CardManager : MonoBehaviour
         // 카드 뒷면 자원 반환
         for (int i = 0; i < dumpCount; i++)
         {
-            cardBack[i].resetPosition(cardDumpPoint);
+            cardBack[i].ResetPosition(cardDumpPoint);
             cardBack[i].ReleaseObject();
         }
     }
