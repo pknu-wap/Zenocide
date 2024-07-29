@@ -30,6 +30,8 @@ public class DialogueManager : MonoBehaviour
     public bool isBattleDone = false;
     // 게임이 엔딩에 다다랐는지 검사한다.
     private bool isGameCleared = false;
+    // 첫 이벤트인지 확인한다.
+    private bool isFirstEvent = true;
 
     [Header("스토리 CSV")]
     // 메인 CSV 파일을 읽어올 리스트
@@ -234,15 +236,17 @@ public class DialogueManager : MonoBehaviour
                 break;
         }
 
-        // 첫 문장은 바로 띄운다.
-        isClicked = true;
-
-        //Relation 이벤트가 아닐 때만 화면 전환 효과를 준다.
-        if(loadedEvent.eventID != EventType.Relation)
+        //Relation 이벤트가 아니고 첫번째 이벤트가 아닐 때만 화면 전환 효과를 준다.
+        if(loadedEvent.eventID != EventType.Relation && !isFirstEvent)
         {
             yield return StartCoroutine(BGChangeEffectManager.Instance.FadeOut(fadeSpeed));
             StartCoroutine(BGChangeEffectManager.Instance.FadeIn(fadeSpeed));
         }
+        
+        // 첫 문장은 바로 띄운다.
+        isClicked = true;
+        // 첫 이벤트가 아니게 되므로 false로 바꾼다.
+        isFirstEvent = false;
 
         // 이벤트 진행
         for (int i = loadedEvent.startIndex; i <= loadedEvent.endIndex; ++i)
