@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject gameOverPanel;
     [SerializeField] int enemyLeft;
     [SerializeField] int enemyRight;
+    [SerializeField] Option option;
 
     [Header("블로커")]
     [SerializeField] private GameObject storyScene;
@@ -274,12 +275,14 @@ public class GameManager : MonoBehaviour
     {
         storyScene.SetActive(true);
         battleScene.SetActive(false);
+        option.MoveOptionPanelToStoryFloatingCanvas();
     }
 
     private void SwitchToBattleScene()
     {
         storyScene.SetActive(false);
         battleScene.SetActive(true);
+        option.MoveOptionPanelToBattleUICanvas();
     }
 
     public void SwitchToTutorialScene()

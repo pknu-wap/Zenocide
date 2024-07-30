@@ -6,7 +6,6 @@ using UnityEngine;
 public class Inventory : MonoBehaviour
 {
     public GameObject inventoryPanel;
-    bool activeInventory = false;
     public List<TMP_Text> slots = new List<TMP_Text>();
     private void Start()
     {
