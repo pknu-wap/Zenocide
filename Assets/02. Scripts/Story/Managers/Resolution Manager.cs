@@ -114,6 +114,28 @@ public class ResolutionManager : MonoBehaviour
         Resolution resolution = filteredResolutions[previousResolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, previousFullscreen);
     }
+    public void SaveResolutionSettings()
+    {
+        // 현재 해상도, 전체화면 설정을 데이터에 저장
+        DataManager.Instance.data.SelectedResolutionIndex = selectedResolutionIndex;
+        DataManager.Instance.data.Fullscreen = fullscreen;
+    }
+
+    public void LoadResolutionSettings()
+    {
+        // 데이터에서 저장된 해상도, 전체화면 설정을 불러옴
+        selectedResolutionIndex = DataManager.Instance.data.SelectedResolutionIndex;
+        fullscreen = DataManager.Instance.data.Fullscreen;
+            
+        // 로드한 설정 적용
+        Resolution resolution = filteredResolutions[selectedResolutionIndex];
+        Screen.SetResolution(resolution.width, resolution.height, fullscreen);
+
+        // 드롭다운, 토글 업데이트
+        resolutionDropdown.value = selectedResolutionIndex;
+        resolutionDropdown.RefreshShownValue();
+        fullscreenToggle.isOn = fullscreen;
+    }
 
     // Dropdown 값이 변경될 때 미리 해상도 적용
     private void PreviewResolutionChange()
