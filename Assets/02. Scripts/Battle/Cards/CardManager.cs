@@ -514,6 +514,11 @@ public class CardManager : MonoBehaviour
         DataManager.Instance.data.Deck = deck;
     }
 
+    public void LoadDeck()
+    {
+        deck = DataManager.Instance.data.Deck;
+    }
+
     #region MyCard
     public bool IsCardSelected()
     {
