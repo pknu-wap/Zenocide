@@ -241,6 +241,14 @@ public class DialogueManager : MonoBehaviour
         if(loadedEvent.eventID != EventType.Relation)
         {
             yield return StartCoroutine(BGChangeEffectManager.Instance.FadeOut(fadeSpeed));
+
+            // deck 저장
+            CardManager.Instance.SaveDeck();
+            // item 저장
+            // hp 저장
+            // 데이터 세이브
+            DataManager.Instance.SaveData();
+
             StartCoroutine(BGChangeEffectManager.Instance.FadeIn(fadeSpeed));
         }
 

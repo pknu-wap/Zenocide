@@ -147,6 +147,10 @@ public class GameManager : MonoBehaviour
         CardManager.Instance.ResetDeck();
         CardManager.Instance.SortDeck();
 
+        // 보상을 받은 후 덱을 저장한다.
+        CardManager.Instance.SaveDeck();
+        DataManager.Instance.SaveData();
+
         // UI도 갱신 (덱이 켜진 채 진입한 경우를 고려)
         CardInventory.instance.UpdateAllCardSlot();
     }
