@@ -106,6 +106,10 @@ public class DialogueManager : MonoBehaviour
     [Header("배경 이미지 데이터")]
     public Image    storyBackgroundObject;
     public Image    battleBackgroundObject;
+
+    [Header("스킵")]
+    public GameObject skipButton;
+    bool isSkip;
     #endregion 변수
 
     private void Awake()
@@ -252,6 +256,13 @@ public class DialogueManager : MonoBehaviour
             {
                 yield return null;
             }
+
+            if(isSkip == true)
+            {
+                isSkip = false;
+                yield break;
+            }
+
             // 클릭이 감지되면, 재사용을 위해 원상태로 돌린다.
             isClicked = false;
 
@@ -581,6 +592,24 @@ public class DialogueManager : MonoBehaviour
             }
         }
     }
+
+    public void SkipEvent()
+    {
+        isSkip = true;
+        currentEvent = null;
+        skipButton.SetActive(false);
+
+        // 다이얼로그가 출력 중이면
+        if(waitCursor.activeSelf == false)
+        {
+            // 전부 출력
+            isClicked = true;
+        }
+
+        // 다음 이벤트로 넘어간다.
+        isClicked = true;
+    }
+
     #region Legacy
     // Legacy
     /*    private IEnumerator EventProcess()

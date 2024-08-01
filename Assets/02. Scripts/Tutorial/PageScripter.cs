@@ -54,7 +54,7 @@ public class PageScripter : MonoBehaviour
         // $일 경우 튜토리얼을 종료한다.
         if (sentence == "$")
         {
-            GameManager.Instance.FinishTutorial();
+            GameManager.Instance.FinishDiary();
             yield break;
         }
 

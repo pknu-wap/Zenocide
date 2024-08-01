@@ -163,7 +163,7 @@ public class GameManager : MonoBehaviour
         gameOverPanel.SetActive(true);
     }
 
-    public void FinishTutorial()
+    public void FinishDiary()
     {
         // 다시 처음으로 돌리고
         DiaryManager.Instance.currentDialogIndex = 0;
