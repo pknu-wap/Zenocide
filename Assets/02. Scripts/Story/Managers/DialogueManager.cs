@@ -250,8 +250,6 @@ public class DialogueManager : MonoBehaviour
         // 이벤트 진행
         for (int i = loadedEvent.startIndex; i <= loadedEvent.endIndex; ++i)
         {
-            Debug.Log("인덱스 = " + i);
-
             // 클릭을 기다린다.
             while (isClicked == false)
             {
