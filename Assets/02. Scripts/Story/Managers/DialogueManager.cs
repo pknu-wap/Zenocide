@@ -111,7 +111,7 @@ public class DialogueManager : MonoBehaviour
 
     [Header("스킵")]
     public GameObject skipButton;
-    bool isSkip;
+    public bool isSkip;
     #endregion 변수
 
     private void Awake()
@@ -292,6 +292,13 @@ public class DialogueManager : MonoBehaviour
                 #region 선택지 표시 및 대기
                 // 선택지를 띄우고, 선택할 때까지 대기
                 yield return DisplayChoices(dataCSV[i]);
+
+                // 선택지가 표시 중일 때도 스킵 요청이 들어오면 스킵
+                if(isSkip == true)
+                {
+                    isSkip = false;
+                    yield break;
+                }
                 #endregion 선택지 표시 및 대기
 
                 #region 선택한 이벤트로 이동
