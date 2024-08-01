@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class DialogueManager : MonoBehaviour
 
     [Header("진행 중인 이벤트")]
     public EventData currentEvent = null;
+    private Coroutine processEvent = null;
 
     [Header("현재 사용 중인 CSV 데이터")]
     private List<Dictionary<string, object>> dataCSV;
@@ -209,7 +211,8 @@ public class DialogueManager : MonoBehaviour
             }
 
             // 이벤트를 진행한다.
-            yield return StartCoroutine(ProcessEvent(currentEvent));
+            processEvent = StartCoroutine(ProcessEvent(currentEvent));
+            yield return processEvent;
         }
 
         // 끝나면 엔딩.
@@ -257,83 +260,69 @@ public class DialogueManager : MonoBehaviour
                 yield return null;
             }
 
+            // 스킵 요청이 들어오면 스킵한다.
             if(isSkip == true)
             {
                 isSkip = false;
                 yield break;
             }
 
-            // 클릭이 감지되면, 재사용을 위해 원상태로 돌린다.
+            // 클릭이 감지되면, 재사용을 위해 원상태로 돌리고 진행한다.
             isClicked = false;
 
-            // 이벤트의 끝이면 함수를 종료한다.
+            // 이벤트의 끝이면
             if (dataCSV[i]["Name"].ToString() == "END")
             {
-                // 추가할 이벤트가 있다면
-                for (int j = 0; j < loadedEvent.addEvent.Length; ++j)
-                {
-                    // 딜레이가 있는 경우
-                    if (loadedEvent.addEvent[j].delay > 0)
-                    {
-                        // 딜레이 딕셔너리에 추가한다.
-                        delayDictionary.Add(loadedEvent.addEvent[j], loadedEvent.addEvent[j].delay);
-                    }
-                    else
-                    {
-                        // 딜레이가 0이라면 바로 processableEventList에 추가 (함수 내에서 타입 검사)
-                        AddEventToList(loadedEvent.addEvent[j]);
-                    }
-                }
+                // 함수를 종료한다.
+                EndEvent(loadedEvent);
 
-                // 딕셔너리에 있는 이벤트들을 처리한다.
+                // 딜레이를 감소시킨다.
                 ProcessDelay(loadedEvent);
 
-                // 바로 이어질 이벤트가 있다면 거기로 이동한다. 없으면 null이 된다.
-                currentEvent = loadedEvent.nextEvent;
-
-                // 현재 이벤트의 대화 기록을 삭제한다.
-                TextLogButton.Instance.ResetLogs();
                 // 현재 이벤트를 종료한다. (ProcessRandomEvent로 이동)
                 yield break;
             }
 
-            // 대화창을 갱신한다. 이 이후의 조건문은, 대화창을 변경하며 실행되는 애들이다.
+            // 대화창을 갱신한다. 이 이후의 조건문은, 대화창을 변경한 후 실행되는 애들이다.
             yield return StartCoroutine(DisplayDialogue(dataCSV[i]));
 
             // 선택지가 나타나면 선택지 이벤트를 실행한다.
             if (dataCSV[i]["Choice Count"].ToString() is not emptyString)
             {
-                // 선택이 끝날 때까지 대기
+                #region 선택지 표시 및 대기
+                // 선택지를 띄우고, 선택할 때까지 대기
                 yield return DisplayChoices(dataCSV[i]);
+                #endregion 선택지 표시 및 대기
 
-                // 고른 선택지 이벤트 로드
+                #region 선택한 이벤트로 이동
+                // 고른 선택지 번호 확인하고
                 int result = SelectManager.Instance.result;
-
-                // 사용한 아이템을 제거한다.
-                string requiredItem = dataCSV[i]["Remove Item" + (result + 1)].ToString();
-                if (requiredItem is not emptyString)
-                {
-                    Items.Instance.RemoveItem(requiredItem);
-
-                    notification.ShowRemoveItemMessage(requiredItem);
-                }
 
                 // 선택된 이벤트를 캐싱해둔다.
                 EventData relationEvent = loadedEvent.relationEvent[result];
 
                 // 선택된 이벤트가 null일 경우
-                if(relationEvent == null)
+                if (relationEvent == null)
                 {
                     // 기존 이벤트를 이어서 진행한다.
                     isClicked = true;
 
+                    // 다음 줄로 바로 이동한다.
                     continue;
                 }
 
-                // 그 외엔 선택지 이벤트로 교체하고
+                // 그 외엔 선택지 이벤트로 교체한다.
                 currentEvent = relationEvent;
+                #endregion 선택한 이벤트로 이동
 
-                // 종료 (ProcessRandomEvent로 이동)
+                #region 사용한 아이템 제거
+                // 사용한 아이템을 확인한다.
+                string requiredItem = dataCSV[i]["Remove Item" + (result + 1)].ToString();
+
+                // 해당 아이템을 제거한다.
+                RemoveUsedItem(requiredItem);
+                #endregion 사용한 아이템 제거
+
                 yield break;
             }
 
@@ -341,16 +330,8 @@ public class DialogueManager : MonoBehaviour
             if (dataCSV[i]["Equip Item"].ToString() is not emptyString)
             {
                 string equipItem = dataCSV[i]["Equip Item"].ToString();
-                if(equipItem == "직장에서 챙긴 물건들")
-                {
-                    Items.Instance.GainJobItem();
-                }
-                else
-                {
-                    Items.Instance.AddItem(equipItem);
-                }
 
-                notification.ShowGetItemMessage(equipItem);
+                EquipItem(equipItem);
             }
 
             // 획득 카드가 존재 한다면 카드 지급
@@ -358,54 +339,20 @@ public class DialogueManager : MonoBehaviour
             {
                 string equipCard = dataCSV[i]["Equip Card"].ToString();
 
-                if(equipCard == "직업")
-                {
-                    CardManager.Instance.GainJobCard();
-                }
-                else
-                {
-                    CardManager.Instance.AddCardToDeck(equipCard);
-                }
-
-                notification.ShowGetCardMessage(equipCard);
+                EquipCard(equipCard);
             }
 
             // 전투가 있다면 시작한다.
             if (dataCSV[i]["Enemy1"].ToString() is not emptyString)
             {
-                // 배틀이 끝나지 않았음을 체크
-                isBattleDone = false;
-
                 // 이름들을 배열로 받아온다.
-                string[] enemies = new string[4];
-                for (int j = 0; j < enemies.Length; ++j)
-                {
-                    // Enemy는 1, 2, 3, 4가 존재
-                    enemies[j] = dataCSV[i]["Enemy" + (j + 1)].ToString();
-                }
+                string[] enemies = GetEnemiesName(dataCSV[i]);
 
                 // 보상 카드 리스트를 불러온다.
                 string rewardCardList = dataCSV[i]["Reward Card List"].ToString();
 
-                // 준비가 끝나면 클릭을 기다린다.
-                isClicked = false;
-                while (isClicked == false)
-                {
-                    yield return null;
-                }
-                isClicked = false;
-
-                //클릭되면 배틀을 시작한다.
-                GameManager.Instance.StartBattle(enemies, rewardCardList);
-
-                // 전투가 끝날 때까지 기다린다.
-                while (isBattleDone == false)
-                {
-                    yield return null;
-                }
-
-                // 끝나면 다음 줄로 바로 이동한다.
-                isClicked = true;
+                // 전투를 시작한다.
+                yield return StartCoroutine(StartBattle(enemies, rewardCardList));
             }
         }
 
@@ -518,6 +465,32 @@ public class DialogueManager : MonoBehaviour
         waitCursor.SetActive(true);
     }
 
+    // 이벤트를 종료한다.
+    private void EndEvent(EventData loadedEvent)
+    {
+        // 추가할 이벤트가 있다면
+        for (int j = 0; j < loadedEvent.addEvent.Length; ++j)
+        {
+            // 딜레이가 있는 경우
+            if (loadedEvent.addEvent[j].delay > 0)
+            {
+                // 딜레이 딕셔너리에 추가한다.
+                delayDictionary.Add(loadedEvent.addEvent[j], loadedEvent.addEvent[j].delay);
+            }
+            else
+            {
+                // 딜레이가 0이라면 바로 processableEventList에 추가 (함수 내에서 타입 검사)
+                AddEventToList(loadedEvent.addEvent[j]);
+            }
+        }
+
+        // 바로 이어질 이벤트가 있다면 거기로 이동한다. 없으면 null이 된다.
+        currentEvent = loadedEvent.nextEvent;
+
+        // 현재 이벤트의 대화 기록을 삭제한다.
+        TextLogButton.Instance.ResetLogs();
+    }
+
     // 선택지를 띄운다.
     private IEnumerator DisplayChoices(Dictionary<string, object> csvData)
     {
@@ -531,8 +504,62 @@ public class DialogueManager : MonoBehaviour
         // 선택지 띄우기 후 처리
         // 다시 기존 입력을 받기 시작한다.
         dialogButton.SetActive(true);
+    }
 
-        // 사용한 아이템 제거는 이 함수를 호출한 곳으로 이동했습니다.
+    // 사용한 아이템을 제거한다.
+    private void RemoveUsedItem(string item)
+    {
+        // 사용한 아이템을 제거한다.
+        if (item is not emptyString)
+        {
+            Items.Instance.RemoveItem(item);
+
+            notification.ShowRemoveItemMessage(item);
+        }
+    }
+
+    // 아이템을 획득한다.
+    private void EquipItem(string equipItem)
+    {
+        // 따로 분리하지 않고, 그대로 준다.
+        Items.Instance.AddItem(equipItem);
+
+        notification.ShowGetItemMessage(equipItem);
+    }
+
+    // 카드를 획득한다.
+    private void EquipCard(string equipCard)
+    {
+        CardManager.Instance.AddCardToDeck(equipCard);
+
+        notification.ShowGetCardMessage(equipCard);
+    }
+
+    // 전투를 시작하고, 끝날 때까지 기다린다.
+    private IEnumerator StartBattle(string[] enemies, string rewardCardList)
+    {
+        // 배틀이 끝나지 않았음을 체크
+        isBattleDone = false;
+
+        // 준비가 끝나면 클릭을 기다린다.
+        isClicked = false;
+        while (isClicked == false)
+        {
+            yield return null;
+        }
+        isClicked = false;
+
+        //클릭되면 배틀을 시작한다.
+        GameManager.Instance.StartBattle(enemies, rewardCardList);
+
+        // 전투가 끝날 때까지 기다린다.
+        while (isBattleDone == false)
+        {
+            yield return null;
+        }
+
+        // 끝나면 다음 줄로 바로 이동한다.
+        isClicked = true;
     }
 
     // 리스트에 이벤트를 추가한다.
@@ -563,6 +590,18 @@ public class DialogueManager : MonoBehaviour
     public void ClickDialogButton()
     {
         isClicked = true;
+    }
+
+    // 해당 열에 적힌 적들의 이름을 받아온다.
+    private string[] GetEnemiesName(Dictionary<string, object> csvData)
+    {
+        string[] enemies = new string[4];
+        for (int j = 0; j < enemies.Length; ++j)
+        {
+            // Enemy는 1, 2, 3, 4가 존재
+            enemies[j] = csvData["Enemy" + (j + 1)].ToString();
+        }
+        return enemies;
     }
 
     public void ProcessDelay(EventData loadedData)
