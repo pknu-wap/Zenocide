@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] NotificationPanel notificationPanel;
     [SerializeField] Transform enemiesParent;
     [SerializeField] public Enemy[] enemies;
-    [SerializeField] CardList rewardCardList;
+    [SerializeField] public CardList rewardCardList;
     [SerializeField] StatusHP storyHP;
     [SerializeField] GameObject gameOverPanel;
     [SerializeField] int enemyLeft;
@@ -25,6 +25,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject storyScene;
     [SerializeField] private GameObject battleScene;
     [SerializeField] private GameObject tutorialScene;
+
+    [Header("튜토리얼 이벤트")]
+    [SerializeField] private EventData tutorialEvent;
 
     private void Awake()
     {
@@ -89,6 +92,16 @@ public class GameManager : MonoBehaviour
     public void StartStory()
     {
         StartCoroutine(DialogueManager.Instance.ProcessRandomEvent());
+        SwitchToStoryScene();
+    }
+
+    public void StartTutorial()
+    {
+        // 튜토리얼 이벤트 삽입하고
+        DialogueManager.Instance.currentEvent = tutorialEvent;
+
+        // 튜토리얼 시작
+        StartCoroutine(TutorialManager.Instance.ProcessEvent(DialogueManager.Instance.currentEvent));
         SwitchToStoryScene();
     }
 
@@ -169,9 +182,9 @@ public class GameManager : MonoBehaviour
         DiaryManager.Instance.currentDialogIndex = 0;
         DiaryManager.Instance.currentPageIndex = 0;
 
-        // 스토리 시작
+        // 튜토리얼 이벤트 시작
         tutorialScene.SetActive(false);
-        StartStory();
+        StartTutorial();
     }
 
     // 모든 적 정보를 등록, 소환한다
@@ -280,7 +293,7 @@ public class GameManager : MonoBehaviour
         option.MoveOptionPanelToStoryFloatingCanvas();
     }
 
-    private void SwitchToBattleScene()
+    public void SwitchToBattleScene()
     {
         storyScene.SetActive(false);
         battleScene.SetActive(true);

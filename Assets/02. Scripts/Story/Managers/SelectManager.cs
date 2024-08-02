@@ -46,7 +46,7 @@ public class SelectManager : MonoBehaviour
         while (result == -1)
         {
             // 스킵 요청이 들어오면
-            if (DialogueManager.Instance.isSkip == true)
+            if (TutorialManager.Instance.isSkip == true)
             {
                 // 선택지를 숨기고
                 for (int i = 0; i < choices.Length; ++i)

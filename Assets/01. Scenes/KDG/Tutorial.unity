@@ -10486,7 +10486,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentEvent: {fileID: 0}
-  isClicked: 0
+  isClicked: 1
   isBattleDone: 0
   MainCSV: {fileID: 4900000, guid: 683f3fdfa65e993439834fab4b233e77, type: 3}
   SubCSV: {fileID: 4900000, guid: 37278d9ea232c544abf7972ed7ae236a, type: 3}
@@ -10506,7 +10506,7 @@ MonoBehaviour:
   backgroundImages:
   - {fileID: 21300000, guid: 3752f1ccdde8c6341a697addd815a92b, type: 3}
   - {fileID: 21300000, guid: a9afa19141968b0419675d94e8c03d47, type: 3}
-  - {fileID: 21300000, guid: e30f988a4d947f84f9dbf877ef230332, type: 3}
+  - {fileID: 21300000, guid: 1048332af46d7d74494689a7055211f0, type: 3}
   dialoguePanel: {fileID: 1649820546}
   dialogueName: {fileID: 1621047935}
   dialogueText: {fileID: 1618388593}
@@ -10525,7 +10525,6 @@ MonoBehaviour:
   fadeSpeed: 1
   storyBackgroundObject: {fileID: 0}
   battleBackgroundObject: {fileID: 0}
-  skipButton: {fileID: 1130054972}
 --- !u!1 &552572904
 GameObject:
   m_ObjectHideFlags: 0
@@ -10744,7 +10743,7 @@ GameObject:
   m_Component:
   - component: {fileID: 577916635}
   m_Layer: 0
-  m_Name: Diary Managers
+  m_Name: Tutorial Managers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10763,6 +10762,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1004928415}
   - {fileID: 1915640822}
   - {fileID: 787580732}
   m_Father: {fileID: 0}
@@ -14302,6 +14302,7 @@ RectTransform:
   - {fileID: 896647077}
   - {fileID: 113086143}
   - {fileID: 1180685156}
+  - {fileID: 1193624263}
   m_Father: {fileID: 1077171540}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -15801,6 +15802,7 @@ MonoBehaviour:
   storyScene: {fileID: 0}
   battleScene: {fileID: 0}
   tutorialScene: {fileID: 0}
+  tutorialEvent: {fileID: 11400000, guid: 76d9cc53823d82a478071f78ca1f5bd3, type: 2}
   selectedRewardIndex: -1
 --- !u!1001 &809800867
 PrefabInstance:
@@ -20559,6 +20561,53 @@ RectTransform:
   m_AnchoredPosition: {x: 300, y: -500}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1004928414
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1004928415}
+  - component: {fileID: 1004928416}
+  m_Layer: 0
+  m_Name: TutorialManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1004928415
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1004928414}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 577916635}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1004928416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1004928414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f42ffdb8e75c7f14d9bb328dd66e1837, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skipButton: {fileID: 1130054972}
+  isSkip: 0
+  tutorialPanel: {fileID: 1193624262}
 --- !u!1001 &1014078920
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23024,8 +23073,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 552365537}
-        m_TargetAssemblyTypeName: DialogueManager, Assembly-CSharp
+      - m_Target: {fileID: 1004928416}
+        m_TargetAssemblyTypeName: TutorialManager, Assembly-CSharp
         m_MethodName: SkipEvent
         m_Mode: 1
         m_Arguments:
@@ -24428,6 +24477,81 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5866411685112972693, guid: 58794674ef2e25743a93da63a585c97c, type: 3}
   m_PrefabInstance: {fileID: 1193572782}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1193624262
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1193624263}
+  - component: {fileID: 1193624265}
+  - component: {fileID: 1193624264}
+  m_Layer: 5
+  m_Name: Tutorial Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1193624263
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1193624262}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 743458278}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1193624264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1193624262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 3e201febe9484194c9f893245d475b1d, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1193624265
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1193624262}
+  m_CullTransparentMesh: 1
 --- !u!1 &1199597960
 GameObject:
   m_ObjectHideFlags: 0

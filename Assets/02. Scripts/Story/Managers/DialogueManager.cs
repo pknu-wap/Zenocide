@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -17,7 +16,7 @@ public class DialogueManager : MonoBehaviour
     private Coroutine processEvent = null;
 
     [Header("현재 사용 중인 CSV 데이터")]
-    private List<Dictionary<string, object>> dataCSV;
+    public List<Dictionary<string, object>> dataCSV;
 
     [Header("상수 값")]
     private const string emptyString = "";
@@ -35,13 +34,13 @@ public class DialogueManager : MonoBehaviour
 
     [Header("스토리 CSV")]
     // 메인 CSV 파일을 읽어올 리스트
-    private List<Dictionary<string, object>> dataMainCSV;
+    public List<Dictionary<string, object>> dataMainCSV;
     [SerializeField] private TextAsset MainCSV;
     // 서브 CSV 파일을 읽어올 리스트
-    private List<Dictionary<string, object>> dataSubCSV;
+    public List<Dictionary<string, object>> dataSubCSV;
     [SerializeField] private TextAsset SubCSV;
     // 연계 CSV 파일을 읽어올 리스트
-    private List<Dictionary<string, object>> dataRelationCSV;
+    public List<Dictionary<string, object>> dataRelationCSV;
     [SerializeField] private TextAsset RelationCSV;
 
     [Header("일러스트 데이터")]
@@ -108,10 +107,6 @@ public class DialogueManager : MonoBehaviour
     [Header("배경 이미지 데이터")]
     public Image    storyBackgroundObject;
     public Image    battleBackgroundObject;
-
-    [Header("스킵")]
-    public GameObject skipButton;
-    public bool isSkip;
     #endregion 변수
 
     private void Awake()
@@ -260,13 +255,6 @@ public class DialogueManager : MonoBehaviour
                 yield return null;
             }
 
-            // 스킵 요청이 들어오면 스킵한다.
-            if(isSkip == true)
-            {
-                isSkip = false;
-                yield break;
-            }
-
             // 클릭이 감지되면, 재사용을 위해 원상태로 돌리고 진행한다.
             isClicked = false;
 
@@ -292,13 +280,6 @@ public class DialogueManager : MonoBehaviour
                 #region 선택지 표시 및 대기
                 // 선택지를 띄우고, 선택할 때까지 대기
                 yield return DisplayChoices(dataCSV[i]);
-
-                // 선택지가 표시 중일 때도 스킵 요청이 들어오면 스킵
-                if(isSkip == true)
-                {
-                    isSkip = false;
-                    yield break;
-                }
                 #endregion 선택지 표시 및 대기
 
                 #region 선택한 이벤트로 이동
@@ -368,7 +349,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 대화 출력 함수
-    private IEnumerator DisplayDialogue(Dictionary<string, object> csvData)
+    public IEnumerator DisplayDialogue(Dictionary<string, object> csvData)
     {
         // 일러스트 배열로 만들어두고
         string[] illustNames = new string[] {
@@ -422,7 +403,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 텍스트 출력 효과 함수
-    private IEnumerator TypeSentence(string sentence)
+    public IEnumerator TypeSentence(string sentence)
     {
         // 다음 대화로 넘어가기 전에 기다리는 커서 비활성화
         waitCursor.SetActive(false);
@@ -473,7 +454,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 이벤트를 종료한다.
-    private void EndEvent(EventData loadedEvent)
+    public void EndEvent(EventData loadedEvent)
     {
         // 추가할 이벤트가 있다면
         for (int j = 0; j < loadedEvent.addEvent.Length; ++j)
@@ -499,7 +480,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 선택지를 띄운다.
-    private IEnumerator DisplayChoices(Dictionary<string, object> csvData)
+    public IEnumerator DisplayChoices(Dictionary<string, object> csvData)
     {
         // 선택지 띄우기 전 처리
         // 선택지를 제외한 입력을 받지 않는다.
@@ -514,7 +495,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 사용한 아이템을 제거한다.
-    private void RemoveUsedItem(string item)
+    public void RemoveUsedItem(string item)
     {
         // 사용한 아이템을 제거한다.
         if (item is not emptyString)
@@ -526,7 +507,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 아이템을 획득한다.
-    private void EquipItem(string equipItem)
+    public void EquipItem(string equipItem)
     {
         // 따로 분리하지 않고, 그대로 준다.
         Items.Instance.AddItem(equipItem);
@@ -535,7 +516,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 카드를 획득한다.
-    private void EquipCard(string equipCard)
+    public void EquipCard(string equipCard)
     {
         CardManager.Instance.AddCardToDeck(equipCard);
 
@@ -570,7 +551,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 리스트에 이벤트를 추가한다.
-    private void AddEventToList(EventData eventData)
+    public void AddEventToList(EventData eventData)
     {
         // 딜레이 딕셔너리에 추가한다.
         if (eventData.eventID == EventType.Main)
@@ -586,7 +567,7 @@ public class DialogueManager : MonoBehaviour
             Debug.LogError("선택지 이벤트가 processable Event List에 추가되었습니다.");
         }
     }
-    
+
     //대화 배속 조절 함수
     public void DialogueSpeedy(int speed)
     {
@@ -600,7 +581,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 해당 열에 적힌 적들의 이름을 받아온다.
-    private string[] GetEnemiesName(Dictionary<string, object> csvData)
+    public string[] GetEnemiesName(Dictionary<string, object> csvData)
     {
         string[] enemies = new string[4];
         for (int j = 0; j < enemies.Length; ++j)
@@ -637,23 +618,6 @@ public class DialogueManager : MonoBehaviour
                 delayDictionary.Remove(events[i]);
             }
         }
-    }
-
-    public void SkipEvent()
-    {
-        isSkip = true;
-        currentEvent = null;
-        skipButton.SetActive(false);
-
-        // 다이얼로그가 출력 중이면
-        if(waitCursor.activeSelf == false)
-        {
-            // 전부 출력
-            isClicked = true;
-        }
-
-        // 다음 이벤트로 넘어간다.
-        isClicked = true;
     }
 
     #region Legacy

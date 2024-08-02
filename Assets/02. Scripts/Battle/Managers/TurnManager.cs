@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class TurnManager : MonoBehaviour
 {
     public static TurnManager Instance { get; private set; }
-    private void Awake() => Instance = this;
+    void Awake() => Instance = this;
 
     [Header("Develop")]
     [SerializeField] [Tooltip("시작 턴 모드를 정합니다")] ETurnMode eTurnMode;
@@ -28,7 +28,7 @@ public class TurnManager : MonoBehaviour
     public UnityEvent onEndPlayerTurn;      // 플레이어 턴이 끝날 때
     public UnityEvent onEndEnemyTurn;       // 적 턴이 끝날 때
 
-    void GameSetup()
+    public void GameSetup()
     {
         switch (eTurnMode)
         {
@@ -61,7 +61,7 @@ public class TurnManager : MonoBehaviour
     }
 
     // 플레이어 턴을 시작한다.
-    IEnumerator StartPlayerTurnCo()
+    public IEnumerator StartPlayerTurnCo()
     {
         // 턴 시작 UI 출력, 이 부분도 추후 수정해야 합니다.
         GameManager.Instance.Notification("나의 턴");
