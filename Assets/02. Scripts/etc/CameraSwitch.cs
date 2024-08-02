@@ -6,6 +6,7 @@ public class CameraSwitch : MonoBehaviour
 {
     public GameObject storyCamera;
     public GameObject battleCamera;
+    public Option option;
 
     private void Start()
     {
