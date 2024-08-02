@@ -238,18 +238,9 @@ public class DialogueManager : MonoBehaviour
                 dataCSV = dataRelationCSV;
                 break;
         }
-
-        //Relation 이벤트가 아니고 첫번째 이벤트가 아닐 때만 화면 전환 효과를 준다.
-        if(loadedEvent.eventID != EventType.Relation && !isFirstEvent)
-        {
-            yield return StartCoroutine(BGChangeEffectManager.Instance.FadeOut(fadeSpeed));
-            StartCoroutine(BGChangeEffectManager.Instance.FadeIn(fadeSpeed));
-        }
         
         // 첫 문장은 바로 띄운다.
         isClicked = true;
-        // 첫 이벤트가 아니게 되므로 false로 바꾼다.
-        isFirstEvent = false;
 
         // 이벤트 진행
         for (int i = loadedEvent.startIndex; i <= loadedEvent.endIndex; ++i)
@@ -271,7 +262,9 @@ public class DialogueManager : MonoBehaviour
 
                 // 딜레이를 감소시킨다.
                 ProcessDelay(loadedEvent);
-
+                //화면 전환 효과를 준다.
+                yield return StartCoroutine(BGChangeEffectManager.Instance.FadeOut(fadeSpeed));
+                StartCoroutine(BGChangeEffectManager.Instance.FadeIn(fadeSpeed));
                 // 현재 이벤트를 종료한다. (ProcessRandomEvent로 이동)
                 yield break;
             }
@@ -286,11 +279,13 @@ public class DialogueManager : MonoBehaviour
                 // 선택지를 띄우고, 선택할 때까지 대기
                 yield return DisplayChoices(dataCSV[i]);
                 #endregion 선택지 표시 및 대기
-
+                
                 #region 선택한 이벤트로 이동
                 // 고른 선택지 번호 확인하고
                 int result = SelectManager.Instance.result;
-
+                #region 선택지 로그 저장
+                TextLogButton.Instance.AddLog("선택지", dataCSV[i]["Choice" + (result+1)].ToString());
+                #endregion 선택지 로그 저장
                 // 선택된 이벤트를 캐싱해둔다.
                 EventData relationEvent = loadedEvent.relationEvent[result];
 

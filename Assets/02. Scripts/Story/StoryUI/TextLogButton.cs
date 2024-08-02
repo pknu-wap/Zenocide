@@ -100,7 +100,9 @@ public class TextLogButton : MonoBehaviour,IPointerDownHandler,IPointerEnterHand
     public void AddLog(string name, string text)
     {
         if(text == "") return;
-         
+
+        bool isSelect = name == "선택지" ? true : false;
+
         Names.Add(name);
         Texts.Add(text);
 
@@ -110,6 +112,10 @@ public class TextLogButton : MonoBehaviour,IPointerDownHandler,IPointerEnterHand
         LogBoxes[CurrentLog].transform.GetChild(1).GetComponent<TMP_Text>().alignment = name == "" ? TextAlignmentOptions.TopLeft : TextAlignmentOptions.MidlineLeft;
         TextTMP = LogBoxes[CurrentLog].transform.GetChild(1).GetComponent<TMP_Text>();
         NameTMP = LogBoxes[CurrentLog].transform.GetChild(2).GetComponent<TMP_Text>();
+        TextTMP.color = isSelect ? new Color(1, 0.627f, 0.478f, 1) : new Color(1, 1, 1, 1);
+        NameTMP.color = isSelect ? new Color(1, 0.627f, 0.478f, 1) : new Color(1, 1, 1, 1);            
+
+
         NameTMP.text = Names[CurrentLog];
         TextTMP.text = Texts[CurrentLog];
     }
