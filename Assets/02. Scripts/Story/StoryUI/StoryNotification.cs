@@ -38,14 +38,102 @@ public class StoryNotification : MonoBehaviour
 
     public void ShowGetItemMessage(string itemName)
     {
-        notificationText.text = itemName + "을 획득했다.";
+        string[] items = itemName.Split('#');
+        string result_str = "";
+        int count = 1;
+
+        // 아이템 스크립트 작성
+        for(int i = 0; i < items.Length; ++i)
+        {
+            // 앞전 아이템과 같다면
+            if (i > 0 && items[i] == items[i - 1])
+            {
+                // 카운트를 1 증가
+                ++count;
+                continue;
+            }
+            // 앞전 아이템과 다를 때
+            else
+            {
+                // count가 1이 아니라면
+                if(count > 1)
+                {
+                    // 개수 적어주기
+                    result_str += (" x " + count);
+                    count = 1;
+                }
+
+                // 첫 아이템이 아니라면
+                if (i > 0)
+                {
+                    // 콤마 찍어주기
+                    result_str += ", ";
+                }
+
+                // 아이템 이름 적어주기
+                result_str += items[i];
+            }
+        }
+
+        // 만약, 반복문을 전부 돌았는데 남은 count가 있다면
+        if(count > 1)
+        {
+            // 개수를 마저 작성한다. (덜 적힌 경우이므로)
+            result_str += (" x " + count);
+        }
+
+        notificationText.text = result_str + "을(를) 획득했다.";
 
         MoveMessage();
     }
 
     public void ShowRemoveItemMessage(string itemName)
     {
-        notificationText.text = itemName + "을 잃었다.";
+        string[] items = itemName.Split('#');
+        string result_str = "";
+        int count = 1;
+
+        // 아이템 스크립트 작성
+        for (int i = 0; i < items.Length; ++i)
+        {
+            // 앞전 아이템과 같다면
+            if (i > 0 && items[i] == items[i - 1])
+            {
+                // 카운트를 1 증가
+                ++count;
+                continue;
+            }
+            // 앞전 아이템과 다를 때
+            else
+            {
+                // count가 1이 아니라면
+                if (count > 1)
+                {
+                    // 개수 적어주기
+                    result_str += (" x " + count);
+                    count = 1;
+                }
+
+                // 첫 아이템이 아니라면
+                if (i > 0)
+                {
+                    // 콤마 찍어주기
+                    result_str += ", ";
+                }
+
+                // 아이템 이름 적어주기
+                result_str += items[i];
+            }
+        }
+
+        // 만약, 반복문을 전부 돌았는데 남은 count가 있다면
+        if (count > 1)
+        {
+            // 개수를 마저 작성한다. (덜 적힌 경우이므로)
+            result_str += (" x " + count);
+        }
+
+        notificationText.text = result_str + "을(를) 잃었다.";
 
         MoveMessage();
     }
