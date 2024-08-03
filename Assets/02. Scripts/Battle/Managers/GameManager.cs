@@ -27,7 +27,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject tutorialScene;
 
     [Header("튜토리얼 이벤트")]
-    [SerializeField] private EventData tutorialEvent;
+    [SerializeField] private EventData[] tutorialEvent;
+    Dictionary<string, int> jobTable = new Dictionary<string, int>()
+    {
+        {"군인", 0 },
+        {"의사", 1 },
+        {"경찰", 2 },
+        {"건설", 3 },
+    };
+
 
     private void Awake()
     {
@@ -98,7 +106,7 @@ public class GameManager : MonoBehaviour
     public void StartTutorial()
     {
         // 튜토리얼 이벤트 삽입하고
-        DialogueManager.Instance.currentEvent = tutorialEvent;
+        DialogueManager.Instance.currentEvent = tutorialEvent[jobTable[Player.Instance.job]];
 
         // 튜토리얼 시작
         StartCoroutine(TutorialManager.Instance.ProcessEvent(DialogueManager.Instance.currentEvent));
