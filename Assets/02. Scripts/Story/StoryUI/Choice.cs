@@ -52,23 +52,46 @@ public class Choice : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         HideSelectUI();
     }
 
-    public void UpdateText(string choiceText, string requireItemText = "")
+    public void UpdateText(string choiceText, string[] requireItemText)
     {
         this.choiceText.text = choiceText;
         this.requireItemText.text = "";
 
-        if (requireItemText != "")
-        {
-            if (Items.Instance.items.ContainsKey(requireItemText))
-            {
-                this.requireItemText.text = "필요한 아이템: <color=green>" + requireItemText + "</color>";
-                EnableInteractable();
-            }
+        // 우선 활성화
+        EnableInteractable();
 
-            else
+        // 있는 경우
+        if (requireItemText.Length > 0 && requireItemText[0] != "")
+        {
+            this.requireItemText.text += "필요한 아이템: ";
+
+            // 모든 아이템에 대해
+            for (int i = 0; i < requireItemText.Length; ++i)
             {
-                this.requireItemText.text = "필요한 아이템: <color=red>" + requireItemText + "</color>";
-                DisableInteractable();
+                // 아이템 검색
+                Item item = Items.Instance.FindItemWithTag(requireItemText[i]);
+
+                // 아이템이 있다면
+                if (item.Name != "Error")
+                {
+                    // 아이템 이름을 초록색으로 적는다.
+                    this.requireItemText.text += "<color=green>" + item.Name + "</color>";
+                }
+
+                // 아이템이 없다면
+                else
+                {
+                    // 태그를 빨갛게 적고
+                    this.requireItemText.text += "<color=red>" + requireItemText[i] + "</color>";
+                    // 비활성화 한다.
+                    DisableInteractable();
+                }
+
+                // 콤마 넣기
+                if (i < requireItemText.Length - 1)
+                {
+                    this.requireItemText.text += ", ";
+                }
             }
         }
     }
