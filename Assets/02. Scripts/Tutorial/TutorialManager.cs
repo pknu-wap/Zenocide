@@ -4,17 +4,26 @@ using System.Collections;
 public class TutorialManager : MonoBehaviour
 {
     public static TutorialManager Instance { get; private set; }
-    void Awake() => Instance = this;
 
     [Header("스킵")]
     public GameObject skipButton;
     public bool isSkip;
 
     [Header("튜토리얼 이미지")]
-    [SerializeField] GameObject tutorialPanel;
+    [SerializeField] GameObject[] tutorialPanels;
 
     [Header("상수")]
     public const string emptyString = "";
+
+    void Awake()
+    {
+        Instance = this;
+
+        for(int i=0; i<tutorialPanels.Length; i++)
+        {
+            tutorialPanels[i].SetActive(false);
+        }
+    }
 
     public IEnumerator ProcessEvent(EventData loadedEvent)
     {
@@ -216,16 +225,21 @@ public class TutorialManager : MonoBehaviour
         // 플레이어 턴을 시작하고, 끝날 때까지 기다린다.
         yield return StartCoroutine(TurnManager.Instance.StartPlayerTurnCo());
 
-        // 튜토리얼 이미지를 띄운다.
-        tutorialPanel.SetActive(true);
+        for(int i=0; i<tutorialPanels.Length; i++) {
+            // 튜토리얼 이미지를 띄운다.
+            tutorialPanels[i].SetActive(true);
 
-        // 임의의 키를 누를 때까지 대기
-        while (Input.anyKey == false && Input.GetKeyDown(KeyCode.Escape) == false)
-        {
-            yield return null;
+            // 한 번에 다 넘어가지 않게 텀 주기
+            yield return new WaitForSeconds(1f);
+
+            // 임의의 키를 누를 때까지 대기
+            while (Input.anyKey == false && Input.GetKeyDown(KeyCode.Escape) == false)
+            {
+                yield return null;
+            }
+
+            tutorialPanels[i].SetActive(false);
         }
-
-        tutorialPanel.SetActive(false);
 
         // 로딩을 종료한다.
         TurnManager.Instance.isLoading = false;
