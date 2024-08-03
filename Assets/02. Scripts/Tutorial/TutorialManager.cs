@@ -15,6 +15,8 @@ public class TutorialManager : MonoBehaviour
     [Header("상수")]
     public const string emptyString = "";
 
+    public bool isPanelShow = false;
+
     void Awake()
     {
         Instance = this;
@@ -222,10 +224,13 @@ public class TutorialManager : MonoBehaviour
         // 로딩을 시작한다.
         TurnManager.Instance.isLoading = true;
 
+        // 카드 상호작용을 막는다
+        isPanelShow = true;
+
         // 플레이어 턴을 시작하고, 끝날 때까지 기다린다.
         yield return StartCoroutine(TurnManager.Instance.StartPlayerTurnCo());
 
-        for(int i=0; i<tutorialPanels.Length; i++) {
+        for (int i=0; i<tutorialPanels.Length; i++) {
             // 튜토리얼 이미지를 띄운다.
             tutorialPanels[i].SetActive(true);
 
@@ -233,13 +238,15 @@ public class TutorialManager : MonoBehaviour
             yield return new WaitForSeconds(1f);
 
             // 임의의 키를 누를 때까지 대기
-            while (Input.anyKey == false && Input.GetKeyDown(KeyCode.Escape) == false)
+            while (Input.anyKeyDown == false && Input.GetKeyDown(KeyCode.Escape) == false)
             {
                 yield return null;
             }
 
             tutorialPanels[i].SetActive(false);
         }
+
+        isPanelShow = false;
 
         // 로딩을 종료한다.
         TurnManager.Instance.isLoading = false;

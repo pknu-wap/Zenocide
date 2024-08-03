@@ -91,7 +91,7 @@ public class Card : Poolable
     // 마우스를 카드 위에 올릴 떄 실행된다.
     void OnMouseEnter()
     {
-        if (BattleInfo.Instance.isGameOver || isDiscarded || CardManager.Instance.IsCardSelected())
+        if (BattleInfo.Instance.isGameOver || isDiscarded || CardManager.Instance.IsCardSelected() || TutorialManager.Instance.isPanelShow)
         {
             return;
         }
@@ -118,7 +118,7 @@ public class Card : Poolable
     // 드래그가 시작될 때 호출된다.
     public void OnMouseDown()
     {
-        if (BattleInfo.Instance.isGameOver || isDiscarded || CardManager.Instance.IsCardSelected())
+        if (BattleInfo.Instance.isGameOver || isDiscarded || CardManager.Instance.IsCardSelected() || TutorialManager.Instance.isPanelShow)
         {
             return;
         }
