@@ -105,7 +105,7 @@ public class DialogueManager : MonoBehaviour
     public int dialogueSpeed = 1;
 
     [Header("화면 전환 속도 변수")]
-    public float fadeSpeed = 1.0f;
+    public float fadeSpeed = 0.5f;
 
     [Header("배경 이미지 데이터")]
     public Image    storyBackgroundObject;
@@ -241,6 +241,15 @@ public class DialogueManager : MonoBehaviour
         
         // 첫 문장은 바로 띄운다.
         isClicked = true;
+        
+        //연계 스토리(Relation Story)가 아닐 경우만 실행
+        if(loadedEvent.eventID != EventType.Relation)
+        {
+            //이벤트가 시작하기 전 FadeOut 효과를 제거하는 FadeIn 효과를 준다.
+            StartCoroutine(BGChangeEffectManager.Instance.FadeIn(fadeSpeed));
+            //FadeIn 이후 스토리 정보를 띄운다. (현재 속도: fadeSpeed*4 = 2초)
+            StartCoroutine(StoryInformation.Instance.ShowInformation(fadeSpeed*4,fadeSpeed, dataCSV[loadedEvent.startIndex]["Event"].ToString()));
+        }
 
         // 이벤트 진행
         for (int i = loadedEvent.startIndex; i <= loadedEvent.endIndex; ++i)
@@ -264,7 +273,6 @@ public class DialogueManager : MonoBehaviour
                 ProcessDelay(loadedEvent);
                 //화면 전환 효과를 준다.
                 yield return StartCoroutine(BGChangeEffectManager.Instance.FadeOut(fadeSpeed));
-                StartCoroutine(BGChangeEffectManager.Instance.FadeIn(fadeSpeed));
                 // 현재 이벤트를 종료한다. (ProcessRandomEvent로 이동)
                 yield break;
             }
