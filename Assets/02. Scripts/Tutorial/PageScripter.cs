@@ -33,7 +33,7 @@ public class PageScripter : MonoBehaviour
     {
         diaryText = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<TMP_Text>();
         book = transform.parent.GetComponent<PageCurl>();
-        waitCursor = transform.parent.parent.GetChild(2).gameObject;
+        waitCursor = transform.parent.parent.GetChild(3).gameObject;
     }
 
     // 스크립트를 보여준다.
@@ -54,7 +54,7 @@ public class PageScripter : MonoBehaviour
         // $일 경우 튜토리얼을 종료한다.
         if (sentence == "$")
         {
-            GameManager.Instance.FinishDiary();
+            DiaryManager.Instance.FinishDiary();
             yield break;
         }
 
