@@ -156,4 +156,15 @@ public class DiaryManager : MonoBehaviour
         choiceParent.gameObject.SetActive(false);
         isSelected = true;
     }
+
+    public void FinishDiary()
+    {
+        // 다시 처음으로 돌리고
+        currentDialogIndex = 0;
+        currentPageIndex = 0;
+
+        // 튜토리얼 이벤트 시작
+        GameManager.Instance.ToggleTutorialScene();
+        TutorialManager.Instance.StartTutorial();
+    }
 }

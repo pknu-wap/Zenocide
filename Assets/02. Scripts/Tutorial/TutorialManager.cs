@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class TutorialManager : MonoBehaviour
 {
@@ -11,6 +12,16 @@ public class TutorialManager : MonoBehaviour
 
     [Header("튜토리얼 이미지")]
     [SerializeField] GameObject[] tutorialPanels;
+
+    [Header("튜토리얼 이벤트")]
+    [SerializeField] private EventData[] tutorialEvent;
+    Dictionary<string, int> jobTable = new Dictionary<string, int>()
+    {
+        {"군인", 0 },
+        {"의사", 1 },
+        {"경찰", 2 },
+        {"건설", 3 },
+    };
 
     [Header("상수")]
     public const string emptyString = "";
@@ -168,7 +179,17 @@ public class TutorialManager : MonoBehaviour
         StartCoroutine(DialogueManager.Instance.ProcessRandomEvent());
     }
 
-    // dialogue mgr와 game mgr의 StartBattle을 합침
+    public void StartTutorial()
+    {
+        // 튜토리얼 이벤트 삽입하고
+        DialogueManager.Instance.currentEvent = tutorialEvent[jobTable[Player.Instance.job]];
+
+        // 튜토리얼 시작
+        StartCoroutine(TutorialManager.Instance.ProcessEvent(DialogueManager.Instance.currentEvent));
+        GameManager.Instance.SwitchToStoryScene();
+    }
+
+    // dialogue mgr, game mgr, turn manager의 StartBattle을 편집
     IEnumerator StartBattleTutorial(string[] enemies, string rewardCardList)
     {
         // 배틀이 끝나지 않았음을 체크
@@ -207,8 +228,39 @@ public class TutorialManager : MonoBehaviour
         // isGameOver를 false로 변경
         BattleInfo.Instance.isGameOver = false;
 
-        // 게임이 종료될 때까지 대기
-        yield return StartCoroutine(StartBattleTutorialCo());
+        // 게임 세팅
+        TurnManager.Instance.GameSetup();
+
+        // 로딩을 시작한다.
+        TurnManager.Instance.isLoading = true;
+
+        // 카드 상호작용을 막는다
+        isPanelShow = true;
+
+        for (int i = 0; i < tutorialPanels.Length; i++)
+        {
+            // 튜토리얼 이미지를 띄운다.
+            tutorialPanels[i].SetActive(true);
+
+            // 한 번에 다 넘어가지 않게 텀 주기
+            yield return new WaitForSeconds(1f);
+
+            // 임의의 키를 누를 때까지 대기
+            while (Input.anyKeyDown == false && Input.GetKeyDown(KeyCode.Escape) == false)
+            {
+                yield return null;
+            }
+
+            tutorialPanels[i].SetActive(false);
+        }
+
+        isPanelShow = false;
+
+        // 플레이어 턴을 시작하고, 끝날 때까지 기다린다.
+        yield return StartCoroutine(TurnManager.Instance.StartPlayerTurnCo());
+
+        // 로딩을 종료한다.
+        TurnManager.Instance.isLoading = false;
         #endregion battle
 
         // 끝나면 다음 줄로 바로 이동한다.

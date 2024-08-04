@@ -26,16 +26,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject battleScene;
     [SerializeField] private GameObject tutorialScene;
 
-    [Header("튜토리얼 이벤트")]
-    [SerializeField] private EventData[] tutorialEvent;
-    Dictionary<string, int> jobTable = new Dictionary<string, int>()
-    {
-        {"군인", 0 },
-        {"의사", 1 },
-        {"경찰", 2 },
-        {"건설", 3 },
-    };
-
 
     private void Awake()
     {
@@ -94,23 +84,6 @@ public class GameManager : MonoBehaviour
     {
         rewardPanel.SetActive(false);
         gameOverPanel.SetActive(false);
-    }
-
-    // 스토리를 시작한다.
-    public void StartStory()
-    {
-        StartCoroutine(DialogueManager.Instance.ProcessRandomEvent());
-        SwitchToStoryScene();
-    }
-
-    public void StartTutorial()
-    {
-        // 튜토리얼 이벤트 삽입하고
-        DialogueManager.Instance.currentEvent = tutorialEvent[jobTable[Player.Instance.job]];
-
-        // 튜토리얼 시작
-        StartCoroutine(TutorialManager.Instance.ProcessEvent(DialogueManager.Instance.currentEvent));
-        SwitchToStoryScene();
     }
 
     /// <summary>
@@ -182,17 +155,6 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
 
         gameOverPanel.SetActive(true);
-    }
-
-    public void FinishDiary()
-    {
-        // 다시 처음으로 돌리고
-        DiaryManager.Instance.currentDialogIndex = 0;
-        DiaryManager.Instance.currentPageIndex = 0;
-
-        // 튜토리얼 이벤트 시작
-        tutorialScene.SetActive(false);
-        StartTutorial();
     }
 
     // 모든 적 정보를 등록, 소환한다
@@ -294,7 +256,7 @@ public class GameManager : MonoBehaviour
     }
 
     #region 카메라 전환
-    private void SwitchToStoryScene()
+    public void SwitchToStoryScene()
     {
         storyScene.SetActive(true);
         battleScene.SetActive(false);
@@ -315,4 +277,9 @@ public class GameManager : MonoBehaviour
         battleScene.SetActive(false);
     }
     #endregion 카메라 전환
+
+    public void ToggleTutorialScene()
+    {
+        tutorialScene.SetActive(!tutorialScene.activeSelf);
+    }
 }

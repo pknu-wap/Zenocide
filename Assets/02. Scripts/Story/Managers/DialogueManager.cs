@@ -66,7 +66,8 @@ public class DialogueManager : MonoBehaviour
     {
         {"Basement", 0},
         {"ZombieTown", 1},
-        {"배경3", 2}
+        {"배경3", 2},
+        {"배경4", 3}
     };
     public Sprite[] backgroundImages;
 
