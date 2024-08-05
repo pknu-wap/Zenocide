@@ -16,7 +16,7 @@ public class DialogueManager : MonoBehaviour
     private Coroutine processEvent = null;
 
     [Header("현재 사용 중인 CSV 데이터")]
-    public List<Dictionary<string, object>> dataCSV;
+    private List<Dictionary<string, object>> dataCSV;
 
     [Header("상수 값")]
     private const string emptyString = "";
@@ -34,13 +34,13 @@ public class DialogueManager : MonoBehaviour
 
     [Header("스토리 CSV")]
     // 메인 CSV 파일을 읽어올 리스트
-    public List<Dictionary<string, object>> dataMainCSV;
+    private List<Dictionary<string, object>> dataMainCSV;
     [SerializeField] private TextAsset MainCSV;
     // 서브 CSV 파일을 읽어올 리스트
-    public List<Dictionary<string, object>> dataSubCSV;
+    private List<Dictionary<string, object>> dataSubCSV;
     [SerializeField] private TextAsset SubCSV;
     // 연계 CSV 파일을 읽어올 리스트
-    public List<Dictionary<string, object>> dataRelationCSV;
+    private List<Dictionary<string, object>> dataRelationCSV;
     [SerializeField] private TextAsset RelationCSV;
 
     [Header("일러스트 데이터")]
@@ -350,7 +350,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 대화 출력 함수
-    public IEnumerator DisplayDialogue(Dictionary<string, object> csvData)
+    private IEnumerator DisplayDialogue(Dictionary<string, object> csvData)
     {
         // 일러스트 배열로 만들어두고
         string[] illustNames = new string[] {
@@ -381,7 +381,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 일러스트를 띄운다.
-    public void DisplayIllust(string[] illustNames)
+    private void DisplayIllust(string[] illustNames)
     {
         // names엔 ""를 포함해 3개가 들어온다.
 
@@ -404,7 +404,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 텍스트 출력 효과 함수
-    public IEnumerator TypeSentence(string sentence)
+    private IEnumerator TypeSentence(string sentence)
     {
         // 다음 대화로 넘어가기 전에 기다리는 커서 비활성화
         waitCursor.SetActive(false);
@@ -455,7 +455,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 이벤트를 종료한다.
-    public void EndEvent(EventData loadedEvent)
+    private void EndEvent(EventData loadedEvent)
     {
         // 추가할 이벤트가 있다면
         for (int j = 0; j < loadedEvent.addEvent.Length; ++j)
@@ -481,7 +481,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 선택지를 띄운다.
-    public IEnumerator DisplayChoices(Dictionary<string, object> csvData)
+    private IEnumerator DisplayChoices(Dictionary<string, object> csvData)
     {
         // 선택지 띄우기 전 처리
         // 선택지를 제외한 입력을 받지 않는다.
@@ -496,7 +496,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 사용한 아이템을 제거한다.
-    public void RemoveUsedItem(string item)
+    private void RemoveUsedItem(string item)
     {
         // 사용한 아이템을 제거한다.
         if (item is not emptyString)
@@ -508,7 +508,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 아이템을 획득한다.
-    public void EquipItem(string equipItem)
+    private void EquipItem(string equipItem)
     {
         // 따로 분리하지 않고, 그대로 준다.
         Items.Instance.AddItems(equipItem);
@@ -517,7 +517,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 카드를 획득한다.
-    public void EquipCard(string equipCard)
+    private void EquipCard(string equipCard)
     {
         CardManager.Instance.AddCardsToDeck(equipCard);
 
@@ -552,7 +552,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 리스트에 이벤트를 추가한다.
-    public void AddEventToList(EventData eventData)
+    private void AddEventToList(EventData eventData)
     {
         // 딜레이 딕셔너리에 추가한다.
         if (eventData.eventID == EventType.Main)
@@ -582,7 +582,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 해당 열에 적힌 적들의 이름을 받아온다.
-    public string[] GetEnemiesName(Dictionary<string, object> csvData)
+    private string[] GetEnemiesName(Dictionary<string, object> csvData)
     {
         string[] enemies = new string[4];
         for (int j = 0; j < enemies.Length; ++j)
@@ -593,7 +593,7 @@ public class DialogueManager : MonoBehaviour
         return enemies;
     }
 
-    public void ProcessDelay(EventData loadedData)
+    private void ProcessDelay(EventData loadedData)
     {
         // 릴레이션 이벤트일 때는 딜레이 적용 안함
         if (loadedData.eventID == EventType.Relation)

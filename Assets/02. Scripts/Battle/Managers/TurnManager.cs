@@ -10,7 +10,7 @@ using Random = UnityEngine.Random;
 public class TurnManager : MonoBehaviour
 {
     public static TurnManager Instance { get; private set; }
-    void Awake() => Instance = this;
+    private void Awake() => Instance = this;
 
     [Header("Develop")]
     [SerializeField] [Tooltip("시작 턴 모드를 정합니다")] ETurnMode eTurnMode;
