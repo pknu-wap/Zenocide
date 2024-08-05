@@ -66,7 +66,8 @@ public class DialogueManager : MonoBehaviour
     {
         {"Basement", 0},
         {"ZombieTown", 1},
-        {"배경3", 2}
+        {"배경3", 2},
+        {"배경4", 3}
     };
     public Sprite[] backgroundImages;
 
@@ -378,7 +379,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 일러스트를 띄운다.
-    public void DisplayIllust(string[] illustNames)
+    private void DisplayIllust(string[] illustNames)
     {
         // names엔 ""를 포함해 3개가 들어온다.
 
@@ -581,7 +582,7 @@ public class DialogueManager : MonoBehaviour
             Debug.LogError("선택지 이벤트가 processable Event List에 추가되었습니다.");
         }
     }
-    
+
     //대화 배속 조절 함수
     public void DialogueSpeedy(int speed)
     {
@@ -606,7 +607,7 @@ public class DialogueManager : MonoBehaviour
         return enemies;
     }
 
-    public void ProcessDelay(EventData loadedData)
+    private void ProcessDelay(EventData loadedData)
     {
         // 릴레이션 이벤트일 때는 딜레이 적용 안함
         if (loadedData.eventID == EventType.Relation)
