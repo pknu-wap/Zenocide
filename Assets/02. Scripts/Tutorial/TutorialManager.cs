@@ -317,6 +317,9 @@ public class TutorialManager : MonoBehaviour
             DialogueManager.Instance.isClicked = true;
         }
 
+        // 대화 기록을 삭제한다.
+        TextLogButton.Instance.ResetLogs();
+
         // 다음 이벤트로 넘어간다.
         DialogueManager.Instance.isClicked = true;
     }
