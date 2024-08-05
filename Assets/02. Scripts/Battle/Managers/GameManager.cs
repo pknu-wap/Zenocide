@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] NotificationPanel notificationPanel;
     [SerializeField] Transform enemiesParent;
     [SerializeField] public Enemy[] enemies;
-    [SerializeField] CardList rewardCardList;
+    [SerializeField] public CardList rewardCardList;
     [SerializeField] StatusHP storyHP;
     [SerializeField] GameObject gameOverPanel;
     [SerializeField] int enemyLeft;
@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject storyScene;
     [SerializeField] private GameObject battleScene;
     [SerializeField] private GameObject tutorialScene;
+
 
     private void Awake()
     {
@@ -83,13 +84,6 @@ public class GameManager : MonoBehaviour
     {
         rewardPanel.SetActive(false);
         gameOverPanel.SetActive(false);
-    }
-
-    // 스토리를 시작한다.
-    public void StartStory()
-    {
-        StartCoroutine(DialogueManager.Instance.ProcessRandomEvent());
-        SwitchToStoryScene();
     }
 
     /// <summary>
@@ -161,17 +155,6 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
 
         gameOverPanel.SetActive(true);
-    }
-
-    public void FinishTutorial()
-    {
-        // 다시 처음으로 돌리고
-        DiaryManager.Instance.currentDialogIndex = 0;
-        DiaryManager.Instance.currentPageIndex = 0;
-
-        // 스토리 시작
-        tutorialScene.SetActive(false);
-        StartStory();
     }
 
     // 모든 적 정보를 등록, 소환한다
@@ -273,14 +256,14 @@ public class GameManager : MonoBehaviour
     }
 
     #region 카메라 전환
-    private void SwitchToStoryScene()
+    public void SwitchToStoryScene()
     {
         storyScene.SetActive(true);
         battleScene.SetActive(false);
         option.MoveOptionPanelToStoryFloatingCanvas();
     }
 
-    private void SwitchToBattleScene()
+    public void SwitchToBattleScene()
     {
         storyScene.SetActive(false);
         battleScene.SetActive(true);
@@ -294,4 +277,9 @@ public class GameManager : MonoBehaviour
         battleScene.SetActive(false);
     }
     #endregion 카메라 전환
+
+    public void ToggleTutorialScene()
+    {
+        tutorialScene.SetActive(!tutorialScene.activeSelf);
+    }
 }

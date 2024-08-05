@@ -57,7 +57,7 @@ public class PageCurl : MonoBehaviour
         }
 
         // 대기 커서를 불러온다.
-        waitCursor = transform.parent.GetChild(2).gameObject;
+        waitCursor = transform.parent.GetChild(3).gameObject;
 
         // 책의 너비와 높이를 구한다.
         RectTransform bookRect = GetComponent<RectTransform>();

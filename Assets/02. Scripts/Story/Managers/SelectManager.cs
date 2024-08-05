@@ -47,6 +47,19 @@ public class SelectManager : MonoBehaviour
         // 선택될 때까지 대기
         while (result == -1)
         {
+            // 스킵 요청이 들어오면
+            if (TutorialManager.Instance.isSkip == true)
+            {
+                // 선택지를 숨기고
+                for (int i = 0; i < choices.Length; ++i)
+                {
+                    choices[i].DisableChoiceObject();
+                }
+                
+                // 스킵한다.
+                yield break;
+            }
+
             yield return null;
         }
 
