@@ -75,6 +75,7 @@ public class DialogueSpeedUp : MonoBehaviour,IPointerDownHandler,IPointerEnterHa
     public void SetSpeed()
     {
         DialogueManager.Instance.DialogueSpeedy(SpeedStep);
+        TutorialManager.Instance.DialogueSpeedy(SpeedStep);
     }
     
 }

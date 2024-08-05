@@ -547,4 +547,10 @@ public class TutorialManager : MonoBehaviour
         }
         return enemies;
     }
+
+    //대화 배속 조절 함수
+    public void DialogueSpeedy(int speed)
+    {
+        dialogueSpeed = speed;
+    }
 }
