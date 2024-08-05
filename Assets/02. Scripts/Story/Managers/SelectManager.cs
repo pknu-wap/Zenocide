@@ -20,7 +20,7 @@ public class SelectManager : MonoBehaviour
 
     public IEnumerator DisplayChoices(Dictionary<string, object> csvData)
     {
-        // 선택지 초기화
+        // 선택 결과 초기화
         ResetChoice();
 
         int choiceCount = (int)csvData["Choice Count"];
@@ -28,12 +28,14 @@ public class SelectManager : MonoBehaviour
         for (int i = 0; i < choiceCount; i++)
         {
             choices[i].EnableChoiceObject();
-            choices[i].EnableInteractable();
 
+            // 선택지 대사를 받아온다.
             string choiceText = csvData["Choice" + (i + 1)].ToString();
-            string requireItem = csvData["Require Item" + (i + 1)].ToString();
-
-            choices[i].UpdateText(choiceText, requireItem);
+            // 요구하는 모든 아이템을 받아온다. 
+            string[] requireItems = csvData["Require Item" + (i + 1)].ToString().Split('#');
+            
+            // 선택지 버튼을 갱신한다
+            choices[i].UpdateText(choiceText, requireItems);
         }
 
         // 남는 선택지는 비활성화
