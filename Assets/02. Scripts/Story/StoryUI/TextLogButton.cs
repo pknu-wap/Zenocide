@@ -123,8 +123,8 @@ public class TextLogButton : MonoBehaviour,IPointerDownHandler,IPointerEnterHand
         //사용한 아이템
         string usedItem  = index == -1 ? empty : Dialogue["Remove Item" + index].ToString();
 
-        //이름이 없는 경우 로그가 비어 있으므로 함수 종료
-        if(Dialogue["Name"].ToString() == "") return;
+        //대사가 없는 경우 로그가 비어 있으므로 함수 종료
+        if(Dialogue["Text"].ToString() == "") return;
 
         //로그가 최대 저장 가능한 로그 수를 넘어갈 경우 가장 오래된 로그 삭제
         if(Names.Count >= MaxNum)
