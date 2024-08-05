@@ -519,7 +519,7 @@ public class DialogueManager : MonoBehaviour
     // 카드를 획득한다.
     public void EquipCard(string equipCard)
     {
-        CardManager.Instance.AddCardToDeck(equipCard);
+        CardManager.Instance.AddCardsToDeck(equipCard);
 
         notification.ShowGetCardMessage(equipCard);
     }
