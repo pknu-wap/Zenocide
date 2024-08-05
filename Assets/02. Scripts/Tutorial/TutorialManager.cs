@@ -306,6 +306,9 @@ public class TutorialManager : MonoBehaviour
         // 보상 카드 리스트 등록
         GameManager.Instance.rewardCardList = CardInfo.Instance.GetRewardCardListData(rewardCardList);
 
+        // 덱 셔플
+        CardManager.Instance.ShuffleDeck();
+
         // 배틀 카메라로 전환
         GameManager.Instance.SwitchToBattleScene();
 
