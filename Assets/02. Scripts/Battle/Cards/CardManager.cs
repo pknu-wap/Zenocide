@@ -112,6 +112,17 @@ public class CardManager : MonoBehaviour
         cardBackGroup = GameObject.Find("Card Back Group").transform;
         effectGroup = GameObject.Find("Effect Group").transform;
     }
+    
+    // 여러 카드를 덱에 추가한다. (string)
+    public void AddCardsToDeck(string cardName)
+    {
+        string[] cards = cardName.Split('#');
+
+        for (int i = 0; i < cards.Length; ++i)
+        {
+            AddCardToDeck(cards[i]);
+        }
+    }
 
     // 카드를 덱에 추가한다. (string)
     public void AddCardToDeck(string cardName)
@@ -133,6 +144,17 @@ public class CardManager : MonoBehaviour
         deck.Add(card);
         SortDeck();
         UpdateDeckCount();
+    }
+
+    // 여러 카드를 덱에서 삭제한다.
+    public void RemoveCardsFromDeck(string cardName)
+    {
+        string[] cards = cardName.Split('#');
+        
+        for(int i = 0; i < cards.Length; ++i)
+        {
+            RemoveCardFromDeck(cards[i]);
+        }
     }
 
     // 카드를 덱에서 삭제한다.
