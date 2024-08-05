@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -67,54 +68,50 @@ public class StoryNotification : MonoBehaviour
     /// #으로 연결된 문자열을 받아 개수와 함께 압축한다.
     /// </summary>
     /// <param name="str">#으로 연결된 문자열</param>
-    /// <returns></returns>
+    /// <returns>이름, 개수가 정리된 문자열</returns>
     private string CompressWithCount(string str)
     {
-        string[] strs = str.Split('#');
+        // 먼저 문자열을 분리해 Dictionary로 정리한다.
+        Dictionary<string, int> items = Items.Instance.ItemStringToDictionary(str.Split('#'));
+        // 결과를 저장할 문자열
         string result_str = "";
-        int count = 1;
 
-        // 스크립트 작성
-        for (int i = 0; i < strs.Length; ++i)
+        // 첫번째 문자열인지 검사하는 변수
+        bool isFirst = true;
+
+        foreach (var item in items)
         {
-            // 앞전 문자열과 같다면
-            if (i > 0 && strs[i] == strs[i - 1])
+            // 첫번째만 제외하고
+            if (isFirst == false)
             {
-                // 카운트를 1 증가
-                ++count;
-                continue;
+                // 콤마를 찍는다.
+                result_str += ", ";
             }
-            // 앞전 문자열과 다를 때
+
+            // 이름을 적어주고
+            result_str += item.Key;
+
+            // 아이템이 물품이라면
+            if (ItemInfo.Instance.GetItem(tag).Type == ItemType.Item)
+            {
+                // x를
+                result_str += " x ";
+            }
+            // 능력이라면
             else
             {
-                // count가 1이 아니라면
-                if (count > 1)
-                {
-                    // 개수 적어주기
-                    result_str += (" x " + count);
-                    count = 1;
-                }
-
-                // 첫 문자열이 아니라면
-                if (i > 0)
-                {
-                    // 콤마 찍어주기
-                    result_str += ", ";
-                }
-
-                // 문자열 적어주기
-                result_str += strs[i];
+                // Lv를 붙인다.
+                result_str += " Lv. ";
             }
+
+            // 요구하는 개수를 적어준다.
+            result_str += item.Value;
+
+            // 한 번 쓴 후 false로
+            isFirst = false;
         }
 
-        // 만약, 반복문을 전부 돌았는데 남은 count가 있다면
-        if (count > 1)
-        {
-            // 개수를 마저 작성한다. (덜 적힌 경우이므로)
-            result_str += (" x " + count);
-        }
-
-        // 만든 결과물을 반환
+        // 만들어진 문자열을 반환한다.
         return result_str;
     }
 
