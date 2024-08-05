@@ -196,9 +196,6 @@ public class DialogueManager : MonoBehaviour
     // 랜덤 이벤트를 선택해 진행한다.
     public IEnumerator ProcessRandomEvent()
     {
-        //랜덤 이벤트를 선택하기 전에 저장된 데이터가 있다면 로드한다.
-        DataManager.Instance.LoadData();
-        LoadData();
         // 게임이 끝나지 않았다면 무한 반복
         while (isGameCleared == false)
         {
@@ -638,26 +635,26 @@ public class DialogueManager : MonoBehaviour
     public void SaveData()
     {
         //딜레이 딕셔너리
-        DataManager.Instance.data.delayDictionary = delayDictionary;
+        DataManager.Instance.data.DelayDictionary = delayDictionary;
         //현재 진행중인 이벤트
-        DataManager.Instance.data.currentEvent = currentEvent;
+        DataManager.Instance.data.CurrentEvent = currentEvent;
         //진행 가능한 메인 이벤트 리스트
-        DataManager.Instance.data.processableMainEventList = processableMainEventList;
+        DataManager.Instance.data.ProcessableMainEventList = processableMainEventList;
         //진행 가능한 서브 이벤트 리스트
-        DataManager.Instance.data.processableSubEventList = processableSubEventList;
+        DataManager.Instance.data.ProcessableSubEventList = processableSubEventList;
         DataManager.Instance.SaveData();
     }
 
     public void LoadData()
     {
         //딜레이 딕셔너리
-        delayDictionary = DataManager.Instance.data.delayDictionary;
+        delayDictionary = DataManager.Instance.data.DelayDictionary;
         //현재 진행중인 이벤트
-        currentEvent = DataManager.Instance.data.currentEvent;
+        currentEvent = DataManager.Instance.data.CurrentEvent;
         //진행 가능한 메인 이벤트 리스트
-        processableMainEventList = DataManager.Instance.data.processableMainEventList;
+        processableMainEventList = DataManager.Instance.data.ProcessableMainEventList;
         //진행 가능한 서브 이벤트 리스트
-        processableSubEventList = DataManager.Instance.data.processableSubEventList;
+        processableSubEventList = DataManager.Instance.data.ProcessableSubEventList;
     }
 
     #region Legacy
