@@ -1,12 +1,8 @@
 using UnityEngine.EventSystems;
 using UnityEngine;
-using System;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
-using UnityEditor.Rendering;
-using static UnityEditor.Progress;
-using Unity.VisualScripting.ReorderableList;
 
 public class Choice : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
