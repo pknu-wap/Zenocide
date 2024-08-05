@@ -171,8 +171,6 @@ public class DialogueManager : MonoBehaviour
         // 이벤트를 가져올 리스트
         List<EventData> processableEventList;
 
-        Debug.Log(randomNumber);
-
         // 메인 스토리가 선택되면
         if (randomNumber < mainRate)
         {
@@ -281,15 +279,23 @@ public class DialogueManager : MonoBehaviour
                 #region 선택지 표시 및 대기
                 // 선택지를 띄우고, 선택할 때까지 대기
                 yield return DisplayChoices(dataCSV[i]);
-                #endregion 선택지 표시 및 대기
 
-                #region 선택한 이벤트로 이동
                 // 고른 선택지 번호 확인하고
                 int result = SelectManager.Instance.result;
 
                 // 선택된 이벤트를 캐싱해둔다.
                 EventData relationEvent = loadedEvent.relationEvent[result];
+                #endregion 선택지 표시 및 대기
 
+                #region 사용한 아이템 제거
+                // 사용한 아이템을 확인한다.
+                string requireItemText = dataCSV[i]["Remove Item" + (result + 1)].ToString();
+
+                // 해당 아이템을 제거한다.
+                RemoveUsedItem(requireItemText);
+                #endregion 사용한 아이템 제거
+
+                #region 선택한 이벤트로 이동
                 // 선택된 이벤트가 null일 경우
                 if (relationEvent == null)
                 {
@@ -303,14 +309,6 @@ public class DialogueManager : MonoBehaviour
                 // 그 외엔 선택지 이벤트로 교체한다.
                 currentEvent = relationEvent;
                 #endregion 선택한 이벤트로 이동
-
-                #region 사용한 아이템 제거
-                // 사용한 아이템을 확인한다.
-                string requiredItem = dataCSV[i]["Remove Item" + (result + 1)].ToString();
-
-                // 해당 아이템을 제거한다.
-                RemoveUsedItem(requiredItem);
-                #endregion 사용한 아이템 제거
 
                 yield break;
             }
@@ -495,23 +493,39 @@ public class DialogueManager : MonoBehaviour
         dialogButton.SetActive(true);
     }
 
-    // 사용한 아이템을 제거한다.
-    private void RemoveUsedItem(string item)
+    /// <summary>
+    /// 사용한 아이템을 제거한다.
+    /// </summary>
+    /// <param name="usedItemText">사용한 아이템 문자열</param>
+    private void RemoveUsedItem(string usedItemText)
     {
-        // 사용한 아이템을 제거한다.
-        if (item is not emptyString)
+        // 제거할 게 없다면 건너뛴다.
+        if(usedItemText is emptyString)
         {
-            Items.Instance.RemoveItem(item);
-
-            notification.ShowRemoveItemMessage(item);
+            return;
         }
+
+        // 딕셔너리로 변환하고
+        Dictionary<string, int> requireItems = Items.Instance.ItemStringToDictionary(usedItemText.Split('#'));
+
+        // 검색 수행 후, 
+        Dictionary<string, int> usedItems = Items.Instance.FindItemsWithTag(requireItems);
+
+        // 차례대로 삭제한다.
+        foreach (var item in usedItems)
+        {
+            Items.Instance.RemoveItems(item.Key, item.Value);
+        }
+
+        // 삭제 알림
+        notification.ShowRemoveItemMessage(usedItemText);
     }
 
     // 아이템을 획득한다.
     private void EquipItem(string equipItem)
     {
         // 따로 분리하지 않고, 그대로 준다.
-        Items.Instance.AddItem(equipItem);
+        Items.Instance.AddItems(equipItem);
 
         notification.ShowGetItemMessage(equipItem);
     }
@@ -519,7 +533,7 @@ public class DialogueManager : MonoBehaviour
     // 카드를 획득한다.
     private void EquipCard(string equipCard)
     {
-        CardManager.Instance.AddCardToDeck(equipCard);
+        CardManager.Instance.AddCardsToDeck(equipCard);
 
         notification.ShowGetCardMessage(equipCard);
     }

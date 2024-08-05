@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using TMPro;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 
 // 아이템 타입 (능력, 물품)
@@ -42,8 +42,6 @@ public class Items : MonoBehaviour
     public int lastSlotIndex = -1;
     // 아이템 데이터 리스트
     public List<Item> items = new List<Item>();
-    // 에러 아이템 (검색 실패 시 반환됨)
-    public Item errorItem = new Item(ItemType.Item, "Error", "Error", 0);
 
     private void Awake() => Instance = this;
 
@@ -73,32 +71,12 @@ public class Items : MonoBehaviour
     void TestItem()
     {
         // 기능 테스트도 함께 할 겸
-        AddItems("관찰력#빵#민첩성");
+        AddItems("관찰력#빵#민첩성#해열제");
 
         UpdateAllSlots();
     }
 
-    /// <summary>
-    /// 아이템을 검색한 후, 인덱스를 반환한다. 실패 시 -1을 반환한다.
-    /// </summary>
-    /// <param name="tag">검색할 아이템 태그</param>
-    /// <returns>검색된 아이템 인덱스</returns>
-    public int FindItemIndexWithTag(string tag)
-    {
-        // 정렬하지 않으니 순차 탐색
-        for(int i = 0; i < items.Count; ++i)
-        {
-            if (items[i].Tag == tag)
-            {
-                // 발견 시 인덱스 리턴
-                return i;
-            }
-        }
-
-        // 실패 시 -1 리턴
-        return -1;
-    }
-
+    #region 이름으로 검색
     public Item FindItemWithName(string name)
     {
         // 정렬하지 않으니 순차 탐색
@@ -111,10 +89,34 @@ public class Items : MonoBehaviour
             }
         }
 
-        // 실패 시 -1 리턴
-        return errorItem;
+        // 실패 시 null 리턴
+        return null;
     }
 
+    /// <summary>
+    /// 아이템을 검색한 후, 인덱스를 반환한다. 실패 시 -1을 반환한다.
+    /// </summary>
+    /// <param name="name">검색할 아이템 이름</param>
+    /// <param name="startIndex">검색을 시작할 위치 인덱스, 없을 시 처음부터</param>
+    /// <returns>검색된 아이템 인덱스</returns>
+    public int FindItemIndexWithName(string name, int startIndex = 0)
+    {
+        // 정렬하지 않으니 순차 탐색
+        for (int i = startIndex; i < items.Count; ++i)
+        {
+            if (items[i].Name == name)
+            {
+                // 발견 시 인덱스 리턴
+                return i;
+            }
+        }
+
+        // 실패 시 -1 리턴
+        return -1;
+    }
+    #endregion 이름으로 검색
+
+    #region 태그로 검색
     public Item FindItemWithTag(string tag)
     {
         // 정렬하지 않으니 순차 탐색
@@ -128,8 +130,105 @@ public class Items : MonoBehaviour
         }
 
         // 실패 시 -1 리턴
-        return errorItem;
+        return null;
     }
+
+    /// <summary>
+    /// 아이템을 검색한 후, 인덱스를 반환한다. 실패 시 -1을 반환한다.
+    /// </summary>
+    /// <param name="name">검색할 아이템 태그</param>
+    /// <param name="startIndex">검색을 시작할 위치 인덱스, 없을 시 처음부터</param>
+    /// <returns>검색된 아이템 인덱스</returns>
+    public int FindItemIndexWithTag(string tag, int startIndex = 0)
+    {
+        // 정렬하지 않으니 순차 탐색
+        for (int i = startIndex; i < items.Count; ++i)
+        {
+            if (items[i].Tag == tag)
+            {
+                // 발견 시 인덱스 리턴
+                return i;
+            }
+        }
+
+        // 실패 시 -1 리턴
+        return -1;
+    }
+
+    public Dictionary<string, int> FindItemsWithTag(Dictionary<string, int> requireItems)
+    {
+        // 실제 갖고 있는 아이템
+        Dictionary<string, int> havingItems = new Dictionary<string, int>();
+        Item item;
+        int requireCount;
+
+        // 최종적으로 작성될 문구 정보 (삽입 순서 보장)
+        Dictionary<string, int> resultItems = new Dictionary<string, int>();
+
+        // 인벤토리에 있는지 한 태그씩 검사한다.
+        foreach (string tag in requireItems.Keys)
+        {
+            // havingItems는 매 태그마다 초기화한다.
+            havingItems.Clear();
+
+            // 필요 개수 저장
+            requireCount = requireItems[tag];
+
+            // 검색 시작 위치. 매 태그마다 0부터 시작
+            int index = -1;
+
+            // 전부 찾는다.
+            while (requireCount > 0)
+            {
+                // 먼저 해당 Tag의 아이템이 있는지 검색한다.
+                index = FindItemIndexWithTag(tag, index + 1);
+
+                // 더이상 없다면 종료한다.
+                if (index == -1)
+                {
+                    break;
+                }
+
+                item = items[index];
+
+                // 만약 아이템이 있고, 필요 개수를 충족한다면
+                if (item.Count >= requireCount)
+                {
+                    // 필요한 만큼만 havingItem에 추가한다.
+                    havingItems[item.Name] = requireCount;
+                }
+                // 반대로 아이템은 있는데, 필요 개수보다 모자란다면
+                else
+                {
+                    // 아이템 개수를 전부 넣고
+                    havingItems[item.Name] = item.Count;
+                }
+
+                // 필요 count를 감소시킨다.
+                requireCount -= item.Count;
+            }
+
+            // 개수가 모자라다면
+            if (requireCount > 0)
+            {
+                // 해당 태그는 처리에 실패했음을 알린다.
+                resultItems[tag] = -1;
+
+            }
+            // 충분하다면
+            else
+            {
+                // 찾은 아이템들을 전부 넣는다.
+                foreach(var result in havingItems)
+                {
+                    resultItems[result.Key] = result.Value;
+                }
+            }
+        }
+
+        return resultItems;
+    }
+    #endregion 태그로 검색
 
     /// <summary>
     /// 이름으로 여러 아이템을 추가한다.
@@ -154,8 +253,6 @@ public class Items : MonoBehaviour
         // ItemInfo에서 검색 후 추가
         Item item = ItemInfo.Instance.GetItem(name);
 
-        Debug.Log(item.Name);
-
         AddItem(item);
     }
 
@@ -168,7 +265,7 @@ public class Items : MonoBehaviour
         Item findedItem = FindItemWithName(item.Name);
 
         // 아이템이 이미 있다면
-        if (findedItem.Name != "Error")
+        if (findedItem != null)
         {
             // 아이템 수량을 증가
             findedItem.Count += 1;
@@ -188,29 +285,34 @@ public class Items : MonoBehaviour
     /// 이름으로 여러 아이템을 삭제한다.
     /// </summary>
     /// <param name="items">#으로 연결된 아이템 목록 문자열 (ex. 빵#권총#근력)</param>
-    public void RemoveItems(string items)
+    public void RemoveItems(string items, int count = 1)
     {
+        // 문자열을 자르고
         string[] splited_items = items.Split('#');
 
-        for (int i = 0; i < splited_items.Length; ++i)
+        // 딕셔너리로 변환한다.
+        Dictionary<string, int> removeItems = ItemStringToDictionary(splited_items);
+
+        // 아이템이 모자란 경우는 선택되지 않으니, 따로 검사하지 않는다.
+        foreach (var item in removeItems)
         {
-            RemoveItem(splited_items[i]);
+            RemoveItem(item.Key, item.Value);
         }
     }
 
     // 아이템을 삭제한다.
-    public void RemoveItem(string name)
+    public void RemoveItem(string name, int count = 1)
     {
         // 아이템이 있는지 검색
-        int findedIndex = FindItemIndexWithTag(name);
+        int findedIndex = FindItemIndexWithName(name);
 
         // 아이템이 있다면
         if (findedIndex != -1)
         {
             // 수량을 감소
-            items[findedIndex].Count -= 1;
+            items[findedIndex].Count -= count;
 
-            // 아이템이 1개만 있다면
+            // 아이템이 없다면
             if (items[findedIndex].Count <= 0)
             {
                 // 인벤토리에서 아이템 삭제
@@ -236,7 +338,7 @@ public class Items : MonoBehaviour
         }
 
         // 비워진 슬롯들은
-        for(int i = items.Count; i < lastSlotIndex - 1; ++i)
+        for(int i = items.Count; i <= lastSlotIndex; ++i)
         {
             // 비활성화한다. (내용은 바꾸지 않는다.)
             slots[i].gameObject.SetActive(false);
@@ -252,8 +354,6 @@ public class Items : MonoBehaviour
     /// <param name="item">갱신할 아이템 데이터</param>
     private void UpdateSlot(int index, Item item)
     {
-        Debug.Log(item.Name + ": " + item.Count);
-
         // StringBuilder를 통해 최적화할 수 있지만, 이해하기 쉽게 if문을 사용
         // 아이템이 한 개만 있는 경우
         if (item.Count <= 1)
@@ -278,7 +378,37 @@ public class Items : MonoBehaviour
             }
         }
     }
-    
+
+    #region 문자열 해석 및 아이템 검색
+    // 필요한 아이템의 종류와 개수가 담긴 문자열을 Dictionary로 정리한다.
+    public Dictionary<string, int> ItemStringToDictionary(string[] itemText)
+    {
+        Dictionary<string, int> requireItem = new Dictionary<string, int>();
+
+        // Dictionary에 추가
+        for (int i = 0; i < itemText.Length; ++i)
+        {
+            if (itemText[i] == "")
+            {
+                continue;
+            }
+
+            if (requireItem.ContainsKey(itemText[i]))
+            {
+                // 해당 아이템 개수 추가
+                requireItem[itemText[i]] += 1;
+            }
+            else
+            {
+                // 없다면 새로 추가
+                requireItem[itemText[i]] = 1;
+            }
+        }
+
+        return requireItem;
+    }
+    #endregion 문자열 해석 및 아이템 검색
+
     // Legacy
     public void GainJobItem()
     {
