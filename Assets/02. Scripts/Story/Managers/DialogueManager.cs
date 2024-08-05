@@ -291,9 +291,6 @@ public class DialogueManager : MonoBehaviour
                 #region 선택한 이벤트로 이동
                 // 고른 선택지 번호 확인하고
                 int result = SelectManager.Instance.result;
-                #region 선택지 로그 저장
-                TextLogButton.Instance.AddLog("선택지", dataCSV[i]["Choice" + (result+1)].ToString());
-                #endregion 선택지 로그 저장
                 // 선택된 이벤트를 캐싱해둔다.
                 EventData relationEvent = loadedEvent.relationEvent[result];
 
@@ -319,6 +316,9 @@ public class DialogueManager : MonoBehaviour
                 RemoveUsedItem(requiredItem);
                 #endregion 사용한 아이템 제거
 
+                //선택지 이벤트를 로그로 기록하기 위해 함수 호출, 이때 선택 결과를 인자로 넘겨준다.
+                TextLogButton.Instance.AddLog(dataCSV[i],result + 1);
+                
                 yield break;
             }
 
@@ -329,7 +329,7 @@ public class DialogueManager : MonoBehaviour
 
                 EquipItem(equipItem);
             }
-
+            
             // 획득 카드가 존재 한다면 카드 지급
             if (dataCSV[i]["Equip Card"].ToString() is not emptyString)
             {
@@ -337,7 +337,7 @@ public class DialogueManager : MonoBehaviour
 
                 EquipCard(equipCard);
             }
-
+            
             // 전투가 있다면 시작한다.
             if (dataCSV[i]["Enemy1"].ToString() is not emptyString)
             {
@@ -381,8 +381,8 @@ public class DialogueManager : MonoBehaviour
 
         // 내용을 받아오고 (비어있어도 상관 X)
         string sentence = csvData["Text"].ToString();
-        //대화 로그를 저장하는 함수 호출
-        TextLogButton.Instance.AddLog(csvData["Name"].ToString(), csvData["Text"].ToString()); 
+        //대화 로그를 저장하는 함수 호출, 선택지 이벤트가 아니므로 -1을 인자로 넘겨준다.
+        TextLogButton.Instance.AddLog(csvData,-1); 
         // 타이핑 출력
         yield return StartCoroutine(TypeSentence(sentence));
     }
