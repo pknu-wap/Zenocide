@@ -501,7 +501,7 @@ public class DialogueManager : MonoBehaviour
         // 사용한 아이템을 제거한다.
         if (item is not emptyString)
         {
-            Items.Instance.RemoveItem(item);
+            Items.Instance.RemoveItems(item);
 
             notification.ShowRemoveItemMessage(item);
         }
@@ -511,7 +511,7 @@ public class DialogueManager : MonoBehaviour
     public void EquipItem(string equipItem)
     {
         // 따로 분리하지 않고, 그대로 준다.
-        Items.Instance.AddItem(equipItem);
+        Items.Instance.AddItems(equipItem);
 
         notification.ShowGetItemMessage(equipItem);
     }
