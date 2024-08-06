@@ -106,9 +106,6 @@ public class TutorialManager : MonoBehaviour
         {"건설", 3 },
     };
 
-    [Header("튜토리얼 패널 표시 여부")]
-    public bool isPanelShow = false;
-
     void Awake()
     {
         Instance = this;
@@ -321,9 +318,6 @@ public class TutorialManager : MonoBehaviour
         // 로딩을 시작한다.
         TurnManager.Instance.isLoading = true;
 
-        // 카드 상호작용을 막는다
-        isPanelShow = true;
-
         for (int i = 0; i < tutorialPanels.Length; i++)
         {
             // 튜토리얼 이미지를 띄운다.
@@ -340,8 +334,6 @@ public class TutorialManager : MonoBehaviour
 
             tutorialPanels[i].SetActive(false);
         }
-
-        isPanelShow = false;
 
         // 플레이어 턴을 시작하고, 끝날 때까지 기다린다.
         yield return StartCoroutine(TurnManager.Instance.StartPlayerTurnCo());
