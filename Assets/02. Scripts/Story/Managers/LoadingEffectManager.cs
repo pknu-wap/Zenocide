@@ -42,8 +42,6 @@ public class LoadingEffectManager : MonoBehaviour
                  .SelectMany(c => c)
                  .ToArray();
 
-        // 모든 레이어의 alpha 갑을 0으로 초기화
-        loadingScene.GetComponentsInChildren<CanvasGroup>()[0].alpha = 0;
         //모든 레이어 비활성화
         LayerActive(false);
     }
