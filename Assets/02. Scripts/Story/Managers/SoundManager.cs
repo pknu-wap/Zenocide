@@ -14,7 +14,7 @@ public class SoundManager : MonoBehaviour
     private float masterVolume = 1f; 
     private float bgmVolume = 1f;
 
-    private float lastAppliedMasterVolume; 
+    private float lastAppliedMasterVolume;
     private float lastAppliedBgmVolume;
 
     public int applyCount = 0;
@@ -91,5 +91,24 @@ public class SoundManager : MonoBehaviour
         bgmVolumeSlider.value = bgmVolume;
         masterVolumeSlider.value = masterVolume;
         UpdateAudioSources();
+    }
+
+    public void SaveVolumeSettings()
+    {
+        // 현재 전체음량, 배경음악 값을 데이터에 저장
+        DataManager.Instance.data.MasterVolume = masterVolume;
+        DataManager.Instance.data.BgmVolume = bgmVolume;
+    }
+
+    public void LoadVolumeSettings()
+    {
+        // 데이터에서 저장된 전체음량, 배경음악 값을 불러옴
+        masterVolume = DataManager.Instance.data.MasterVolume;
+        bgmVolume = DataManager.Instance.data.BgmVolume;
+
+        // 로드한 볼륨 적용
+        masterVolumeSlider.value = masterVolume;
+        bgmVolumeSlider.value = bgmVolume;
+        ApplyVolumeSettings();
     }
 }

@@ -11,6 +11,4 @@ public class Inventory : MonoBehaviour
     {
         slots = transform.GetChild(0).GetChild(0).GetChild(0).GetComponentsInChildren<TMP_Text>().ToList();
     }
-
-
 }

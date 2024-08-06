@@ -199,6 +199,7 @@ public class DialogueManager : MonoBehaviour
         // 게임이 끝나지 않았다면 무한 반복
         while (isGameCleared == false)
         {
+            
             // 현재 이벤트가 없다면
             if(currentEvent == null)
             {
@@ -236,9 +237,26 @@ public class DialogueManager : MonoBehaviour
                 dataCSV = dataRelationCSV;
                 break;
         }
-        
+
+        //이벤트가 시작되는 시점의 데이터를 저장한다.
+        SaveData();
         // 첫 문장은 바로 띄운다.
         isClicked = true;
+
+        //Relation 이벤트가 아닐 때만 화면 전환 효과를 준다.
+        if(loadedEvent.eventID != EventType.Relation)
+        {
+            yield return StartCoroutine(LoadingEffectManager.Instance.FadeOut(fadeSpeed));
+
+            // deck 저장
+            CardManager.Instance.SaveDeck();
+            // item 저장
+            // hp 저장
+            // 데이터 세이브
+            DataManager.Instance.SaveData();
+
+            StartCoroutine(LoadingEffectManager.Instance.FadeIn(fadeSpeed));
+        }
 
         // 이벤트 진행
         for (int i = loadedEvent.startIndex; i <= loadedEvent.endIndex; ++i)
@@ -374,7 +392,7 @@ public class DialogueManager : MonoBehaviour
         // 내용을 받아오고 (비어있어도 상관 X)
         string sentence = csvData["Text"].ToString();
         //대화 로그를 저장하는 함수 호출, 선택지 이벤트가 아니므로 -1을 인자로 넘겨준다.
-        LogManager.Instance.AddLog(csvData,-1); 
+        LogManager.Instance.AddLog(csvData, -1); 
         // 타이핑 출력
         yield return StartCoroutine(TypeSentence(sentence));
     }
@@ -634,6 +652,31 @@ public class DialogueManager : MonoBehaviour
                 delayDictionary.Remove(events[i]);
             }
         }
+    }
+
+    public void SaveData()
+    {
+        //딜레이 딕셔너리
+        DataManager.Instance.data.DelayDictionary = delayDictionary;
+        //현재 진행중인 이벤트
+        DataManager.Instance.data.CurrentEvent = currentEvent;
+        //진행 가능한 메인 이벤트 리스트
+        DataManager.Instance.data.ProcessableMainEventList = processableMainEventList;
+        //진행 가능한 서브 이벤트 리스트
+        DataManager.Instance.data.ProcessableSubEventList = processableSubEventList;
+        DataManager.Instance.SaveData();
+    }
+
+    public void LoadData()
+    {
+        //딜레이 딕셔너리
+        delayDictionary = DataManager.Instance.data.DelayDictionary;
+        //현재 진행중인 이벤트
+        currentEvent = DataManager.Instance.data.CurrentEvent;
+        //진행 가능한 메인 이벤트 리스트
+        processableMainEventList = DataManager.Instance.data.ProcessableMainEventList;
+        //진행 가능한 서브 이벤트 리스트
+        processableSubEventList = DataManager.Instance.data.ProcessableSubEventList;
     }
 
     #region Legacy

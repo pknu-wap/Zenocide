@@ -368,7 +368,7 @@ public class TutorialManager : MonoBehaviour
         }
 
         // 대화 기록을 삭제한다.
-        TextLogButton.Instance.ResetLogs();
+        LogManager.Instance.ResetLogs();
 
         // 다음 이벤트로 넘어간다.
         isClicked = true;
@@ -400,7 +400,7 @@ public class TutorialManager : MonoBehaviour
         // 내용을 받아오고 (비어있어도 상관 X)
         string sentence = csvData["Text"].ToString();
         //대화 로그를 저장하는 함수 호출
-        TextLogButton.Instance.AddLog(csvData["Name"].ToString(), csvData["Text"].ToString());
+        LogManager.Instance.AddLog(csvData, -1);
         // 타이핑 출력
         yield return StartCoroutine(TypeSentence(sentence));
     }
@@ -486,7 +486,7 @@ public class TutorialManager : MonoBehaviour
         currentEvent = null;
 
         // 현재 이벤트의 대화 기록을 삭제한다.
-        TextLogButton.Instance.ResetLogs();
+        LogManager.Instance.ResetLogs();
     }
 
     // 선택지를 띄운다.

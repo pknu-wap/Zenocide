@@ -136,7 +136,7 @@ public class Choice : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if (count > 1)
         {
             // 그리고 아이템이 물품이라면
-            if (ItemInfo.Instance.GetItem(tag).Type == ItemType.Item)
+            if (ItemInfo.Instance.GetItem(tag).type == ItemType.Item)
             {
                 // x를
                 result_str += " x ";

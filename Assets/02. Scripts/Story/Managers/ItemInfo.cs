@@ -66,7 +66,7 @@ public class ItemInfo : MonoBehaviour
         // 아이템 딕셔너리 생성
         for (int i = 0; i < items.Count; ++i)
         {
-            itemDictionary[items[i].Name] = items[i];
+            itemDictionary[items[i].name] = items[i];
         }
     }
 

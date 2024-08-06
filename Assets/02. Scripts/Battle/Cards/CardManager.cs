@@ -530,6 +530,17 @@ public class CardManager : MonoBehaviour
         });
     }
 
+    // deck을 Data 객체에 저장한다.
+    public void SaveDeck()
+    {
+        DataManager.Instance.data.Deck = deck;
+    }
+
+    public void LoadDeck()
+    {
+        deck = DataManager.Instance.data.Deck;
+    }
+
     #region MyCard
     public bool IsCardSelected()
     {
