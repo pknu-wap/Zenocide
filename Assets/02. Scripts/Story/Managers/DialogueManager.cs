@@ -74,8 +74,6 @@ public class DialogueManager : MonoBehaviour
     public Sprite[] backgroundImages;
 
     [Header("대화창 오브젝트")]
-    // 대화창 전체 오브젝트
-    public GameObject dialoguePanel;
     // 대화창 이름
     public TMP_Text dialogueName;
     // 대화창 내용
@@ -243,20 +241,12 @@ public class DialogueManager : MonoBehaviour
         // 첫 문장은 바로 띄운다.
         isClicked = true;
 
-        //Relation 이벤트가 아닐 때만 화면 전환 효과를 준다.
-        if(loadedEvent.eventID != EventType.Relation)
-        {
-            yield return StartCoroutine(LoadingEffectManager.Instance.FadeOut(fadeSpeed));
-
-            // deck 저장
-            CardManager.Instance.SaveDeck();
-            // item 저장
-            // hp 저장
-            // 데이터 세이브
-            DataManager.Instance.SaveData();
-
-            StartCoroutine(LoadingEffectManager.Instance.FadeIn(fadeSpeed));
-        }
+        // deck 저장
+        CardManager.Instance.SaveDeck();
+        // item 저장
+        // hp 저장
+        // 데이터 세이브
+        DataManager.Instance.SaveData();
 
         // 이벤트 진행
         for (int i = loadedEvent.startIndex; i <= loadedEvent.endIndex; ++i)
@@ -328,7 +318,9 @@ public class DialogueManager : MonoBehaviour
                 // 그 외엔 선택지 이벤트로 교체한다.
                 currentEvent = relationEvent;
                 #endregion 선택한 이벤트로 이동
-                
+                //선택지 로그 저장 함수 호출
+                LogManager.Instance.AddLog(dataCSV[i], result + 1);
+
                 yield break;
             }
 
