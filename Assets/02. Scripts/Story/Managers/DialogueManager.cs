@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -32,6 +31,8 @@ public class DialogueManager : MonoBehaviour
     public bool isBattleDone = false;
     // 게임이 엔딩에 다다랐는지 검사한다.
     private bool isGameCleared = false;
+    // 첫 이벤트인지 확인한다.
+    private bool isFirstEvent = true;
 
     [Header("스토리 CSV")]
     // 메인 CSV 파일을 읽어올 리스트
@@ -67,7 +68,8 @@ public class DialogueManager : MonoBehaviour
     {
         {"Basement", 0},
         {"ZombieTown", 1},
-        {"배경3", 2}
+        {"배경3", 2},
+        {"배경4", 3}
     };
     public Sprite[] backgroundImages;
 
@@ -103,7 +105,7 @@ public class DialogueManager : MonoBehaviour
     public int dialogueSpeed = 1;
 
     [Header("화면 전환 속도 변수")]
-    public float fadeSpeed = 1.0f;
+    public float fadeSpeed = 0.5f;
 
     [Header("배경 이미지 데이터")]
     public Image    storyBackgroundObject;
@@ -170,8 +172,6 @@ public class DialogueManager : MonoBehaviour
         int randomNumber = Random.Range(0, 100);
         // 이벤트를 가져올 리스트
         List<EventData> processableEventList;
-
-        Debug.Log(randomNumber);
 
         // 메인 스토리가 선택되면
         if (randomNumber < mainRate)
@@ -278,29 +278,43 @@ public class DialogueManager : MonoBehaviour
 
                 // 딜레이를 감소시킨다.
                 ProcessDelay(loadedEvent);
-
+                //화면 전환 효과를 준다.
+                yield return StartCoroutine(LoadingEffectManager.Instance.FadeOut(fadeSpeed));
                 // 현재 이벤트를 종료한다. (ProcessRandomEvent로 이동)
                 yield break;
             }
-
+            
             // 대화창을 갱신한다. 이 이후의 조건문은, 대화창을 변경한 후 실행되는 애들이다.
             yield return StartCoroutine(DisplayDialogue(dataCSV[i]));
 
+            if(i == loadedEvent.startIndex && loadedEvent.eventID != EventType.Relation)
+            {
+                yield return StartCoroutine(LoadingEffectManager.Instance.FadeIn(fadeSpeed));
+                StartCoroutine(StoryInformation.Instance.ShowInformation(fadeSpeed*2, dataCSV[loadedEvent.startIndex]["Event"].ToString()));
+            }
+        
             // 선택지가 나타나면 선택지 이벤트를 실행한다.
             if (dataCSV[i]["Choice Count"].ToString() is not emptyString)
             {
                 #region 선택지 표시 및 대기
                 // 선택지를 띄우고, 선택할 때까지 대기
                 yield return DisplayChoices(dataCSV[i]);
-                #endregion 선택지 표시 및 대기
-
-                #region 선택한 이벤트로 이동
+                
                 // 고른 선택지 번호 확인하고
                 int result = SelectManager.Instance.result;
-
                 // 선택된 이벤트를 캐싱해둔다.
                 EventData relationEvent = loadedEvent.relationEvent[result];
+                #endregion 선택지 표시 및 대기
 
+                #region 사용한 아이템 제거
+                // 사용한 아이템을 확인한다.
+                string requireItemText = dataCSV[i]["Remove Item" + (result + 1)].ToString();
+
+                // 해당 아이템을 제거한다.
+                RemoveUsedItem(requireItemText);
+                #endregion 사용한 아이템 제거
+
+                #region 선택한 이벤트로 이동
                 // 선택된 이벤트가 null일 경우
                 if (relationEvent == null)
                 {
@@ -314,15 +328,7 @@ public class DialogueManager : MonoBehaviour
                 // 그 외엔 선택지 이벤트로 교체한다.
                 currentEvent = relationEvent;
                 #endregion 선택한 이벤트로 이동
-
-                #region 사용한 아이템 제거
-                // 사용한 아이템을 확인한다.
-                string requiredItem = dataCSV[i]["Remove Item" + (result + 1)].ToString();
-
-                // 해당 아이템을 제거한다.
-                RemoveUsedItem(requiredItem);
-                #endregion 사용한 아이템 제거
-
+                
                 yield break;
             }
 
@@ -333,7 +339,7 @@ public class DialogueManager : MonoBehaviour
 
                 EquipItem(equipItem);
             }
-
+            
             // 획득 카드가 존재 한다면 카드 지급
             if (dataCSV[i]["Equip Card"].ToString() is not emptyString)
             {
@@ -341,7 +347,7 @@ public class DialogueManager : MonoBehaviour
 
                 EquipCard(equipCard);
             }
-
+            
             // 전투가 있다면 시작한다.
             if (dataCSV[i]["Enemy1"].ToString() is not emptyString)
             {
@@ -385,14 +391,14 @@ public class DialogueManager : MonoBehaviour
 
         // 내용을 받아오고 (비어있어도 상관 X)
         string sentence = csvData["Text"].ToString();
-        //대화 로그를 저장하는 함수 호출
-        TextLogButton.Instance.AddLog(csvData["Name"].ToString(), csvData["Text"].ToString()); 
+        //대화 로그를 저장하는 함수 호출, 선택지 이벤트가 아니므로 -1을 인자로 넘겨준다.
+        LogManager.Instance.AddLog(csvData,-1); 
         // 타이핑 출력
         yield return StartCoroutine(TypeSentence(sentence));
     }
 
     // 일러스트를 띄운다.
-    public void DisplayIllust(string[] illustNames)
+    private void DisplayIllust(string[] illustNames)
     {
         // names엔 ""를 포함해 3개가 들어온다.
 
@@ -488,7 +494,7 @@ public class DialogueManager : MonoBehaviour
         currentEvent = loadedEvent.nextEvent;
 
         // 현재 이벤트의 대화 기록을 삭제한다.
-        TextLogButton.Instance.ResetLogs();
+        LogManager.Instance.ResetLogs();
     }
 
     // 선택지를 띄운다.
@@ -506,23 +512,39 @@ public class DialogueManager : MonoBehaviour
         dialogButton.SetActive(true);
     }
 
-    // 사용한 아이템을 제거한다.
-    private void RemoveUsedItem(string item)
+    /// <summary>
+    /// 사용한 아이템을 제거한다.
+    /// </summary>
+    /// <param name="usedItemText">사용한 아이템 문자열</param>
+    private void RemoveUsedItem(string usedItemText)
     {
-        // 사용한 아이템을 제거한다.
-        if (item is not emptyString)
+        // 제거할 게 없다면 건너뛴다.
+        if(usedItemText is emptyString)
         {
-            Items.Instance.RemoveItem(item);
-
-            notification.ShowRemoveItemMessage(item);
+            return;
         }
+
+        // 딕셔너리로 변환하고
+        Dictionary<string, int> requireItems = Items.Instance.ItemStringToDictionary(usedItemText.Split('#'));
+
+        // 검색 수행 후, 
+        Dictionary<string, int> usedItems = Items.Instance.FindItemsWithTag(requireItems);
+
+        // 차례대로 삭제한다.
+        foreach (var item in usedItems)
+        {
+            Items.Instance.RemoveItems(item.Key, item.Value);
+        }
+
+        // 삭제 알림
+        notification.ShowRemoveItemMessage(usedItemText);
     }
 
     // 아이템을 획득한다.
     private void EquipItem(string equipItem)
     {
         // 따로 분리하지 않고, 그대로 준다.
-        Items.Instance.AddItem(equipItem);
+        Items.Instance.AddItems(equipItem);
 
         notification.ShowGetItemMessage(equipItem);
     }
@@ -530,7 +552,7 @@ public class DialogueManager : MonoBehaviour
     // 카드를 획득한다.
     private void EquipCard(string equipCard)
     {
-        CardManager.Instance.AddCardToDeck(equipCard);
+        CardManager.Instance.AddCardsToDeck(equipCard);
 
         notification.ShowGetCardMessage(equipCard);
     }
@@ -579,7 +601,7 @@ public class DialogueManager : MonoBehaviour
             Debug.LogError("선택지 이벤트가 processable Event List에 추가되었습니다.");
         }
     }
-    
+
     //대화 배속 조절 함수
     public void DialogueSpeedy(int speed)
     {
@@ -604,7 +626,7 @@ public class DialogueManager : MonoBehaviour
         return enemies;
     }
 
-    public void ProcessDelay(EventData loadedData)
+    private void ProcessDelay(EventData loadedData)
     {
         // 릴레이션 이벤트일 때는 딜레이 적용 안함
         if (loadedData.eventID == EventType.Relation)

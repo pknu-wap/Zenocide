@@ -1831,6 +1831,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotsParent: {fileID: 1354296841}
   slots: []
+  lastSlotIndex: -1
 --- !u!114 &110342818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6598,6 +6599,7 @@ Transform:
   - {fileID: 722253297}
   - {fileID: 853454572}
   - {fileID: 2129039314}
+  - {fileID: 1671540997}
   - {fileID: 1101896072}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -23278,7 +23280,7 @@ GameObject:
   - component: {fileID: 1101896072}
   - component: {fileID: 1101896073}
   m_Layer: 0
-  m_Name: BG Change Manager
+  m_Name: LoadingManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -23316,6 +23318,58 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isFading: 0
+  Layers:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  LayerCanvasGroups:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  FirstEffectObject: {fileID: 0}
+  SecondEffectObject: {fileID: 0}
 --- !u!1 &1108450086
 GameObject:
   m_ObjectHideFlags: 0
@@ -25676,19 +25730,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c65cbaa612395e4d9af685037948c85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LogPannel: {fileID: 0}
-  LogButton: {fileID: 0}
-  LogButtonIcon: {fileID: 504847533}
-  LogButtonText: {fileID: 0}
-  LogBoxes: []
-  Sprites:
+  logPannel: {fileID: 1702729081}
+  logButtonIcon: {fileID: 504847533}
+  logButtonText: {fileID: 1958022132}
+  sprites:
   - {fileID: 21300000, guid: 8315b952884d4174aa2b4fda2af2f508, type: 3}
   - {fileID: 21300000, guid: f6bbee9aa08269740ab7800b85bc91c1, type: 3}
-  CurrentLog: 0
-  NameTMP: {fileID: 0}
-  TextTMP: {fileID: 0}
-  Names: []
-  Texts: []
 --- !u!114 &1289976176
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33034,6 +33081,53 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 81d324a799217844aa01c8f915d2922f, type: 3}
+--- !u!1 &1671540996
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1671540997}
+  - component: {fileID: 1671540998}
+  m_Layer: 0
+  m_Name: LogManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1671540997
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1671540996}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 303005263}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1671540998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1671540996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0d4ca528064a014a8c3fa52f896c9f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  logPannel: {fileID: 0}
+  logBoxes: []
+  currentIndex: 0
 --- !u!1001 &1671586949
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -38456,6 +38550,18 @@ PrefabInstance:
     - target: {fileID: 3628325303008774130, guid: 617ff4c409c7a93449ccda4c5b584e44, type: 3}
       propertyPath: m_Name
       value: Log Box (30)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6573196400133064439, guid: 617ff4c409c7a93449ccda4c5b584e44, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6573196400133064439, guid: 617ff4c409c7a93449ccda4c5b584e44, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6573196400133064439, guid: 617ff4c409c7a93449ccda4c5b584e44, type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8517316173162103719, guid: 617ff4c409c7a93449ccda4c5b584e44, type: 3}
       propertyPath: m_Pivot.x

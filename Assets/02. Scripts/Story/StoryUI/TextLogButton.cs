@@ -1,117 +1,55 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.UI;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class TextLogButton : MonoBehaviour,IPointerDownHandler,IPointerEnterHandler,IPointerExitHandler
+public class TextLogButton : MonoBehaviour,IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
 {
+    
+    [Header("로그 패널 오브젝트")]
+    //로그 매니저에서 로그 패널 오브젝트를 가져옴
+    public GameObject logPannel ;
 
-    public static TextLogButton Instance { get; set; }
-    public GameObject LogPannel;
-    public GameObject LogButton;
-    public Image LogButtonIcon;
-    public TMP_Text LogButtonText;
-    public GameObject[] LogBoxes;
+    [Header("로그 버튼 아이콘, 텍스트")]
+    public Image logButtonIcon;
+    public TMP_Text logButtonText;
 
     [Header("버튼 Sprite 저장 변수")]
-    public Sprite[] Sprites = new Sprite[2];
-    
-    [Header("현재 로그 인덱스")]
-    public int CurrentLog = 0;
+    public Sprite[] sprites = new Sprite[2];
 
-    [Header("로그 기록 오브젝트")]
-    public TMP_Text NameTMP;
-    public TMP_Text TextTMP;
-
-    [Header("로그 리스트 변수")]
-    public List<string> Names = new List<string>();
-    public List<string> Texts = new List<string>();
-
-    private void Awake()
-    {
-        if(Instance == null)
-        {
-            Instance = this;
-        }
-
-        else
-        {
-            Destroy(this);
-        }
-        LogPannel = GameObject.FindWithTag("Log Pannel");
-        LogButton = GameObject.FindWithTag("Log Button");
-        LogButtonIcon = LogButton.transform.GetChild(0).GetComponent<Image>();
-        LogButtonText = LogButton.transform.GetChild(1).GetComponent<TMP_Text>();
-        GameObject Logs = LogPannel.transform.GetChild(2).GetChild(0).gameObject;
-        LogBoxes = new GameObject[Logs.transform.childCount];
-        for (int i = Logs.transform.childCount - 1; i >= 0  ; i--)
-        {
-            LogBoxes[i] = Logs.transform.GetChild(i).gameObject;
-            LogBoxes[i].SetActive(false);
-        }
-        LogPannel.SetActive(false);
-    }
-
+    //마우스가 버튼을 클릭할 경우 로그 패널 활성화
     public void OnPointerDown(PointerEventData eventData)
     {
-        LogPannel.SetActive(!LogPannel.activeSelf);
-        LogButtonIcon.sprite = LogPannel.activeSelf ? Sprites[0] : Sprites[1];
-        LogButtonText.color  = LogPannel.activeSelf ? new Color(1, 0.92f, 0.016f, 1) : new Color(1, 1, 1, 1);
-        LogButtonIcon.color  = LogPannel.activeSelf ? new Color(1, 0.92f, 0.016f, 1) : new Color(1, 1, 1, 1);
+        logPannel.SetActive(!logPannel.activeSelf);
+        logButtonIcon.sprite = logPannel.activeSelf ? sprites[0] : sprites[1];
+        logButtonText.color  = logPannel.activeSelf ? new Color(1, 0.92f, 0.016f, 1) : new Color(1, 1, 1, 1);
+        logButtonIcon.color  = logPannel.activeSelf ? new Color(1, 0.92f, 0.016f, 1) : new Color(1, 1, 1, 1);
     }
 
+    //마우스가 버튼 위에 있을 경우 버튼 색상 변경
     public void OnPointerEnter(PointerEventData eventData)
     {
-       if(LogPannel.activeSelf)
+       if(logPannel.activeSelf)
        {
-            LogButtonText.color  = new Color(0.5f, 0.46f, 0.008f, 1);
-            LogButtonIcon.color  = new Color(0.5f, 0.46f, 0.008f, 1);
+            logButtonText.color  = new Color(0.5f, 0.46f, 0.008f, 1);
+            logButtonIcon.color  = new Color(0.5f, 0.46f, 0.008f, 1);
             return;
        }
-       LogButtonIcon.color = new Color(0.5f, 0.5f, 0.5f, 1);
-       LogButtonText.color = new Color(0.5f, 0.5f, 0.5f, 1);
+       logButtonIcon.color = new Color(0.5f, 0.5f, 0.5f, 1);
+       logButtonText.color = new Color(0.5f, 0.5f, 0.5f, 1);
     }
-
+    
+    //마우스가 버튼에서 벗어날 경우 버튼 색상 변경
     public void OnPointerExit(PointerEventData eventData)
     {
-        if(LogPannel.activeSelf)
+        if(logPannel.activeSelf)
         {
-            LogButtonText.color  = new Color(1, 0.92f, 0.016f, 1);
-            LogButtonIcon.color  = new Color(1, 0.92f, 0.016f, 1);
+            logButtonText.color  = new Color(1, 0.92f, 0.016f, 1);
+            logButtonIcon.color  = new Color(1, 0.92f, 0.016f, 1);
             return;
         }
-        LogButtonIcon.color = new Color(1, 1, 1, 1);
-        LogButtonText.color = new Color(1, 1, 1, 1);
-    }
-
-    public void ResetLogs()
-    {
-        for (int i = 0; i < LogBoxes.Length; i++)
-        {
-            LogBoxes[i].SetActive(false);
-        }
-        Names.Clear();
-        Texts.Clear();
-    }
-
-    public void AddLog(string name, string text)
-    {
-        if(text == "") return;
-         
-        Names.Add(name);
-        Texts.Add(text);
-
-        CurrentLog = Names.Count - 1;
-        LogBoxes[CurrentLog].SetActive(true);
-        LogBoxes[CurrentLog].transform.GetChild(0).gameObject.SetActive(name == "" ? false : true);
-        LogBoxes[CurrentLog].transform.GetChild(1).GetComponent<TMP_Text>().alignment = name == "" ? TextAlignmentOptions.TopLeft : TextAlignmentOptions.MidlineLeft;
-        TextTMP = LogBoxes[CurrentLog].transform.GetChild(1).GetComponent<TMP_Text>();
-        NameTMP = LogBoxes[CurrentLog].transform.GetChild(2).GetComponent<TMP_Text>();
-        NameTMP.text = Names[CurrentLog];
-        TextTMP.text = Texts[CurrentLog];
+        logButtonIcon.color = new Color(1, 1, 1, 1);
+        logButtonText.color = new Color(1, 1, 1, 1);
     }
 
 }
