@@ -88,6 +88,9 @@ public class StoryNotification : MonoBehaviour
                 result_str += ", ";
             }
 
+            // 한 번 쓴 후 false로
+            isFirst = false;
+
             // 이름을 적어주고
             result_str += item.Key;
 
@@ -113,9 +116,6 @@ public class StoryNotification : MonoBehaviour
 
             // 요구하는 개수를 적어준다.
             result_str += item.Value;
-
-            // 한 번 쓴 후 false로
-            isFirst = false;
         }
 
         // 만들어진 문자열을 반환한다.
