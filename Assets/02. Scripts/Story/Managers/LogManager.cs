@@ -9,13 +9,10 @@ public class LogManager : MonoBehaviour
     public GameObject logPannel;
 
     [Header("로그 박스 오브젝트")]
-    public GameObject[] logBoxes;
+    public TextLog[] logBoxes;
     
     [Header("현재 로그 인덱스")]
     public int currentIndex = 0;
-
-    [Header("최대 저장 가능 로그 수")]
-    private int maxNum = 30; //0 ~ 29 = 30개
 
     [Header("획득 확인 변수")]
     private const string empty = "";
@@ -37,13 +34,8 @@ public class LogManager : MonoBehaviour
         logPannel = GameObject.FindWithTag("Log Pannel");
         GameObject Logs = logPannel.transform.GetChild(2).GetChild(0).gameObject;
         //Cotent 오브젝트의 자식 개수(= 로그 수 / 현재 30 개)만큼 GameObject 배열 생성
-        logBoxes = new GameObject[Logs.transform.childCount];
-        //30개의 로그 박스들을 저장 후 비활성화
-        for (int i = Logs.transform.childCount - 1; i >= 0  ; i--)
-        {
-            logBoxes[i] = Logs.transform.GetChild(i).gameObject;
-            logBoxes[i].SetActive(false);
-        }
+        logBoxes = Logs.GetComponentsInChildren<TextLog>();
+        ResetLogs();
         logPannel.SetActive(false);
     }
 
@@ -52,8 +44,9 @@ public class LogManager : MonoBehaviour
     {
         for (int i = 0; i < logBoxes.Length; i++)
         {
-            logBoxes[i].SetActive(false);
+            logBoxes[i].gameObject.SetActive(false);
         }
+        currentIndex = 0;
     }
 
     public void AddLog(Dictionary<string, object> Dialogue,int choiceResult)
@@ -63,13 +56,13 @@ public class LogManager : MonoBehaviour
         if(text is empty && choiceResult is notSelected ) return; //대사가 비어 있고 선택지도 아닐 경우 함수 종료
 
         //로그 박스 활성화
-        logBoxes[currentIndex].SetActive(true);
+        logBoxes[currentIndex].gameObject.SetActive(true);
         //해당 로그 박스 업데이트
-        logBoxes[currentIndex].GetComponent<TextLog>().UpdateTextLog(Dialogue,choiceResult);
+        logBoxes[currentIndex].UpdateTextLog(Dialogue,choiceResult);
         //해당 로그 박스 순위를 마지막으로 변경
         logBoxes[currentIndex].transform.SetAsLastSibling();
 
-        currentIndex = (currentIndex + 1) % maxNum;
+        currentIndex = (currentIndex + 1) % logBoxes.Length;
 
     }
 }
