@@ -246,7 +246,7 @@ public class DialogueManager : MonoBehaviour
         //Relation 이벤트가 아닐 때만 화면 전환 효과를 준다.
         if(loadedEvent.eventID != EventType.Relation)
         {
-            yield return StartCoroutine(BGChangeEffectManager.Instance.FadeOut(fadeSpeed));
+            yield return StartCoroutine(LoadingEffectManager.Instance.FadeOut(fadeSpeed));
 
             // deck 저장
             CardManager.Instance.SaveDeck();
@@ -255,7 +255,7 @@ public class DialogueManager : MonoBehaviour
             // 데이터 세이브
             DataManager.Instance.SaveData();
 
-            StartCoroutine(BGChangeEffectManager.Instance.FadeIn(fadeSpeed));
+            StartCoroutine(LoadingEffectManager.Instance.FadeIn(fadeSpeed));
         }
 
         // 이벤트 진행
