@@ -392,7 +392,7 @@ public class DialogueManager : MonoBehaviour
         // 내용을 받아오고 (비어있어도 상관 X)
         string sentence = csvData["Text"].ToString();
         //대화 로그를 저장하는 함수 호출, 선택지 이벤트가 아니므로 -1을 인자로 넘겨준다.
-        LogManager.Instance.AddLog(csvData,-1); 
+        LogManager.Instance.AddLog(csvData, -1); 
         // 타이핑 출력
         yield return StartCoroutine(TypeSentence(sentence));
     }

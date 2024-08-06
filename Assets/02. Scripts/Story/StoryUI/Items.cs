@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -11,23 +12,24 @@ public enum ItemType
 }
 
 // 아이템 구조체
+[Serializable]
 public class Item
 {
     // 타입
-    public ItemType Type { get; set; }
+    public ItemType type;
     // 이름
-    public string Name { get; set; }
+    public string name;
     // 태그
-    public string Tag { get; set; }
+    public string tag;
     // 개수
-    public int Count { get; set; }
+    public int count;
 
     public Item(ItemType type, string name, string tag, int count)
     {
-        Type = type;
-        Name = name;
-        Tag = tag;
-        Count = count;
+        this.type = type;
+        this.name = name;
+        this.tag = tag;
+        this.count = count;
     }
 }
 
@@ -81,7 +83,7 @@ public class Items : MonoBehaviour
         // 정렬하지 않으니 순차 탐색
         for (int i = 0; i < items.Count; ++i)
         {
-            if (items[i].Name == name)
+            if (items[i].name == name)
             {
                 // 발견 시 인덱스 리턴
                 return items[i];
@@ -103,7 +105,7 @@ public class Items : MonoBehaviour
         // 정렬하지 않으니 순차 탐색
         for (int i = startIndex; i < items.Count; ++i)
         {
-            if (items[i].Name == name)
+            if (items[i].name == name)
             {
                 // 발견 시 인덱스 리턴
                 return i;
@@ -121,7 +123,7 @@ public class Items : MonoBehaviour
         // 정렬하지 않으니 순차 탐색
         for (int i = 0; i < items.Count; ++i)
         {
-            if (items[i].Tag == tag)
+            if (items[i].tag == tag)
             {
                 // 발견 시 인덱스 리턴
                 return items[i];
@@ -143,7 +145,7 @@ public class Items : MonoBehaviour
         // 정렬하지 않으니 순차 탐색
         for (int i = startIndex; i < items.Count; ++i)
         {
-            if (items[i].Tag == tag)
+            if (items[i].tag == tag)
             {
                 // 발견 시 인덱스 리턴
                 return i;
@@ -191,20 +193,20 @@ public class Items : MonoBehaviour
                 item = items[index];
 
                 // 만약 아이템이 있고, 필요 개수를 충족한다면
-                if (item.Count >= requireCount)
+                if (item.count >= requireCount)
                 {
                     // 필요한 만큼만 havingItem에 추가한다.
-                    havingItems[item.Name] = requireCount;
+                    havingItems[item.name] = requireCount;
                 }
                 // 반대로 아이템은 있는데, 필요 개수보다 모자란다면
                 else
                 {
                     // 아이템 개수를 전부 넣고
-                    havingItems[item.Name] = item.Count;
+                    havingItems[item.name] = item.count;
                 }
 
                 // 필요 count를 감소시킨다.
-                requireCount -= item.Count;
+                requireCount -= item.count;
             }
 
             // 개수가 모자라다면
@@ -261,13 +263,13 @@ public class Items : MonoBehaviour
     /// <param name="item">추가할 아이템</param>
     public void AddItem(Item item)
     {
-        Item findedItem = FindItemWithName(item.Name);
+        Item findedItem = FindItemWithName(item.name);
 
         // 아이템이 이미 있다면
         if (findedItem != null)
         {
             // 아이템 수량을 증가
-            findedItem.Count += 1;
+            findedItem.count += 1;
 
         }
         // 아이템이 없다면
@@ -309,10 +311,10 @@ public class Items : MonoBehaviour
         if (findedIndex != -1)
         {
             // 수량을 감소
-            items[findedIndex].Count -= count;
+            items[findedIndex].count -= count;
 
             // 아이템이 없다면
-            if (items[findedIndex].Count <= 0)
+            if (items[findedIndex].count <= 0)
             {
                 // 인벤토리에서 아이템 삭제
                 items.RemoveAt(findedIndex);
@@ -355,25 +357,25 @@ public class Items : MonoBehaviour
     {
         // StringBuilder를 통해 최적화할 수 있지만, 이해하기 쉽게 if문을 사용
         // 아이템이 한 개만 있는 경우
-        if (item.Count <= 1)
+        if (item.count <= 1)
         {
             // 이름만 적는다.
-            slots[index].text = item.Name;
+            slots[index].text = item.name;
         }
         // 1개 이상인 경우
         else
         {
             // 능력이라면
-            if (item.Type == ItemType.Status)
+            if (item.type == ItemType.Status)
             {
                 // 레벨을 함께 표시한다.
-                slots[index].text = $"{item.Name} Lv. {item.Count}";
+                slots[index].text = $"{item.name} Lv. {item.count}";
             }
             // 물품이라면
             else
             {
                 // 개수를 함께 표시한다.
-                slots[index].text = $"{item.Name} x {item.Count}";
+                slots[index].text = $"{item.name} x {item.count}";
             }
         }
     }
@@ -408,6 +410,20 @@ public class Items : MonoBehaviour
     }
     #endregion 문자열 해석 및 아이템 검색
 
+    public void SaveItems()
+    {
+        // 현재 아이템 데이터에 저장
+        DataManager.Instance.data.Items = items.ToList();
+    }
+
+    public void LoadItems()
+    {
+        // 데이터에 저장된 아이템 리스트를 불러옴
+        items = DataManager.Instance.data.Items.ToList();
+
+        // 인벤토리에 적용 (UI 업데이트)
+        UpdateAllSlots();
+    }
     // Legacy
     public void GainJobItem()
     {

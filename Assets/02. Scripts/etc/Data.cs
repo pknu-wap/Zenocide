@@ -19,7 +19,7 @@ public class Data
     // 딜레이 딕셔너리
     public Dictionary<EventData, int> delayDictionary;
     // 아이템 인벤토리
-    public Dictionary<string, int> items;
+    public List<Item> items = new List<Item>();
     //옵션
     public int selectedResolutionIndex;
     public bool fullscreen;
@@ -63,7 +63,7 @@ public class Data
         set { delayDictionary = value; }
     }
 
-    public Dictionary<string, int> Items
+    public List<Item> Items
     {
         get { return items; }
         set { items = value; }

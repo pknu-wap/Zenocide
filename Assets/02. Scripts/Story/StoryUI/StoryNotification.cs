@@ -92,7 +92,7 @@ public class StoryNotification : MonoBehaviour
             result_str += item.Key;
 
             // 아이템이 물품이라면
-            if (ItemInfo.Instance.GetItem(tag).Type == ItemType.Item)
+            if (ItemInfo.Instance.GetItem(tag).type == ItemType.Item)
             {
                 // x를
                 result_str += " x ";
