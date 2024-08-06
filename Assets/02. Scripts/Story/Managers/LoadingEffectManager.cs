@@ -2,22 +2,22 @@ using UnityEngine;
 using System.Collections;
 using DG.Tweening;
 
-public class BGChangeEffectManager : MonoBehaviour
+public class LoadingEffectManager : MonoBehaviour
 {
-    public static BGChangeEffectManager Instance { get; set; }
+    public static LoadingEffectManager Instance { get; set; }
 
     public bool isFading = false; // Fade 중인지 확인하는 변수
 
     [Header("레이어")]
-    private GameObject[] Layers = new GameObject[24]; // 레이어 배열
-    private CanvasGroup[] LayerCanvasGroups = new CanvasGroup[24]; // CanvasGroup 배열
+    public GameObject[] Layers = new GameObject[24]; // 레이어 배열
+    public CanvasGroup[] LayerCanvasGroups = new CanvasGroup[24]; // CanvasGroup 배열
 
     [Header("레이어 층의 오브젝트 개수")]
     private int LayerCount = 6;
 
     [Header("부모 오브젝트")]
-    private GameObject FirstEffectObject;
-    private GameObject SecondEffectObject;
+    public GameObject FirstEffectObject;
+    public GameObject SecondEffectObject;
 
     private void Awake()
     {
@@ -54,18 +54,21 @@ public class BGChangeEffectManager : MonoBehaviour
         }
     }
 
-    public void FadeEffect(float time)
+    public void FadeOutEffect()
     {
-        StartCoroutine(FadeOut(time));
-        StartCoroutine(FadeIn(time));
+        StartCoroutine(FadeOut(0.5f));
+    }
+
+    public void FadeInEffect()
+    {
+        StartCoroutine(FadeIn(0.5f));
     }
 
     public IEnumerator FadeOut(float time)
     {
         if(isFading) yield break;
 
-        float fadeDelay = 0.2f;
-        float delay = (time - fadeDelay) / (LayerCount * 4);
+        float delay = time / (LayerCount * 4);
 
         isFading = true;
         LayerActive(true);
@@ -74,28 +77,23 @@ public class BGChangeEffectManager : MonoBehaviour
         {
             Layers[i].transform.localScale = Vector3.zero;
             Sequence sequence = DOTween.Sequence();
-            sequence.Append(Layers[i].transform.DOScale(Vector3.one, fadeDelay));
-            sequence.Join(LayerCanvasGroups[i].DOFade(1f, fadeDelay));
-            yield return new WaitForSeconds(delay);
-            // 전체 시간 = 마름모가 커지는 시간 + 마름모의 개수 * 딜레이
-            // time = fadeDelay + 24 * delay;
+            sequence.Append(Layers[i].transform.DOScale(Vector3.one, delay));
+            sequence.Join(LayerCanvasGroups[i].DOFade(1f, delay));
+            yield return sequence.WaitForCompletion();
         }
-        yield return new WaitForSeconds(time);
     }
     
     public IEnumerator FadeIn(float time)
     {
-        float fadeDelay = 0.2f;
-        float delay = (time - fadeDelay) / (LayerCount * 4);
+        float delay = time / (LayerCount * 4);
         
         for (int i = 0; i < LayerCount * 4; i++)
         {
             Sequence sequence = DOTween.Sequence();
-            sequence.Append(Layers[i].transform.DOScale(Vector3.zero, fadeDelay));
-            sequence.Join(LayerCanvasGroups[i].DOFade(0f, fadeDelay));
-            yield return new WaitForSeconds(delay);
+            sequence.Append(Layers[i].transform.DOScale(Vector3.zero, delay));
+            sequence.Join(LayerCanvasGroups[i].DOFade(0f, delay));
+            yield return sequence.WaitForCompletion();
         }
-        yield return new WaitForSeconds(0.5f);
         LayerActive(false);
         isFading = false;
     }
