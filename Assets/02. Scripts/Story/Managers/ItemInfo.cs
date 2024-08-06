@@ -17,6 +17,7 @@ public class ItemInfo : MonoBehaviour
         new Item(ItemType.Item, "송이버섯", "음식", 1),
         new Item(ItemType.Item, "고기", "음식", 1),
         new Item(ItemType.Item, "고기?", "음식", 1),
+        new Item(ItemType.Item, "건빵", "음식", 1),
         new Item(ItemType.Item, "사탕", "간식", 1),
         new Item(ItemType.Item, "초콜릿", "간식", 1),
         new Item(ItemType.Item, "건빵", "간식", 1),
