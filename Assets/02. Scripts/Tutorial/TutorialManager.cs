@@ -171,7 +171,9 @@ public class TutorialManager : MonoBehaviour
             {
                 // 함수를 종료한다.
                 EndEvent(loadedEvent);
-
+                
+                // 메인 스토리로 넘어가기 전에 로딩 효과 추가
+                yield return StartCoroutine(LoadingEffectManager.Instance.FadeOut(fadeSpeed));
                 // 현재 이벤트를 종료한다. (DialogueManager로 이동)
                 break;
             }
