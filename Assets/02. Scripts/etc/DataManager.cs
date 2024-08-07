@@ -3,10 +3,10 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using static UnityEditor.Progress;
+using UnityEditor.MPE;
 
 public class DataManager : MonoBehaviour
 {
-    static DataManager instance;
     public static DataManager Instance { get; private set; }
     void Awake() => Instance = this;
 
@@ -53,5 +53,27 @@ public class DataManager : MonoBehaviour
 
         // 파일을 새로 생성하거나 덮어쓰기
         File.WriteAllText(filePath, encodedJson);
+    }
+
+    public void StartSavedGame()
+    {
+        // 데이터를 로드하고
+        LoadData();
+
+        // 각자 자리에 삽입한다.
+        Player.Instance.LoadHp();
+        CardManager.Instance.LoadDeck();
+        DialogueManager.Instance.LoadData();
+        Items.Instance.LoadItems();
+        SoundManager.Instance.LoadVolumeSettings();
+        ResolutionManager.Instance.LoadResolutionSettings();
+
+        // 이벤트씬으로 전환
+
+        // 저장된 currentEvent를 실행
+        StartCoroutine(DialogueManager.Instance.ProcessEvent(data.CurrentEvent));
+
+        // 해당 이벤트가 실행된 이후에는 계속 다른 이벤트를 진행한다.
+        StartCoroutine(DialogueManager.Instance.ProcessRandomEvent());
     }
 }
