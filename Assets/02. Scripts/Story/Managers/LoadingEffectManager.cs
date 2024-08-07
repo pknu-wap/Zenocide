@@ -15,6 +15,12 @@ public class LoadingEffectManager : MonoBehaviour
     [Header("레이어 층의 오브젝트 개수")]
     private int layerCount;
 
+    [Header("총 전환 시간")]
+    public float fadeTime = 2f;
+
+    [Header("Fade 시간")]
+    public float fadeDuration = 0.2f;
+
     private void Awake()
     {
         if(Instance == null)
@@ -45,21 +51,25 @@ public class LoadingEffectManager : MonoBehaviour
         //모든 레이어 비활성화
         LayerActive(false);
     }
-
+    
+    // 테스트 함수 - 1
     public void FadeOutEffect()
     {
-        StartCoroutine(FadeOut(0.5f));
+        StartCoroutine(FadeOut(fadeTime));
     }
 
+    // 테스트 함수 - 2
     public void FadeInEffect()
     {
-        StartCoroutine(FadeIn(0.5f));
+        StartCoroutine(FadeIn(fadeTime));
     }
 
     public IEnumerator FadeOut(float time)
     {
+        // FadeIn 또는 FadeOut 중인 경우 함수 종료
         if(isFading) yield break;
-
+        // time / 총 레이어 수 만큼 딜레이를 설정
+        // 각 레이어가 순차적으로 FadeOut 되며 time(소수점이라 근사치) 동안 진행
         float delay = time / (layerCount * 4);
 
         isFading = true;
@@ -69,27 +79,40 @@ public class LoadingEffectManager : MonoBehaviour
         {
             layers[i].transform.localScale = Vector3.zero;
             Sequence sequence = DOTween.Sequence();
-            sequence.Append(layers[i].gameObject.transform.DOScale(Vector3.one, delay));
-            sequence.Join(layers[i].DOFade(1, delay));
-            yield return sequence.WaitForCompletion();
+            sequence.Append(layers[i].gameObject.transform.DOScale(Vector3.one, fadeDuration).SetEase(Ease.Linear));
+            sequence.Join(layers[i].DOFade(1, fadeDuration).SetEase(Ease.Linear));
+            yield return new WaitForSeconds(delay);
         }
+        // 마지막 레이어가 FadeOut 되는 시간만큼 대기
+        yield return new WaitForSeconds(fadeDuration);
+        isFading = false;
     }
     
     public IEnumerator FadeIn(float time)
     {
+        // FadeIn 또는 FadeOut 중인 경우 함수 종료
+        if(isFading) yield break;
+        // time / 총 레이어 수 만큼 딜레이를 설정
+        // 각 레이어가 순차적으로 FadeOut 되며 time(소수점이라 근사치) 동안 진행
         float delay = time / (layerCount * 4);
-        
+
+        isFading = true;
+
         for (int i = 0; i < layerCount * 4; i++)
         {
             Sequence sequence = DOTween.Sequence();
-            sequence.Append(layers[i].gameObject.transform.DOScale(Vector3.zero, delay));
-            sequence.Join(layers[i].DOFade(0, delay));
-            yield return sequence.WaitForCompletion();
+            sequence.Append(layers[i].gameObject.transform.DOScale(Vector3.zero, fadeDuration).SetEase(Ease.Linear));
+            sequence.Join(layers[i].DOFade(0, fadeDuration).SetEase(Ease.Linear));
+            yield return new WaitForSeconds(delay);
         }
+        // 마지막 레이어가 FadeIn 되는 시간만큼 대기
+        yield return new WaitForSeconds(fadeDuration);
+        //모든 레이어 비활성화
         LayerActive(false);
         isFading = false;
     }
 
+    // 로딩 씬 레이어 활성화 함수
     public void LayerActive(bool isActive)
     {
         for (int i = 0; i < layerCount * 4; i++)
