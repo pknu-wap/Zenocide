@@ -8,6 +8,10 @@ using TMPro;
 
 public class ResolutionManager : MonoBehaviour
 {
+    // 싱글톤
+    public static ResolutionManager Instance { get; private set; }
+    private void Awake() => Instance = this;
+
     public TMP_Dropdown resolutionDropdown;
     public Toggle fullscreenToggle;
     public Button applyButton;

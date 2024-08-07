@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class SoundManager : MonoBehaviour
 {
+    // 싱글톤
+    public static SoundManager Instance { get; private set; }
+    private void Awake() => Instance = this;
+    
     public AudioSource storyMusicsource;
     public AudioSource battleMusicsource;
 
