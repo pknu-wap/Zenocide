@@ -48,11 +48,12 @@ public class StoryInformation : MonoBehaviour
         //스토리 이름을 받아와서 텍스트에 출력
         StoryText.text = text;
         //오브젝트의 X 크기를 duration/2 초 동안 1로 변경되는 효과 부여
-        yield return StoryInformationObject.transform.DOScaleX(1, duration/2).WaitForCompletion();
+        yield return StoryInformationObject.transform.DOScaleX(1, duration/4).WaitForCompletion();
         //스토리 이름을 null로 초기화하여 자연스러운 효과 연출
+        yield return new WaitForSeconds(duration/2);
         StoryText.text = null;
         //오브젝트의 X 크기를 duration/2 초 동안 0으로 변경되는 효과 부여
-        yield return StoryInformationObject.transform.DOScaleX(0, duration/2).WaitForCompletion();
+        yield return StoryInformationObject.transform.DOScaleX(0, duration/4).WaitForCompletion();
         //자원 절약을 위해 오브젝트 비활성화
         StoryInformationObject.SetActive(false);
         //함수가 종료 되었으므로 변수 값 변경

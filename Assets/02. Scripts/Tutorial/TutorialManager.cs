@@ -348,8 +348,10 @@ public class TutorialManager : MonoBehaviour
         isClicked = true;
     }
 
-    public void SkipEvent()
+    public async void SkipEvent()
     {
+        // 다음 이벤트로 넘어가기 전에 로딩 씬을 띄운다.
+        await LoadingEffectManager.Instance.FadeEffect(fadeSpeed);
         isSkip = true;
         currentEvent = null;
         skipButton.SetActive(false);

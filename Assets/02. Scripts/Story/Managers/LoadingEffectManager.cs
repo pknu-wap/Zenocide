@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Threading.Tasks;
 using DG.Tweening;
 using System.Linq;
 
@@ -52,6 +53,14 @@ public class LoadingEffectManager : MonoBehaviour
         LayerActive(false);
     }
     
+    public async Task FadeEffect(float time)
+    {
+        StartCoroutine(FadeOut(time));
+        await Task.Delay((int)(time * 1000));
+        StartCoroutine(FadeIn(time));
+        await Task.Delay((int)(time * 1000));
+    }
+
     // 테스트 함수 - 1
     public void FadeOutEffect()
     {
