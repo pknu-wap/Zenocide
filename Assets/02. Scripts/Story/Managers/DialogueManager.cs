@@ -280,7 +280,7 @@ public class DialogueManager : MonoBehaviour
             if(i == loadedEvent.startIndex && loadedEvent.eventID != EventType.Relation)
             {
                 yield return StartCoroutine(LoadingEffectManager.Instance.FadeIn(fadeSpeed));
-                StartCoroutine(StoryInformation.Instance.ShowInformation(fadeSpeed*2, dataCSV[loadedEvent.startIndex]["Event"].ToString()));
+                StartCoroutine(StoryInformation.Instance.ShowInformation(fadeSpeed, dataCSV[loadedEvent.startIndex]["Event"].ToString()));
             }
         
             // 선택지가 나타나면 선택지 이벤트를 실행한다.
