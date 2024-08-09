@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
+using System.Threading.Tasks;
 using DG.Tweening;
+using System.Linq;
 
 public class LoadingEffectManager : MonoBehaviour
 {
@@ -9,15 +11,16 @@ public class LoadingEffectManager : MonoBehaviour
     public bool isFading = false; // Fade 중인지 확인하는 변수
 
     [Header("레이어")]
-    public GameObject[] Layers = new GameObject[24]; // 레이어 배열
-    public CanvasGroup[] LayerCanvasGroups = new CanvasGroup[24]; // CanvasGroup 배열
-
+    private CanvasGroup[] layers; // 레이어 배열
+    
     [Header("레이어 층의 오브젝트 개수")]
-    private int LayerCount = 6;
+    private int layerCount;
 
-    [Header("부모 오브젝트")]
-    public GameObject FirstEffectObject;
-    public GameObject SecondEffectObject;
+    [Header("총 전환 시간")]
+    public float fadeTime = 2f;
+
+    [Header("Fade 시간")]
+    public float fadeDuration = 0.2f;
 
     private void Awake()
     {
@@ -30,79 +33,92 @@ public class LoadingEffectManager : MonoBehaviour
             Destroy(this);
             return;
         }
-        FirstEffectObject = GameObject.FindWithTag("BG Effect Layer1");  // 첫번째 레이어
-        SecondEffectObject = GameObject.FindWithTag("BG Effect Layer2"); // 두번째 레이어
-        GameObject FirstUpLayer = FirstEffectObject.transform.GetChild(0).gameObject;      // 첫번째 레이어의 첫번째 줄
-        GameObject FirstDownLayer = FirstEffectObject.transform.GetChild(1).gameObject;   // 첫번째 레이어의 두번째 줄
-        GameObject SecondUpLayer = SecondEffectObject.transform.GetChild(0).gameObject;    // 두번째 레이어의 첫번째 줄
-        GameObject SecondDownLayer = SecondEffectObject.transform.GetChild(1).gameObject;  // 두번째 레이어의 두번째 줄
+        // 로딩 씬 불러옴
+        GameObject loadingScene = GameObject.FindWithTag("Loading Scene"); 
+        // 레이어 층의 오브젝트 개수 초기화
+        layerCount = loadingScene.transform.GetChild(0).GetChild(0).childCount; 
+        // 레이어 배열 초기화
+        CanvasGroup[] tempLayers = loadingScene.GetComponentsInChildren<CanvasGroup>(); 
 
-        for(int i =  0; i < LayerCount; i++) // 6번째 오브젝트부터 첫번째 배열에 저장
-        {
-            Layers[i * 4    ] = FirstUpLayer.transform.GetChild(5 - i).gameObject;     // Column을 기준으로 했을 때 Top 오브젝트
-            Layers[i * 4 + 1] = FirstDownLayer.transform.GetChild(5 - i).gameObject;    // Column을 기준으로 했을 때 Middle Up 오브젝트
-            Layers[i * 4 + 2] = SecondUpLayer.transform.GetChild(5 - i).gameObject;   // Column을 기준으로 했을 때 Middle Down 오브젝트
-            Layers[i * 4 + 3] = SecondDownLayer.transform.GetChild(5 - i).gameObject;  // Column을 기준으로 했을 때 Bottom 오브젝트
+        // 가장 오른쪽에 있는 오브젝트들(6번째 오브젝트)부터 시작하도록 정렬
+        // 이때 오브젝트는 가장 위층 레이어부터 아래로 내려오며 저장됨
+        // 정렬된 레이어를 배열에 할당
+        layers = tempLayers
+                 .GroupBy(canvas => canvas.name)
+                 .OrderByDescending(c => c.Key)
+                 .SelectMany(c => c)
+                 .ToArray();
 
-            for (int j = 0; j < 4; j++)
-            {
-                CanvasGroup layerCanvas = Layers[i * 4 + j].GetComponent<CanvasGroup>();
-                LayerCanvasGroups[i * 4 + j] = layerCanvas;
-                layerCanvas.alpha = 0;
-                Layers[i * 4 + j].SetActive(false);
-            }
-        }
+        //모든 레이어 비활성화
+        LayerActive(false);
     }
-
+    
+    // 테스트 함수 - 1
     public void FadeOutEffect()
     {
-        StartCoroutine(FadeOut(0.5f));
+        StartCoroutine(FadeOut(fadeTime));
     }
 
+    // 테스트 함수 - 2
     public void FadeInEffect()
     {
-        StartCoroutine(FadeIn(0.5f));
+        StartCoroutine(FadeIn(fadeTime));
     }
 
     public IEnumerator FadeOut(float time)
     {
+        // FadeIn 또는 FadeOut 중인 경우 함수 종료
         if(isFading) yield break;
-
-        float delay = time / (LayerCount * 4);
+        // time / 총 레이어 수 만큼 딜레이를 설정
+        // 각 레이어가 순차적으로 FadeOut 되며 time(소수점이라 근사치) 동안 진행
+        float delay = time / (layerCount * 4);
 
         isFading = true;
         LayerActive(true);
 
-        for (int i = 0; i < LayerCount * 4; i++)
+        for (int i = 0; i < layerCount * 4; i++)
         {
-            Layers[i].transform.localScale = Vector3.zero;
+            layers[i].transform.localScale = Vector3.zero;
             Sequence sequence = DOTween.Sequence();
-            sequence.Append(Layers[i].transform.DOScale(Vector3.one, delay));
-            sequence.Join(LayerCanvasGroups[i].DOFade(1f, delay));
-            yield return sequence.WaitForCompletion();
+            sequence.Append(layers[i].gameObject.transform.DOScale(Vector3.one, fadeDuration).SetEase(Ease.Linear));
+            sequence.Join(layers[i].DOFade(1, fadeDuration).SetEase(Ease.Linear));
+            yield return new WaitForSeconds(delay);
         }
+        // 마지막 레이어가 FadeOut 되는 시간만큼 대기
+        yield return new WaitForSeconds(fadeDuration);
+        isFading = false;
     }
     
     public IEnumerator FadeIn(float time)
     {
-        float delay = time / (LayerCount * 4);
-        
-        for (int i = 0; i < LayerCount * 4; i++)
+        // FadeIn 또는 FadeOut 중인 경우 함수 종료
+        if(isFading) yield break;
+        // time / 총 레이어 수 만큼 딜레이를 설정
+        // 각 레이어가 순차적으로 FadeOut 되며 time(소수점이라 근사치) 동안 진행
+        float delay = time / (layerCount * 4);
+
+        isFading = true;
+
+        for (int i = 0; i < layerCount * 4; i++)
         {
             Sequence sequence = DOTween.Sequence();
-            sequence.Append(Layers[i].transform.DOScale(Vector3.zero, delay));
-            sequence.Join(LayerCanvasGroups[i].DOFade(0f, delay));
-            yield return sequence.WaitForCompletion();
+            sequence.Append(layers[i].gameObject.transform.DOScale(Vector3.zero, fadeDuration).SetEase(Ease.Linear));
+            sequence.Join(layers[i].DOFade(0, fadeDuration).SetEase(Ease.Linear));
+            yield return new WaitForSeconds(delay);
         }
+        // 마지막 레이어가 FadeIn 되는 시간만큼 대기
+        yield return new WaitForSeconds(fadeDuration);
+        //모든 레이어 비활성화
         LayerActive(false);
         isFading = false;
     }
 
+    // 로딩 씬 레이어 활성화 함수
     public void LayerActive(bool isActive)
     {
-        for (int i = 0; i < LayerCount * 4; i++)
+        for (int i = 0; i < layerCount * 4; i++)
         {
-            Layers[i].SetActive(isActive);
+            layers[i].gameObject.SetActive(isActive);
         }
     }
 }
