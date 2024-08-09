@@ -25,7 +25,10 @@ public class Enemy : Character
     ParticleSystem healEffect;
     Image shieldMask;
 
-    // 상수
+    // 콜라이더
+    Collider2D collider;
+
+    [Header("상수")]
     float fadeDelay = 2f;
     float skillDelay = 0.5f;   // 0.5의 배수로 해줘야 함
 
@@ -49,6 +52,9 @@ public class Enemy : Character
 
         // 스킬 이펙트, 모션
         shieldMask = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Image>();
+
+        // 콜라이더
+        collider = GetComponent<Collider2D>();
     }
 
     // 적을 등록한다.
@@ -80,6 +86,9 @@ public class Enemy : Character
 
         // 상태 초기화
         ResetState();
+        
+        // 콜라이더를 켜 상호작용을 시작하고
+        collider.enabled = true;
 
         // 활성화한다.
         gameObject.SetActive(true);
@@ -179,6 +188,9 @@ public class Enemy : Character
     // 죽는다.
     public override void Die()
     {
+        // 카드 대상이 되지 않게 콜라이더를 비활성화한다.
+        collider.enabled = false;
+
         // TurnManager에서 자기 자신의 이벤트를 제거
         TurnManager.Instance.onStartPlayerTurn.RemoveListener(ReadySkill);
 
