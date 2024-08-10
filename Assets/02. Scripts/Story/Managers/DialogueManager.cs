@@ -62,6 +62,7 @@ public class DialogueManager : MonoBehaviour
         {"인카니지 경비원", 10},
         {"아기 좀비", 11},
         {"기본 여자", 12},
+        {"멀쩡한 좀비", 12},
     };
     public Sprite[] illustImages;
 
