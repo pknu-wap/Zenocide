@@ -61,6 +61,7 @@ public class DialogueManager : MonoBehaviour
         {"흑화 교주", 9},
         {"인카니지 경비원", 10},
         {"아기 좀비", 11},
+        {"기본 여자", 12},
     };
     public Sprite[] illustImages;
 
