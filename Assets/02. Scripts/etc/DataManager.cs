@@ -2,8 +2,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Progress;
-using UnityEditor.MPE;
+using System.Collections;
 
 public class DataManager : MonoBehaviour
 {
@@ -63,17 +62,41 @@ public class DataManager : MonoBehaviour
         // 각자 자리에 삽입한다.
         Player.Instance.LoadHp();
         CardManager.Instance.LoadDeck();
-        DialogueManager.Instance.LoadData();
+        DialogueManager.Instance.LoadDialogueData();
         Items.Instance.LoadItems();
         SoundManager.Instance.LoadVolumeSettings();
         ResolutionManager.Instance.LoadResolutionSettings();
 
-        // 이벤트씬으로 전환
+        // 스토리씬으로 전환
+        GameManager.Instance.ToggleTutorialScene();
+        GameManager.Instance.SwitchToStoryScene();
 
-        // 저장된 currentEvent를 실행
-        StartCoroutine(DialogueManager.Instance.ProcessEvent(data.CurrentEvent));
+        StartCoroutine(DialogueManager.Instance.ProcessLoadedEvent(data.CurrentEvent));
+    }
 
-        // 해당 이벤트가 실행된 이후에는 계속 다른 이벤트를 진행한다.
-        StartCoroutine(DialogueManager.Instance.ProcessRandomEvent());
+    public List<DictionaryData<EventData, int>> DictionaryToDictionaryData(Dictionary<EventData, int> dic)
+    {
+        List<DictionaryData<EventData, int>> dictionaryDatas = new List<DictionaryData<EventData, int>>();
+
+        foreach(EventData Event in dic.Keys)
+        {
+            DictionaryData<EventData, int> dictionaryData = new DictionaryData<EventData, int>();
+            dictionaryData.key = Event;
+            dictionaryData.value = dic[Event];
+            dictionaryDatas.Add(dictionaryData);
+        }
+
+        return dictionaryDatas;
+    }
+
+    public Dictionary<EventData, int> DictionaryDataToDictinary(List<DictionaryData<EventData, int>> dicDatas)
+    {
+        Dictionary<EventData, int> dic = new Dictionary<EventData, int>();
+        foreach(DictionaryData<EventData, int> dicData in dicDatas)
+        {
+            dic[dicData.key] = dicData.value;
+        }
+
+        return dic;
     }
 }
