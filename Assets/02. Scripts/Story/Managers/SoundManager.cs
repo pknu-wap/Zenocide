@@ -75,6 +75,10 @@ public class SoundManager : MonoBehaviour
         // ApplyVolumeSettings가 호출될때마다 applyCount 1씩 증가
         applyCount++;
         UpdateAudioSources();
+
+        // 설정한 옵션을 로컬 파일로 저장
+        SaveVolumeSettings();
+        DataManager.Instance.SaveData();
     }
 
     // 볼륨 설정을 취소
@@ -113,6 +117,7 @@ public class SoundManager : MonoBehaviour
         // 로드한 볼륨 적용
         masterVolumeSlider.value = masterVolume;
         bgmVolumeSlider.value = bgmVolume;
+
         ApplyVolumeSettings();
     }
 }
