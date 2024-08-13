@@ -31,7 +31,6 @@ public class TutorialManager : MonoBehaviour
     public bool isBattleDone = false;
 
     [Header("일러스트 데이터")]
-    // 이름 - 이미지 딕셔너리
     public Dictionary<string, int> illustTable = new Dictionary<string, int>()
     {
         {"소피아", 0},
@@ -45,16 +44,22 @@ public class TutorialManager : MonoBehaviour
         {"교주", 8},
         {"흑화 교주", 9},
         {"인카니지 경비원", 10},
+        {"아기 좀비", 11},
+        {"기본 여자", 12},
+        {"멀쩡한 좀비", 12},
     };
     public Sprite[] illustImages;
 
     [Header("배경 데이터")]
     public Dictionary<string, int> backgroundTable = new Dictionary<string, int>()
     {
-        {"Basement", 0},
-        {"ZombieTown", 1},
-        {"배경3", 2},
-        {"배경4", 3}
+        {"지하실", 0},
+        {"좀비 마을", 1},
+        {"콘크리트 지하실", 2},
+        {"집과 초원 낮", 3},
+        {"초원 낮", 4},
+        {"초원 밤", 5},
+        {"예배당", 6},
     };
     public Sprite[] backgroundImages;
 
@@ -83,7 +88,7 @@ public class TutorialManager : MonoBehaviour
     public int dialogueSpeed = 1;
 
     [Header("화면 전환 속도 변수")]
-    public float fadeSpeed = 0.5f;
+    public float transitionDuration = 0.5f;
 
     [Header("배경 이미지 데이터")]
     public Image storyBackgroundObject;
@@ -173,7 +178,8 @@ public class TutorialManager : MonoBehaviour
                 EndEvent(loadedEvent);
                 
                 // 메인 스토리로 넘어가기 전에 로딩 효과 추가
-                yield return StartCoroutine(LoadingEffectManager.Instance.FadeOut(fadeSpeed));
+                yield return StartCoroutine(LoadingEffectManager.Instance.FadeOut(transitionDuration));
+                yield return new WaitForSeconds(transitionDuration); 
                 // 현재 이벤트를 종료한다. (DialogueManager로 이동)
                 break;
             }
@@ -358,7 +364,7 @@ public class TutorialManager : MonoBehaviour
     private IEnumerator SkipEventCo()
     {
         // FadeOut 효과를 준다.
-        yield return LoadingEffectManager.Instance.FadeOut(fadeSpeed);
+        yield return LoadingEffectManager.Instance.FadeOut(transitionDuration);
         isSkip = true;
         currentEvent = null;
         skipButton.SetActive(false);
@@ -376,7 +382,7 @@ public class TutorialManager : MonoBehaviour
         // 다음 이벤트로 넘어간다.
         isClicked = true;
         // FadeIn 효과를 준다.
-        yield return LoadingEffectManager.Instance.FadeIn(fadeSpeed);
+        yield return LoadingEffectManager.Instance.FadeIn(transitionDuration);
     }
 
     // 대화 출력 함수

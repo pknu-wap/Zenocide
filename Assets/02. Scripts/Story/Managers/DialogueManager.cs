@@ -109,7 +109,7 @@ public class DialogueManager : MonoBehaviour
     public int dialogueSpeed = 1;
 
     [Header("화면 전환 속도 변수")]
-    public float fadeSpeed = 0.5f;
+    public float transitionDuration = 0.5f;
 
     [Header("배경 이미지 데이터")]
     public Image    storyBackgroundObject;
@@ -275,7 +275,8 @@ public class DialogueManager : MonoBehaviour
                 // 딜레이를 감소시킨다.
                 ProcessDelay(loadedEvent);
                 //화면 전환 효과를 준다.
-                yield return StartCoroutine(LoadingEffectManager.Instance.FadeOut(fadeSpeed));
+                yield return StartCoroutine(LoadingEffectManager.Instance.FadeOut(transitionDuration));
+                yield return new WaitForSeconds(transitionDuration);
                 // 현재 이벤트를 종료한다. (ProcessRandomEvent로 이동)
                 yield break;
             }
@@ -285,8 +286,8 @@ public class DialogueManager : MonoBehaviour
 
             if(i == loadedEvent.startIndex && loadedEvent.eventID != EventType.Relation)
             {
-                yield return StartCoroutine(LoadingEffectManager.Instance.FadeIn(fadeSpeed));
-                StartCoroutine(StoryInformation.Instance.ShowInformation(fadeSpeed, dataCSV[loadedEvent.startIndex]["Event"].ToString()));
+                yield return StartCoroutine(LoadingEffectManager.Instance.FadeIn(transitionDuration));
+                StartCoroutine(StoryInformation.Instance.ShowInformation(transitionDuration, dataCSV[loadedEvent.startIndex]["Event"].ToString()));
             }
         
             // 선택지가 나타나면 선택지 이벤트를 실행한다.
