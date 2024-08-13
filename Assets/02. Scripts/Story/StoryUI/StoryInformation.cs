@@ -62,12 +62,12 @@ public class StoryInformation : MonoBehaviour
         StoryText.text = text;
         //목표 X 좌표 값으로 이동하여 캔버스에서 나타나는 효과 부여
         yield return StoryInformationObject.transform.DOMoveX(targetPostion.x, duration).WaitForCompletion();
-        // 2 초 동안 스토리 이름 표시
+        // 1 초 동안 스토리 이름 표시
         yield return new WaitForSeconds(1);
         //Target 좌표에서 오브젝트의 가로 길이를 뺀 만큼 이동하여 캔버스에서 사라지는 효과 부여
         yield return StoryInformationObject.transform.DOMoveX(targetPostion.x - objectWidth/2, duration).WaitForCompletion();
         //자원 절약을 위해 오브젝트 비활성화
-        //StoryInformationObject.SetActive(false);
+        StoryInformationObject.SetActive(false);
         //함수가 종료 되었으므로 변수 값 변경
         isShowing = false;
     }
