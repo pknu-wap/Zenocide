@@ -31,7 +31,6 @@ public class TutorialManager : MonoBehaviour
     public bool isBattleDone = false;
 
     [Header("일러스트 데이터")]
-    // 이름 - 이미지 딕셔너리
     public Dictionary<string, int> illustTable = new Dictionary<string, int>()
     {
         {"소피아", 0},
@@ -45,16 +44,22 @@ public class TutorialManager : MonoBehaviour
         {"교주", 8},
         {"흑화 교주", 9},
         {"인카니지 경비원", 10},
+        {"아기 좀비", 11},
+        {"기본 여자", 12},
+        {"멀쩡한 좀비", 12},
     };
     public Sprite[] illustImages;
 
     [Header("배경 데이터")]
     public Dictionary<string, int> backgroundTable = new Dictionary<string, int>()
     {
-        {"Basement", 0},
-        {"ZombieTown", 1},
-        {"배경3", 2},
-        {"배경4", 3}
+        {"지하실", 0},
+        {"좀비 마을", 1},
+        {"콘크리트 지하실", 2},
+        {"집과 초원 낮", 3},
+        {"초원 낮", 4},
+        {"초원 밤", 5},
+        {"예배당", 6},
     };
     public Sprite[] backgroundImages;
 

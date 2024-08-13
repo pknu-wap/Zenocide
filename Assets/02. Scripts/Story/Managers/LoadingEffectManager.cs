@@ -80,12 +80,14 @@ public class LoadingEffectManager : MonoBehaviour
         {
             layers[i].transform.localScale = Vector3.zero;
             Sequence sequence = DOTween.Sequence();
-            sequence.Append(layers[i].gameObject.transform.DOScale(Vector3.one, fadeDuration).SetEase(Ease.Linear));
-            sequence.Join(layers[i].DOFade(1, fadeDuration).SetEase(Ease.Linear));
+            sequence.Append(layers[i].gameObject.transform.DOScale(Vector3.one, fadeDuration).SetEase(Ease.OutQuad));
+            sequence.Join(layers[i].DOFade(1, fadeDuration).SetEase(Ease.OutQuad));
             yield return new WaitForSeconds(delay);
         }
         // 마지막 레이어가 FadeOut 되는 시간만큼 대기
         yield return new WaitForSeconds(fadeDuration);
+        // FadeOut 완료 후 time 동안 대기
+        yield return new WaitForSeconds(time);
         isFading = false;
     }
     
@@ -102,8 +104,8 @@ public class LoadingEffectManager : MonoBehaviour
         for (int i = 0; i < layerCount * 4; i++)
         {
             Sequence sequence = DOTween.Sequence();
-            sequence.Append(layers[i].gameObject.transform.DOScale(Vector3.zero, fadeDuration).SetEase(Ease.Linear));
-            sequence.Join(layers[i].DOFade(0, fadeDuration).SetEase(Ease.Linear));
+            sequence.Append(layers[i].gameObject.transform.DOScale(Vector3.zero, fadeDuration).SetEase(Ease.InQuad));
+            sequence.Join(layers[i].DOFade(0, fadeDuration).SetEase(Ease.InQuad));
             yield return new WaitForSeconds(delay);
         }
         // 마지막 레이어가 FadeIn 되는 시간만큼 대기
