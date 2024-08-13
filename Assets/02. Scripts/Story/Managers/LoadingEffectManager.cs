@@ -86,8 +86,6 @@ public class LoadingEffectManager : MonoBehaviour
         }
         // 마지막 레이어가 FadeOut 되는 시간만큼 대기
         yield return new WaitForSeconds(fadeDuration);
-        // FadeOut 완료 후 time 동안 대기
-        yield return new WaitForSeconds(time);
         isFading = false;
     }
     

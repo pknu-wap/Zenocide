@@ -88,7 +88,7 @@ public class TutorialManager : MonoBehaviour
     public int dialogueSpeed = 1;
 
     [Header("화면 전환 속도 변수")]
-    public float fadeSpeed = 0.5f;
+    public float transitionDuration = 0.5f;
 
     [Header("배경 이미지 데이터")]
     public Image storyBackgroundObject;
@@ -178,7 +178,8 @@ public class TutorialManager : MonoBehaviour
                 EndEvent(loadedEvent);
                 
                 // 메인 스토리로 넘어가기 전에 로딩 효과 추가
-                yield return StartCoroutine(LoadingEffectManager.Instance.FadeOut(fadeSpeed));
+                yield return StartCoroutine(LoadingEffectManager.Instance.FadeOut(transitionDuration));
+                yield return new WaitForSeconds(transitionDuration); 
                 // 현재 이벤트를 종료한다. (DialogueManager로 이동)
                 break;
             }
@@ -363,7 +364,7 @@ public class TutorialManager : MonoBehaviour
     private IEnumerator SkipEventCo()
     {
         // FadeOut 효과를 준다.
-        yield return LoadingEffectManager.Instance.FadeOut(fadeSpeed);
+        yield return LoadingEffectManager.Instance.FadeOut(transitionDuration);
         isSkip = true;
         currentEvent = null;
         skipButton.SetActive(false);
@@ -381,7 +382,7 @@ public class TutorialManager : MonoBehaviour
         // 다음 이벤트로 넘어간다.
         isClicked = true;
         // FadeIn 효과를 준다.
-        yield return LoadingEffectManager.Instance.FadeIn(fadeSpeed);
+        yield return LoadingEffectManager.Instance.FadeIn(transitionDuration);
     }
 
     // 대화 출력 함수
