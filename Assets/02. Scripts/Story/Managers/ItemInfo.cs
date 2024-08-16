@@ -8,7 +8,7 @@ public class ItemInfo : MonoBehaviour
     #endregion 싱글톤
 
     public Dictionary<string, Item> itemDictionary = new Dictionary<string, Item>();
-    public List<Item> items = new List<Item>
+    private List<Item> items = new List<Item>
     {
         // 에러 아이템
         new Item(ItemType.Item, "Error", "Error", 0),

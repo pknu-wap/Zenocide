@@ -527,7 +527,7 @@ public class DialogueManager : MonoBehaviour
         Dictionary<string, int> requireItems = Items.Instance.ItemStringToDictionary(usedItemText.Split('#'));
 
         // 검색 수행 후, 
-        Dictionary<string, int> usedItems = Items.Instance.FindItemsWithTag(requireItems);
+        Dictionary<string, int> usedItems = Items.Instance.RequestItems(requireItems);
 
         // 차례대로 삭제한다.
         foreach (var item in usedItems)

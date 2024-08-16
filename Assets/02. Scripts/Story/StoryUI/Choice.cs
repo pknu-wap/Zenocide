@@ -68,7 +68,7 @@ public class Choice : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         Dictionary<string, int> requireItems = Items.Instance.ItemStringToDictionary(requireItemText);
 
         // 검색 결과 딕셔너리를 받아온다.
-        Dictionary<string, int> resultItems = Items.Instance.FindItemsWithTag(requireItems);
+        Dictionary<string, int> resultItems = Items.Instance.RequestItems(requireItems);
 
         // 첫번째 문자열인지 검사하는 변수
         bool isFirst = true;
