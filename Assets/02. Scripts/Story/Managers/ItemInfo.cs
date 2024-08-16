@@ -8,7 +8,7 @@ public class ItemInfo : MonoBehaviour
     #endregion 싱글톤
 
     public Dictionary<string, Item> itemDictionary = new Dictionary<string, Item>();
-    public List<Item> items = new List<Item>
+    private List<Item> items = new List<Item>
     {
         // 에러 아이템
         new Item(ItemType.Item, "Error", "Error", 0),
@@ -31,6 +31,7 @@ public class ItemInfo : MonoBehaviour
         new Item(ItemType.Item, "돈", "재화", 1),
         new Item(ItemType.Item, "다이아몬드", "재화", 1),
         new Item(ItemType.Item, "식칼", "칼", 1),
+        new Item(ItemType.Item, "마체테", "칼", 1),
         new Item(ItemType.Item, "권총", "총", 1),
         new Item(ItemType.Item, "펜던트", "펜던트", 1),
         new Item(ItemType.Item, "크레용", "크레용", 1),

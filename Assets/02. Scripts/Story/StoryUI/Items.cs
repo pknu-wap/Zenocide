@@ -72,7 +72,7 @@ public class Items : MonoBehaviour
     void TestItem()
     {
         // 기능 테스트도 함께 할 겸
-        AddItems("관찰력#빵#민첩성#해열제");
+        AddItems("관찰력#식칼#빵#민첩성#해열제#마체테");
 
         UpdateAllSlots();
     }
@@ -156,74 +156,193 @@ public class Items : MonoBehaviour
         return -1;
     }
 
-    public Dictionary<string, int> FindItemsWithTag(Dictionary<string, int> requireItems)
+    // 아이템을 요청한다.
+    public Dictionary<string, int> RequestItems(Dictionary<string, int> requireItems)
     {
         // 실제 갖고 있는 아이템
         Dictionary<string, int> havingItems = new Dictionary<string, int>();
-        Item item;
-        int requireCount;
 
         // 최종적으로 작성될 문구 정보 (삽입 순서 보장)
         Dictionary<string, int> resultItems = new Dictionary<string, int>();
 
         // 인벤토리에 있는지 한 태그씩 검사한다.
-        foreach (string tag in requireItems.Keys)
+        foreach (KeyValuePair<string, int> pair in requireItems)
         {
-            // havingItems는 매 태그마다 초기화한다.
-            havingItems.Clear();
+            // 태그로 검색해보고
+            havingItems = FindItemsWithTag(pair);
 
-            // 필요 개수 저장
-            requireCount = requireItems[tag];
-
-            // 검색 시작 위치. 매 태그마다 0부터 시작
-            int index = -1;
-
-            // 전부 찾는다.
-            while (requireCount > 0)
+            // 찾았다면
+            if(havingItems != null)
             {
-                // 먼저 해당 Tag의 아이템이 있는지 검색한다.
-                index = FindItemIndexWithTag(tag, index + 1);
-
-                // 더이상 없다면 종료한다.
-                if (index == -1)
+                // 결과에 추가한다.
+                foreach(KeyValuePair<string, int> searchedPair in havingItems)
                 {
-                    break;
+                    resultItems[searchedPair.Key] = searchedPair.Value;
                 }
 
-                item = items[index];
-
-                // 만약 아이템이 있고, 필요 개수를 충족한다면
-                if (item.count >= requireCount)
-                {
-                    // 필요한 만큼만 havingItem에 추가한다.
-                    havingItems[item.name] = requireCount;
-                }
-                // 반대로 아이템은 있는데, 필요 개수보다 모자란다면
-                else
-                {
-                    // 아이템 개수를 전부 넣고
-                    havingItems[item.name] = item.count;
-                }
-
-                // 필요 count를 감소시킨다.
-                requireCount -= item.count;
+                // 종료
+                continue;
             }
 
-            // 개수가 모자라다면
-            if (requireCount > 0)
-            {
-                // 해당 태그는 처리에 실패했음을 알린다.
-                resultItems[tag] = -1;
+            // 실패했을 경우 이름으로도 검색해본다.
+            havingItems = FindItemsWithName(pair);
 
+            // 찾았다면
+            if (havingItems != null)
+            {
+                // 결과에 추가한다.
+                foreach (KeyValuePair<string, int> searchedPair in havingItems)
+                {
+                    resultItems[searchedPair.Key] = searchedPair.Value;
+                }
+
+                // 종료
+                continue;
             }
-            // 충분하다면
+
+            // 그럼에도 정말 못 찾았다면 못 찾았음을 결과에 추가한다.
+            resultItems[pair.Key] = -1;
+        }
+
+        return resultItems;
+    }
+
+    // 태그, 개수를 받아 찾은 결과를 리턴한다.
+    public Dictionary<string, int> FindItemsWithTag(KeyValuePair<string, int> requireItems)
+    {
+        // 실제 갖고 있는 아이템
+        Dictionary<string, int> havingItems = new Dictionary<string, int>();
+        Item item;
+        // 필요 개수 저장
+        string tag = requireItems.Key;
+        int requireCount = requireItems.Value;
+
+        // 최종적으로 작성될 문구 정보 (삽입 순서 보장)
+        Dictionary<string, int> resultItems = new Dictionary<string, int>();
+
+        // 인벤토리에 있는지 검사한다.
+        // 검색 시작 위치. 0부터 시작
+        int index = -1;
+
+        // 전부 찾는다.
+        while (requireCount > 0)
+        {
+            // 먼저 해당 Tag의 아이템이 있는지 검색한다.
+            index = FindItemIndexWithTag(tag, index + 1);
+
+            // 더이상 없다면 종료한다.
+            if (index == -1)
+            {
+                break;
+            }
+
+            item = items[index];
+
+            // 만약 아이템이 있고, 필요 개수를 충족한다면
+            if (item.count >= requireCount)
+            {
+                // 필요한 만큼만 havingItem에 추가한다.
+                havingItems[item.name] = requireCount;
+            }
+            // 반대로 아이템은 있는데, 필요 개수보다 모자란다면
             else
             {
-                // 찾은 아이템들을 전부 넣는다.
-                foreach(var result in havingItems)
-                {
-                    resultItems[result.Key] = result.Value;
-                }
+                // 아이템 개수를 전부 넣고
+                havingItems[item.name] = item.count;
+            }
+
+            // 필요 count를 감소시킨다.
+            requireCount -= item.count;
+        }
+
+        // 개수가 모자라다면
+        if (requireCount > 0)
+        {
+            // 해당 태그는 처리에 실패했음을 알린다.
+            resultItems[tag] = -1;
+
+            // 이름으로 재시도한다.
+            return null;
+
+        }
+        // 충분하다면
+        else
+        {
+            // 찾은 아이템들을 전부 넣는다.
+            foreach (var result in havingItems)
+            {
+                resultItems[result.Key] = result.Value;
+            }
+        }
+
+        return resultItems;
+    }
+
+    // 이름, 개수를 받아 찾은 결과를 리턴한다.
+    public Dictionary<string, int> FindItemsWithName(KeyValuePair<string, int> requireItems)
+    {
+        // 실제 갖고 있는 아이템
+        Dictionary<string, int> havingItems = new Dictionary<string, int>();
+        Item item;
+        // 필요 개수 저장
+        string name = requireItems.Key;
+        int requireCount = requireItems.Value;
+
+        // 최종적으로 작성될 문구 정보 (삽입 순서 보장)
+        Dictionary<string, int> resultItems = new Dictionary<string, int>();
+
+        // 인벤토리에 있는지 검사한다.
+        // 검색 시작 위치. 0부터 시작
+        int index = -1;
+
+        // 전부 찾는다.
+        while (requireCount > 0)
+        {
+            // 먼저 해당 Tag의 아이템이 있는지 검색한다.
+            index = FindItemIndexWithName(name, index + 1);
+
+            // 더이상 없다면 종료한다.
+            if (index == -1)
+            {
+                break;
+            }
+
+            item = items[index];
+
+            // 만약 아이템이 있고, 필요 개수를 충족한다면
+            if (item.count >= requireCount)
+            {
+                // 필요한 만큼만 havingItem에 추가한다.
+                havingItems[item.name] = requireCount;
+            }
+            // 반대로 아이템은 있는데, 필요 개수보다 모자란다면
+            else
+            {
+                // 아이템 개수를 전부 넣고
+                havingItems[item.name] = item.count;
+            }
+
+            // 필요 count를 감소시킨다.
+            requireCount -= item.count;
+        }
+
+        // 개수가 모자라다면
+        if (requireCount > 0)
+        {
+            // 해당 태그는 처리에 실패했음을 알린다.
+            resultItems[tag] = -1;
+
+            // 이름으로 재시도한다.
+            return null;
+
+        }
+        // 충분하다면
+        else
+        {
+            // 찾은 아이템들을 전부 넣는다.
+            foreach (var result in havingItems)
+            {
+                resultItems[result.Key] = result.Value;
             }
         }
 
