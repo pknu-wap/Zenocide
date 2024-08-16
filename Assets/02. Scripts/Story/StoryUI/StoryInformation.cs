@@ -50,7 +50,7 @@ public class StoryInformation : MonoBehaviour
     public IEnumerator ShowInformation(float duration,string text)
     {
         //함수가 중복 실행되거나 이벤트 이름이 null일 경우 함수 종료
-        if(isShowing || text is null)
+        if(isShowing || text is "")
         {
             yield break;
         }
