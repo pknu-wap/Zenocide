@@ -60,22 +60,26 @@ public class DialogueManager : MonoBehaviour
         {"교주", 8},
         {"흑화 교주", 9},
         {"인카니지 경비원", 10},
+        {"아기 좀비", 11},
+        {"기본 여자", 12},
+        {"멀쩡한 좀비", 12},
     };
     public Sprite[] illustImages;
 
     [Header("배경 데이터")]
     public Dictionary<string, int> backgroundTable = new Dictionary<string, int>()
     {
-        {"Basement", 0},
-        {"ZombieTown", 1},
-        {"배경3", 2},
-        {"배경4", 3}
+        {"지하실", 0},
+        {"좀비 마을", 1},
+        {"콘크리트 지하실", 2},
+        {"집과 초원 낮", 3},
+        {"초원 낮", 4},
+        {"초원 밤", 5},
+        {"예배당", 6},
     };
     public Sprite[] backgroundImages;
 
     [Header("대화창 오브젝트")]
-    // 대화창 전체 오브젝트
-    public GameObject dialoguePanel;
     // 대화창 이름
     public TMP_Text dialogueName;
     // 대화창 내용
@@ -105,7 +109,7 @@ public class DialogueManager : MonoBehaviour
     public int dialogueSpeed = 1;
 
     [Header("화면 전환 속도 변수")]
-    public float fadeSpeed = 0.5f;
+    public float transitionDuration = 0.5f;
 
     [Header("배경 이미지 데이터")]
     public Image    storyBackgroundObject;
@@ -241,26 +245,6 @@ public class DialogueManager : MonoBehaviour
         // 첫 문장은 바로 띄운다.
         isClicked = true;
 
-        // Relation 이벤트가 아닐 때만 화면 전환 효과를 주고
-        // 게임 데이터를 저장한다.
-        if(loadedEvent.eventID != EventType.Relation)
-        {
-            yield return StartCoroutine(LoadingEffectManager.Instance.FadeOut(fadeSpeed));
-
-            // 이벤트 저장
-            SaveDialogueData();
-            // deck 저장
-            CardManager.Instance.SaveDeck();
-            // item 저장
-            Items.Instance.SaveItems();
-            // hp 저장
-            Player.Instance.SaveHp();
-            // 데이터 세이브
-            DataManager.Instance.SaveData();
-
-            StartCoroutine(LoadingEffectManager.Instance.FadeIn(fadeSpeed));
-        }
-
         // 이벤트 진행
         for (int i = loadedEvent.startIndex; i <= loadedEvent.endIndex; ++i)
         {
@@ -282,7 +266,8 @@ public class DialogueManager : MonoBehaviour
                 // 딜레이를 감소시킨다.
                 ProcessDelay(loadedEvent);
                 //화면 전환 효과를 준다.
-                yield return StartCoroutine(LoadingEffectManager.Instance.FadeOut(fadeSpeed));
+                yield return StartCoroutine(LoadingEffectManager.Instance.FadeOut(transitionDuration));
+                yield return new WaitForSeconds(transitionDuration);
                 // 현재 이벤트를 종료한다. (ProcessRandomEvent로 이동)
                 yield break;
             }
@@ -292,8 +277,19 @@ public class DialogueManager : MonoBehaviour
 
             if(i == loadedEvent.startIndex && loadedEvent.eventID != EventType.Relation)
             {
-                yield return StartCoroutine(LoadingEffectManager.Instance.FadeIn(fadeSpeed));
-                StartCoroutine(StoryInformation.Instance.ShowInformation(fadeSpeed*2, dataCSV[loadedEvent.startIndex]["Event"].ToString()));
+                // 이벤트 저장
+                SaveDialogueData();
+                // deck 저장
+                CardManager.Instance.SaveDeck();
+                // item 저장
+                Items.Instance.SaveItems();
+                // hp 저장
+                Player.Instance.SaveHp();
+                // 데이터 세이브
+                DataManager.Instance.SaveData();
+
+                yield return StartCoroutine(LoadingEffectManager.Instance.FadeIn(transitionDuration));
+                StartCoroutine(StoryInformation.Instance.ShowInformation(transitionDuration, dataCSV[loadedEvent.startIndex]["Event"].ToString()));
             }
         
             // 선택지가 나타나면 선택지 이벤트를 실행한다.
@@ -331,7 +327,9 @@ public class DialogueManager : MonoBehaviour
                 // 그 외엔 선택지 이벤트로 교체한다.
                 currentEvent = relationEvent;
                 #endregion 선택한 이벤트로 이동
-                
+                //선택지 로그 저장 함수 호출
+                LogManager.Instance.AddLog(dataCSV[i], result + 1);
+
                 yield break;
             }
 
@@ -531,7 +529,7 @@ public class DialogueManager : MonoBehaviour
         Dictionary<string, int> requireItems = Items.Instance.ItemStringToDictionary(usedItemText.Split('#'));
 
         // 검색 수행 후, 
-        Dictionary<string, int> usedItems = Items.Instance.FindItemsWithTag(requireItems);
+        Dictionary<string, int> usedItems = Items.Instance.RequestItems(requireItems);
 
         // 차례대로 삭제한다.
         foreach (var item in usedItems)
