@@ -72,7 +72,7 @@ public class Items : MonoBehaviour
     void TestItem()
     {
         // 기능 테스트도 함께 할 겸
-        AddItems("관찰력#식칼#빵#민첩성#해열제#마체테");
+        AddItems("관찰력#식칼#빵#민첩성#해열제");
 
         UpdateAllSlots();
     }

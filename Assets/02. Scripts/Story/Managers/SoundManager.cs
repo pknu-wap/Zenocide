@@ -111,12 +111,12 @@ public class SoundManager : MonoBehaviour
     public void LoadVolumeSettings()
     {
         // 데이터에서 저장된 전체음량, 배경음악 값을 불러옴
-        masterVolume = DataManager.Instance.data.MasterVolume;
-        bgmVolume = DataManager.Instance.data.BgmVolume;
+        lastAppliedMasterVolume = DataManager.Instance.data.MasterVolume;
+        lastAppliedBgmVolume = DataManager.Instance.data.BgmVolume;
 
         // 로드한 볼륨 적용
-        masterVolumeSlider.value = masterVolume;
-        bgmVolumeSlider.value = bgmVolume;
+        masterVolumeSlider.value = lastAppliedMasterVolume;
+        bgmVolumeSlider.value = lastAppliedBgmVolume;
 
         ApplyVolumeSettings();
     }
