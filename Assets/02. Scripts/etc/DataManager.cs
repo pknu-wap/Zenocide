@@ -15,6 +15,16 @@ public class DataManager : MonoBehaviour
     // SaveData 변수
     public Data data = new Data();
 
+    // 경고창 (진짜로 할 것임?)
+    [SerializeField] GameObject newGamePanel;
+    [SerializeField] GameObject loadGamePanel;
+
+    private void Start()
+    {
+        newGamePanel.SetActive(false);
+        loadGamePanel.SetActive(false);
+    }
+
     // 로드
     public void LoadData()
     {
@@ -99,4 +109,16 @@ public class DataManager : MonoBehaviour
 
         return dic;
     }
+
+    #region alert panel
+    public void ToggleNewGamePanel()
+    {
+        newGamePanel.SetActive(!newGamePanel.activeSelf);
+    }
+
+    public void ToggleLoadGamePanel()
+    {
+        loadGamePanel.SetActive(!loadGamePanel.activeSelf);
+    }
+    #endregion alert panel
 }
