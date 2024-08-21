@@ -359,6 +359,16 @@ public class DialogueManager : MonoBehaviour
                 // 전투를 시작한다.
                 yield return StartCoroutine(StartBattle(enemies, rewardCardList));
             }
+
+            // 플레이어 체력을 변경한다.
+            if (dataCSV[i]["Hp"].ToString() is not emptyString)
+            {
+                // 이름들을 배열로 받아온다.
+                int hp = int.Parse(dataCSV[i]["Hp"].ToString());
+
+                // hp를 변경한다.
+                ChangePlayerHp(hp);
+            }
         }
 
         // 이벤트가 종료되지 않고 endIndex를 벗어난 경우 에러를 띄운다.
@@ -554,6 +564,23 @@ public class DialogueManager : MonoBehaviour
         CardManager.Instance.AddCardsToDeck(equipCard);
 
         notification.ShowGetCardMessage(equipCard);
+    }
+
+    private void ChangePlayerHp(int hp)
+    {
+        // 회복이라면
+        if(hp >= 0)
+        {
+            // Increase 호출
+            Player.Instance.IncreaseHP(hp);
+            // 초록 이펙트
+        }
+        else
+        {
+            // Decrease 호출
+            Player.Instance.DecreaseHP(hp);
+            // 빨강 이펙트
+        }
     }
 
     // 전투를 시작하고, 끝날 때까지 기다린다.
