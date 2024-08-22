@@ -265,6 +265,8 @@ public class TutorialManager : MonoBehaviour
             }
         }
 
+        skipButton.SetActive(false);
+
         // 튜토리얼 이벤트 종료 후에 다른 이벤트로 넘어감
         StartCoroutine(DialogueManager.Instance.ProcessRandomEvent());
     }
