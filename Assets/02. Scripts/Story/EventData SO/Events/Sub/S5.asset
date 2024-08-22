@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: S5
   m_EditorClassIdentifier: 
   eventID: 1
-  startIndex: 35
+  delay: 0
+  startIndex: 34
   endIndex: 37
   relationEvent:
   - {fileID: 11400000, guid: 54866aa344853ff4a8d1f93d146f5441, type: 2}

@@ -52,17 +52,18 @@ public class DialogueManager : MonoBehaviour
         {"소피아", 0},
         {"좀비", 1},
         {"에단", 2},
-        {"???", 3},
-        {"???아이", 4},
-        {"여자 신도", 5},
-        {"남자 신도", 6},
-        {"옷 입은 좀비", 7},
-        {"교주", 8},
-        {"흑화 교주", 9},
-        {"인카니지 경비원", 10},
-        {"아기 좀비", 11},
-        {"기본 여자", 12},
-        {"멀쩡한 좀비", 12},
+        {"의문의 남자", 3},
+        {"의문의 여자", 4},
+        {"의문의 아이", 5},
+        {"여자 신도", 6},
+        {"남자 신도", 7},
+        {"옷 입은 좀비", 8},
+        {"교주", 9},
+        {"흑화 교주", 10},
+        {"인카니지 경비원", 11},
+        {"아기 좀비", 12},
+        {"기본 여자", 13},
+        {"멀쩡한 좀비", 14},
     };
     public Sprite[] illustImages;
 
@@ -274,9 +275,11 @@ public class DialogueManager : MonoBehaviour
 
                 // 딜레이를 감소시킨다.
                 ProcessDelay(loadedEvent);
+
                 //화면 전환 효과를 준다.
                 yield return StartCoroutine(LoadingEffectManager.Instance.FadeOut(transitionDuration));
-                yield return new WaitForSeconds(transitionDuration);
+                yield return new WaitForSeconds(transitionDuration / 2);
+
                 // 현재 이벤트를 종료한다. (ProcessRandomEvent로 이동)
                 yield break;
             }

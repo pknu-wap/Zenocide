@@ -76,10 +76,11 @@ public class LoadingEffectManager : MonoBehaviour
         isFading = true;
         LayerActive(true);
 
+        Sequence sequence = DOTween.Sequence();
+
         for (int i = 0; i < layerCount * 4; i++)
         {
             layers[i].transform.localScale = Vector3.zero;
-            Sequence sequence = DOTween.Sequence();
             sequence.Append(layers[i].gameObject.transform.DOScale(Vector3.one, fadeDuration).SetEase(Ease.OutQuad));
             sequence.Join(layers[i].DOFade(1, fadeDuration).SetEase(Ease.OutQuad));
             yield return new WaitForSeconds(delay);

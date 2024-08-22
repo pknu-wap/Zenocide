@@ -10004,14 +10004,15 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 69d4aaa51bb7d854398fbaaef7394210, type: 3}
   - {fileID: 21300000, guid: 0e64b866691e1164b816035b7e9a729e, type: 3}
   - {fileID: 21300000, guid: a1a392017f7cb9d46b1781e3956c5fe5, type: 3}
+  - {fileID: 21300000, guid: 89d3c6a8f333ea54bb01c89a24eeaa9e, type: 3}
   - {fileID: 21300000, guid: 20dff381419b4af429230cb297c429f4, type: 3}
   - {fileID: 21300000, guid: 9d26f8897416a6d4c8969ebf3227586b, type: 3}
   - {fileID: 21300000, guid: 7cde7f76d959ea644809a085c179b414, type: 3}
   - {fileID: 21300000, guid: bbc3d635a5b6c4d479ea166155c940b8, type: 3}
-  - {fileID: 21300000, guid: 58f54140f63daf644b3a06aa14705c59, type: 3}
+  - {fileID: 21300000, guid: 8c267a78a52a0294f8d4204fb16cd227, type: 3}
   - {fileID: 21300000, guid: 58f54140f63daf644b3a06aa14705c59, type: 3}
   - {fileID: 21300000, guid: 88885986e381e6e438758974c74b72a3, type: 3}
-  - {fileID: 21300000, guid: cfc3e835e0ff5444eb4d56241e89e6f8, type: 3}
+  - {fileID: 21300000, guid: ddbb8c4a04b72774798fe09106fc634a, type: 3}
   - {fileID: 21300000, guid: 0f25c0815fbc003499ce28af9c6f1d79, type: 3}
   - {fileID: 21300000, guid: dedadb24203c1b14c848171a3ad6339a, type: 3}
   backgroundImages:
@@ -10030,7 +10031,7 @@ MonoBehaviour:
   processableMainEventList: []
   processableSubEventList: []
   startEventList: {fileID: 11400000, guid: 30220a4d6185339419d5d5dc91d01130, type: 2}
-  mainRate: 100
+  mainRate: 10
   IllustsObjects:
   - {fileID: 1319129626}
   - {fileID: 1031547556}
