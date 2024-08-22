@@ -1,8 +1,5 @@
 using System.IO;
-using System.Linq;
-using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public class DataManager : MonoBehaviour
 {
