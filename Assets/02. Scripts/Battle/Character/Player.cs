@@ -46,4 +46,15 @@ public class Player : Character
 
         StartCoroutine(GameManager.Instance.GameOver());
     }
+
+    public void SaveHp()
+    {
+        DataManager.Instance.data.Hp = currentHp;
+    }
+
+    public void LoadHp()
+    {
+        currentHp = DataManager.Instance.data.Hp;
+        UpdateHPUI();
+    }
 }

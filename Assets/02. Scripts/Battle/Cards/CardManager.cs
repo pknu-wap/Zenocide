@@ -203,7 +203,7 @@ public class CardManager : MonoBehaviour
             drawCount = 0;
         }
 
-        int resetCount = drawCount - deck.Count;
+        int resetCount = deck.Count;
         int dumpCount = 0;
 
         // drawBuffer에 개수만큼 등록한다. (데이터적으로, 한 번에 drawBuffer에 추가된다.)
@@ -230,7 +230,7 @@ public class CardManager : MonoBehaviour
         for(int i = 0; i < drawCount; ++i)
         {
             // 덱 리셋 애니메이션 출력
-            if(i == resetCount - 1)
+            if(i == resetCount)
             {
                 yield return StartCoroutine(ResetDeckAnimationCo(dumpCount));
             }

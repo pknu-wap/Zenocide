@@ -5,6 +5,10 @@ using TMPro;
 
 public class ResolutionManager : MonoBehaviour
 {
+    // 싱글톤
+    public static ResolutionManager Instance { get; private set; }
+    private void Awake() => Instance = this;
+
     public TMP_Dropdown resolutionDropdown;
     public Toggle fullscreenToggle;
     public Button applyButton;
@@ -97,6 +101,10 @@ public class ResolutionManager : MonoBehaviour
         // 새로운 설정값을 이전 설정으로 저장
         previousResolutionIndex = selectedResolutionIndex;
         previousFullscreen = fullscreen;
+
+        // 설정한 옵션을 로컬 파일로 저장
+        SaveResolutionSettings();
+        DataManager.Instance.SaveData();
     }
 
     // 설정 취소

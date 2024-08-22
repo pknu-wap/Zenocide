@@ -221,13 +221,22 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 이벤트를 진행한다.
-    private IEnumerator ProcessEvent(EventData loadedEvent)
+    public IEnumerator ProcessEvent(EventData loadedEvent)
     {
         // null이 들어오면 바로 종료한다.
         if (loadedEvent == null)
         {
             yield break;
         }
+
+        // data 객체에 데이터를 저장한다.
+        SaveDialogueData();
+        CardManager.Instance.SaveDeck();
+        Items.Instance.SaveItems();
+        Player.Instance.SaveHp();
+
+        // json 파일로 세이브
+        DataManager.Instance.SaveData();
 
         // 이벤트가 들어있는 CSV 오브젝트를 찾는다.
         switch (loadedEvent.eventID)
@@ -243,17 +252,8 @@ public class DialogueManager : MonoBehaviour
                 break;
         }
 
-        //이벤트가 시작되는 시점의 데이터를 저장한다.
-        SaveData();
         // 첫 문장은 바로 띄운다.
         isClicked = true;
-
-        // deck 저장
-        CardManager.Instance.SaveDeck();
-        // item 저장
-        // hp 저장
-        // 데이터 세이브
-        DataManager.Instance.SaveData();
 
         // 이벤트 진행
         for (int i = loadedEvent.startIndex; i <= loadedEvent.endIndex; ++i)
@@ -679,29 +679,37 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void SaveData()
+    public void SaveDialogueData()
     {
         //딜레이 딕셔너리
-        DataManager.Instance.data.DelayDictionary = delayDictionary;
+        DataManager.Instance.data.DelayDictionary = DataManager.Instance.DictionaryToDictionaryData(delayDictionary);
         //현재 진행중인 이벤트
         DataManager.Instance.data.CurrentEvent = currentEvent;
         //진행 가능한 메인 이벤트 리스트
         DataManager.Instance.data.ProcessableMainEventList = processableMainEventList;
         //진행 가능한 서브 이벤트 리스트
         DataManager.Instance.data.ProcessableSubEventList = processableSubEventList;
-        DataManager.Instance.SaveData();
     }
 
-    public void LoadData()
+    public void LoadDialogueData()
     {
         //딜레이 딕셔너리
-        delayDictionary = DataManager.Instance.data.DelayDictionary;
+        delayDictionary = DataManager.Instance.DictionaryDataToDictinary(DataManager.Instance.data.DelayDictionary);
         //현재 진행중인 이벤트
         currentEvent = DataManager.Instance.data.CurrentEvent;
         //진행 가능한 메인 이벤트 리스트
         processableMainEventList = DataManager.Instance.data.ProcessableMainEventList;
         //진행 가능한 서브 이벤트 리스트
         processableSubEventList = DataManager.Instance.data.ProcessableSubEventList;
+    }
+
+    public IEnumerator ProcessLoadedEvent(EventData loadedEvent)
+    {
+        // 로드한 이벤트를 진행한 다음
+        yield return StartCoroutine(ProcessEvent(loadedEvent));
+
+        // 랜덤한 이벤트를 플레이한다.
+        StartCoroutine(ProcessRandomEvent());
     }
 
     #region Legacy

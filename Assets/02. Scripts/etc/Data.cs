@@ -1,6 +1,14 @@
+using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+
+[Serializable]
+public class DictionaryData<TKey, TValue>
+{
+    public TKey key;
+    public TValue value;
+}
 
 [Serializable]
 public class Data
@@ -17,7 +25,7 @@ public class Data
     public List<EventData> processableMainEventList;
     public List<EventData> processableSubEventList;
     // 딜레이 딕셔너리
-    public Dictionary<EventData, int> delayDictionary;
+    public List<DictionaryData<EventData, int>> delayDictionary;
     // 아이템 인벤토리
     public List<Item> items = new List<Item>();
     //옵션
@@ -57,7 +65,7 @@ public class Data
         set { processableSubEventList = value; }
     }
 
-    public Dictionary<EventData, int> DelayDictionary
+    public List<DictionaryData<EventData, int>> DelayDictionary
     {
         get { return delayDictionary; }
         set { delayDictionary = value; }
