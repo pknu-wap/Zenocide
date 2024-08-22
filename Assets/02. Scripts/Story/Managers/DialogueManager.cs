@@ -666,7 +666,6 @@ public class DialogueManager : MonoBehaviour
         {
             // 딜레이 감소
             delayDictionary[events[i]] -= 1;
-            Debug.Log("감소된 딜레이 = " + delayDictionary[events[i]]);
 
             // 딜레이 만큼 기다렸다면
             if (delayDictionary[events[i]] <= 0)
