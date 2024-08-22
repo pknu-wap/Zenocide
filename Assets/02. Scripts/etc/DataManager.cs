@@ -1,8 +1,8 @@
 using System.IO;
-using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
+using TMPro;
 
 public class DataManager : MonoBehaviour
 {
@@ -10,10 +10,17 @@ public class DataManager : MonoBehaviour
     void Awake() => Instance = this;
 
     // 데이터 파일 이름
-    string DataFileName = "Data.json";
+    string dataFileName = "Data.json";
+
+    // 데이터 파일 경로
+    string filePath;
 
     // SaveData 변수
     public Data data = new Data();
+
+    // 게임 로드 버튼
+    [SerializeField] GameObject loadButton;
+    public TMP_Text loadButtonTMP;
 
     // 경고창 (진짜로 할 것임?)
     [SerializeField] GameObject newGamePanel;
@@ -21,17 +28,25 @@ public class DataManager : MonoBehaviour
 
     private void Start()
     {
+        filePath = Application.persistentDataPath + "/" + dataFileName;
+
+        loadButtonTMP = loadButton.GetComponentInChildren<TMP_Text>();
+
         newGamePanel.SetActive(false);
         loadGamePanel.SetActive(false);
+
+        // 세이브 파일이 없으면 로드 버튼 비활성화
+        if (!IsFileExist())
+        {
+            OffLoadButton();
+        }
     }
 
     // 로드
     public void LoadData()
     {
-        string filePath = Application.persistentDataPath + "/" + DataFileName;
-
         // 세이브 데이터가 있으면
-        if (File.Exists(filePath))
+        if (IsFileExist())
         {
             // 저장된 파일을 읽고
             string json = File.ReadAllText(filePath);
@@ -49,7 +64,13 @@ public class DataManager : MonoBehaviour
     // 세이브 타이밍: 전투 종료, 이벤트 종료, 사망, 아이템 획득, 카드 획득, 수동 저장
     public void SaveData()
     {
-        string filePath = Application.persistentDataPath + "/" + DataFileName;
+        // 옵션으로 생기는 세이브 방지
+        if(data.currentEvent == null)
+        {
+            return;
+        }
+
+        string filePath = Application.persistentDataPath + "/" + dataFileName;
 
         // Data를 Json으로 변환 (true = 가독성 향상)
         string json = JsonUtility.ToJson(data, true);
@@ -84,6 +105,7 @@ public class DataManager : MonoBehaviour
         StartCoroutine(DialogueManager.Instance.ProcessLoadedEvent(data.CurrentEvent));
     }
 
+    // Dictionary 형을 DicionaryData의 리스트로 형변환
     public List<DictionaryData<EventData, int>> DictionaryToDictionaryData(Dictionary<EventData, int> dic)
     {
         List<DictionaryData<EventData, int>> dictionaryDatas = new List<DictionaryData<EventData, int>>();
@@ -99,6 +121,7 @@ public class DataManager : MonoBehaviour
         return dictionaryDatas;
     }
 
+    // DicionaryData의 리스트를 Dicionary로 형변환
     public Dictionary<EventData, int> DictionaryDataToDictinary(List<DictionaryData<EventData, int>> dicDatas)
     {
         Dictionary<EventData, int> dic = new Dictionary<EventData, int>();
@@ -110,6 +133,22 @@ public class DataManager : MonoBehaviour
         return dic;
     }
 
+    public void OffLoadButton()
+    {
+        // 버튼 투명도
+        Color color = loadButton.GetComponent<Image>().color;
+        color.a = 0.5f;
+        loadButton.GetComponent<Image>().color = color;
+
+        // 버튼 텍스트 투명도
+        loadButtonTMP.alpha = 0.5f;
+    }
+
+    public bool IsFileExist()
+    {
+        return File.Exists(Application.persistentDataPath + "/" + dataFileName);
+    }
+
     #region alert panel
     public void ToggleNewGamePanel()
     {
@@ -118,6 +157,11 @@ public class DataManager : MonoBehaviour
 
     public void ToggleLoadGamePanel()
     {
+        if (!IsFileExist())
+        {
+            return;
+        }
+
         loadGamePanel.SetActive(!loadGamePanel.activeSelf);
     }
     #endregion alert panel
