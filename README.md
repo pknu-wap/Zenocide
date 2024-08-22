@@ -1,7 +1,12 @@
-![Zenocide Teaser](https://github.com/pknu-wap/2024-1-Game-2-Team/assets/61517039/d345a1ea-a0b3-4416-8edd-e6616934300b)
+<a href="https://tumblbug.com/zenocide" target="_blank"><img src="https://github.com/user-attachments/assets/22e1f21a-6578-4a72-b1b2-a1ed0f6b19e5"></a>
+<div align="center">위 사진을 눌러 텀블벅 페이지로 이동할 수 있습니다.</div><br><br><br>
 
-# 제노사이드 베타 테스트가 시작되었습니다
+# 제노사이드 펀딩이 시작되었습니다!
 ### **실종된 딸**을 찾아 **좀비 마을**을 헤매는 **아버지**의 이야기. <b>제노사이드(Zenocide)</b>의 첫 문이 열렸습니다.
+[![티저 영상](http://img.youtube.com/vi/Iq9UvLOlng0/0.jpg)](https://youtu.be/Iq9UvLOlng0)
+
+_제노사이드 티저 영상 (클릭 시 이동합니다.)_
+
 제노사이드는 <b><서울 2033></b>의 스토리 진행 방식과, <b>\<Slay the Spire></b>의 덱빌딩 및 전투 방식에 크게 영향받은 게임입니다.
 
 ## 팀원 소개
@@ -76,7 +81,7 @@
 ---
 
 # 설치 및 실행 방법
-1. [**여기**](https://github.com/pknu-wap/2024-1-Game-2-Team/releases/tag/Beta)를 클릭해 다운로드 페이지로 이동해주세요.
-2. 하단의 **Beta.1.0.3.zip** 파일을 받고, 압축을 해제해주세요.
+1. [**여기**](https://github.com/pknu-wap/2024-1-Game-2-Team/releases/tag/Demo)를 클릭해 다운로드 페이지로 이동해주세요.
+2. 하단의 **Zenocide Demo.zip** 파일을 받고, 압축을 해제해주세요.
 3. **Zenocide.exe** 파일을 더블 클릭해 게임을 실행해주세요.
 4. 게임은 마우스로 진행됩니다.

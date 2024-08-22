@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+
 public class DataManager : MonoBehaviour
 {
     public static DataManager Instance { get; private set; }

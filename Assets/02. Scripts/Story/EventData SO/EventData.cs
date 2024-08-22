@@ -28,4 +28,19 @@ public class EventData: ScriptableObject
 
     [Header("리스트에 추가할 이벤트")]
     public EventData[] addEvent;
+
+    public EventData Copy()
+    {
+        EventData data = new EventData();
+
+        data.eventID = eventID;
+        data.delay = delay;
+        data.startIndex = startIndex;
+        data.endIndex = endIndex;
+        data.relationEvent = relationEvent;
+        data.nextEvent = nextEvent;
+        data.addEvent = addEvent;
+
+        return data;
+    }
 }

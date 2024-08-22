@@ -176,10 +176,11 @@ public class TutorialManager : MonoBehaviour
             {
                 // 함수를 종료한다.
                 EndEvent(loadedEvent);
-                
+
                 // 메인 스토리로 넘어가기 전에 로딩 효과 추가
                 yield return StartCoroutine(LoadingEffectManager.Instance.FadeOut(transitionDuration));
-                yield return new WaitForSeconds(transitionDuration); 
+                yield return new WaitForSeconds(transitionDuration / 2);
+
                 // 현재 이벤트를 종료한다. (DialogueManager로 이동)
                 break;
             }
@@ -263,6 +264,8 @@ public class TutorialManager : MonoBehaviour
                 yield return StartCoroutine(StartBattleTutorial(enemies, rewardCardList));
             }
         }
+
+        skipButton.SetActive(false);
 
         // 튜토리얼 이벤트 종료 후에 다른 이벤트로 넘어감
         StartCoroutine(DialogueManager.Instance.ProcessRandomEvent());
@@ -364,7 +367,9 @@ public class TutorialManager : MonoBehaviour
     private IEnumerator SkipEventCo()
     {
         // FadeOut 효과를 준다.
-        yield return LoadingEffectManager.Instance.FadeOut(transitionDuration);
+        yield return StartCoroutine(LoadingEffectManager.Instance.FadeOut(transitionDuration));
+        yield return new WaitForSeconds(transitionDuration / 2);
+
         isSkip = true;
         currentEvent = null;
         skipButton.SetActive(false);
@@ -381,8 +386,9 @@ public class TutorialManager : MonoBehaviour
 
         // 다음 이벤트로 넘어간다.
         isClicked = true;
+
         // FadeIn 효과를 준다.
-        yield return LoadingEffectManager.Instance.FadeIn(transitionDuration);
+        yield return StartCoroutine(LoadingEffectManager.Instance.FadeIn(transitionDuration));
     }
 
     // 대화 출력 함수
