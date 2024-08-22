@@ -507,6 +507,8 @@ public class DialogueManager : MonoBehaviour
 
         // 현재 이벤트의 대화 기록을 삭제한다.
         LogManager.Instance.ResetLogs();
+
+        Debug.Log(delayDictionary.Count());
     }
 
     // 선택지를 띄운다.
@@ -657,12 +659,6 @@ public class DialogueManager : MonoBehaviour
 
     private void ProcessDelay(EventData loadedData)
     {
-        // 릴레이션 이벤트일 때는 딜레이 적용 안함
-        if (loadedData.eventID == EventType.Relation)
-        {
-            return;
-        }
-
         // 메인 리스트 딜레이 감소
         List<EventData> events = delayDictionary.Keys.ToList();
 
@@ -670,6 +666,7 @@ public class DialogueManager : MonoBehaviour
         {
             // 딜레이 감소
             delayDictionary[events[i]] -= 1;
+            Debug.Log("감소된 딜레이 = " + delayDictionary[events[i]]);
 
             // 딜레이 만큼 기다렸다면
             if (delayDictionary[events[i]] <= 0)
