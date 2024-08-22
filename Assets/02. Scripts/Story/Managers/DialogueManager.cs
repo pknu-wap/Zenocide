@@ -228,6 +228,15 @@ public class DialogueManager : MonoBehaviour
             yield break;
         }
 
+        // data 객체에 데이터를 저장한다.
+        SaveDialogueData();
+        CardManager.Instance.SaveDeck();
+        Items.Instance.SaveItems();
+        Player.Instance.SaveHp();
+
+        // json 파일로 세이브
+        DataManager.Instance.SaveData();
+
         // 이벤트가 들어있는 CSV 오브젝트를 찾는다.
         switch (loadedEvent.eventID)
         {
@@ -277,17 +286,6 @@ public class DialogueManager : MonoBehaviour
 
             if(i == loadedEvent.startIndex && loadedEvent.eventID != EventType.Relation)
             {
-                // 이벤트 저장
-                SaveDialogueData();
-                // deck 저장
-                CardManager.Instance.SaveDeck();
-                // item 저장
-                Items.Instance.SaveItems();
-                // hp 저장
-                Player.Instance.SaveHp();
-                // 데이터 세이브
-                DataManager.Instance.SaveData();
-
                 yield return StartCoroutine(LoadingEffectManager.Instance.FadeIn(transitionDuration));
                 StartCoroutine(StoryInformation.Instance.ShowInformation(transitionDuration, dataCSV[loadedEvent.startIndex]["Event"].ToString()));
             }
