@@ -23,7 +23,7 @@ public class PageScripter : MonoBehaviour
     private const float typingTime = 0.03f;
     private Dictionary<char, float> markTypingTime = new Dictionary<char, float>
     {
-        { ',', 0.3f },
+        { ',', 0.1f },
         { '.', 0.5f },
         { '?', 0.5f },
         { '!', 0.5f },
