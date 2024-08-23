@@ -182,7 +182,13 @@ public class DialogueManager : MonoBehaviour
         if (randomNumber < mainRate)
         {
             processableEventList = processableMainEventList;
-        }
+
+            // 메인 스토리가 없으면 서브만 등록
+            if (processableMainEventList.Count() == 0)
+            {
+                processableEventList = processableSubEventList;
+            }
+        }   
         else
         {
             processableEventList = processableSubEventList;
