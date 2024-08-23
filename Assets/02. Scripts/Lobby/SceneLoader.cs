@@ -81,6 +81,11 @@ public class SceneLoader : MonoBehaviour
 
     private void LoadSceneEnd(Scene scene, LoadSceneMode loadSceneMode)
     {
+        if (DataManager.Instance.isLoaded)
+        {
+            DataManager.Instance.StartLoadedGame();
+        }
+
         if (scene.name == loadSceneName)
         {
             StartCoroutine(FadeIn(fadeTime));

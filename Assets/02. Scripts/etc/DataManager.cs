@@ -1,14 +1,26 @@
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
+using UnityEngine.SceneManagement;
 
 
 public class DataManager : MonoBehaviour
 {
     public static DataManager Instance { get; private set; }
-    void Awake() => Instance = this;
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(this);
+        }
+        else
+        {
+            Destroy(this);
+        }
+
+        DontDestroyOnLoad(Instance);
+    }
 
     // 데이터 파일 이름
     string dataFileName = "Data.json";
@@ -19,28 +31,12 @@ public class DataManager : MonoBehaviour
     // SaveData 변수
     public Data data = new Data();
 
-    // 게임 로드 버튼
-    [SerializeField] GameObject loadButton;
-    public TMP_Text loadButtonTMP;
-
-    // 경고창 (진짜로 할 것임?)
-    [SerializeField] GameObject newGamePanel;
-    [SerializeField] GameObject loadGamePanel;
+    // load 여부
+    public bool isLoaded = false;
 
     private void Start()
     {
         filePath = Application.persistentDataPath + "/" + dataFileName;
-
-        loadButtonTMP = loadButton.GetComponentInChildren<TMP_Text>();
-
-        newGamePanel.SetActive(false);
-        loadGamePanel.SetActive(false);
-
-        // 세이브 파일이 없으면 로드 버튼 비활성화
-        if (!IsFileExist())
-        {
-            OffLoadButton();
-        }
     }
 
     // 로드
@@ -86,11 +82,16 @@ public class DataManager : MonoBehaviour
         File.WriteAllText(filePath, encodedJson);
     }
 
-    public void StartSavedGame()
+    public void DeleteData()
     {
-        // 데이터를 로드하고
-        LoadData();
-
+        if (IsFileExist())
+        {
+            File.Delete(filePath);
+        }
+    }
+    
+    public void StartLoadedGame()
+    {
         // 각자 자리에 삽입한다.
         Player.Instance.LoadHp();
         CardManager.Instance.LoadDeck();
@@ -98,10 +99,6 @@ public class DataManager : MonoBehaviour
         Items.Instance.LoadItems();
         SoundManager.Instance.LoadVolumeSettings();
         ResolutionManager.Instance.LoadResolutionSettings();
-
-        // 스토리씬으로 전환
-        GameManager.Instance.ToggleTutorialScene();
-        GameManager.Instance.SwitchToStoryScene();
 
         StartCoroutine(DialogueManager.Instance.ProcessLoadedEvent(data.CurrentEvent));
     }
@@ -134,36 +131,8 @@ public class DataManager : MonoBehaviour
         return dic;
     }
 
-    public void OffLoadButton()
-    {
-        // 버튼 투명도
-        Color color = loadButton.GetComponent<Image>().color;
-        color.a = 0.5f;
-        loadButton.GetComponent<Image>().color = color;
-
-        // 버튼 텍스트 투명도
-        loadButtonTMP.alpha = 0.5f;
-    }
-
     public bool IsFileExist()
     {
         return File.Exists(Application.persistentDataPath + "/" + dataFileName);
     }
-
-    #region alert panel
-    public void ToggleNewGamePanel()
-    {
-        newGamePanel.SetActive(!newGamePanel.activeSelf);
-    }
-
-    public void ToggleLoadGamePanel()
-    {
-        if (!IsFileExist())
-        {
-            return;
-        }
-
-        loadGamePanel.SetActive(!loadGamePanel.activeSelf);
-    }
-    #endregion alert panel
 }

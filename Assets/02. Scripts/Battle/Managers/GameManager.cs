@@ -35,7 +35,6 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("두 개임");
             Destroy(gameObject);
         }
 
@@ -45,12 +44,17 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        // 시작은 튜토리얼
-        SwitchToTutorialScene();
-        // 시작은 스토리
-        // SwitchToStoryScene();
-        // 시작은 배틀
-        // TestStartBattle();
+        // 새 게임이라면
+        if(DataManager.Instance.isLoaded == false)
+        {
+            // 튜토리얼부터
+            SwitchToTutorialScene();
+        }
+        else
+        {
+            // 불러온 게임이라면 스토리부터
+            SwitchToStoryScene();
+        }
 
         SetDefaultState();
     }
@@ -140,10 +144,6 @@ public class GameManager : MonoBehaviour
         // 묘지와 핸드를 덱으로 다시 넣고 정렬한다.
         CardManager.Instance.ResetDeck();
         CardManager.Instance.SortDeck();
-
-        // 보상을 받은 후 덱을 저장한다.
-        CardManager.Instance.SaveDeck();
-        DataManager.Instance.SaveData();
 
         // UI도 갱신 (덱이 켜진 채 진입한 경우를 고려)
         CardInventory.instance.UpdateAllCardSlot();
@@ -264,6 +264,7 @@ public class GameManager : MonoBehaviour
     {
         storyScene.SetActive(true);
         battleScene.SetActive(false);
+        tutorialScene.SetActive(false);
         option.MoveOptionPanelToStoryFloatingCanvas();
     }
 
@@ -271,6 +272,7 @@ public class GameManager : MonoBehaviour
     {
         storyScene.SetActive(false);
         battleScene.SetActive(true);
+        tutorialScene.SetActive(false);
         option.MoveOptionPanelToBattleUICanvas();
     }
 
@@ -282,8 +284,8 @@ public class GameManager : MonoBehaviour
     }
     #endregion 카메라 전환
 
-    public void ToggleTutorialScene()
+    public void DeactiveTutorialScene()
     {
-        tutorialScene.SetActive(!tutorialScene.activeSelf);
+        tutorialScene.SetActive(false);
     }
 }

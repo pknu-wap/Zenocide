@@ -131,6 +131,11 @@ public class TutorialManager : MonoBehaviour
 
         // 대화창 활성화
         dialogButton.SetActive(true);
+
+        if (DataManager.Instance.isLoaded == true)
+        {
+            skipButton.SetActive(false); 
+        }
     }
 
     // 컴포넌트를 할당한다.

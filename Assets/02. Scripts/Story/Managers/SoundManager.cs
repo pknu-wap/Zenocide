@@ -7,7 +7,6 @@ public class SoundManager : MonoBehaviour
 {
     // 싱글톤
     public static SoundManager Instance { get; private set; }
-    private void Awake() => Instance = this;
     
     public AudioSource storyMusicsource;
     public AudioSource battleMusicsource;
@@ -23,8 +22,10 @@ public class SoundManager : MonoBehaviour
 
     public int applyCount = 0;
 
-    private void Start()
+    private void Awake()
     {
+        Instance = this;
+
         // 슬라이더의 초기 값 설정
         masterVolumeSlider.value = masterVolume; 
         bgmVolumeSlider.value = bgmVolume;

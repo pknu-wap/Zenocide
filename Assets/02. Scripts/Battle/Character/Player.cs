@@ -47,14 +47,17 @@ public class Player : Character
         StartCoroutine(GameManager.Instance.GameOver());
     }
 
-    public void SaveHp()
+    public void SavePlayerData()
     {
         DataManager.Instance.data.Hp = currentHp;
+        DataManager.Instance.data.Job = job;
     }
 
     public void LoadHp()
     {
         currentHp = DataManager.Instance.data.Hp;
         UpdateHPUI();
+
+        job = DataManager.Instance.data.Job;
     }
 }
