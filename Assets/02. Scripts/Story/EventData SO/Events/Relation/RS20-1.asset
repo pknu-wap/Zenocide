@@ -18,4 +18,5 @@ MonoBehaviour:
   endIndex: 416
   relationEvent: []
   nextEvent: {fileID: 0}
-  addEvent: []
+  addEvent:
+  - {fileID: 11400000, guid: f16613ad47fbe084da0cdae8382ef1aa, type: 2}

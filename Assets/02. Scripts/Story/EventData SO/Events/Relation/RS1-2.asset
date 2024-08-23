@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: RS1-2
   m_EditorClassIdentifier: 
   eventID: 2
-  startIndex: 99
-  endIndex: 100
+  delay: 0
+  startIndex: 104
+  endIndex: 105
   relationEvent: []
   nextEvent: {fileID: 0}
   addEvent:

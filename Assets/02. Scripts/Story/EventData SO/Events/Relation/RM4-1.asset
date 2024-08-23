@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: RM4-1
   m_EditorClassIdentifier: 
   eventID: 2
+  delay: 0
   startIndex: 56
-  endIndex: 68
+  endIndex: 67
   relationEvent: []
   nextEvent: {fileID: 0}
   addEvent:
