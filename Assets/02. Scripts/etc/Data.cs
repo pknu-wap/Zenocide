@@ -47,6 +47,12 @@ public class Data
         set { deck = value; }
     }
 
+    public string Job
+    {
+        get { return job; }
+        set { job = value; }
+    }
+
     public EventData CurrentEvent
     {
         get { return currentEvent; }

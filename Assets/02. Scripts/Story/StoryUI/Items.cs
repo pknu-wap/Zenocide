@@ -44,36 +44,23 @@ public class Items : MonoBehaviour
     // 아이템 데이터 리스트
     public List<Item> items = new List<Item>();
 
-    private void Awake() => Instance = this;
-
-    private void Start()
+    private void Awake()
     {
+        Instance = this;
+
         // 슬롯을 받아온다.
         slots = slotsParent.GetComponentsInChildren<TMP_Text>().ToList();
-        
+
         // 모든 슬롯을 비활성화한다.
-        for(int i = 0; i < slots.Count; i++)
+        for (int i = 0; i < slots.Count; i++)
         {
             slots[i].gameObject.SetActive(false);
         }
-
-        // 아이템 데이터를 로드한다.
-
-
-    #if UNITY_EDITOR
-        // 테스트 아이템 추가
-        TestItem();
-    #endif
-
-        // 인벤토리를 갱신한다.
-        UpdateAllSlots();
     }
 
-    void TestItem()
+    private void Start()
     {
-        // 기능 테스트도 함께 할 겸
-        AddItems("관찰력#식칼#빵#민첩성#해열제");
-
+        // 인벤토리를 갱신한다.
         UpdateAllSlots();
     }
 
@@ -543,6 +530,7 @@ public class Items : MonoBehaviour
         // 인벤토리에 적용 (UI 업데이트)
         UpdateAllSlots();
     }
+
     // Legacy
     public void GainJobItem()
     {

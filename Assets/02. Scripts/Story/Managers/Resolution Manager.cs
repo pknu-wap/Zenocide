@@ -7,7 +7,6 @@ public class ResolutionManager : MonoBehaviour
 {
     // 싱글톤
     public static ResolutionManager Instance { get; private set; }
-    private void Awake() => Instance = this;
 
     public TMP_Dropdown resolutionDropdown;
     public Toggle fullscreenToggle;
@@ -22,8 +21,10 @@ public class ResolutionManager : MonoBehaviour
     private int previousResolutionIndex;
     private bool previousFullscreen;
 
-    void Start()
+    void Awake()
     {
+        Instance = this;
+
         // 해상도 리스트 가져오기
         resolutions = Screen.resolutions;
         filteredResolutions = new List<Resolution>();

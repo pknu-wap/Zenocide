@@ -47,7 +47,10 @@ public class DiaryManager : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(StartTutorial());
+        if(!DataManager.Instance.isLoaded)
+        {
+            StartCoroutine(StartTutorial());
+        }
     }
 
     private void EnrollComponent()
@@ -164,7 +167,7 @@ public class DiaryManager : MonoBehaviour
         currentPageIndex = 0;
 
         // 튜토리얼 이벤트 시작
-        GameManager.Instance.ToggleTutorialScene();
+        GameManager.Instance.DeactiveTutorialScene();
         TutorialManager.Instance.StartTutorial();
     }
 }

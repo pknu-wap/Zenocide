@@ -9,7 +9,6 @@ using System.Linq;
 public class CardManager : MonoBehaviour
 {
     public static CardManager Instance { get; private set; }
-    void Awake() => Instance = this;
 
     [Header("카드 풀")]
     [SerializeField] CardList cardList;
@@ -58,10 +57,15 @@ public class CardManager : MonoBehaviour
     public float resetMoveDelay = 0.1f;
     private float moveDelay = 0.5f;
 
-    void Start()
+    private void Awake()
     {
+        Instance = this;
+
         // 컴포넌트를 할당한다.
         EnrollComponent();
+    }
+    void Start()
+    {
         focusPos = new Vector3(0f, handLeft.position.y + focusOffset, -3f);
         UpdateDumpCount();
 
@@ -74,11 +78,15 @@ public class CardManager : MonoBehaviour
         #endregion
 
         #region InitDeck
-        deck = new List<CardData>(listSize);
-        // 기본 카드들을 deck에 추가
-        for(int i = 0; i < defaultDeck.items.Length; i++)
+        // 새 게임이면
+        if (!DataManager.Instance.isLoaded)
         {
-            AddCardToDeck(defaultDeck.items[i].name);
+            deck = new List<CardData>(listSize);
+            // 기본 카드들을 deck에 추가
+            for (int i = 0; i < defaultDeck.items.Length; i++)
+            {
+                AddCardToDeck(defaultDeck.items[i].name);
+            }
         }
         #endregion
     }
@@ -533,12 +541,13 @@ public class CardManager : MonoBehaviour
     // deck을 Data 객체에 저장한다.
     public void SaveDeck()
     {
-        DataManager.Instance.data.Deck = deck;
+        DataManager.Instance.data.Deck = deck.ToList();
     }
 
     public void LoadDeck()
     {
-        deck = DataManager.Instance.data.Deck;
+        deck = DataManager.Instance.data.Deck.ToList();
+        CardInventory.instance.UpdateAllCardSlot();
     }
 
     #region MyCard

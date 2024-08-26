@@ -133,15 +133,15 @@ public class DialogueManager : MonoBehaviour
         EnrollComponent();
         // Total Event List 채우기
         SetTotalEventList();
+
+        // CSV 파일 읽기
+        dataMainCSV = CSVReader.Read(MainCSV);
+        dataSubCSV = CSVReader.Read(SubCSV);
+        dataRelationCSV = CSVReader.Read(RelationCSV);
     }
 
     void Start()
     {
-        // CSV 파일 읽기
-        dataMainCSV         = CSVReader.Read(MainCSV);
-        dataSubCSV          = CSVReader.Read(SubCSV);
-        dataRelationCSV     = CSVReader.Read(RelationCSV);
-
         // 대화창 활성화
         dialogButton.SetActive(true);
     }
@@ -239,7 +239,9 @@ public class DialogueManager : MonoBehaviour
         SaveDialogueData();
         CardManager.Instance.SaveDeck();
         Items.Instance.SaveItems();
-        Player.Instance.SaveHp();
+        Player.Instance.SavePlayerData();
+        ResolutionManager.Instance.SaveResolutionSettings();
+        SoundManager.Instance.SaveVolumeSettings();
 
         // json 파일로 세이브
         DataManager.Instance.SaveData();
