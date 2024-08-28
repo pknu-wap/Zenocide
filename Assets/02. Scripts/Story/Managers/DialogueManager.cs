@@ -314,14 +314,6 @@ public class DialogueManager : MonoBehaviour
                 EventData relationEvent = loadedEvent.relationEvent[result];
                 #endregion 선택지 표시 및 대기
 
-                #region 사용한 아이템 제거
-                // 사용한 아이템을 확인한다.
-                string requireItemText = dataCSV[i]["Remove Item" + (result + 1)].ToString();
-
-                // 해당 아이템을 제거한다.
-                RemoveUsedItem(requireItemText);
-                #endregion 사용한 아이템 제거
-
                 #region 선택한 이벤트로 이동
                 // 선택된 이벤트가 null일 경우
                 if (relationEvent == null)
@@ -340,6 +332,16 @@ public class DialogueManager : MonoBehaviour
                 LogManager.Instance.AddLog(dataCSV[i], result + 1);
 
                 yield break;
+            }
+
+            // 삭제할 아이템이 있다면 삭제한다. (태그, 이름 전부 가능)
+            if (dataCSV[i]["Remove Item"].ToString() is not emptyString)
+            {
+                // 사용한 아이템을 확인한다.
+                string requireItemText = dataCSV[i]["Remove Item"].ToString();
+
+                // 해당 아이템을 제거한다.
+                RemoveUsedItem(requireItemText);
             }
 
             // 획득 아이템이 존재 한다면 아이템 지급
