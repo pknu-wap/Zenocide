@@ -12,12 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41e3f233dbcc0434fbc8a44a7763d9bd, type: 3}
   m_Name: S3
   m_EditorClassIdentifier: 
-  eventID: 1
+  eventID: 0
   delay: 0
-  startIndex: 12
-  endIndex: 13
-  relationEvent:
-  - {fileID: 11400000, guid: e95360c520a4cab43ab8ab1ca67f0a63, type: 2}
-  - {fileID: 11400000, guid: 2dbbf90e6ca690348a03f45a81aabb31, type: 2}
+  startIndex: 0
+  endIndex: 0
+  relationEvent: []
   nextEvent: {fileID: 0}
   addEvent: []
