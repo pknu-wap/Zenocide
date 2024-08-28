@@ -12,12 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41e3f233dbcc0434fbc8a44a7763d9bd, type: 3}
   m_Name: RS29-1
   m_EditorClassIdentifier: 
-  eventID: 2
+  eventID: 0
   delay: 0
-  startIndex: 517
-  endIndex: 521
-  relationEvent:
-  - {fileID: 11400000, guid: c1768579c86908d48afc23e438e1a3fd, type: 2}
-  - {fileID: 11400000, guid: 71866b3e1a33c774fb277f01a51883ce, type: 2}
+  startIndex: 0
+  endIndex: 0
+  relationEvent: []
   nextEvent: {fileID: 0}
   addEvent: []

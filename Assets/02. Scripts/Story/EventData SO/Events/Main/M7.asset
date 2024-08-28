@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: M7
   m_EditorClassIdentifier: 
   eventID: 0
-  startIndex: 112
-  endIndex: 143
+  delay: 0
+  startIndex: 0
+  endIndex: 0
   relationEvent: []
   nextEvent: {fileID: 0}
   addEvent: []
