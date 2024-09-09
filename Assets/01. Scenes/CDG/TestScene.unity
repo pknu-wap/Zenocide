@@ -4390,10 +4390,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0893cd4bb0359a248b15464569e5f37e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 710881458}
   tutorialCam: {fileID: 1814809710}
+  tutorialCanvas: {fileID: 710881458}
   storyCam: {fileID: 1814809710}
+  storyCanvas: {fileID: 710881458}
   battleCam: {fileID: 1814809710}
+  battleCanvas: {fileID: 710881458}
 --- !u!1001 &1845402092
 PrefabInstance:
   m_ObjectHideFlags: 0
