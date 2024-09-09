@@ -2292,7 +2292,7 @@ Canvas:
   m_GameObject: {fileID: 710881453}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 1814809710}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -4191,8 +4191,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1814809714}
-        m_TargetAssemblyTypeName: CameraShake, Assembly-CSharp
-        m_MethodName: Shake
+        m_TargetAssemblyTypeName: CamShake, Assembly-CSharp
+        m_MethodName: test
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4390,9 +4390,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0893cd4bb0359a248b15464569e5f37e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 0.2
-  magnitude: 5
   canvas: {fileID: 710881458}
+  tutorialCam: {fileID: 1814809710}
+  storyCam: {fileID: 1814809710}
+  battleCam: {fileID: 1814809710}
 --- !u!1001 &1845402092
 PrefabInstance:
   m_ObjectHideFlags: 0
