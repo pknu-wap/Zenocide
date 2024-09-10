@@ -174,6 +174,7 @@ public class CardInfo : MonoBehaviour
         effects[(int)SkillType.LingeringBurn] += LingeringBurn;
         effects[(int)SkillType.LingeringExtraDamage] += LingeringExtraDamage;
         effects[(int)SkillType.ModifyCost] += ModifyCost;
+        effects[(int)SkillType.Drain] += Drain;
     }
 
 
@@ -288,9 +289,19 @@ public class CardInfo : MonoBehaviour
         target.EnrollBuff(new BuffEffect(SkillType.AddExtraDamage, amount, turnCount - 1));
         target.GetBonusDamage(amount);
     }
+
     public void ModifyCost(int amount, int turnCount, Character target, Character caller)
     {
         CardManager.Instance.SetModifyCost(amount);
+    }
+
+    public void Drain(int amount, int turnCount, Character target, Character caller)
+    {
+        // 타겟의 체력을 감소시킨다. (공격량 + 추가 데미지)
+        target.DecreaseHP(amount + caller.bonusDamage);
+
+        // 시전자의 체력을 회복시킨다.
+        caller.IncreaseHP(amount);
     }
     #endregion 카드 효과
 }

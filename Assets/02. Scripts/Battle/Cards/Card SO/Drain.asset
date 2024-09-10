@@ -10,15 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee4e1de6682e5bb448d13b0b62311c21, type: 3}
-  m_Name: Warrant
+  m_Name: Drain
   m_EditorClassIdentifier: 
-  name: "\uC601\uC7A5 \uBC1C\uBD80"
-  description: "\uB2E4\uC74C \uCE74\uB4DC\uC758 \uCF54\uC2A4\uD2B8\uAC00 2 \uAC10\uC18C\uD569\uB2C8\uB2E4"
+  name: "\uD761\uD608"
+  description: "\uC801\uC5D0\uAC8C 10\uC758 \uB370\uBBF8\uC9C0\uB97C \uC90D\uB2C8\uB2E4.
+    \uAC00\uD55C \uB370\uBBF8\uC9C0 \uB9CC\uD07C \uCCB4\uB825\uC744 \uD68C\uBCF5\uD569\uB2C8\uB2E4."
   sprite: {fileID: 21300000, guid: 3cc44a5f66759334596156425c08df11, type: 3}
   skills:
-  - type: 13
-    target: 0
-    amount: -2
+  - type: 14
+    target: 1
+    amount: 10
     turnCount: 0
     effectPrefeb: {fileID: 0}
   cost: 2
