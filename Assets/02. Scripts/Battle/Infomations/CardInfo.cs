@@ -173,6 +173,7 @@ public class CardInfo : MonoBehaviour
         effects[(int)SkillType.LingeringBleed] += LingeringBleed;
         effects[(int)SkillType.LingeringBurn] += LingeringBurn;
         effects[(int)SkillType.LingeringExtraDamage] += LingeringExtraDamage;
+        effects[(int)SkillType.ModifyCost] += ModifyCost;
     }
 
 
@@ -286,6 +287,10 @@ public class CardInfo : MonoBehaviour
     {
         target.EnrollBuff(new BuffEffect(SkillType.AddExtraDamage, amount, turnCount - 1));
         target.GetBonusDamage(amount);
+    }
+    public void ModifyCost(int amount, int turnCount, Character target, Character caller)
+    {
+        CardManager.Instance.SetModifyCost(amount);
     }
     #endregion 카드 효과
 }

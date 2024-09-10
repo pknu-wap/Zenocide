@@ -17,6 +17,7 @@ public enum SkillType
     LingeringBleed = 10,         // 출혈 (지속)
     LingeringBurn = 11,          // 화상 (지속)
     LingeringExtraDamage = 12,   // 추가 데미지 제공 (지속)
+    ModifyCost = 13,
 }
 
 public enum SkillTarget

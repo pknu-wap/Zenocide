@@ -10,6 +10,7 @@ public class Card : Poolable
     #region 변수
     [Header("카드 정보")]
     public CardData cardData;
+    public int cost;
 
     [Header("컴포넌트")]
     [SerializeField] SpriteRenderer card;
@@ -45,6 +46,7 @@ public class Card : Poolable
     public void Setup(CardData item)
     {
         cardData = item;
+        cost = item.cost;
 
         illust.sprite = cardData.sprite;
         nameTMP.text = cardData.name;
@@ -70,6 +72,24 @@ public class Card : Poolable
                 // 이펙트가 없는 스킬은 null 처리
                 effectObject[i] = (null);
             }
+        }
+    }
+
+    public void SetCost(int cost, int color)
+    {
+        this.cost = cost;
+        costTMP.text = cost.ToString();
+        if(color > 0)
+        {
+            costTMP.color = Color.red;
+        }
+        else if(color == 0)
+        {
+            costTMP.color = Color.black;
+        }
+        else if(color < 0)
+        {
+            costTMP.color = Color.green;
         }
     }
     
@@ -221,44 +241,46 @@ public class Card : Poolable
         // 애니메이션이 끝났는지 검사하는 변수
         bool isAnimationDone = false;
 
+        LayerMask layer = LayerMask.GetMask("Enemy");
+
+        // layer가 일치하는, 선택된 오브젝트를 가져온다.
+        GameObject selectedObject = GetClickedObject(layer);
+
+        // 오브젝트가 선택되지 않았다면
+        if (selectedObject == null)
+        {
+            // 카드 발동을 취소한다.
+            CancelUsingCard();
+
+            yield break;
+        }
+
+        // 코스트를 감소시킨다.
+        BattleInfo.Instance.UseCost(cardData.cost);
+        // 버려졌음을 체크한다.
+        isDiscarded = true;
+
+        // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
+        moveSequence = DOTween.Sequence()
+            .Append(transform.DOMove(CardManager.Instance.cardDumpPoint.position, dotweenTime))
+            .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
+            .Join(transform.DOScale(Vector3.one, dotweenTime))
+            .OnComplete(() => {
+                isDiscarded = false;
+                isAnimationDone = true;
+            }); // 애니메이션 끝나면 알림
+
+        // 카드를 삭제한다.
+        CardManager.Instance.DiscardCard(this);
+        // 코스트가 조정된 상태이면 조정을 해제한다.
+        if(CardManager.Instance.costModificationAmount != 0)
+        {
+            CardManager.Instance.ResetModifyCost();
+        }
+
         // 타겟팅 스킬일 때
         if (isTargetingCard)
         {
-            LayerMask layer = LayerMask.GetMask("Enemy");
-
-            // layer가 일치하는, 선택된 오브젝트를 가져온다.
-            GameObject selectedObject = GetClickedObject(layer);
-
-            // 오브젝트가 선택되지 않았다면
-            if (selectedObject == null)
-            {
-                // 카드 발동을 취소한다.
-                CancelUsingCard();
-
-                yield break;
-            }
-
-            // 코스트를 감소시킨다.
-            BattleInfo.Instance.UseCost(cardData.cost);
-            // 패에서 카드를 삭제한다. (중복 삭제 방지)
-            CardManager.Instance.hand.Remove(this);
-            // 선택 카드를 비운다.
-            CardManager.Instance.ClearSelectCard();
-            // 카드를 정렬한다.
-            CardManager.Instance.CardAlignment();
-            // 버려졌음을 체크한다.
-            isDiscarded = true;
-
-            // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
-            moveSequence = DOTween.Sequence()
-                .Append(transform.DOMove(CardManager.Instance.cardDumpPoint.position, dotweenTime))
-                .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
-                .Join(transform.DOScale(Vector3.one, dotweenTime))
-                .OnComplete(() => {
-                    isDiscarded = false;
-                    isAnimationDone = true;
-                }); // 애니메이션 끝나면 알림
-
             // 이제 공격 타겟을 정해야 한다.
             // 적 오브젝트의 Enemy 스크립트를 가져온다
             Enemy selectedEnemy = selectedObject.GetComponent<Enemy>();
@@ -288,49 +310,6 @@ public class Card : Poolable
         // 논타겟 스킬일 때
         else
         {
-            // Field 레이어를 선택한다.
-            LayerMask layer = LayerMask.GetMask("Field");
-
-            // layer가 일치하는, 선택된 오브젝트를 가져온다.
-            GameObject selectedObject = GetClickedObject(layer);
-
-            // 오브젝트가 선택되지 않았다면
-            if (selectedObject == null)
-            {
-                // 카드 발동을 취소한다.
-                CancelUsingCard();
-
-                yield break;
-            }
-
-            // 코스트를 감소시킨다.
-            BattleInfo.Instance.UseCost(cardData.cost);
-            // 패에서 카드를 삭제한다. (중복 삭제 방지)
-            CardManager.Instance.hand.Remove(this);
-            // 선택 카드를 비운다.
-            CardManager.Instance.ClearSelectCard();
-            // 카드를 정렬한다.
-            CardManager.Instance.CardAlignment();
-            // 버려졌음을 체크한다.
-            isDiscarded = true;
-
-            // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
-            moveSequence = DOTween.Sequence()
-                // 중앙으로 이동하고
-                .Append(transform.DOMove(Vector3.zero, dotweenTime))
-                .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
-                .Join(transform.DOScale(originPRS.scale * 1.2f, dotweenTime))
-                // 1초간 정지
-                .AppendInterval(focusTime)
-                // 묘지로 이동한다.
-                .Append(transform.DOMove(CardManager.Instance.cardDumpPoint.position, dotweenTime))
-                .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
-                .Join(transform.DOScale(Vector3.one, dotweenTime))
-                .OnComplete(() => {
-                    isDiscarded = false;
-                    isAnimationDone = true;
-                }); // 애니메이션 끝나면 알림
-
             // 카드의 모든 효과를 발동한다.
             for (int i = 0; i < cardData.skills.Length; ++i)
             {
@@ -356,9 +335,6 @@ public class Card : Poolable
         {
             yield return null;
         }
-
-        // 카드를 삭제한다.
-        CardManager.Instance.DiscardCard(this);
     }
 
     // 카드 발동을 취소한다.
