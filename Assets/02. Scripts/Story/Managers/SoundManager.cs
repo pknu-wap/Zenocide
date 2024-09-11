@@ -1,5 +1,13 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+
+// 오디오 종류
+public enum SoundType
+{
+    Bgm,        // 배경음악
+    Effect,     // 효과음
+}
 
 public class SoundManager : MonoBehaviour
 {
@@ -29,40 +37,6 @@ public class SoundManager : MonoBehaviour
     private AudioSource[] bgmSources;
     [SerializeField]
     private AudioSource[] effectSources;
-
-    private void AssignAudioComponent()
-    {
-        // 모든 컴포넌트를 가져온다.
-        AudioSource[] audioSources = GetComponents<AudioSource>();
-
-        // 모자라면 재생기를 생성한다.
-        if (audioSources.Length < bgmAudioCount + effectAudioCount)
-        {
-            // 모자란 만큼 생성
-            for(int i = audioSources.Length; i < bgmAudioCount + effectAudioCount; ++i)
-            {
-                gameObject.AddComponent<AudioSource>();
-            }
-
-            // 다시 컴포넌트들을 가져온다.
-            audioSources = GetComponents<AudioSource>();
-        }
-
-
-        // BGM 재생기 할당
-        bgmSources = new AudioSource[bgmAudioCount];
-        for (int i = 0; i < bgmAudioCount; ++i)
-        {
-            bgmSources[i] = audioSources[i];
-        }
-
-        // 효과음 재생기 할당
-        effectSources = new AudioSource[effectAudioCount];
-        for (int i = 0; i < effectAudioCount; ++i)
-        {
-            effectSources[i] = audioSources[bgmAudioCount + i - 1];
-        }
-    }
 
     private void Awake()
     {
@@ -165,4 +139,84 @@ public class SoundManager : MonoBehaviour
 
         ApplyVolumeSettings();
     }
+
+    #region 오디오 재생
+    private void AssignAudioComponent()
+    {
+        // 모든 컴포넌트를 가져온다.
+        AudioSource[] audioSources = GetComponents<AudioSource>();
+
+        // 모자라면 재생기를 생성한다.
+        if (audioSources.Length < bgmAudioCount + effectAudioCount)
+        {
+            // 모자란 만큼 생성
+            for (int i = audioSources.Length; i < bgmAudioCount + effectAudioCount; ++i)
+            {
+                gameObject.AddComponent<AudioSource>();
+            }
+
+            // 다시 컴포넌트들을 가져온다.
+            audioSources = GetComponents<AudioSource>();
+        }
+
+
+        // BGM 재생기 할당
+        bgmSources = new AudioSource[bgmAudioCount];
+        for (int i = 0; i < bgmAudioCount; ++i)
+        {
+            bgmSources[i] = audioSources[i];
+        }
+
+        // 효과음 재생기 할당
+        effectSources = new AudioSource[effectAudioCount];
+        for (int i = 0; i < effectAudioCount; ++i)
+        {
+            effectSources[i] = audioSources[bgmAudioCount + i - 1];
+        }
+    }
+
+    // 현재 쉬고 있는 AudioSource를 찾아 반환한다.
+    private AudioSource GetIdleAudioSource(AudioSource[] audioSources)
+    {
+        // 모든 오디오 소스 중에
+        for (int i = 0; i < audioSources.Length; ++i)
+        {
+            // 재생 중이지 않은 오디오 소스를 찾아서
+            if (audioSources[i].isPlaying == false)
+            {
+                // 반환한다.
+                return audioSources[i];
+            }
+        }
+
+        // 모두 재생 중이라면, 에러를 띄우고 null을 반환한다.
+        Debug.LogError("모든 오디오 소스가 재생 중입니다!");
+        return null;
+    }
+
+    // 오디오 클립을 재생한다.
+    public void Play(AudioClip audioClip, SoundType type = SoundType.Effect, bool isLooping = false)
+    {
+        AudioSource currentSource;
+
+        if (type == SoundType.Bgm)
+        {
+            currentSource = GetIdleAudioSource(bgmSources);
+            // 출력 믹서 변경
+            // currentSource.outputAudioMixerGroup = ;
+        }
+
+        else
+        {
+            currentSource = GetIdleAudioSource(effectSources);
+            // 출력 믹서 변경
+            // currentSource.outputAudioMixerGroup = ;
+        }
+
+        currentSource.clip = audioClip;
+        currentSource.loop = isLooping;
+
+        currentSource.Play();
+    }
+    #endregion 오디오 재생
 }
