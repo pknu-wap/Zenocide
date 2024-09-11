@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,6 +20,50 @@ public class SoundManager : MonoBehaviour
 
     public int applyCount = 0;
 
+    [Header("재생")]
+    // BGM 재생기 개수
+    private const int bgmAudioCount = 1;
+    private const int effectAudioCount = 5;
+
+    [SerializeField]
+    private AudioSource[] bgmSources;
+    [SerializeField]
+    private AudioSource[] effectSources;
+
+    private void AssignAudioComponent()
+    {
+        // 모든 컴포넌트를 가져온다.
+        AudioSource[] audioSources = GetComponents<AudioSource>();
+
+        // 모자라면 재생기를 생성한다.
+        if (audioSources.Length < bgmAudioCount + effectAudioCount)
+        {
+            // 모자란 만큼 생성
+            for(int i = audioSources.Length; i < bgmAudioCount + effectAudioCount; ++i)
+            {
+                gameObject.AddComponent<AudioSource>();
+            }
+
+            // 다시 컴포넌트들을 가져온다.
+            audioSources = GetComponents<AudioSource>();
+        }
+
+
+        // BGM 재생기 할당
+        bgmSources = new AudioSource[bgmAudioCount];
+        for (int i = 0; i < bgmAudioCount; ++i)
+        {
+            bgmSources[i] = audioSources[i];
+        }
+
+        // 효과음 재생기 할당
+        effectSources = new AudioSource[effectAudioCount];
+        for (int i = 0; i < effectAudioCount; ++i)
+        {
+            effectSources[i] = audioSources[bgmAudioCount + i - 1];
+        }
+    }
+
     private void Awake()
     {
         Instance = this;
@@ -34,7 +76,9 @@ public class SoundManager : MonoBehaviour
         masterVolumeSlider.onValueChanged.AddListener(SetMasterVolume); 
         bgmVolumeSlider.onValueChanged.AddListener(SetBGMVolume);
 
-        UpdateAudioSources(); 
+        UpdateAudioSources();
+
+        AssignAudioComponent();
     }
 
     // 전체 음량 슬라이더 값 변경 시 호출
