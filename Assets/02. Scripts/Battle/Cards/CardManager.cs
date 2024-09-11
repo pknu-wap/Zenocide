@@ -373,13 +373,6 @@ public class CardManager : MonoBehaviour
             card.SetCost(cardDict[card.cardData.name].cost, 0);
         }
 
-        // 패에서 카드를 삭제한다. (중복 삭제 방지)
-        hand.Remove(card);
-        // 선택 카드를 비운다.
-        ClearSelectCard();
-        // 카드를 정렬한다.
-        CardAlignment();
-
         dump.Add(card.cardData);
         UpdateDumpCount();
 

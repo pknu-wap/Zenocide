@@ -4,6 +4,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using static UnityEngine.ParticleSystem;
+using UnityEngine.XR;
 
 public class Card : Poolable
 {
@@ -257,23 +258,19 @@ public class Card : Poolable
 
         // 코스트를 감소시킨다.
         BattleInfo.Instance.UseCost(cardData.cost);
+
+        // 패에서 카드를 삭제한다. (중복 삭제 방지)
+        CardManager.Instance.hand.Remove(this);
+        // 선택 카드를 비운다.
+        CardManager.Instance.ClearSelectCard();
+        // 카드를 정렬한다.
+        CardManager.Instance.CardAlignment();
+
         // 버려졌음을 체크한다.
         isDiscarded = true;
 
-        // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
-        moveSequence = DOTween.Sequence()
-            .Append(transform.DOMove(CardManager.Instance.cardDumpPoint.position, dotweenTime))
-            .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
-            .Join(transform.DOScale(Vector3.one, dotweenTime))
-            .OnComplete(() => {
-                isDiscarded = false;
-                isAnimationDone = true;
-            }); // 애니메이션 끝나면 알림
-
-        // 카드를 삭제한다.
-        CardManager.Instance.DiscardCard(this);
         // 코스트가 조정된 상태이면 조정을 해제한다.
-        if(CardManager.Instance.costModificationAmount != 0)
+        if (CardManager.Instance.costModificationAmount != 0)
         {
             CardManager.Instance.ResetModifyCost();
         }
@@ -281,6 +278,16 @@ public class Card : Poolable
         // 타겟팅 스킬일 때
         if (isTargetingCard)
         {
+            // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
+            moveSequence = DOTween.Sequence()
+                .Append(transform.DOMove(CardManager.Instance.cardDumpPoint.position, dotweenTime))
+                .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
+                .Join(transform.DOScale(Vector3.one, dotweenTime))
+                .OnComplete(() => {
+                    isDiscarded = false;
+                    isAnimationDone = true;
+                }); // 애니메이션 끝나면 알림
+
             // 이제 공격 타겟을 정해야 한다.
             // 적 오브젝트의 Enemy 스크립트를 가져온다
             Enemy selectedEnemy = selectedObject.GetComponent<Enemy>();
@@ -310,6 +317,23 @@ public class Card : Poolable
         // 논타겟 스킬일 때
         else
         {
+            // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
+            moveSequence = DOTween.Sequence()
+                // 중앙으로 이동하고
+                .Append(transform.DOMove(Vector3.zero, dotweenTime))
+                .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
+                .Join(transform.DOScale(originPRS.scale * 1.2f, dotweenTime))
+                // 1초간 정지
+                .AppendInterval(focusTime)
+                // 묘지로 이동한다.
+                .Append(transform.DOMove(CardManager.Instance.cardDumpPoint.position, dotweenTime))
+                .Join(transform.DORotateQuaternion(Utils.QI, dotweenTime))
+                .Join(transform.DOScale(Vector3.one, dotweenTime))
+                .OnComplete(() => {
+                    isDiscarded = false;
+                    isAnimationDone = true;
+                }); // 애니메이션 끝나면 알림
+
             // 카드의 모든 효과를 발동한다.
             for (int i = 0; i < cardData.skills.Length; ++i)
             {
@@ -335,6 +359,9 @@ public class Card : Poolable
         {
             yield return null;
         }
+
+        // 카드를 삭제한다.
+        CardManager.Instance.DiscardCard(this);
     }
 
     // 카드 발동을 취소한다.

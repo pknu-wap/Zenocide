@@ -300,8 +300,8 @@ public class CardInfo : MonoBehaviour
         // 타겟의 체력을 감소시킨다. (공격량 + 추가 데미지)
         target.DecreaseHP(amount + caller.bonusDamage);
 
-        // 시전자의 체력을 회복시킨다.
-        caller.IncreaseHP(amount);
+        // 가한 대미지 만큼 시전자의 체력을 회복시킨다.
+        caller.IncreaseHP(amount + caller.bonusDamage);
     }
     #endregion 카드 효과
 }
