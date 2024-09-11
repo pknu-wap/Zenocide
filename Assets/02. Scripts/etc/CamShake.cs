@@ -20,11 +20,11 @@ public class CamShake : MonoBehaviour
     private RectTransform battleCanvasRect;     // 배틀씬 캔버스 사이즈 정보
     private RectTransform tutorialCanvasRect;   // 튜토리얼씬 캔버스 사이즈 정보
 
-    public enum scene
+    public enum Scene
     {
-        story,
-        battle,
-        tutorial
+        Story,
+        Battle,
+        Tutorial
     };
 
     private void Awake()
@@ -45,11 +45,11 @@ public class CamShake : MonoBehaviour
 
     public void test()
     {
-        Shake(0.2f,5f,scene.story);
+        Shake(0.2f,5f,Scene.Story);
     }
 
     //currentScene = scene.story(스토리씬 카메라를 기본값으로 설정) 스토리씬: scene.story / 전투씬: scene.battle / 튜토리얼: scene.tutorial
-    public void Shake(float duration = 0.2f, float magnitude = 5f, scene currentScene = scene.story)
+    public void Shake(float duration = 0.2f, float magnitude = 5f, Scene currentScene = Scene.Story)
     {
         Camera currentCam;
         Canvas currentCanvas;
@@ -57,17 +57,17 @@ public class CamShake : MonoBehaviour
         RectTransform originalCanvasRect;
         switch(currentScene)
         {
-            case scene.story: // 스토리씬 카메라
+            case Scene.Story: // 스토리씬 카메라
                 currentCam = storyCam;
                 currentCanvas = storyCanvas;
                 currentCanvasRect = storyCanvasRect;
                 break;
-            case scene.battle: // 배틀씬 카메라
+            case Scene.Battle: // 배틀씬 카메라
                 currentCam = battleCam;
                 currentCanvas = battleCanvas;
                 currentCanvasRect = battleCanvasRect;
                 break;
-            case scene.tutorial: // 튜토리얼씬 카메라
+            case Scene.Tutorial: // 튜토리얼씬 카메라
                 currentCam = tutorialCam;
                 currentCanvas = tutorialCanvas;
                 currentCanvasRect = tutorialCanvasRect;
