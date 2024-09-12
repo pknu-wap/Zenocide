@@ -19256,7 +19256,7 @@ MonoBehaviour:
   masterVolumeSlider: {fileID: 666070203}
   bgmVolumeSlider: {fileID: 601399734}
   applyCount: 0
-  bgmSources: []
+  bgmSource: {fileID: 0}
   effectSources: []
 --- !u!82 &919981847
 AudioSource:
@@ -40133,6 +40133,10 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 476913965}
+    - target: {fileID: 8192855279024533039, guid: f13cf976d1ca6b8419a5f9458e64ae8b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8642091009161287679, guid: f13cf976d1ca6b8419a5f9458e64ae8b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

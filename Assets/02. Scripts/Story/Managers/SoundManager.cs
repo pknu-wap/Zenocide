@@ -30,11 +30,11 @@ public class SoundManager : MonoBehaviour
 
     [Header("재생")]
     // BGM 재생기 개수
-    private const int bgmAudioCount = 1;
+    private const int bgmAudioCount = 1;    // 무조건 하나로 제한하겠습니다.
     private const int effectAudioCount = 5;
 
     [SerializeField]
-    private AudioSource[] bgmSources;
+    private AudioSource bgmSource;
     [SerializeField]
     private AudioSource[] effectSources;
 
@@ -161,17 +161,13 @@ public class SoundManager : MonoBehaviour
 
 
         // BGM 재생기 할당
-        bgmSources = new AudioSource[bgmAudioCount];
-        for (int i = 0; i < bgmAudioCount; ++i)
-        {
-            bgmSources[i] = audioSources[i];
-        }
+        bgmSource = audioSources[0];
 
         // 효과음 재생기 할당
         effectSources = new AudioSource[effectAudioCount];
         for (int i = 0; i < effectAudioCount; ++i)
         {
-            effectSources[i] = audioSources[bgmAudioCount + i - 1];
+            effectSources[i] = audioSources[i + bgmAudioCount];
         }
     }
 
@@ -201,16 +197,32 @@ public class SoundManager : MonoBehaviour
 
         if (type == SoundType.Bgm)
         {
-            currentSource = GetIdleAudioSource(bgmSources);
+            // 같은 클립이 재생 중이라면
+            if (audioClip == bgmSource.clip)
+            {
+                // 중단한다.
+                return;
+            }
+
+            // 그 외엔 BGM 소스 선택
+            currentSource = bgmSource;
             // 출력 믹서 변경
             // currentSource.outputAudioMixerGroup = ;
         }
 
         else
         {
+            // 쉬고 있는 오디오 소스를 찾는다.
             currentSource = GetIdleAudioSource(effectSources);
             // 출력 믹서 변경
             // currentSource.outputAudioMixerGroup = ;
+        }
+
+        // 재생 가능 소스가 없다면 에러 메세지를 띄우고 중단
+        if(currentSource == null)
+        {
+            Debug.LogError("재생에 실패하였습니다.");
+            return;
         }
 
         currentSource.clip = audioClip;
