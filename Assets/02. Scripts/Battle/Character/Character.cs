@@ -34,6 +34,8 @@ public class Character : MonoBehaviour
     public int bonusDamage = 0;
     // 추가 방어력. 데미지 계산 식에 적용
     public int bonusArmor = 0;
+    // 추가 출혈 데미지
+    public int bonusBleedDamage = 0;
 
     [Header("일러스트")]
     // 스프라이트
@@ -355,6 +357,7 @@ public class Character : MonoBehaviour
         bonusAttackStat = 0;
         bonusDamage = 0;
         bonusArmor = 0;
+        bonusBleedDamage = 0;
     }
 
     public void GetBonusAttackStat(int amount)
@@ -365,6 +368,11 @@ public class Character : MonoBehaviour
     public void GetBonusDamage(int amount)
     {
         bonusDamage += amount;
+    }
+
+    public void GetBonusBleedDamage(int amount)
+    {
+        bonusBleedDamage += amount;
     }
     #endregion 스텟
 }
