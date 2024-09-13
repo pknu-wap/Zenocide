@@ -53,10 +53,8 @@ public class Character : MonoBehaviour
 
     [Header("상태이상")]
     [SerializeField] protected List<BuffEffect> buffs;
-    [SerializeField] protected Transform buffIconContainer;
     [SerializeField] protected List<BuffIcon> buffIcons;
-    [SerializeField] protected Transform infoPanelContainer;
-    [SerializeField] protected List<BuffInfoPanel> infoPanels;
+    [SerializeField] protected List<BuffInfoPanel> buffInfoPanels;
 
     // 컴포넌트들을 등록한다.
     protected virtual void EnrollComponents()
@@ -74,20 +72,7 @@ public class Character : MonoBehaviour
         // 디버프 효과들(내부 데이터)을 담아둘 리스트
         buffs = new List<BuffEffect>();
         buffIcons = new List<BuffIcon>();
-
-        // 디버프 아이콘들의 부모 컨테이너
-        buffIconContainer = transform.GetChild(0).GetChild(1).GetChild(1);
-        // debuffIconContainer의 모든 자식 오브젝트를 비활성화. (자식의 자식은 X)
-        foreach (Transform icon in buffIconContainer)
-        {
-            // debuffIcons에 icon의 이미지, 텍스트 컴포넌트를 할당
-            buffIcons.Add(new BuffIcon(icon.GetComponent<Image>(), icon.GetChild(0).GetComponent<TMP_Text>()));
-            // 그리고 비활성화.
-            icon.gameObject.SetActive(false);
-        }
-
-        // 디버프 상세정보창을 불러온다. (더미, 행동정보창 제외)
-        infoPanelContainer = transform.GetChild(1).GetChild(0);
+        buffInfoPanels = new List<BuffInfoPanel>();
     }
 
     public virtual void ResetState()
@@ -270,12 +255,12 @@ public class Character : MonoBehaviour
         buffs.Add(buff);
 
         // BuffIcon과 BuffInfoPanel을 풀에서 가져와서
-        BuffIcon buffIcon = ObjectPoolManager.Instance.GetGo("InfoPanel").GetComponent<BuffIcon>();
-        BuffInfoPanel infoPanel = ObjectPoolManager.Instance.GetGo("InfoPanel").GetComponent<BuffInfoPanel>();
+        BuffIcon buffIcon = ObjectPoolManager.Instance.GetGo("BuffIcon").GetComponent<BuffIcon>();
+        BuffInfoPanel BuffInfoPanel = ObjectPoolManager.Instance.GetGo("BuffInfoPanel").GetComponent<BuffInfoPanel>();
 
         // 리스트에 등록한다.
         buffIcons.Add(buffIcon);
-        infoPanels.Add(infoPanel);
+        buffInfoPanels.Add(BuffInfoPanel);
 
         // 버프 UI 갱신
         UpdateBuffIcon(buffs.Count - 1);
@@ -297,15 +282,12 @@ public class Character : MonoBehaviour
         }
 
         // 아이콘과 숫자를 변경한다.
-        buffIcons[index].image.sprite = CardInfo.Instance.skillIcons[(int)buffs[index].type];
-        buffIcons[index].tmp_Text.text = buffs[index].remainingTurns.ToString();
-
+        buffIcons[index].SetContent(CardInfo.Instance.skillIcons[(int)buffs[index].type], buffs[index].remainingTurns.ToString());
 
         // 스킬 텍스트를 만든다.
         SkillText buffText = DebuffInfo.GetSkillText(buffs[index]);
         // 이름과 설명을 변경한다.
-        infoPanels[index].name.text = buffText.name;
-        infoPanels[index].description.text = buffText.description;
+        buffInfoPanels[index].SetContent(buffText.name, buffText.description);
     }
 
     public void UpdateAllBuffIcon()
@@ -336,6 +318,15 @@ public class Character : MonoBehaviour
             {
                 // 해당 효과를 삭제한다.
                 buffs.RemoveAt(i);
+
+                // 오브젝트 풀의 자원들을 반환한다.
+                buffIcons[i].ReleaseObject();
+                buffInfoPanels[i].ReleaseObject();
+
+                // 리스트에서 제거
+                buffIcons.RemoveAt(i);
+                buffInfoPanels.RemoveAt(i);
+
                 // 뒤의 디버프들이 1칸씩 앞으로 땡겨졌으니, 인덱스도 1 앞으로 조정
                 --i;
             }

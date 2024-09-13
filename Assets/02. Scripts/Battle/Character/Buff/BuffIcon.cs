@@ -1,15 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class BuffIcon : Poolable
 {
-    public BuffIcon(Image image, TMP_Text tmp_Text)
+    private void Start()
     {
-        this.image = image;
-        this.tmp_Text = tmp_Text;
+        image = transform.GetComponent<Image>();
+        tmp_Text = transform.GetChild(0).GetComponent<TMP_Text>();
+    }
+
+    public void SetContent(Sprite image, string tmp_Text)
+    {
+        this.image.sprite = image;
+        this.tmp_Text.text = tmp_Text;
     }
 
     public Image image;

@@ -897,14 +897,13 @@ MonoBehaviour:
   bonusAttackStat: 0
   bonusDamage: 0
   bonusArmor: 0
+  bonusBleedDamage: 0
   hpBar: {fileID: 0}
   hpText: {fileID: 0}
   shieldBar: {fileID: 0}
   damageTextPrefab: {fileID: 4272445659923317628, guid: 829249fb6ce714f4e8cf8aa21f3dcdec, type: 3}
-  buffIconContainer: {fileID: 0}
   buffIcons: []
-  infoPanelContainer: {fileID: 0}
-  infoPanels: []
+  buffInfoPanels: []
   job: 
 --- !u!1 &4636067997250509195
 GameObject:

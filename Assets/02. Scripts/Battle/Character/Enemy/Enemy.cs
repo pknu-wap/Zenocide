@@ -17,6 +17,7 @@ public class Enemy : Character
     protected TMP_Text behaviorAmount;
 
     // 상제정보창
+    [SerializeField] protected Transform panelContainer;
     protected TMP_Text behaviorName;
     protected TMP_Text behaviorDescription;
 
@@ -47,8 +48,8 @@ public class Enemy : Character
         behaviorAmount = behaviorIcon.transform.GetChild(0).GetComponent<TMP_Text>();
 
         // 상제정보창
-        behaviorName = infoPanelContainer.GetChild(0).GetChild(0).GetComponent<TMP_Text>();
-        behaviorDescription = infoPanelContainer.GetChild(0).GetChild(1).GetComponent<TMP_Text>();
+        behaviorName = panelContainer.GetChild(0).GetChild(0).GetComponent<TMP_Text>();
+        behaviorDescription = panelContainer.GetChild(0).GetChild(1).GetComponent<TMP_Text>();
 
         // 스킬 이펙트, 모션
         shieldMask = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Image>();
