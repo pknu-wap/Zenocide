@@ -367,12 +367,6 @@ public class CardManager : MonoBehaviour
 
     public void DiscardCard(Card card)
     {
-        // 코스트가 조정되어 있을 때 원복한다
-        if (costModificationAmount != 0)
-        {
-            card.SetCost(cardDict[card.cardData.name].cost, 0);
-        }
-
         dump.Add(card.cardData);
         UpdateDumpCount();
 

@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee4e1de6682e5bb448d13b0b62311c21, type: 3}
-  m_Name: Chemical Weapon
+  m_Name: IED
   m_EditorClassIdentifier: 
-  name: "\uD654\uD559\uBCD1"
-  description: "\uC801 \uC804\uCCB4\uC5D0\uAC8C 6\uC758 \uB370\uBBF8\uC9C0\uB97C
+  name: I.E.D
+  description: "\uBAA8\uB4E0 \uC801\uC5D0\uAC8C 10\uC758 \uB370\uBBF8\uC9C0\uB97C
     \uC785\uD799\uB2C8\uB2E4."
-  sprite: {fileID: 21300000, guid: 305f554915ca0e547b5bd099653a071e, type: 3}
+  sprite: {fileID: 21300000, guid: fde6c4a20c6fc5a4d97166b3209be209, type: 3}
   skills:
   - type: 0
     target: 2
-    amount: 6
+    amount: 10
     turnCount: 0
     effectPrefeb: {fileID: 2791311640683196035, guid: c1b65553f8809c54f881fa3efa0769e4, type: 3}
-  cost: 3
+  cost: 5

@@ -231,7 +231,7 @@ public class Card : Poolable
     private IEnumerator UseCard()
     {
         // 코스트가 모자란 경우
-        if (BattleInfo.Instance.CanUseCost(cardData.cost) == false)
+        if (BattleInfo.Instance.CanUseCost(cost) == false)
         {
             // 카드 발동을 취소한다.
             CancelUsingCard();
@@ -257,7 +257,7 @@ public class Card : Poolable
         }
 
         // 코스트를 감소시킨다.
-        BattleInfo.Instance.UseCost(cardData.cost);
+        BattleInfo.Instance.UseCost(cost);
 
         // 패에서 카드를 삭제한다. (중복 삭제 방지)
         CardManager.Instance.hand.Remove(this);
@@ -359,6 +359,9 @@ public class Card : Poolable
         {
             yield return null;
         }
+
+        // 묘지로 이동한 후에 코스트 원복한다.
+        SetCost(cardData.cost, 0);
 
         // 카드를 삭제한다.
         CardManager.Instance.DiscardCard(this);
