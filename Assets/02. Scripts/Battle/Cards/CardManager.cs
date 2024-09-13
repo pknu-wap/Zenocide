@@ -63,7 +63,7 @@ public class CardManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-
+        
         // 컴포넌트를 할당한다.
         EnrollComponent();
     }

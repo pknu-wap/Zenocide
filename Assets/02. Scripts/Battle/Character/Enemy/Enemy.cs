@@ -47,8 +47,8 @@ public class Enemy : Character
         behaviorAmount = behaviorIcon.transform.GetChild(0).GetComponent<TMP_Text>();
 
         // 상제정보창
-        behaviorName = statusPanel.GetChild(0).GetChild(0).GetComponent<TMP_Text>();
-        behaviorDescription = statusPanel.GetChild(0).GetChild(1).GetComponent<TMP_Text>();
+        behaviorName = infoPanelContainer.GetChild(0).GetChild(0).GetComponent<TMP_Text>();
+        behaviorDescription = infoPanelContainer.GetChild(0).GetChild(1).GetComponent<TMP_Text>();
 
         // 스킬 이펙트, 모션
         shieldMask = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Image>();

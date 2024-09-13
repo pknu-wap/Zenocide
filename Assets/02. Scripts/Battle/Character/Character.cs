@@ -19,18 +19,6 @@ public class BuffEffect
     public int remainingTurns;
 }
 
-public class buffIconComponent
-{
-    public buffIconComponent(Image image, TMP_Text tmp_Text)
-    {
-        this.image = image;
-        this.tmp_Text = tmp_Text;
-    }
-
-    public Image image;
-    public TMP_Text tmp_Text;
-}
-
 public class Character : MonoBehaviour
 {
     [Header("데이터")]
@@ -62,14 +50,11 @@ public class Character : MonoBehaviour
     [SerializeField] protected GameObject damageTextPrefab;
 
     [Header("상태이상")]
-    [SerializeField] protected Transform buffIconContainer;
     [SerializeField] protected List<BuffEffect> buffs;
-    // 버프 아이콘 생성기 구현 예정 -> 오브젝트 풀링으로 대체
-    [SerializeField] protected Transform statusPanel;
-    // 디버프창
-    [SerializeField] protected List<buffIconComponent> buffIcons;
-    [SerializeField] protected TMP_Text[] buffName;
-    [SerializeField] protected TMP_Text[] buffDescription;
+    [SerializeField] protected Transform buffIconContainer;
+    [SerializeField] protected List<BuffIcon> buffIcons;
+    [SerializeField] protected Transform infoPanelContainer;
+    [SerializeField] protected List<BuffInfoPanel> infoPanels;
 
     // 컴포넌트들을 등록한다.
     protected virtual void EnrollComponents()
@@ -86,7 +71,7 @@ public class Character : MonoBehaviour
 
         // 디버프 효과들(내부 데이터)을 담아둘 리스트
         buffs = new List<BuffEffect>();
-        buffIcons = new List<buffIconComponent>();
+        buffIcons = new List<BuffIcon>();
 
         // 디버프 아이콘들의 부모 컨테이너
         buffIconContainer = transform.GetChild(0).GetChild(1).GetChild(1);
@@ -94,21 +79,13 @@ public class Character : MonoBehaviour
         foreach (Transform icon in buffIconContainer)
         {
             // debuffIcons에 icon의 이미지, 텍스트 컴포넌트를 할당
-            buffIcons.Add(new buffIconComponent(icon.GetComponent<Image>(), icon.GetChild(0).GetComponent<TMP_Text>()));
+            buffIcons.Add(new BuffIcon(icon.GetComponent<Image>(), icon.GetChild(0).GetComponent<TMP_Text>()));
             // 그리고 비활성화.
             icon.gameObject.SetActive(false);
         }
 
         // 디버프 상세정보창을 불러온다. (더미, 행동정보창 제외)
-        statusPanel = transform.GetChild(1).GetChild(0);
-        buffName = new TMP_Text[statusPanel.childCount - 1];
-        buffDescription = new TMP_Text[statusPanel.childCount - 1];
-
-        for (int i = 1; i < statusPanel.childCount; ++i)
-        {
-            buffName[i - 1] = statusPanel.GetChild(i).GetChild(0).GetComponent<TMP_Text>();
-            buffDescription[i - 1] = statusPanel.GetChild(i).GetChild(1).GetComponent<TMP_Text>();
-        }
+        infoPanelContainer = transform.GetChild(1).GetChild(0);
     }
 
     public virtual void ResetState()
@@ -285,15 +262,21 @@ public class Character : MonoBehaviour
 
     #region 버프
     // 버프 효과를 턴 시작 이벤트에 등록한다.
-    public void EnrollBuff(BuffEffect bleedEffect)
+    public void EnrollBuff(BuffEffect buff)
     {
-        // 출혈 리스트에 추가
-        buffs.Add(bleedEffect);
+        // 버프 리스트에 추가
+        buffs.Add(buff);
 
-        // 출혈 디버프 UI 추가
-        int i = buffs.Count - 1;
-        
-        UpdateBuffIcon(i);
+        // BuffIcon과 BuffInfoPanel을 풀에서 가져와서
+        BuffIcon buffIcon = ObjectPoolManager.Instance.GetGo("InfoPanel").GetComponent<BuffIcon>();
+        BuffInfoPanel infoPanel = ObjectPoolManager.Instance.GetGo("InfoPanel").GetComponent<BuffInfoPanel>();
+
+        // 리스트에 등록한다.
+        buffIcons.Add(buffIcon);
+        infoPanels.Add(infoPanel);
+
+        // 버프 UI 갱신
+        UpdateBuffIcon(buffs.Count - 1);
     }
 
     // 디버프를 전부 제거한다.
@@ -311,23 +294,16 @@ public class Character : MonoBehaviour
             return;
         }
 
-        // i번째 아이콘와 숫자를 변경하고
+        // 아이콘과 숫자를 변경한다.
         buffIcons[index].image.sprite = CardInfo.Instance.skillIcons[(int)buffs[index].type];
         buffIcons[index].tmp_Text.text = buffs[index].remainingTurns.ToString();
 
-        // i번째 디버프창의 내용을 갱신한다
+
         // 스킬 텍스트를 만든다.
         SkillText buffText = DebuffInfo.GetSkillText(buffs[index]);
-        // 텍스트를 변경한다.
-        buffName[index].text = buffText.name;
-        buffDescription[index].text = buffText.description;
-
-        // 오브젝트 활성화
-        // 이 구문들은 리팩토링이 필요해보인다.
-        // 아이콘 컨테이너 열기
-        buffIconContainer.GetChild(index).gameObject.SetActive(true);
-        // 상세정보창 컨테이너 열기
-        buffName[index].gameObject.transform.parent.gameObject.SetActive(true);
+        // 이름과 설명을 변경한다.
+        infoPanels[index].name.text = buffText.name;
+        infoPanels[index].description.text = buffText.description;
     }
 
     public void UpdateAllBuffIcon()
@@ -337,16 +313,6 @@ public class Character : MonoBehaviour
         for (; i < buffs.Count; ++i)
         {
             UpdateBuffIcon(i);
-        }
-
-        // 디버프가 없는 아이콘들은
-        for (; i < buffIconContainer.childCount; ++i)
-        {
-            // 비활성화한다.
-            // 아이콘 비활성화
-            buffIconContainer.GetChild(i).gameObject.SetActive(false);
-            // 상세정보창 비활성화
-            buffName[i].transform.parent.gameObject.SetActive(false);
         }
     }
 
