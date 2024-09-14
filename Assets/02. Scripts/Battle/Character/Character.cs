@@ -255,8 +255,8 @@ public class Character : MonoBehaviour
         buffs.Add(buff);
 
         // BuffIcon과 BuffInfoPanel을 풀에서 가져와서
-        BuffIcon buffIcon = ObjectPoolManager.Instance.GetGo("BuffIcon").GetComponent<BuffIcon>();
-        BuffInfoPanel BuffInfoPanel = ObjectPoolManager.Instance.GetGo("BuffInfoPanel").GetComponent<BuffInfoPanel>();
+        BuffIcon buffIcon = ObjectPoolManager.Instance.GetGo("BuffIcon_"+this.name).GetComponent<BuffIcon>();
+        BuffInfoPanel BuffInfoPanel = ObjectPoolManager.Instance.GetGo("BuffInfoPanel_"+this.name).GetComponent<BuffInfoPanel>();
 
         // 리스트에 등록한다.
         buffIcons.Add(buffIcon);

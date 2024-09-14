@@ -4,18 +4,19 @@ using UnityEngine.UI;
 
 public class BuffIcon : Poolable
 {
-    private void Start()
+    public Image image;
+    public TMP_Text turnCount;
+
+    /*void Start()
     {
-        image = transform.GetComponent<Image>();
-        tmp_Text = transform.GetChild(0).GetComponent<TMP_Text>();
-    }
+        sprite = transform.GetChild(0).GetComponent<Sprite>();
+        turnCount = transform.GetChild(1).GetComponent<TMP_Text>();
+    }*/
 
     public void SetContent(Sprite image, string tmp_Text)
     {
         this.image.sprite = image;
-        this.tmp_Text.text = tmp_Text;
+        this.turnCount.text = tmp_Text;
     }
 
-    public Image image;
-    public TMP_Text tmp_Text;
 }

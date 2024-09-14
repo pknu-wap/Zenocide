@@ -8389,43 +8389,43 @@ MonoBehaviour:
     perfab: {fileID: 1718778536131844245, guid: 4ed7848acc13fc74dae6e8f35b07a235, type: 3}
     count: 100
     group: {fileID: 1453823496}
-  - objectName: BuffIcon
+  - objectName: BuffIcon_Player
     perfab: {fileID: 7539638744316109955, guid: f86e37f95fafeec4da72ce8ae0fd0954, type: 3}
     count: 50
     group: {fileID: 634910846}
-  - objectName: BuffIcon
+  - objectName: BuffIcon_Enemy
     perfab: {fileID: 7539638744316109955, guid: f86e37f95fafeec4da72ce8ae0fd0954, type: 3}
     count: 50
     group: {fileID: 1880369374}
-  - objectName: BuffIcon
+  - objectName: BuffIcon_Enemt (1)
     perfab: {fileID: 7539638744316109955, guid: f86e37f95fafeec4da72ce8ae0fd0954, type: 3}
     count: 50
     group: {fileID: 329546453}
-  - objectName: BuffIcon
+  - objectName: BuffIcon_Enemy (2)
     perfab: {fileID: 7539638744316109955, guid: f86e37f95fafeec4da72ce8ae0fd0954, type: 3}
     count: 50
     group: {fileID: 1530221151}
-  - objectName: BuffIcon
+  - objectName: BuffIcon_Enemy (3)
     perfab: {fileID: 7539638744316109955, guid: f86e37f95fafeec4da72ce8ae0fd0954, type: 3}
     count: 50
     group: {fileID: 1195445596}
-  - objectName: BuffInfoPanel
+  - objectName: BuffInfoPanel_Player
     perfab: {fileID: 5285969350530789879, guid: b3cad58a8e47468459e5ffae00bbd974, type: 3}
     count: 50
     group: {fileID: 1415277625}
-  - objectName: BuffInfoPanel
+  - objectName: BuffInfoPanel_Enemy
     perfab: {fileID: 5285969350530789879, guid: b3cad58a8e47468459e5ffae00bbd974, type: 3}
     count: 50
     group: {fileID: 1899784514}
-  - objectName: BuffInfoPanel
+  - objectName: BuffInfoPanel_Enemy (1)
     perfab: {fileID: 5285969350530789879, guid: b3cad58a8e47468459e5ffae00bbd974, type: 3}
     count: 50
     group: {fileID: 1993462067}
-  - objectName: BuffInfoPanel
+  - objectName: BuffInfoPanel_Enemy (2)
     perfab: {fileID: 5285969350530789879, guid: b3cad58a8e47468459e5ffae00bbd974, type: 3}
     count: 50
     group: {fileID: 421141248}
-  - objectName: BuffInfoPanel
+  - objectName: BuffInfoPanel_Enemy (3)
     perfab: {fileID: 5285969350530789879, guid: b3cad58a8e47468459e5ffae00bbd974, type: 3}
     count: 50
     group: {fileID: 744042603}

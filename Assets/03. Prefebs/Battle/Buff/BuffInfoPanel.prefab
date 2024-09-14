@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7576135396550508010}
   - component: {fileID: 605314008864594998}
   m_Layer: 5
-  m_Name: Debuff Description
+  m_Name: Description
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -190,7 +190,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 300, y: 0}
+  m_SizeDelta: {x: 312.5, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5853031927700030622
 MonoBehaviour:
@@ -204,8 +204,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af94ac17b3aa3bd4e894fb2b035d701f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: {fileID: 0}
-  description: {fileID: 0}
+  name: {fileID: 7501167813950940000}
+  description: {fileID: 7576135396550508010}
 --- !u!222 &94019321939794130
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -311,7 +311,7 @@ GameObject:
   - component: {fileID: 8146716001641282577}
   - component: {fileID: 7501167813950940000}
   m_Layer: 5
-  m_Name: Debuff Name
+  m_Name: Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
