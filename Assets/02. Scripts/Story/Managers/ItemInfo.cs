@@ -54,7 +54,8 @@ public class ItemInfo : MonoBehaviour
         new Item(ItemType.Item, "실종 전단지", "실종 전단지", 1),
         new Item(ItemType.Item, "작은 금고", "작은 금고", 1),
         new Item(ItemType.Item, "락픽", "락픽", 1),
-        new Item(ItemType.Item, "토치", "토치", 1),
+        new Item(ItemType.Item, "토치", "불쏘시개", 1),
+        new Item(ItemType.Item, "성냥", "불쏘시개", 1),
         new Item(ItemType.Item, "라면", "음식", 1),
         // 능력
         new Item(ItemType.Status, "근력", "근력", 1),
@@ -66,7 +67,7 @@ public class ItemInfo : MonoBehaviour
         new Item(ItemType.Status, "통쾌함", "통쾌함", 1),
         new Item(ItemType.Status, "요리 실력", "요리 실력", 1),
         new Item(ItemType.Status, "근성", "근성", 1),
-        new Item(ItemType.Status, "후각", "후각", 1),
+        new Item(ItemType.Status, "예민한 후각", "예민한 후각", 1),
         new Item(ItemType.Status, "아리마와의 친분", "아리마와의 친분", 1),
         new Item(ItemType.Status, "보육원과의 친분", "보육원과의 친분", 1),
         new Item(ItemType.Status, "감기", "감기", 1),
