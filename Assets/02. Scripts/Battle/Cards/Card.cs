@@ -53,6 +53,7 @@ public class Card : Poolable
         nameTMP.text = cardData.name;
         costTMP.text = cardData.cost.ToString();
         descriptionTMP.text = cardData.description;
+        SetDamageDiscription();
 
         cardOrder = GetComponent<CardOrder>();
         cardCollider = GetComponent<Collider2D>();
@@ -92,6 +93,21 @@ public class Card : Poolable
         {
             costTMP.color = Color.green;
         }
+    }
+
+    public void SetDamageDiscription()
+    {
+        string tempDescription = cardData.description;
+
+        for(int i = 0; i < cardData.skills.Length; i++)
+        {
+            // 총 데미지를 계산해서
+            int totalDamage = cardData.skills[i].amount + Player.Instance.bonusDamage;
+            // "damage + 해당하는 스킬의 인덱스"인 부분을 대체
+            tempDescription = tempDescription.Replace("damage" + i, totalDamage.ToString());
+        }
+
+        descriptionTMP.text = tempDescription;
     }
     
     // 카드를 버릴 때 오브젝트를 파괴한다

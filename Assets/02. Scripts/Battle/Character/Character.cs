@@ -331,6 +331,9 @@ public class Character : MonoBehaviour
                 --i;
             }
 
+            // 추가 데미지 텍스트를 갱신한다.
+            CardManager.Instance.SetExtraDamage();
+
             // 이펙트 재생
 
             // 0.1초 딜레이

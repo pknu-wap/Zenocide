@@ -261,6 +261,10 @@ public class CardInfo : MonoBehaviour
     public void AddExtraDamage(int amount, int turnCount, Character target, Character caller)
     {
         target.GetBonusDamage(amount);
+        if(target.GetType() == typeof(Player))
+        {
+            CardManager.Instance.SetExtraDamage();
+        }
     }
 
     // 지속 효과
@@ -286,8 +290,12 @@ public class CardInfo : MonoBehaviour
     // 추가 데미지 (지속, 즉발)
     public void LingeringExtraDamage(int amount, int turnCount, Character target, Character caller)
     {
-        target.EnrollBuff(new BuffEffect(SkillType.AddExtraDamage, amount, turnCount - 1));
+        target.EnrollBuff(new BuffEffect(SkillType.AddExtraDamage, amount, turnCount));
         target.GetBonusDamage(amount);
+        if (target.GetType() == typeof(Player))
+        {
+            CardManager.Instance.SetExtraDamage();
+        }
     }
 
     public void ModifyCost(int amount, int turnCount, Character target, Character caller)

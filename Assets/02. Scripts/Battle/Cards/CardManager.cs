@@ -633,4 +633,12 @@ public class CardManager : MonoBehaviour
             hand[i].SetCost(cardDict[hand[i].cardData.name].cost, 0);
         }
     }
+
+    public void SetExtraDamage()
+    {
+        for(int i = 0; i < hand.Count; i++)
+        {
+            hand[i].SetDamageDiscription();
+        }
+    }
 }
