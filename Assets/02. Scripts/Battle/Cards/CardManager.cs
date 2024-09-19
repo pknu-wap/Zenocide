@@ -131,6 +131,12 @@ public class CardManager : MonoBehaviour
 
         for (int i = 0; i < cards.Length; ++i)
         {
+            if (cardDict.ContainsKey(cardName) == false)
+            {
+                Debug.LogError(cards[i] + " 카드가 없습니다. 이름을 확인해주세요.");
+                continue;
+            }
+
             AddCardToDeck(cards[i]);
         }
     }
@@ -140,7 +146,7 @@ public class CardManager : MonoBehaviour
     {
         if (cardDict.ContainsKey(cardName) == false)
         {
-            Debug.LogError("해당하는 카드가 없습니다. 이름을 확인해주세요.");
+            Debug.LogError(cardName + " 카드가 없습니다. 이름을 확인해주세요.");
             return;
         }
 
