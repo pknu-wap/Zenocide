@@ -7,16 +7,20 @@ using DG.Tweening;
 
 public class BuffEffect
 {
-    public BuffEffect(SkillType type, int amount, int remainingTurns)
+    public BuffEffect(SkillType type, int amount, int remainingTurns, Character target, Character caller)
     {
         this.type = type;
         this.amount = amount;
         this.remainingTurns = remainingTurns;
+        this.target = target;
+        this.caller = caller;
     }
 
     public SkillType type;
     public int amount;
     public int remainingTurns;
+    public Character target;
+    public Character caller;
 }
 
 public class Character : MonoBehaviour
@@ -282,7 +286,7 @@ public class Character : MonoBehaviour
         }
 
         // 아이콘과 숫자를 변경한다.
-        buffIcons[index].SetContent(CardInfo.Instance.skillIcons[(int)buffs[index].type], buffs[index].remainingTurns.ToString());
+        buffIcons[index].SetContent(CardInfo.Instance.skillIcons[(int)buffs[index].type], (buffs[index].remainingTurns).ToString());
 
         // 스킬 텍스트를 만든다.
         SkillText buffText = DebuffInfo.GetSkillText(buffs[index]);
@@ -293,8 +297,7 @@ public class Character : MonoBehaviour
     public void UpdateAllBuffIcon()
     {
         // 모든 현재 디버프에 대해(i번째 디버프에 대해)
-        int i = 0;
-        for (; i < buffs.Count; ++i)
+        for (int i = 0; i < buffs.Count; ++i)
         {
             UpdateBuffIcon(i);
         }
@@ -305,11 +308,11 @@ public class Character : MonoBehaviour
         // 스탯 초기화
         ResetStat();
 
-        // 모든 적용 중인 출혈 효과에 대해
+        // 모든 적용 중인 버프에 대해
         for (int i = 0; i < buffs.Count; ++i)
         {
             // 스킬 발동
-            CardInfo.Instance.ActivateSkill(buffs[i], this, this);
+            CardInfo.Instance.ActivateSkill(buffs[i], this, buffs[i].caller);
 
             // 남은 턴 1 감소
             --buffs[i].remainingTurns;
@@ -322,10 +325,6 @@ public class Character : MonoBehaviour
                 // 오브젝트 풀의 자원들을 반환한다.
                 buffIcons[i].ReleaseObject();
                 buffInfoPanels[i].ReleaseObject();
-
-                // 리스트에서 제거
-                buffIcons.RemoveAt(i);
-                buffInfoPanels.RemoveAt(i);
 
                 // 뒤의 디버프들이 1칸씩 앞으로 땡겨졌으니, 인덱스도 1 앞으로 조정
                 --i;

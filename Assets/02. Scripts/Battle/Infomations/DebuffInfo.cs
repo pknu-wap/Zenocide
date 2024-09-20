@@ -8,14 +8,16 @@ public class DebuffInfo
         { SkillType.Bleed, "출혈" },
         { SkillType.Burn, "화상" },
         { SkillType.Heal, "지속 회복" },
-        { SkillType.AddExtraDamage, "추가 데미지" },
+        { SkillType.ExtraDamage, "추가 데미지" },
+        { SkillType.ExtraBleedDamage, "추가 출혈 데미지" },
     };
     public static Dictionary<SkillType, string> debuffDescriptionDict = new Dictionary<SkillType, string>
     {
         { SkillType.Bleed, "피해를 입습니다." },
         { SkillType.Burn, "피해를 받습니다." },
         { SkillType.Heal, "체력을 회복합니다." },
-        { SkillType.AddExtraDamage, "추가 데미지를 입힙니다." },
+        { SkillType.ExtraDamage, "추가 데미지를 입힙니다." },
+        { SkillType.ExtraBleedDamage, "추가 출혈 데미지를 입힙니다." },
     };
 
     public static SkillText GetSkillText(BuffEffect buff)
