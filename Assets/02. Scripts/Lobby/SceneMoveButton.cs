@@ -1,7 +1,6 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using System.IO;
 
 public class SceneMoveButton : MonoBehaviour
 {
@@ -14,7 +13,10 @@ public class SceneMoveButton : MonoBehaviour
 
     private void Start()
     {
-        alertPanel.SetActive(false);
+        if(alertPanel != null)
+        {
+            alertPanel.SetActive(false);
+        }
 
         // 세이브 파일이 없으면 로드 버튼 비활성화
         if (isLoadButton && !DataManager.Instance.IsFileExist())
