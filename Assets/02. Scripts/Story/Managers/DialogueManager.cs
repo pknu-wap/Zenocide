@@ -414,7 +414,22 @@ public class DialogueManager : MonoBehaviour
         // 내용을 받아오고 (비어있어도 상관 X)
         string sentence = csvData["Text"].ToString();
         //대화 로그를 저장하는 함수 호출, 선택지 이벤트가 아니므로 -1을 인자로 넘겨준다.
-        LogManager.Instance.AddLog(csvData, -1); 
+        LogManager.Instance.AddLog(csvData, -1);
+
+        // 대사 출력 효과 전에 화면 흔들림 효과가 있다면 실행한다.
+        if (csvData["ShakeEffect"].ToString() is not emptyString)
+        {
+            // 흔들림 효과의 지속 시간과 흔들림 정도를 csv에서 들고와 임시로 저장한다.
+            string[] temp = csvData["ShakeEffect"].ToString().Split("//");
+
+            // 흔들림 지속 시간 변수
+            int duration = int.Parse(temp[0]);
+            // 흔들림 정도 변수
+            int magnitude = int.Parse(temp[1]);
+            // 흔들림 효과를 주기 위해 함수를 호출한다.
+            CamShake.Instance.Shake(duration,magnitude,CamShake.Scene.Story);
+        }
+       
         // 타이핑 출력
         yield return StartCoroutine(TypeSentence(sentence));
     }
