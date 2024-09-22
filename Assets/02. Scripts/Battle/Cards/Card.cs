@@ -2,9 +2,6 @@ using UnityEngine;
 using TMPro;
 using DG.Tweening;
 using System.Collections;
-using System.Collections.Generic;
-using static UnityEngine.ParticleSystem;
-using UnityEngine.XR;
 
 public class Card : Poolable
 {
@@ -87,7 +84,7 @@ public class Card : Poolable
         }
         else if(color == 0)
         {
-            costTMP.color = Color.black;
+            costTMP.color = Color.white;
         }
         else if(color < 0)
         {
@@ -103,8 +100,22 @@ public class Card : Poolable
         {
             // 총 데미지를 계산해서
             int totalDamage = cardData.skills[i].amount + Player.Instance.bonusDamage;
+            string totalDamageText;
+
+            // 추가 데미지가 있다면 수치 하이라이트
+            if(Player.Instance.bonusDamage > 0)
+            {
+                string colorText = "<color=#" + CardManager.Instance.highlightTextColorCode + ">";
+                totalDamageText = colorText + "<b>" + totalDamage.ToString() + "</b></color>";
+            }
+            // 없다면 그대로
+            else
+            {
+                totalDamageText = totalDamage.ToString();
+            }
+
             // "damage + 해당하는 스킬의 인덱스"인 부분을 대체
-            tempDescription = tempDescription.Replace("damage" + i, totalDamage.ToString());
+            tempDescription = tempDescription.Replace("damage" + i, totalDamageText);
         }
 
         descriptionTMP.text = tempDescription;

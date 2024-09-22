@@ -49,9 +49,11 @@ public class CardManager : MonoBehaviour
     public int costModificationAmount = 0;
 
     [Header("상수")]
+    public Vector3 focusPos;
+    public Color highlightTextColor;
+    public string highlightTextColorCode;
     int listSize = 100;
     float focusOffset = 100f;
-    public Vector3 focusPos;
 
     [Header("딜레이")]
     private float drawDelay = 0.5f;
@@ -66,6 +68,9 @@ public class CardManager : MonoBehaviour
         
         // 컴포넌트를 할당한다.
         EnrollComponent();
+
+        // 색 코드 추출
+        highlightTextColorCode = ColorUtility.ToHtmlStringRGB(highlightTextColor);
     }
     void Start()
     {
