@@ -198,6 +198,12 @@ public class CardManager : MonoBehaviour
         deck.Remove(target);
     }
 
+    // 덱을 비운다.
+    public void ClearDeck()
+    {
+        deck.Clear();
+    }
+
     public void ShuffleDeck()
     {
         for (int i = 0; i < deck.Count; i++)

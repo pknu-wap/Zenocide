@@ -97,6 +97,7 @@ public class DialogueManager : MonoBehaviour
     public List<EventData> processableMainEventList = new List<EventData>();
     public List<EventData> processableSubEventList = new List<EventData>();
     public EventDataList startEventList;
+    public EventDataList incarnageSubEventList;
     // 메인 이벤트를 진행할 확률(백분률로 표기)
     public int mainRate = 30;
 
@@ -133,6 +134,8 @@ public class DialogueManager : MonoBehaviour
         EnrollComponent();
         // Total Event List 채우기
         SetTotalEventList();
+        // 특수 이벤트 목록 생성
+        EnrollSpecialEvents();
 
         // CSV 파일 읽기
         dataMainCSV = CSVReader.Read(MainCSV);
@@ -381,6 +384,12 @@ public class DialogueManager : MonoBehaviour
 
                 // hp를 변경한다.
                 ChangePlayerHp(hp);
+            }
+
+            // 특수 이벤트가 있다면 실행한다.
+            if (dataCSV[i].ContainsKey("Special Event") && dataCSV[i]["Special Event"].ToString() is not emptyString)
+            {
+                ActivateSpecialEvent(dataCSV[i]["Special Event"].ToString());
             }
         }
 
@@ -737,6 +746,46 @@ public class DialogueManager : MonoBehaviour
         StartCoroutine(ProcessRandomEvent());
     }
 
+    // 스토리 리스트 교체, 덱 비우기 등 특수한 이벤트를 다룬다.
+    #region 특수 이벤트
+    public delegate void SpecialEvent();
+    public Dictionary<string, SpecialEvent> specialEvents = new Dictionary<string, SpecialEvent>();
+
+    // 모든 특수 이벤트를 등록한다.
+    private void EnrollSpecialEvents()
+    {
+        specialEvents["서브스토리 교체"] = SetIncarnageSubStory;
+        specialEvents["에너지파 획득"] = GetEnergyBeamCard;
+    }
+
+    // 특수 이벤트를 실행한다.
+    private void ActivateSpecialEvent(string specialEvent)
+    {
+        specialEvents[specialEvent]();
+    }
+
+    // 서브스토리를 전면 교체한다.
+    private void SetIncarnageSubStory()
+    {
+        // 서브스토리를 비우고
+        processableSubEventList.Clear();
+
+        // 인카니지 서브 스토리로 새로 써넣는다.
+        for (int i = 0; i < incarnageSubEventList.list.Length; ++i)
+        {
+            processableSubEventList.Add(startEventList.list[i]);
+        }
+    }
+
+    // 덱을 모두 버리고 에너지파를 넣는다.
+    private void GetEnergyBeamCard()
+    {
+        CardManager.Instance.ClearDeck();
+
+        CardManager.Instance.AddCardToDeck("에너지파");
+    }
+    #endregion 특수 이벤트
+
     #region Legacy
     // Legacy
     /*    private IEnumerator EventProcess()
@@ -933,11 +982,11 @@ public class DialogueManager : MonoBehaviour
         }*/
 
     // 제네릭 함수를 사용하여 리스트에서 랜덤 요소를 뽑기
-/*    public T PickRandomElement<T>(List<T> array)
-    {
-        System.Random random = new System.Random();
-        int randomIndex = random.Next(array.Count);
-        return array[randomIndex];
-    }*/
+    /*    public T PickRandomElement<T>(List<T> array)
+        {
+            System.Random random = new System.Random();
+            int randomIndex = random.Next(array.Count);
+            return array[randomIndex];
+        }*/
     #endregion Legacy
 }
