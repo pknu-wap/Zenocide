@@ -34,5 +34,22 @@ public class RewardCard : MonoBehaviour
         nameTMP.text = cardData.name;
         costTMP.text = cardData.cost.ToString();
         descriptionTMP.text = cardData.description;
+        SetDamageDiscription();
+    }
+
+    // 데미지를 반영해 설명 텍스트를 변경한다.
+    public void SetDamageDiscription()
+    {
+        string tempDescription = cardData.description;
+
+        for (int i = 0; i < cardData.skills.Length; i++)
+        {
+            // 총 데미지를 계산해서
+            int totalDamage = cardData.skills[i].amount;
+            // "damage + 해당하는 스킬의 인덱스"인 부분을 대체
+            tempDescription = tempDescription.Replace("damage" + i, totalDamage.ToString());
+        }
+
+        descriptionTMP.text = tempDescription;
     }
 }
