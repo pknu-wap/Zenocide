@@ -2,14 +2,13 @@ using UnityEngine;
 using TMPro;
 using DG.Tweening;
 using System.Collections;
-using System.Collections.Generic;
-using static UnityEngine.ParticleSystem;
 
 public class Card : Poolable
 {
     #region 변수
     [Header("카드 정보")]
     public CardData cardData;
+    public int cost;
 
     [Header("컴포넌트")]
     [SerializeField] SpriteRenderer card;
@@ -45,11 +44,13 @@ public class Card : Poolable
     public void Setup(CardData item)
     {
         cardData = item;
+        cost = item.cost;
 
         illust.sprite = cardData.sprite;
         nameTMP.text = cardData.name;
         costTMP.text = cardData.cost.ToString();
         descriptionTMP.text = cardData.description;
+        SetDamageDiscription();
 
         cardOrder = GetComponent<CardOrder>();
         cardCollider = GetComponent<Collider2D>();
@@ -71,6 +72,53 @@ public class Card : Poolable
                 effectObject[i] = (null);
             }
         }
+    }
+
+    public void SetCost(int cost, int color)
+    {
+        this.cost = cost;
+        costTMP.text = cost.ToString();
+        if(color > 0)
+        {
+            costTMP.color = Color.red;
+        }
+        else if(color == 0)
+        {
+            costTMP.color = Color.white;
+        }
+        else if(color < 0)
+        {
+            costTMP.color = Color.green;
+        }
+    }
+
+    public void SetDamageDiscription()
+    {
+        string tempDescription = cardData.description;
+
+        for(int i = 0; i < cardData.skills.Length; i++)
+        {
+            // 총 데미지를 계산해서
+            int totalDamage = cardData.skills[i].amount + Player.Instance.bonusDamage;
+            string totalDamageText;
+
+            // 추가 데미지가 있다면 수치 하이라이트
+            if(Player.Instance.bonusDamage > 0)
+            {
+                string colorText = "<color=#" + CardManager.Instance.highlightTextColorCode + ">";
+                totalDamageText = colorText + "<b>" + totalDamage.ToString() + "</b></color>";
+            }
+            // 없다면 그대로
+            else
+            {
+                totalDamageText = totalDamage.ToString();
+            }
+
+            // "damage + 해당하는 스킬의 인덱스"인 부분을 대체
+            tempDescription = tempDescription.Replace("damage" + i, totalDamageText);
+        }
+
+        descriptionTMP.text = tempDescription;
     }
     
     // 카드를 버릴 때 오브젝트를 파괴한다
@@ -210,7 +258,7 @@ public class Card : Poolable
     private IEnumerator UseCard()
     {
         // 코스트가 모자란 경우
-        if (BattleInfo.Instance.CanUseCost(cardData.cost) == false)
+        if (BattleInfo.Instance.CanUseCost(cost) == false)
         {
             // 카드 발동을 취소한다.
             CancelUsingCard();
@@ -221,34 +269,42 @@ public class Card : Poolable
         // 애니메이션이 끝났는지 검사하는 변수
         bool isAnimationDone = false;
 
+        LayerMask layer = LayerMask.GetMask("Enemy");
+
+        // layer가 일치하는, 선택된 오브젝트를 가져온다.
+        GameObject selectedObject = GetClickedObject(layer);
+
+        // 오브젝트가 선택되지 않았다면
+        if (selectedObject == null)
+        {
+            // 카드 발동을 취소한다.
+            CancelUsingCard();
+
+            yield break;
+        }
+
+        // 코스트를 감소시킨다.
+        BattleInfo.Instance.UseCost(cost);
+
+        // 패에서 카드를 삭제한다. (중복 삭제 방지)
+        CardManager.Instance.hand.Remove(this);
+        // 선택 카드를 비운다.
+        CardManager.Instance.ClearSelectCard();
+        // 카드를 정렬한다.
+        CardManager.Instance.CardAlignment();
+
+        // 버려졌음을 체크한다.
+        isDiscarded = true;
+
+        // 코스트가 조정된 상태이면 조정을 해제한다.
+        if (CardManager.Instance.costModificationAmount != 0)
+        {
+            CardManager.Instance.ResetModifyCost();
+        }
+
         // 타겟팅 스킬일 때
         if (isTargetingCard)
         {
-            LayerMask layer = LayerMask.GetMask("Enemy");
-
-            // layer가 일치하는, 선택된 오브젝트를 가져온다.
-            GameObject selectedObject = GetClickedObject(layer);
-
-            // 오브젝트가 선택되지 않았다면
-            if (selectedObject == null)
-            {
-                // 카드 발동을 취소한다.
-                CancelUsingCard();
-
-                yield break;
-            }
-
-            // 코스트를 감소시킨다.
-            BattleInfo.Instance.UseCost(cardData.cost);
-            // 패에서 카드를 삭제한다. (중복 삭제 방지)
-            CardManager.Instance.hand.Remove(this);
-            // 선택 카드를 비운다.
-            CardManager.Instance.ClearSelectCard();
-            // 카드를 정렬한다.
-            CardManager.Instance.CardAlignment();
-            // 버려졌음을 체크한다.
-            isDiscarded = true;
-
             // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
             moveSequence = DOTween.Sequence()
                 .Append(transform.DOMove(CardManager.Instance.cardDumpPoint.position, dotweenTime))
@@ -288,32 +344,6 @@ public class Card : Poolable
         // 논타겟 스킬일 때
         else
         {
-            // Field 레이어를 선택한다.
-            LayerMask layer = LayerMask.GetMask("Field");
-
-            // layer가 일치하는, 선택된 오브젝트를 가져온다.
-            GameObject selectedObject = GetClickedObject(layer);
-
-            // 오브젝트가 선택되지 않았다면
-            if (selectedObject == null)
-            {
-                // 카드 발동을 취소한다.
-                CancelUsingCard();
-
-                yield break;
-            }
-
-            // 코스트를 감소시킨다.
-            BattleInfo.Instance.UseCost(cardData.cost);
-            // 패에서 카드를 삭제한다. (중복 삭제 방지)
-            CardManager.Instance.hand.Remove(this);
-            // 선택 카드를 비운다.
-            CardManager.Instance.ClearSelectCard();
-            // 카드를 정렬한다.
-            CardManager.Instance.CardAlignment();
-            // 버려졌음을 체크한다.
-            isDiscarded = true;
-
             // 일단 아래의 코드를 그대로 가져왔다. 함수화하면 좋을 듯
             moveSequence = DOTween.Sequence()
                 // 중앙으로 이동하고
@@ -356,6 +386,9 @@ public class Card : Poolable
         {
             yield return null;
         }
+
+        // 묘지로 이동한 후에 코스트 원복한다.
+        SetCost(cardData.cost, 0);
 
         // 카드를 삭제한다.
         CardManager.Instance.DiscardCard(this);

@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee4e1de6682e5bb448d13b0b62311c21, type: 3}
-  m_Name: Gluttony
+  m_Name: Linger
   m_EditorClassIdentifier: 
-  name: "\uAE00\uB7EC\uD2B8\uB2C8"
-  description: "\uCE74\uB4DC\uB97C 3\uC7A5 \uB4DC\uB85C\uC6B0\uD569\uB2C8\uB2E4."
-  sprite: {fileID: 21300000, guid: bc0d97079f99d324c8c7650cfef45fc4, type: 3}
+  name: "\uC218\uD608"
+  description: "3\uD134 \uAC04 4\uC529 \uCCB4\uB825\uC744 \uD68C\uBCF5\uD569\uB2C8\uB2E4."
+  sprite: {fileID: 21300000, guid: 27be50b2470712340af048ffa28d92db, type: 3}
   skills:
-  - type: 5
+  - type: 9
     target: 0
-    amount: 3
-    turnCount: 0
-    effectPrefeb: {fileID: 2022655609410639260, guid: 8a09b4c6c9103f643a097dc4bb7971b5, type: 3}
+    amount: 4
+    turnCount: 3
+    effectPrefeb: {fileID: 3675006101537835259, guid: 075bd88e74682664792ed12c07fc48c9, type: 3}
   cost: 0

@@ -45,10 +45,15 @@ public class CardManager : MonoBehaviour
     // 선택된 카드
     [SerializeField] Card selectCard;
 
+    [Header("코스트 조정")]
+    public int costModificationAmount = 0;
+
     [Header("상수")]
+    public Vector3 focusPos;
+    public Color highlightTextColor;
+    public string highlightTextColorCode;
     int listSize = 100;
     float focusOffset = 100f;
-    public Vector3 focusPos;
 
     [Header("딜레이")]
     private float drawDelay = 0.5f;
@@ -60,9 +65,12 @@ public class CardManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-
+        
         // 컴포넌트를 할당한다.
         EnrollComponent();
+
+        // 색 코드 추출
+        highlightTextColorCode = ColorUtility.ToHtmlStringRGB(highlightTextColor);
     }
     void Start()
     {
@@ -128,6 +136,12 @@ public class CardManager : MonoBehaviour
 
         for (int i = 0; i < cards.Length; ++i)
         {
+            if (cardDict.ContainsKey(cardName) == false)
+            {
+                Debug.LogError(cards[i] + " 카드가 없습니다. 이름을 확인해주세요.");
+                continue;
+            }
+
             AddCardToDeck(cards[i]);
         }
     }
@@ -137,7 +151,7 @@ public class CardManager : MonoBehaviour
     {
         if (cardDict.ContainsKey(cardName) == false)
         {
-            Debug.LogError("해당하는 카드가 없습니다. 이름을 확인해주세요.");
+            Debug.LogError(cardName + " 카드가 없습니다. 이름을 확인해주세요.");
             return;
         }
 
@@ -231,6 +245,13 @@ public class CardManager : MonoBehaviour
             card.effectGroup = effectGroup;
             card.transform.localScale = Vector3.zero;
             card.Setup(DrawCard());
+
+            // 코스트 조정 중이라면 적용해서 드로우
+            if(costModificationAmount != 0)
+            {
+                ModifyCost(card);
+            }
+
             drawBuffer.Add(card);
         }
 
@@ -457,6 +478,13 @@ public class CardManager : MonoBehaviour
         {
             // 맨 끝의 카드를 가져오고 캐싱
             Card card = hand[0];
+
+            // 코스트가 조정되어 있을 때 원복한다.
+            if (costModificationAmount != 0)
+            {
+                card.SetCost(cardDict[card.cardData.name].cost, 0);
+            }
+
             // 패에서 바로 삭제한다.
             hand.RemoveAt(0);
             // 카드가 사라지는 순간 정렬한다.
@@ -587,4 +615,41 @@ public class CardManager : MonoBehaviour
     }
 
     #endregion
+
+    public void SetModifyCost(int amount)
+    {
+        // 조정량을 설정하고
+        costModificationAmount = amount;
+
+        // 핸드의 코스트를 조정한다.
+        for(int i=0;i<hand.Count;i++)
+        {
+            ModifyCost(hand[i]);
+        }
+    }
+
+    public void ModifyCost(Card card)
+    {
+        card.SetCost(Mathf.Max(0, card.cost + costModificationAmount), costModificationAmount);
+    }
+
+    public void ResetModifyCost()
+    {
+        // 조정량을 초기화 하고
+        costModificationAmount = 0;
+
+        // 핸드의 코스트를 원복시킨다
+        for (int i = 0; i < hand.Count; i++)
+        {
+            hand[i].SetCost(cardDict[hand[i].cardData.name].cost, 0);
+        }
+    }
+
+    public void SetExtraDamage()
+    {
+        for(int i = 0; i < hand.Count; i++)
+        {
+            hand[i].SetDamageDiscription();
+        }
+    }
 }

@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee4e1de6682e5bb448d13b0b62311c21, type: 3}
-  m_Name: Gluttony
+  m_Name: Excessive Bleeding
   m_EditorClassIdentifier: 
-  name: "\uAE00\uB7EC\uD2B8\uB2C8"
-  description: "\uCE74\uB4DC\uB97C 3\uC7A5 \uB4DC\uB85C\uC6B0\uD569\uB2C8\uB2E4."
-  sprite: {fileID: 21300000, guid: bc0d97079f99d324c8c7650cfef45fc4, type: 3}
+  name: "\uACFC\uB2E4\uCD9C\uD608"
+  description: "4\uD134 \uB3D9\uC548 \uCD9C\uD608 \uD53C\uD574\uB7C9\uC774 2 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  sprite: {fileID: 21300000, guid: 70fe17cf618014d4ba732df3d07cb6bf, type: 3}
   skills:
-  - type: 5
+  - type: 16
     target: 0
-    amount: 3
-    turnCount: 0
-    effectPrefeb: {fileID: 2022655609410639260, guid: 8a09b4c6c9103f643a097dc4bb7971b5, type: 3}
-  cost: 0
+    amount: 2
+    turnCount: 4
+    effectPrefeb: {fileID: 0}
+  cost: 4

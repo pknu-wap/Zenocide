@@ -7,28 +7,20 @@ using DG.Tweening;
 
 public class BuffEffect
 {
-    public BuffEffect(SkillType type, int amount, int remainingTurns)
+    public BuffEffect(SkillType type, int amount, int remainingTurns, Character target, Character caller)
     {
         this.type = type;
         this.amount = amount;
         this.remainingTurns = remainingTurns;
+        this.target = target;
+        this.caller = caller;
     }
 
     public SkillType type;
     public int amount;
     public int remainingTurns;
-}
-
-public class buffIconComponent
-{
-    public buffIconComponent(Image image, TMP_Text tmp_Text)
-    {
-        this.image = image;
-        this.tmp_Text = tmp_Text;
-    }
-
-    public Image image;
-    public TMP_Text tmp_Text;
+    public Character target;
+    public Character caller;
 }
 
 public class Character : MonoBehaviour
@@ -46,6 +38,8 @@ public class Character : MonoBehaviour
     public int bonusDamage = 0;
     // 추가 방어력. 데미지 계산 식에 적용
     public int bonusArmor = 0;
+    // 추가 출혈 데미지
+    public int bonusBleedDamage = 0;
 
     [Header("일러스트")]
     // 스프라이트
@@ -62,14 +56,9 @@ public class Character : MonoBehaviour
     [SerializeField] protected GameObject damageTextPrefab;
 
     [Header("상태이상")]
-    [SerializeField] protected Transform buffIconContainer;
     [SerializeField] protected List<BuffEffect> buffs;
-    // 버프 아이콘 생성기 구현 예정 -> 오브젝트 풀링으로 대체
-    [SerializeField] protected Transform statusPanel;
-    // 디버프창
-    [SerializeField] protected List<buffIconComponent> buffIcons;
-    [SerializeField] protected TMP_Text[] buffName;
-    [SerializeField] protected TMP_Text[] buffDescription;
+    [SerializeField] protected List<BuffIcon> buffIcons;
+    [SerializeField] protected List<BuffInfoPanel> buffInfoPanels;
 
     // 컴포넌트들을 등록한다.
     protected virtual void EnrollComponents()
@@ -86,29 +75,8 @@ public class Character : MonoBehaviour
 
         // 디버프 효과들(내부 데이터)을 담아둘 리스트
         buffs = new List<BuffEffect>();
-        buffIcons = new List<buffIconComponent>();
-
-        // 디버프 아이콘들의 부모 컨테이너
-        buffIconContainer = transform.GetChild(0).GetChild(1).GetChild(1);
-        // debuffIconContainer의 모든 자식 오브젝트를 비활성화. (자식의 자식은 X)
-        foreach (Transform icon in buffIconContainer)
-        {
-            // debuffIcons에 icon의 이미지, 텍스트 컴포넌트를 할당
-            buffIcons.Add(new buffIconComponent(icon.GetComponent<Image>(), icon.GetChild(0).GetComponent<TMP_Text>()));
-            // 그리고 비활성화.
-            icon.gameObject.SetActive(false);
-        }
-
-        // 디버프 상세정보창을 불러온다. (더미, 행동정보창 제외)
-        statusPanel = transform.GetChild(1).GetChild(0);
-        buffName = new TMP_Text[statusPanel.childCount - 1];
-        buffDescription = new TMP_Text[statusPanel.childCount - 1];
-
-        for (int i = 1; i < statusPanel.childCount; ++i)
-        {
-            buffName[i - 1] = statusPanel.GetChild(i).GetChild(0).GetComponent<TMP_Text>();
-            buffDescription[i - 1] = statusPanel.GetChild(i).GetChild(1).GetComponent<TMP_Text>();
-        }
+        buffIcons = new List<BuffIcon>();
+        buffInfoPanels = new List<BuffInfoPanel>();
     }
 
     public virtual void ResetState()
@@ -285,15 +253,21 @@ public class Character : MonoBehaviour
 
     #region 버프
     // 버프 효과를 턴 시작 이벤트에 등록한다.
-    public void EnrollBuff(BuffEffect bleedEffect)
+    public void EnrollBuff(BuffEffect buff)
     {
-        // 출혈 리스트에 추가
-        buffs.Add(bleedEffect);
+        // 버프 리스트에 추가
+        buffs.Add(buff);
 
-        // 출혈 디버프 UI 추가
-        int i = buffs.Count - 1;
-        
-        UpdateBuffIcon(i);
+        // BuffIcon과 BuffInfoPanel을 풀에서 가져와서
+        BuffIcon buffIcon = ObjectPoolManager.Instance.GetGo("BuffIcon_"+this.name).GetComponent<BuffIcon>();
+        BuffInfoPanel BuffInfoPanel = ObjectPoolManager.Instance.GetGo("BuffInfoPanel_"+this.name).GetComponent<BuffInfoPanel>();
+
+        // 리스트에 등록한다.
+        buffIcons.Add(buffIcon);
+        buffInfoPanels.Add(BuffInfoPanel);
+
+        // 버프 UI 갱신
+        UpdateBuffIcon(buffs.Count - 1);
     }
 
     // 디버프를 전부 제거한다.
@@ -311,42 +285,21 @@ public class Character : MonoBehaviour
             return;
         }
 
-        // i번째 아이콘와 숫자를 변경하고
-        buffIcons[index].image.sprite = CardInfo.Instance.skillIcons[(int)buffs[index].type];
-        buffIcons[index].tmp_Text.text = buffs[index].remainingTurns.ToString();
+        // 아이콘과 숫자를 변경한다.
+        buffIcons[index].SetContent(CardInfo.Instance.skillIcons[(int)buffs[index].type], (buffs[index].remainingTurns).ToString());
 
-        // i번째 디버프창의 내용을 갱신한다
         // 스킬 텍스트를 만든다.
         SkillText buffText = DebuffInfo.GetSkillText(buffs[index]);
-        // 텍스트를 변경한다.
-        buffName[index].text = buffText.name;
-        buffDescription[index].text = buffText.description;
-
-        // 오브젝트 활성화
-        // 이 구문들은 리팩토링이 필요해보인다.
-        // 아이콘 컨테이너 열기
-        buffIconContainer.GetChild(index).gameObject.SetActive(true);
-        // 상세정보창 컨테이너 열기
-        buffName[index].gameObject.transform.parent.gameObject.SetActive(true);
+        // 이름과 설명을 변경한다.
+        buffInfoPanels[index].SetContent(buffText.name, buffText.description);
     }
 
     public void UpdateAllBuffIcon()
     {
         // 모든 현재 디버프에 대해(i번째 디버프에 대해)
-        int i = 0;
-        for (; i < buffs.Count; ++i)
+        for (int i = 0; i < buffs.Count; ++i)
         {
             UpdateBuffIcon(i);
-        }
-
-        // 디버프가 없는 아이콘들은
-        for (; i < buffIconContainer.childCount; ++i)
-        {
-            // 비활성화한다.
-            // 아이콘 비활성화
-            buffIconContainer.GetChild(i).gameObject.SetActive(false);
-            // 상세정보창 비활성화
-            buffName[i].transform.parent.gameObject.SetActive(false);
         }
     }
 
@@ -355,11 +308,11 @@ public class Character : MonoBehaviour
         // 스탯 초기화
         ResetStat();
 
-        // 모든 적용 중인 출혈 효과에 대해
+        // 모든 적용 중인 버프에 대해
         for (int i = 0; i < buffs.Count; ++i)
         {
             // 스킬 발동
-            CardInfo.Instance.ActivateSkill(buffs[i], this, this);
+            CardInfo.Instance.ActivateSkill(buffs[i], this, buffs[i].caller);
 
             // 남은 턴 1 감소
             --buffs[i].remainingTurns;
@@ -368,9 +321,17 @@ public class Character : MonoBehaviour
             {
                 // 해당 효과를 삭제한다.
                 buffs.RemoveAt(i);
+
+                // 오브젝트 풀의 자원들을 반환한다.
+                buffIcons[i].ReleaseObject();
+                buffInfoPanels[i].ReleaseObject();
+
                 // 뒤의 디버프들이 1칸씩 앞으로 땡겨졌으니, 인덱스도 1 앞으로 조정
                 --i;
             }
+
+            // 추가 데미지 텍스트를 갱신한다.
+            CardManager.Instance.SetExtraDamage();
 
             // 이펙트 재생
 
@@ -389,6 +350,7 @@ public class Character : MonoBehaviour
         bonusAttackStat = 0;
         bonusDamage = 0;
         bonusArmor = 0;
+        bonusBleedDamage = 0;
     }
 
     public void GetBonusAttackStat(int amount)
@@ -399,6 +361,11 @@ public class Character : MonoBehaviour
     public void GetBonusDamage(int amount)
     {
         bonusDamage += amount;
+    }
+
+    public void GetBonusBleedDamage(int amount)
+    {
+        bonusBleedDamage += amount;
     }
     #endregion 스텟
 }
