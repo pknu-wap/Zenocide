@@ -10,15 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee4e1de6682e5bb448d13b0b62311c21, type: 3}
-  m_Name: Doping
+  m_Name: Caltrop
   m_EditorClassIdentifier: 
-  name: "\uB3C4\uD551"
-  description: "1\uD134 \uB3D9\uC548 \uACF5\uACA9\uB825\uC774 5 \uC99D\uAC00\uD569\uB2C8\uB2E4."
-  sprite: {fileID: 21300000, guid: dd0980ca8069107478000be1bc2ef863, type: 3}
+  name: "\uD30C\uC0C1\uD48D \uD568\uC815"
+  description: "\uBAA8\uB4E0 \uC801\uC5D0\uAC8C 5\uD134 \uAC04 \uCD9C\uD608\uC744
+    \uBD80\uC5EC\uD569\uB2C8\uB2E4."
+  sprite: {fileID: 21300000, guid: fad511033e67a6f46910f859e647cdf8, type: 3}
   skills:
-  - type: 12
-    target: 0
-    amount: 5
-    turnCount: 1
-    effectPrefeb: {fileID: 3675006101537835259, guid: 2e5ad2beaf55e9f4b9c3ebc4a7a2d823, type: 3}
-  cost: 1
+  - type: 10
+    target: 2
+    amount: 2
+    turnCount: 5
+    effectPrefeb: {fileID: 0}
+  cost: 4

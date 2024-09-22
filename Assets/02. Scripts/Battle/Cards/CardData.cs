@@ -12,11 +12,15 @@ public enum SkillType
     Draw = 5,                   // 카드 드로우
     Bleed = 6,                  // 출혈 데미지 (한 턴)
     Burn = 7,                   // 화상 데미지 (한 턴)
-    AddExtraDamage = 8,         // 추가 데미지 제공 (한 턴)
+    ExtraDamage = 8,         // 추가 데미지 제공 (한 턴)
     LingeringHeal = 9,          // 지속 회복
     LingeringBleed = 10,         // 출혈 (지속)
     LingeringBurn = 11,          // 화상 (지속)
     LingeringExtraDamage = 12,   // 추가 데미지 제공 (지속)
+    ModifyCost = 13,            // 코스트 조정
+    Drain = 14,                 // 흡혈
+    ExtraBleedDamage = 15,   // 출혈 추가데미지 (한 턴)
+    LingeringExtraBleedDamage = 16,   // 출혈 추가데미지 (지속)
 }
 
 public enum SkillTarget

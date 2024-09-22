@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Adrenaline
   m_EditorClassIdentifier: 
   name: "\uC544\uB4DC\uB808\uB0A0\uB9B0"
-  description: "2\uD134 \uB3D9\uC548 \uACF5\uACA9\uB825\uC774 5 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  description: "\uC774\uBC88 \uD134 \uB3D9\uC548 \uACF5\uACA9\uB825\uC774 5 \uC99D\uAC00\uD569\uB2C8\uB2E4."
   sprite: {fileID: 21300000, guid: b1e3cde28a75bf4439651074a356600f, type: 3}
   skills:
-  - type: 12
+  - type: 8
     target: 0
     amount: 5
-    turnCount: 2
+    turnCount: 0
     effectPrefeb: {fileID: 3675006101537835259, guid: 2e5ad2beaf55e9f4b9c3ebc4a7a2d823, type: 3}
-  cost: 3
+  cost: 2

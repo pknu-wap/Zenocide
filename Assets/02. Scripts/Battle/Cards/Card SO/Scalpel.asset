@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee4e1de6682e5bb448d13b0b62311c21, type: 3}
-  m_Name: Fragile Glass
+  m_Name: Scalpel
   m_EditorClassIdentifier: 
-  name: "\uAE68\uC9C4 \uC720\uB9AC"
-  description: "\uC801\uC5D0\uAC8C damage0\uC758 \uB370\uBBF8\uC9C0\uB97C \uC785\uD788\uACE0,
-    \uD50C\uB808\uC774\uC5B4\uB294 3\uD134 \uB3D9\uC548 \uCD9C\uD608\uC744 \uBC1B\uC2B5\uB2C8\uB2E4."
-  sprite: {fileID: 21300000, guid: 9ea4cba2afeaf0243bc65e23c261ea2e, type: 3}
+  name: "\uC6A9\uB3C4 \uC678 \uC0AC\uC6A9"
+  description: "\uC801\uC5D0\uAC8C damage0\uC758 \uB370\uBBF8\uC9C0\uB97C \uC785\uD788\uACE0
+    3\uD134 \uB3D9\uC548 \uCD9C\uD608\uC744 \uBD80\uC5EC\uD569\uB2C8\uB2E4."
+  sprite: {fileID: 21300000, guid: 9331792a6fb776940914cda6d5123841, type: 3}
   skills:
   - type: 0
     target: 1
-    amount: 12
+    amount: 6
     turnCount: 0
-    effectPrefeb: {fileID: 6898238570730899697, guid: 3c6884803ff0c444d8aa3a83e11a109e, type: 3}
+    effectPrefeb: {fileID: 0}
   - type: 10
-    target: 0
+    target: 1
     amount: 2
     turnCount: 3
     effectPrefeb: {fileID: 0}

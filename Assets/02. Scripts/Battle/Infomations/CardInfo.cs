@@ -1,6 +1,6 @@
-using UnityEngine;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class CardInfo : MonoBehaviour
 {
@@ -168,11 +168,15 @@ public class CardInfo : MonoBehaviour
         effects[(int)SkillType.Draw] += Draw;
         effects[(int)SkillType.Bleed] += Bleed;
         effects[(int)SkillType.Burn] += Burn;
-        effects[(int)SkillType.AddExtraDamage] += AddExtraDamage;
+        effects[(int)SkillType.ExtraDamage] += ExtraDamage;
         effects[(int)SkillType.LingeringHeal] += LingeringHeal;
-        effects[(int)SkillType.LingeringBleed] += LingeringBleed;
+        effects[(int)SkillType.LingeringBleed] += LingeringBleed;   
         effects[(int)SkillType.LingeringBurn] += LingeringBurn;
         effects[(int)SkillType.LingeringExtraDamage] += LingeringExtraDamage;
+        effects[(int)SkillType.ModifyCost] += ModifyCost;
+        effects[(int)SkillType.Drain] += Drain;
+        effects[(int)SkillType.ExtraBleedDamage] += ExtraBleedDamage;
+        effects[(int)SkillType.LingeringExtraBleedDamage] += LingeringExtraBleedDamage;
     }
 
 
@@ -246,7 +250,7 @@ public class CardInfo : MonoBehaviour
     public void Bleed(int amount, int turnCount, Character target, Character caller)
     {
         // 출혈 데미지는 2로 고정
-        target.DecreaseHP(2);
+        target.DecreaseHP(2 + caller.bonusBleedDamage);
     }
 
     // 화상 데미지 (한 턴)
@@ -256,36 +260,71 @@ public class CardInfo : MonoBehaviour
     }
 
     // 추가 데미지
-    public void AddExtraDamage(int amount, int turnCount, Character target, Character caller)
+    public void ExtraDamage(int amount, int turnCount, Character target, Character caller)
     {
         target.GetBonusDamage(amount);
+        if(target.GetType() == typeof(Player))
+        {
+            CardManager.Instance.SetExtraDamage();
+        }
     }
 
     // 지속 효과
     // 지속 회복
     public void LingeringHeal(int amount, int turnCount, Character target, Character caller)
     {
-        target.EnrollBuff(new BuffEffect(SkillType.Heal, amount, turnCount));
+        target.EnrollBuff(new BuffEffect(SkillType.Heal, amount, turnCount, target, caller));
     }
 
     // 출혈 (지속)
     public void LingeringBleed(int amount, int turnCount, Character target, Character caller)
     {
         // 출혈 데미지는 2로 고정
-        target.EnrollBuff(new BuffEffect(SkillType.Bleed, 2, turnCount));
+        target.EnrollBuff(new BuffEffect(SkillType.Bleed, 2 + caller.bonusBleedDamage, turnCount, target, caller));
     }
 
     // 화상 (지속)
     public void LingeringBurn(int amount, int turnCount, Character target, Character caller)
     {
-        target.EnrollBuff(new BuffEffect(SkillType.Burn, amount, turnCount));
+        target.EnrollBuff(new BuffEffect(SkillType.Burn, amount, turnCount, target, caller));
     }
 
     // 추가 데미지 (지속, 즉발)
     public void LingeringExtraDamage(int amount, int turnCount, Character target, Character caller)
     {
-        target.EnrollBuff(new BuffEffect(SkillType.AddExtraDamage, amount, turnCount - 1));
+        target.EnrollBuff(new BuffEffect(SkillType.ExtraDamage, amount, turnCount - 1, target, caller));
         target.GetBonusDamage(amount);
+        if (target.GetType() == typeof(Player))
+        {
+            CardManager.Instance.SetExtraDamage();
+        }
+    }
+
+    public void ModifyCost(int amount, int turnCount, Character target, Character caller)
+    {
+        CardManager.Instance.SetModifyCost(amount);
+    }
+
+    public void Drain(int amount, int turnCount, Character target, Character caller)
+    {
+        // 타겟의 체력을 감소시킨다. (공격량 + 추가 데미지)
+        target.DecreaseHP(amount + caller.bonusDamage);
+
+        // 가한 대미지 만큼 시전자의 체력을 회복시킨다.
+        caller.IncreaseHP(amount + caller.bonusDamage);
+    }
+
+    // 추가 출혈 데미지 (한 턴)
+    public void ExtraBleedDamage(int amount, int turnCount, Character target, Character caller)
+    {
+        target.GetBonusBleedDamage(amount);
+    }
+
+    // 추가 출혈 데미지 (지속)
+    public void LingeringExtraBleedDamage(int amount, int turnCount, Character target, Character caller)
+    {
+        target.EnrollBuff(new BuffEffect(SkillType.ExtraBleedDamage, amount, turnCount - 1, target, caller));
+        target.GetBonusBleedDamage(amount);
     }
     #endregion 카드 효과
 }
