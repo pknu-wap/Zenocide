@@ -2,6 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
+using PlasticGui.Configuration;
 
 public class StoryCreator : Editor
 {
@@ -18,11 +19,12 @@ public class StoryCreator : Editor
         AssignStory("Assets/NoShare2024-1/NoShare2024-1/04. Scenarios/SubStorys.csv", "Assets/02. Scripts/Story/EventData SO/Events/Sub/");
         AssignStory("Assets/NoShare2024-1/NoShare2024-1/04. Scenarios/RelationStorys.csv", "Assets/02. Scripts/Story/EventData SO/Events/Relation/");
     }
+
     public static void CreateStory(string csvPath, string destinationFolder, EventType type)
     {
         // 스토리 CSV를 불러온다.
-        TextAsset subStory = AssetDatabase.LoadAssetAtPath<TextAsset>(csvPath);
-        List<Dictionary<string, object>> csvFile = CSVReader.Read(subStory);
+        TextAsset story = AssetDatabase.LoadAssetAtPath<TextAsset>(csvPath);
+        List<Dictionary<string, object>> csvFile = CSVReader.Read(story);
 
         // 파일을 생성할 폴더 경로
         string destinationPath; // 복사된 파일 경로
@@ -118,6 +120,12 @@ public class StoryCreator : Editor
                 if (asset is EventData storyEvent)
                 {
                     int i = storyEvent.endIndex;
+
+                    // delay를 연결한다. 빈칸이라면 0을 할당한다.
+                    if (csvFile[i]["Delay"].ToString() != "")
+                    {
+                        storyEvent.delay = int.Parse(csvFile[i]["Delay"].ToString());
+                    }
 
                     // 선택지 이벤트가 있다면
                     if (csvFile[i]["Choice Event Count"].ToString() != "")
