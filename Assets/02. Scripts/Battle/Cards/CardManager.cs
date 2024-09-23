@@ -136,7 +136,7 @@ public class CardManager : MonoBehaviour
 
         for (int i = 0; i < cards.Length; ++i)
         {
-            if (cardDict.ContainsKey(cardName) == false)
+            if (cardDict.ContainsKey(cards[i]) == false)
             {
                 Debug.LogError(cards[i] + " 카드가 없습니다. 이름을 확인해주세요.");
                 continue;
