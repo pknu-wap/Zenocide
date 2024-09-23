@@ -45,6 +45,8 @@ public class Skill
     public int turnCount;
     // 스킬 이펙트
     public ParticleSystem effectPrefeb;
+    // 스킬 효과음
+    public AudioClip sound;
 }
 
 // 유니티 에디터, Project 뷰의 Create 메뉴에 아래 항목을 추가한다.
