@@ -9,17 +9,21 @@ public class ResolutionManager : MonoBehaviour
     public static ResolutionManager Instance { get; private set; }
 
     public TMP_Dropdown resolutionDropdown;
+    public TMP_Dropdown frameRateDropdown;
     public Toggle fullscreenToggle;
     public Button applyButton;
     public Button cancelButton;
 
     private Resolution[] resolutions;
     private List<Resolution> filteredResolutions;
+    private List<int> frameRates = new List<int> { 30, 60, 120, 144, 240 };
     private bool fullscreen;
     private int selectedResolutionIndex;
+    private int selectedFrameRateIndex;
 
-    private int previousResolutionIndex;
     private bool previousFullscreen;
+    private int previousResolutionIndex;
+    private int previousFrameRateIndex;
 
     void Awake()
     {
@@ -28,6 +32,7 @@ public class ResolutionManager : MonoBehaviour
         // 해상도 리스트 가져오기
         resolutions = Screen.resolutions;
         filteredResolutions = new List<Resolution>();
+        frameRateDropdown.ClearOptions();
 
         // 중복 제거
         HashSet<string> addedResolutions = new HashSet<string>();
@@ -44,32 +49,49 @@ public class ResolutionManager : MonoBehaviour
         filteredResolutions.Sort((res1, res2) => (res2.width * res2.height).CompareTo(res1.width * res1.height));
         resolutionDropdown.ClearOptions();
 
-        // Dropdown에 옵션 추가하기
-        List<string> options = new List<string>();
+        // Dropdown에 해상도 옵션 추가하기
+        List<string> resolutionOptions = new List<string>();
         for (int i = 0; i < filteredResolutions.Count; i++)
         {
             string option = filteredResolutions[i].width + " x " + filteredResolutions[i].height;
-            options.Add(option);
+            resolutionOptions.Add(option);
         }
-        resolutionDropdown.AddOptions(options);
+        resolutionDropdown.AddOptions(resolutionOptions);
+
+        // Dropdown에 프레임 레이트 옵션 추가
+        List<string> frameRateOptions = new List<string>();
+        for (int i = 0; i < frameRates.Count; i++)
+        {
+            frameRateOptions.Add(frameRates[i] + " FPS");
+        }
+        frameRateDropdown.AddOptions(frameRateOptions);
+
 
         // 현재 해상도 선택
         selectedResolutionIndex = FindCurrentResolutionIndex();
         resolutionDropdown.value = selectedResolutionIndex;
         resolutionDropdown.RefreshShownValue();
 
+        // 현재 프레임 레이트 선택
+        selectedFrameRateIndex = FindCurrentFrameRateIndex();
+        frameRateDropdown.value = selectedFrameRateIndex;
+        frameRateDropdown.RefreshShownValue();
+
         // 토글 상태 설정
         fullscreenToggle.isOn = Screen.fullScreen;
 
         // 초기 설정값 저장
         previousResolutionIndex = selectedResolutionIndex;
+        previousFrameRateIndex = selectedFrameRateIndex;
         previousFullscreen = Screen.fullScreen;
 
         // 버튼 클릭 시 적용
         applyButton.onClick.AddListener(ApplyResolutionSettings);
+        applyButton.onClick.AddListener(ApplyFrameRateChange);
 
         // 취소 버튼 클릭 시 이전 설정으로 복원
         cancelButton.onClick.AddListener(CancelResolutionSettings);
+        cancelButton.onClick.AddListener(CancelFrameRateChange);
 
         // Dropdown 값이 변경될 때 미리 해상도 적용
         resolutionDropdown.onValueChanged.AddListener(delegate { PreviewResolutionChange(); });
@@ -87,6 +109,22 @@ public class ResolutionManager : MonoBehaviour
             }
         }
         return 0;
+    }
+
+    // 현재 설정된 프레임 레이트에 가장 가까운 인덱스를 찾는 메서드
+    private int FindCurrentFrameRateIndex()
+    {
+        int currentFrameRate = Application.targetFrameRate;
+        for (int i = 0; i < frameRates.Count; i++)
+        {
+            if (frameRates[i] == currentFrameRate)
+            {
+                return i;
+            }
+        }
+
+        // 설정된 프레임 레이트가 없을 경우 기본값 60 FPS 선택
+        return frameRates.IndexOf(60);
     }
 
     // 설정 적용
@@ -108,6 +146,18 @@ public class ResolutionManager : MonoBehaviour
         DataManager.Instance.SaveData();
     }
 
+    // 프레임 레이트 설정 적용
+    public void ApplyFrameRateChange()
+    {
+        selectedFrameRateIndex = frameRateDropdown.value;
+        int targetFrameRate = frameRates[selectedFrameRateIndex];
+
+        previousFrameRateIndex = selectedFrameRateIndex;
+
+        // 프레임 레이트 제한 설정
+        Application.targetFrameRate = targetFrameRate;
+    }
+
     // 설정 취소
     public void CancelResolutionSettings()
     {
@@ -120,6 +170,19 @@ public class ResolutionManager : MonoBehaviour
         Resolution resolution = filteredResolutions[previousResolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, previousFullscreen);
     }
+
+    // 프레임 레이트 변경 취소
+    public void CancelFrameRateChange()
+    {
+        // 이전 설정값으로 복원
+        frameRateDropdown.value = previousFrameRateIndex;
+        frameRateDropdown.RefreshShownValue();
+
+        // 프레임 레이트를 이전 설정값으로 복원
+        int targetFrameRate = frameRates[previousFrameRateIndex];
+        Application.targetFrameRate = targetFrameRate;
+    }
+
     public void SaveResolutionSettings()
     {
         // 현재 해상도, 전체화면 설정을 데이터에 저장

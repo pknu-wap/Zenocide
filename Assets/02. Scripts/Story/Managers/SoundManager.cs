@@ -19,12 +19,15 @@ public class SoundManager : MonoBehaviour
 
     public Slider masterVolumeSlider;
     public Slider bgmVolumeSlider;
+    public Toggle muteToggle;
 
     private float masterVolume = 1f; 
     private float bgmVolume = 1f;
+    private bool isMuted = false;
 
     private float lastAppliedMasterVolume;
     private float lastAppliedBgmVolume;
+    private bool lastAppliedMuteState;
 
     public int applyCount = 0;
 
@@ -42,13 +45,15 @@ public class SoundManager : MonoBehaviour
     {
         Instance = this;
 
-        // 슬라이더의 초기 값 설정
+        // 슬라이더, 토글의 초기 값 설정
         masterVolumeSlider.value = masterVolume; 
         bgmVolumeSlider.value = bgmVolume;
+        muteToggle.isOn = false;
 
-        // 슬라이더의 값 변경 이벤트 등록
+        // 슬라이더, 토글의 값 변경 이벤트 등록
         masterVolumeSlider.onValueChanged.AddListener(SetMasterVolume); 
         bgmVolumeSlider.onValueChanged.AddListener(SetBGMVolume);
+        muteToggle.onValueChanged.AddListener(OnMuteToggleChanged);
 
         UpdateAudioSources();
 
@@ -68,6 +73,14 @@ public class SoundManager : MonoBehaviour
         bgmVolume = value;
         UpdateAudioSources(); 
     }
+
+    // 뮤트 토글 변경 시 호출
+    private void OnMuteToggleChanged(bool isMuted)
+    {
+        this.isMuted = isMuted;
+        AudioListener.pause = isMuted;
+    }
+
 
     // 오디오 소스의 볼륨을 업데이트
     private void UpdateAudioSources()
@@ -90,7 +103,8 @@ public class SoundManager : MonoBehaviour
     {
         // 현재 음량 적용
         lastAppliedBgmVolume = bgmVolume;
-        lastAppliedMasterVolume = masterVolume; 
+        lastAppliedMasterVolume = masterVolume;
+        lastAppliedMuteState = isMuted;
         // ApplyVolumeSettings가 호출될때마다 applyCount 1씩 증가
         applyCount++;
         UpdateAudioSources();
@@ -108,15 +122,19 @@ public class SoundManager : MonoBehaviour
         {
             bgmVolume = 1f;
             masterVolume = 1f;
+            isMuted = false;
         }
         else
         {
             // 마지막으로 적용된 음량 복원
             bgmVolume = lastAppliedBgmVolume;
             masterVolume = lastAppliedMasterVolume;
+            isMuted = lastAppliedMuteState;
         }
         bgmVolumeSlider.value = bgmVolume;
         masterVolumeSlider.value = masterVolume;
+        muteToggle.isOn = isMuted;
+
         UpdateAudioSources();
     }
 
@@ -125,6 +143,7 @@ public class SoundManager : MonoBehaviour
         // 현재 전체음량, 배경음악 값을 데이터에 저장
         DataManager.Instance.data.MasterVolume = masterVolume;
         DataManager.Instance.data.BgmVolume = bgmVolume;
+        DataManager.Instance.data.IsMuted = isMuted;
     }
 
     public void LoadVolumeSettings()
@@ -132,10 +151,12 @@ public class SoundManager : MonoBehaviour
         // 데이터에서 저장된 전체음량, 배경음악 값을 불러옴
         lastAppliedMasterVolume = DataManager.Instance.data.MasterVolume;
         lastAppliedBgmVolume = DataManager.Instance.data.BgmVolume;
+        lastAppliedMuteState = DataManager.Instance.data.IsMuted;
 
         // 로드한 볼륨 적용
         masterVolumeSlider.value = lastAppliedMasterVolume;
         bgmVolumeSlider.value = lastAppliedBgmVolume;
+        muteToggle.isOn = lastAppliedMuteState;
 
         ApplyVolumeSettings();
     }

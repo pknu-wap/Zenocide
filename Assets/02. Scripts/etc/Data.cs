@@ -30,7 +30,9 @@ public class Data
     public List<Item> items = new List<Item>();
     //옵션
     public int selectedResolutionIndex;
+    public int selectedFrameRateIndex;
     public bool fullscreen;
+    public bool ismuted;
     public float masterVolume;
     public float bgmVolume;
 
@@ -89,10 +91,22 @@ public class Data
         set { selectedResolutionIndex = value; }
     }
 
+    public int SelectedFrameRateIndex
+    {
+        get { return selectedFrameRateIndex; }
+        set { selectedFrameRateIndex = value; }
+    }
+
     public bool Fullscreen
     {
         get { return fullscreen; }
         set {  fullscreen = value; }
+    }
+
+    public bool IsMuted
+    {
+        get { return ismuted; }
+        set { ismuted = value; }
     }
 
     public float MasterVolume
