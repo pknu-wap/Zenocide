@@ -22,9 +22,11 @@ MonoBehaviour:
     amount: 6
     turnCount: 0
     effectPrefeb: {fileID: 0}
+    sound: {fileID: 8300000, guid: aa8e49bbba8a7c14dbe455ac0ac93d51, type: 3}
   - type: 10
     target: 1
     amount: 2
     turnCount: 3
     effectPrefeb: {fileID: 0}
+    sound: {fileID: 0}
   cost: 2
