@@ -13702,7 +13702,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardList: {fileID: 11400000, guid: cc7407feaf5c0954196ac24a8c2d1af4, type: 2}
-  defaultDeck: {fileID: 11400000, guid: 3b9b98c843721a44eaac8ab66c9af2aa, type: 2}
+  defaultDeck: {fileID: 11400000, guid: 1aed5b90fdc6bb745b3516e62d716ef0, type: 2}
   drawBuffer: []
   hand: []
   cardDumpPoint: {fileID: 0}
@@ -19068,6 +19068,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isCurling: 0
+  curlClip: {fileID: 8300000, guid: 4a7cfa2bf5dc9a24a946da6501cf9d19, type: 3}
   corner: {x: 0, y: 0, z: 0}
   firstBackPagePosition: {x: 0, y: 0, z: 0}
   curlPoint: {fileID: 986654873}
@@ -23643,6 +23644,8 @@ MonoBehaviour:
   isFading: 0
   fadeTime: 2
   fadeDuration: 0.2
+  fadeInClip: {fileID: 8300000, guid: d71e410d5312b7649a79ab1f391c12b7, type: 3}
+  fadeOutClip: {fileID: 8300000, guid: d71e410d5312b7649a79ab1f391c12b7, type: 3}
 --- !u!1001 &1111100058
 PrefabInstance:
   m_ObjectHideFlags: 0

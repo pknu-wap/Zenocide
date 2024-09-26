@@ -14,20 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyId: Normal Zombie
   illust: {fileID: 21300000, guid: 69d4aaa51bb7d854398fbaaef7394210, type: 3}
-  maxHp: 1000
+  maxHp: 12
   skills:
   - type: 0
     target: 0
     amount: 3
     turnCount: 0
     effectPrefeb: {fileID: 0}
-    sound: {fileID: 0}
+    sound: {fileID: 8300000, guid: 56270e850e3a8ea48ba426c2ec038101, type: 3}
   - type: 0
     target: 0
     amount: 4
     turnCount: 0
     effectPrefeb: {fileID: 0}
-    sound: {fileID: 0}
+    sound: {fileID: 8300000, guid: 56270e850e3a8ea48ba426c2ec038101, type: 3}
   - type: 1
     target: 1
     amount: 5
