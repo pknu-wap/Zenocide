@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Amanita
   m_EditorClassIdentifier: 
   name: "\uAD11\uB300 \uBC84\uC12F"
-  description: "\uD3ED\uBC1C\uD558\uBA70 \uD50C\uB808\uC774\uC5B4\uC5D0\uAC8C 6\uD134
-    \uAC04 \uD654\uC0C1\uC744 6 \uBD80\uC5EC\uD569\uB2C8\uB2E4."
+  description: "\uD50C\uB808\uC774\uC5B4\uC5D0\uAC8C 6\uD134 \uAC04 \uD654\uC0C1\uC744
+    6 \uBD80\uC5EC\uD569\uB2C8\uB2E4."
   sprite: {fileID: 21300000, guid: 4a6f028950f19f94382145eb67ba0fad, type: 3}
   skills:
   - type: 11
@@ -22,4 +22,5 @@ MonoBehaviour:
     amount: 6
     turnCount: 6
     effectPrefeb: {fileID: 2791311640683196035, guid: c1b65553f8809c54f881fa3efa0769e4, type: 3}
+    sound: {fileID: 8300000, guid: 8ec74fc6097edb448b6d5e4b9101cc83, type: 3}
   cost: 0
