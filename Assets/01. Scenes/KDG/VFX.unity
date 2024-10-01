@@ -13529,7 +13529,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardList: {fileID: 11400000, guid: cc7407feaf5c0954196ac24a8c2d1af4, type: 2}
-  defaultDeck: {fileID: 11400000, guid: 1aed5b90fdc6bb745b3516e62d716ef0, type: 2}
+  defaultDeck: {fileID: 11400000, guid: 19d32252104cbb9498cc47ba4f3bb9a0, type: 2}
   drawBuffer: []
   hand: []
   cardDumpPoint: {fileID: 0}
@@ -22233,6 +22233,10 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 642b29a9878be76428d909e33d0c1d7a, type: 3}
   - {fileID: 21300000, guid: 9ab20e2efb1335343a550f276aca7621, type: 3}
   - {fileID: 21300000, guid: 0ebc11a1e1404114c84aaba3bd8b1720, type: 3}
+  - {fileID: 21300000, guid: 6a9a97c61cd85c847911f6daf3c418ff, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 21300000, guid: 6a9a97c61cd85c847911f6daf3c418ff, type: 3}
   - {fileID: 21300000, guid: 6a9a97c61cd85c847911f6daf3c418ff, type: 3}
   skillTexts: {fileID: 11400000, guid: d3e5efd4fb41d684e8bff8402dc0f78a, type: 2}
 --- !u!114 &1041200474
