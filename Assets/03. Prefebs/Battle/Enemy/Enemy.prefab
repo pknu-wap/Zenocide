@@ -2148,7 +2148,7 @@ GameObject:
   - component: {fileID: 128881583272250205}
   - component: {fileID: 2117601195810883139}
   m_Layer: 5
-  m_Name: ShieldMask
+  m_Name: Effect Mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2194,7 +2194,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.37765506, g: 0.81344163, b: 0.8962264, a: 0}
+  m_Color: {r: 0.35921568, g: 0.8089105, b: 0.8980392, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

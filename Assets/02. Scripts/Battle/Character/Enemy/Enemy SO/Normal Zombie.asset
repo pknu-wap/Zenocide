@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyId: Normal Zombie
   illust: {fileID: 21300000, guid: 69d4aaa51bb7d854398fbaaef7394210, type: 3}
-  maxHp: 12
+  maxHp: 1000
   skills:
   - type: 0
     target: 0

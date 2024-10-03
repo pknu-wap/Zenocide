@@ -23,8 +23,7 @@ public class Enemy : Character
 
     // 스킬 모션, 이펙트
     Sequence skillSequence;
-    ParticleSystem healEffect;
-    Image shieldMask;
+    Image effectMask;
 
     // 콜라이더
     Collider2D collider;
@@ -52,7 +51,7 @@ public class Enemy : Character
         behaviorDescription = panelContainer.GetChild(0).GetChild(1).GetComponent<TMP_Text>();
 
         // 스킬 이펙트, 모션
-        shieldMask = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Image>();
+        effectMask = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Image>();
 
         // 콜라이더
         collider = GetComponent<Collider2D>();
@@ -173,9 +172,29 @@ public class Enemy : Character
                 break;
 
             case (SkillType.Shield):
+                effectMask.color = new Color(92f / 255, 206f / 255, 299f / 255);
                 skillSequence = DOTween.Sequence()
-                    .Append(shieldMask.DOFade(0.7f, skillDelay / 2))
-                    .Append(shieldMask.DOFade(0f, skillDelay / 2));
+                    .Append(effectMask.DOFade(0.7f, skillDelay / 2))
+                    .Append(effectMask.DOFade(0f, skillDelay / 2));
+                yield return skillSequence.WaitForCompletion();
+                break;
+
+            case (SkillType.Heal):
+                effectMask.color = new Color(47f / 255, 144f / 255, 51f / 255);
+                skillSequence = DOTween.Sequence()
+                    .Append(effectMask.DOFade(0.7f, skillDelay / 2))
+                    .Append(effectMask.DOFade(0f, skillDelay / 2));
+                yield return skillSequence.WaitForCompletion();
+                break;
+
+            case (SkillType.ExtraDamage):
+            case (SkillType.LingeringExtraDamage):
+            case (SkillType.ExtraBleedDamage):
+            case (SkillType.LingeringExtraBleedDamage):
+                effectMask.color = new Color(207f/255, 54f / 255, 36f / 255 );
+                skillSequence = DOTween.Sequence()
+                    .Append(effectMask.DOFade(0.7f, skillDelay / 2))
+                    .Append(effectMask.DOFade(0f, skillDelay / 2));
                 yield return skillSequence.WaitForCompletion();
                 break;
 
@@ -184,6 +203,61 @@ public class Enemy : Character
         }
 
         // yield return new WaitForSeconds(skillDelay);
+    }
+
+    public override void DecreaseHP(int damage)
+    {
+        // 현재 데미지
+        int currentDamage = damage;
+
+        // 실드가 있다면 데미지 재계산
+        if (shield > 0)
+        {
+            // currentDamage를 감소시키고
+            currentDamage -= shield;
+            if (currentDamage < 0)
+            {
+                // 잔여 데미지가 음수면 0으로 적용한다.
+                currentDamage = 0;
+            }
+
+            // 실드에선 기존 데미지를 뺀다.
+            shield -= damage;
+            if (shield < 0)
+            {
+                // 잔여 방어막이 음수면 0으로 적용한다.
+                shield = 0;
+            }
+        }
+
+        // hp를 잔여 데미지 만큼 감소시킨다.
+        currentHp -= currentDamage;
+
+        // UI를 갱신한다.
+        UpdateShieldUI();
+        UpdateHPUI();
+
+        // 적이 피격될 때 모션, 데미지 텍스트 출력
+        if (currentDamage > 0)
+        {
+            DamageText damageText = Instantiate(damageTextPrefab, transform.GetChild(0)).GetComponent<DamageText>();
+            StartCoroutine(damageText.PrintDamageText(currentDamage));
+            imageComponent.transform.DOShakePosition(0.3f, 4f * currentDamage);
+            effectMask.color = Color.red;
+            skillSequence = DOTween.Sequence()
+                    .Append(effectMask.DOFade(0.7f, 0.3f))
+                    .Append(effectMask.DOFade(0f, 0.3f));
+        }
+
+        // hp가 0 이하가 될 경우
+        if (currentHp <= 0)
+        {
+            currentHp = 0;
+            UpdateHPUI();
+
+            // 죽음 이벤트 실행
+            Die();
+        }
     }
 
     // 죽는다.

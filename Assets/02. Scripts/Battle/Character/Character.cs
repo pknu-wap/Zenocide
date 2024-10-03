@@ -136,55 +136,9 @@ public class Character : MonoBehaviour
     }
 
     // 이 오브젝트의 hp를 감소시킨다.
-    public void DecreaseHP(int damage)
+    public virtual void DecreaseHP(int damage)
     {
-        // 현재 데미지
-        int currentDamage = damage;
-
-        // 실드가 있다면 데미지 재계산
-        if (shield > 0)
-        {
-            // currentDamage를 감소시키고
-            currentDamage -= shield;
-            if (currentDamage < 0)
-            {
-                // 잔여 데미지가 음수면 0으로 적용한다.
-                currentDamage = 0;
-            }
-
-            // 실드에선 기존 데미지를 뺀다.
-            shield -= damage;
-            if (shield < 0)
-            {
-                // 잔여 방어막이 음수면 0으로 적용한다.
-                shield = 0;
-            }
-        }
-
-        // hp를 잔여 데미지 만큼 감소시킨다.
-        currentHp -= currentDamage;
-
-        // UI를 갱신한다.
-        UpdateShieldUI();
-        UpdateHPUI();
-
-        // 적이 피격될 때 모션, 데미지 텍스트 출력
-        if(this != Player.Instance && currentDamage > 0)
-        {
-            DamageText damageText = Instantiate(damageTextPrefab, transform.GetChild(0)).GetComponent<DamageText>();
-            StartCoroutine(damageText.PrintDamageText(currentDamage));
-            imageComponent.transform.DOShakePosition(0.5f, 10f);
-        }
-
-        // hp가 0 이하가 될 경우
-        if (currentHp <= 0)
-        {
-            currentHp = 0;
-            UpdateHPUI();
-
-            // 죽음 이벤트 실행
-            Die();
-        }
+        
     }
 
     // 이 오브젝트의 hp를 감소시킨다.
@@ -219,7 +173,7 @@ public class Character : MonoBehaviour
     }
 
     // 실드 UI를 갱신한다.
-    private void UpdateShieldUI()
+    protected void UpdateShieldUI()
     {
         // 실드가 없다면
         if(shield == 0)
