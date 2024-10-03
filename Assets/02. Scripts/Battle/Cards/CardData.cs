@@ -21,6 +21,7 @@ public enum SkillType
     Drain = 14,                 // 흡혈
     ExtraBleedDamage = 15,   // 출혈 추가데미지 (한 턴)
     LingeringExtraBleedDamage = 16,   // 출혈 추가데미지 (지속)
+    Silence = 17,                // 침묵, 아무 행동도 하지 않음
 }
 
 public enum SkillTarget
