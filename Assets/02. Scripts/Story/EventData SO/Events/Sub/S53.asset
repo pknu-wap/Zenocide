@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: S53
   m_EditorClassIdentifier: 
   eventID: 1
-  delay: 0
+  delay: 8
   startIndex: 745
   endIndex: 746
   relationEvent:
   - {fileID: 11400000, guid: ee10952f284fac948b15c22e081f2a7b, type: 2}
   - {fileID: 0}
   nextEvent: {fileID: 0}
-  addEvent: []
+  addEvent:
+  - {fileID: 11400000}
