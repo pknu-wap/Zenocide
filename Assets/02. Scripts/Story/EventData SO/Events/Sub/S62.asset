@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: S62
   m_EditorClassIdentifier: 
   eventID: 1
-  delay: 0
-  startIndex: 851
-  endIndex: 854
+  delay: 6
+  startIndex: 826
+  endIndex: 829
   relationEvent:
   - {fileID: 11400000, guid: 6f03a57520468bc429950e2046d5e058, type: 2}
   - {fileID: 11400000, guid: 33975e70b24d0a04f9c433a362882e9f, type: 2}

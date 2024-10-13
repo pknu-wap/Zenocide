@@ -16,6 +16,8 @@ MonoBehaviour:
   delay: 0
   startIndex: 400
   endIndex: 404
-  relationEvent: []
+  relationEvent:
+  - {fileID: 11400000, guid: 3180470d4732ce942ac75add25ed7c8a, type: 2}
+  - {fileID: 11400000, guid: 418db8c86f1bad94284cd1df0ff847b1, type: 2}
   nextEvent: {fileID: 11400000, guid: 61fc42fbdaaaa2e498074a43ebc72485, type: 2}
   addEvent: []

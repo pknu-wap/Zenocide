@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   eventID: 2
   delay: 0
-  startIndex: 336
-  endIndex: 338
+  startIndex: 402
+  endIndex: 404
   relationEvent: []
   nextEvent: {fileID: 0}
-  addEvent: []
+  addEvent:
+  - {fileID: 11400000, guid: 3f55fcc39a902be4889afb6c72750f1d, type: 2}

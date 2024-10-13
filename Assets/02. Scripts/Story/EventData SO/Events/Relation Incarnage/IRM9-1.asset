@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41e3f233dbcc0434fbc8a44a7763d9bd, type: 3}
+  m_Name: IRM9-1
+  m_EditorClassIdentifier: 
+  eventID: 5
+  delay: 0
+  startIndex: 50
+  endIndex: 78
+  relationEvent:
+  - {fileID: 11400000, guid: 28d7c84d8dffe334ea8c161879198707, type: 2}
+  - {fileID: 11400000, guid: d401608b6f6f4e54e94bea08d8ea6259, type: 2}
+  nextEvent: {fileID: 0}
+  addEvent: []

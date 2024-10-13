@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41e3f233dbcc0434fbc8a44a7763d9bd, type: 3}
+  m_Name: RS68-1
+  m_EditorClassIdentifier: 
+  eventID: 2
+  delay: 0
+  startIndex: 1201
+  endIndex: 1204
+  relationEvent:
+  - {fileID: 11400000, guid: 33d01e2f59d56154986d96c2b6b03a3a, type: 2}
+  - {fileID: 11400000, guid: 43d133de7e0860e4aa5018435f06b0fb, type: 2}
+  nextEvent: {fileID: 0}
+  addEvent: []

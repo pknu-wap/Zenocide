@@ -22,4 +22,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d4d8f3c65b2e583468c1a025620c73f4, type: 2}
   - {fileID: 0}
   nextEvent: {fileID: 0}
-  addEvent: []
+  addEvent:
+  - {fileID: 11400000, guid: b5152d4318e9a4040957c90b4b8c86a1, type: 2}
