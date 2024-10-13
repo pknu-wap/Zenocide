@@ -2,7 +2,6 @@ using UnityEditor;
 using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
-using PlasticGui.Configuration;
 
 public class StoryCreator : Editor
 {
@@ -14,10 +13,20 @@ public class StoryCreator : Editor
         CreateStory("Assets/NoShare2024-1/NoShare2024-1/04. Scenarios/SubStorys.csv", "Assets/02. Scripts/Story/EventData SO/Events/Sub/", EventType.Sub);
         CreateStory("Assets/NoShare2024-1/NoShare2024-1/04. Scenarios/RelationStorys.csv", "Assets/02. Scripts/Story/EventData SO/Events/Relation/", EventType.Relation);
 
+        // 인카니지 스토리 생성
+        CreateStory("Assets/NoShare2024-1/NoShare2024-1/04. Scenarios/MainStorys Incarnage.csv", "Assets/02. Scripts/Story/EventData SO/Events/Main Incarnage/", EventType.MainIncarnage);
+        CreateStory("Assets/NoShare2024-1/NoShare2024-1/04. Scenarios/SubStorys Incarnage.csv", "Assets/02. Scripts/Story/EventData SO/Events/Sub Incarnage/", EventType.SubIncarnage);
+        CreateStory("Assets/NoShare2024-1/NoShare2024-1/04. Scenarios/RelationStorys Incarnage.csv", "Assets/02. Scripts/Story/EventData SO/Events/Relation Incarnage/", EventType.RelationIncarnage);
+
         // 이후 이벤트를 할당한다.
         AssignStory("Assets/NoShare2024-1/NoShare2024-1/04. Scenarios/MainStorys.csv", "Assets/02. Scripts/Story/EventData SO/Events/Main/");
         AssignStory("Assets/NoShare2024-1/NoShare2024-1/04. Scenarios/SubStorys.csv", "Assets/02. Scripts/Story/EventData SO/Events/Sub/");
         AssignStory("Assets/NoShare2024-1/NoShare2024-1/04. Scenarios/RelationStorys.csv", "Assets/02. Scripts/Story/EventData SO/Events/Relation/");
+        
+        // 인카니지 할당
+        AssignStory("Assets/NoShare2024-1/NoShare2024-1/04. Scenarios/MainStorys Incarnage.csv", "Assets/02. Scripts/Story/EventData SO/Events/Main Incarnage/");
+        AssignStory("Assets/NoShare2024-1/NoShare2024-1/04. Scenarios/SubStorys Incarnage.csv", "Assets/02. Scripts/Story/EventData SO/Events/Sub Incarnage/");
+        AssignStory("Assets/NoShare2024-1/NoShare2024-1/04. Scenarios/RelationStorys Incarnage.csv", "Assets/02. Scripts/Story/EventData SO/Events/Relation Incarnage/");
     }
 
     public static void CreateStory(string csvPath, string destinationFolder, EventType type)
@@ -615,6 +624,37 @@ public class StoryCreator : Editor
         {
             string path = Path.Combine("Assets/02. Scripts/Story/EventData SO/Events/Relation/", $"{eventName}.asset"); // 복사된 파일 경로
             return AssetDatabase.LoadAssetAtPath<EventData>(path);
+        }
+
+        // 인카니지 스토리는 두 번째 글자를 본다..
+        else if (eventName[0] == 'I')
+        {        
+            // M이면 Main에서 찾는다.
+            if (eventName[1] == 'M')
+            {
+                string path = Path.Combine("Assets/02. Scripts/Story/EventData SO/Events/Main Incarnage/", $"{eventName}.asset"); // 복사된 파일 경로
+                return AssetDatabase.LoadAssetAtPath<EventData>(path);
+            }
+
+            // S이면 Sub에서 찾는다.
+            else if (eventName[1] == 'S')
+            {
+                string path = Path.Combine("Assets/02. Scripts/Story/EventData SO/Events/Sub Incarnage/", $"{eventName}.asset"); // 복사된 파일 경로
+                return AssetDatabase.LoadAssetAtPath<EventData>(path);
+            }
+
+            // R이면 Relation에서 찾는다.
+            else if (eventName[1] == 'R')
+            {
+                string path = Path.Combine("Assets/02. Scripts/Story/EventData SO/Events/Relation Incarnage/", $"{eventName}.asset"); // 복사된 파일 경로
+                return AssetDatabase.LoadAssetAtPath<EventData>(path);
+            }
+
+            else
+            {
+                Debug.LogError("이벤트 이름이 잘못되었습니다.");
+                return null;
+            }
         }
 
         else

@@ -4,7 +4,10 @@ public enum EventType
 {
     Main,
     Sub,
-    Relation
+    Relation,
+    MainIncarnage,
+    SubIncarnage,
+    RelationIncarnage,
 };
 
 [CreateAssetMenu(fileName = "EventData", menuName = "Scriptable Object/Event Data", order = 10)]
