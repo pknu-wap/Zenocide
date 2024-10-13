@@ -108,7 +108,7 @@ public class TutorialManager : MonoBehaviour
         {"군인", 0 },
         {"의사", 1 },
         {"경찰", 2 },
-        {"건설", 3 },
+        {"연구원", 3 },
     };
 
     void Awake()
