@@ -13,9 +13,6 @@ public class SoundManager : MonoBehaviour
 {
     // 싱글톤
     public static SoundManager Instance { get; private set; }
-    
-    public AudioSource storyMusicsource;
-    public AudioSource battleMusicsource;
 
     public Slider masterVolumeSlider;
     public Slider bgmVolumeSlider;
@@ -46,12 +43,12 @@ public class SoundManager : MonoBehaviour
     [Header("재생")]
     // BGM 재생기 개수
     private const int bgmAudioCount = 1;    // 무조건 하나로 제한하겠습니다.
-    private const int effectAudioCount = 5;
+    private const int sfxAudioCount = 20;
 
     [SerializeField]
     private AudioSource bgmSource;
     [SerializeField]
-    private AudioSource[] effectSources;
+    private AudioSource[] sfxSources;
 
     private void Awake()
     {
@@ -76,9 +73,9 @@ public class SoundManager : MonoBehaviour
         bgmMuteToggle.onValueChanged.AddListener(OnBGMMuteToggleChanged);
         sfxMuteToggle.onValueChanged.AddListener(OnSFXMuteToggleChanged);
 
-        UpdateAudioSources();
-
         AssignAudioComponent();
+
+        UpdateAudioSources();
     }
 
     // 전체 음량 슬라이더 값 변경 시 호출
@@ -152,14 +149,26 @@ public class SoundManager : MonoBehaviour
         // 전체 음량이 0일 경우 다른 음량도 0으로 설정
         if (masterVolume <= 0f)
         {
-            storyMusicsource.volume = 0f;
-            battleMusicsource.volume = 0f;
+            // bgm 음량 변경
+            bgmSource.volume = 0f;
+
+            // 효과음 음량 변경
+            for(int i = 0; i < sfxAudioCount; ++i)
+            {
+                sfxSources[i].volume = 0f;
+            }
+
             return;
         }
 
         // 전체 음량이 0이 아닐 경우 전체음량에 비례해서 음량 설정
-        storyMusicsource.volume = bgmVolume * masterVolume;
-        battleMusicsource.volume = bgmVolume * masterVolume;
+        bgmSource.volume = bgmVolume * masterVolume;
+
+        // 효과음 음량 변경
+        for (int i = 0; i < sfxAudioCount; ++i)
+        {
+            sfxSources[i].volume = sfxVolume * masterVolume;
+        }
     }
 
     // 볼륨 설정을 적용
@@ -267,10 +276,10 @@ public class SoundManager : MonoBehaviour
         AudioSource[] audioSources = GetComponents<AudioSource>();
 
         // 모자라면 재생기를 생성한다.
-        if (audioSources.Length < bgmAudioCount + effectAudioCount)
+        if (audioSources.Length < bgmAudioCount + sfxAudioCount)
         {
             // 모자란 만큼 생성
-            for (int i = audioSources.Length; i < bgmAudioCount + effectAudioCount; ++i)
+            for (int i = audioSources.Length; i < bgmAudioCount + sfxAudioCount; ++i)
             {
                 gameObject.AddComponent<AudioSource>();
             }
@@ -284,10 +293,10 @@ public class SoundManager : MonoBehaviour
         bgmSource = audioSources[0];
 
         // 효과음 재생기 할당
-        effectSources = new AudioSource[effectAudioCount];
-        for (int i = 0; i < effectAudioCount; ++i)
+        sfxSources = new AudioSource[sfxAudioCount];
+        for (int i = 0; i < sfxAudioCount; ++i)
         {
-            effectSources[i] = audioSources[i + bgmAudioCount];
+            sfxSources[i] = audioSources[i + bgmAudioCount];
         }
     }
 
@@ -333,7 +342,7 @@ public class SoundManager : MonoBehaviour
         else
         {
             // 쉬고 있는 오디오 소스를 찾는다.
-            currentSource = GetIdleAudioSource(effectSources);
+            currentSource = GetIdleAudioSource(sfxSources);
             // 출력 믹서 변경
             // currentSource.outputAudioMixerGroup = ;
         }
