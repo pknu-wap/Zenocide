@@ -177,6 +177,7 @@ public class CardInfo : MonoBehaviour
         effects[(int)SkillType.Drain] += Drain;
         effects[(int)SkillType.ExtraBleedDamage] += ExtraBleedDamage;
         effects[(int)SkillType.LingeringExtraBleedDamage] += LingeringExtraBleedDamage;
+        effects[(int)SkillType.Silence] += Silence;
     }
 
 
@@ -325,6 +326,12 @@ public class CardInfo : MonoBehaviour
     {
         target.EnrollBuff(new BuffEffect(SkillType.ExtraBleedDamage, amount, turnCount - 1, target, caller));
         target.GetBonusBleedDamage(amount);
+    }
+
+    // 침묵, 적에게만 적용 가능
+    public void Silence(int amount, int turnCount, Character target, Character caller)
+    {
+        
     }
     #endregion 카드 효과
 }

@@ -84,7 +84,7 @@ public class CamShake : MonoBehaviour
         originalCanvasRect = currentCanvasRect;                     // 기본 캔버스 정보 저장
         float currentCanvasHeight = currentCanvasRect.rect.height;  // 캔버스의 높이 정보 불러옴
         float currentCanvasWidth = currentCanvasRect.rect.width;    // 캔버스의 너비 정보 불러옴
-        currentCanvasRect.sizeDelta = new Vector2(currentCanvasWidth + 200, currentCanvasHeight + 200); // 높이와 너비에 각각 200씩 추가하여 여백이 보이지 않도록 확장
+        currentCanvasRect.sizeDelta = new Vector2(currentCanvasWidth + (10 * magnitude), currentCanvasHeight + (10 * magnitude)); // 높이와 너비에 각각 200씩 추가하여 여백이 보이지 않도록 확장
         StartCoroutine(CoroutineShake(duration, magnitude, currentCam, currentCanvas)); // 화면 흔들림 효과를 주는 코루틴 함수 실행
         currentCanvasRect = originalCanvasRect; // 흔들기 함수 종료 후 캔버스 사이즈 복구
     }

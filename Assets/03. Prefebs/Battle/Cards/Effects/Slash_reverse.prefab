@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6898238570730899697}
   - component: {fileID: 5580813710334031210}
   m_Layer: 0
-  m_Name: Slash
+  m_Name: Slash_reverse
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -670,8 +670,8 @@ ParticleSystem:
     boxThickness: {x: 0, y: 0, z: 0}
     radiusThickness: 1
     donutRadius: 0.2
-    m_Position: {x: 12, y: 0, z: 10}
-    m_Rotation: {x: 0, y: 230, z: 0}
+    m_Position: {x: -12, y: 0, z: 5}
+    m_Rotation: {x: 0, y: 110, z: 0}
     m_Scale: {x: 1, y: 1, z: 1}
     placementMode: 0
     m_MeshMaterialIndex: 0
@@ -1756,7 +1756,7 @@ ParticleSystem:
     orbitalY:
       serializedVersion: 2
       minMaxState: 0
-      scalar: -1
+      scalar: 1
       minScalar: 0
       maxCurve:
         serializedVersion: 2
