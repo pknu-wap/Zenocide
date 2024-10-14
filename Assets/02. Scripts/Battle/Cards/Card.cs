@@ -336,6 +336,12 @@ public class Card : Poolable
                     isPlaying = true;
                 }
 
+                // 효과음 출력
+                if (cardData.skills[i].sound != null)
+                {
+                    SoundManager.Instance.Play(cardData.skills[i].sound, SoundType.Effect);
+                }
+
                 // 딜레이를 주면 좀 더 자연스럽다.
                 yield return new WaitForSeconds(skillDelay);
             }
@@ -374,6 +380,12 @@ public class Card : Poolable
                 {
                     effectObject[i].Play();
                     isPlaying = true;
+                }
+
+                // 효과음 출력
+                if (cardData.skills[i].sound != null)
+                {
+                    SoundManager.Instance.Play(cardData.skills[i].sound, SoundType.Effect);
                 }
 
                 // 딜레이를 주면 좀 더 자연스럽다. -> 코루틴의 필요

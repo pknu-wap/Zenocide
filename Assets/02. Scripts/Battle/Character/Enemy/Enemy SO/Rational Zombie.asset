@@ -21,13 +21,16 @@ MonoBehaviour:
     amount: 5
     turnCount: 0
     effectPrefeb: {fileID: 0}
+    sound: {fileID: 8300000, guid: ebd394173075d5d40b71c609c1b0bff2, type: 3}
   - type: 0
     target: 0
     amount: 3
     turnCount: 0
     effectPrefeb: {fileID: 0}
+    sound: {fileID: 8300000, guid: ebd394173075d5d40b71c609c1b0bff2, type: 3}
   - type: 2
     target: 1
     amount: 2
     turnCount: 0
     effectPrefeb: {fileID: 0}
+    sound: {fileID: 0}

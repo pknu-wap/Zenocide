@@ -21,4 +21,5 @@ MonoBehaviour:
     amount: 4
     turnCount: 3
     effectPrefeb: {fileID: 3675006101537835259, guid: 075bd88e74682664792ed12c07fc48c9, type: 3}
-  cost: 0
+    sound: {fileID: 8300000, guid: aa0b5b3dc069a834a9197131f83f82e6, type: 3}
+  cost: 4

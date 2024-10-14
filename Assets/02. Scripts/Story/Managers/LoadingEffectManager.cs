@@ -22,6 +22,10 @@ public class LoadingEffectManager : MonoBehaviour
     [Header("Fade 시간")]
     public float fadeDuration = 0.2f;
 
+    [Header("효과음")]
+    public AudioClip fadeInClip;
+    public AudioClip fadeOutClip;
+
     private void Awake()
     {
         if(Instance == null)
@@ -76,6 +80,9 @@ public class LoadingEffectManager : MonoBehaviour
         isFading = true;
         LayerActive(true);
 
+        // 효과음 재생
+        SoundManager.Instance.Play(fadeOutClip);
+
         Sequence sequence = DOTween.Sequence();
 
         for (int i = 0; i < layerCount * 4; i++)
@@ -99,6 +106,9 @@ public class LoadingEffectManager : MonoBehaviour
         float delay = time / (layerCount * 4);
 
         isFading = true;
+
+        // 효과음 재생
+        SoundManager.Instance.Play(fadeOutClip);
 
         for (int i = 0; i < layerCount * 4; i++)
         {

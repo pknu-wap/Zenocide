@@ -14,6 +14,11 @@ public class ToggleManager : MonoBehaviour
 
     public ResolutionManager resolutionManager;
     public SoundManager soundManager;
+
+    public AudioClip deckButton;
+    public AudioClip backpackButton;
+    public AudioClip optionButton;
+
     void Start()
     {
         inventoryPanel.SetActive(activeInventory);
@@ -45,6 +50,8 @@ public class ToggleManager : MonoBehaviour
     // aPanel이 켜진 상태에서 bPanel을 키면 aPanel 꺼지고 bPanel 켜짐
     public void ToggleInventory()
     {
+        SoundManager.Instance.Play(backpackButton);
+
         if (!activeInventory)
         {
             if (activeDeck)
@@ -61,6 +68,8 @@ public class ToggleManager : MonoBehaviour
     }
     public void ToggleDeck()
     {
+        SoundManager.Instance.Play(deckButton);
+
         if (!activeDeck)
         {
             if (activeInventory)
@@ -77,6 +86,8 @@ public class ToggleManager : MonoBehaviour
     }
     public void ToggleOption()
     {
+        SoundManager.Instance.Play(optionButton);
+
         if (!activeOption)
         {
             if (activeInventory)

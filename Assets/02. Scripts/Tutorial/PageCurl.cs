@@ -23,6 +23,9 @@ public class PageCurl : MonoBehaviour
     private float bookWidth;
     private float bookHeight;
 
+    // 책 넘기는 소리
+    public AudioClip curlClip;
+
     // 페이지의 꼭짓점과 책의 꼭짓점
     private Vector2 point;
     [SerializeField] private Vector3 corner;
@@ -91,6 +94,7 @@ public class PageCurl : MonoBehaviour
 
         isCurling = true;
         waitCursor.SetActive(false);
+        SoundManager.Instance.Play(curlClip);
         yield return StartCoroutine(MoveBackPage(pageNumber));
         waitCursor.SetActive(true);
     }

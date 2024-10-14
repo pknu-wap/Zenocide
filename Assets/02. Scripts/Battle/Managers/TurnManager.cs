@@ -20,6 +20,9 @@ public class TurnManager : MonoBehaviour
     public bool isLoading; // 게임 끝나면 isLoading을 true로 하면 카드와 엔티티 클릭방지
     public bool myTurn;
 
+    [Header("Audio Clips")]
+    public AudioClip turnEndButton;
+
     enum ETurnMode { Random, My, Other }
 
     // 턴 이벤트
@@ -81,6 +84,8 @@ public class TurnManager : MonoBehaviour
 
     public void EndTurn()
     {
+        SoundManager.Instance.Play(turnEndButton);
+
         if (BattleInfo.Instance.isGameOver)
         {
             return;

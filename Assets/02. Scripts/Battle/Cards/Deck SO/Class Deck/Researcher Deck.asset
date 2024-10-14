@@ -10,10 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f3fb2f9dcc44ce4682722928048a3fe, type: 3}
-  m_Name: Construction Deck
+  m_Name: Researcher Deck
   m_EditorClassIdentifier: 
   listName: Construction Deck
   items:
-  - {fileID: 11400000, guid: ea49938c693a62143936eb71b7b7478a, type: 2}
-  - {fileID: 11400000, guid: ac32f79312052cd4287bc9ece89c4d18, type: 2}
-  - {fileID: 11400000, guid: dc18f59901d44824a9c3ac03983ac960, type: 2}
+  - {fileID: 11400000, guid: 616050dc92e75b14e82cf5ccf5943a65, type: 2}
+  - {fileID: 11400000, guid: 488a3facba9c6f74fa34a5a1e7c8ddb0, type: 2}
