@@ -30,9 +30,14 @@ public class Data
     public List<Item> items = new List<Item>();
     //옵션
     public int selectedResolutionIndex;
+    public int selectedFrameRateIndex;
     public bool fullscreen;
+    public bool isMasterVolumeMuted;
+    public bool isBgmVolumeMuted;
+    public bool isSfxVolumeMuted;
     public float masterVolume;
     public float bgmVolume;
+    public float sfxVolume;
 
 
     public int Hp
@@ -89,10 +94,32 @@ public class Data
         set { selectedResolutionIndex = value; }
     }
 
+    public int SelectedFrameRateIndex
+    {
+        get { return selectedFrameRateIndex; }
+        set { selectedFrameRateIndex = value; }
+    }
+
     public bool Fullscreen
     {
         get { return fullscreen; }
         set {  fullscreen = value; }
+    }
+
+    public bool IsMasterVolumeMuted
+    {
+        get { return isMasterVolumeMuted; }
+        set { isMasterVolumeMuted = value; }
+    }
+    public bool IsBgmVolumeMuted
+    {
+        get { return isBgmVolumeMuted; }
+        set { isBgmVolumeMuted = value; }
+    }
+    public bool IsSfxVolumeMuted
+    {
+        get { return isSfxVolumeMuted; }
+        set { isSfxVolumeMuted = value; }
     }
 
     public float MasterVolume
@@ -105,5 +132,10 @@ public class Data
     {
         get { return bgmVolume; }
         set { bgmVolume = value; }
+    }
+    public float SfxVolume
+    {
+        get { return sfxVolume; }
+        set { sfxVolume = value; }
     }
 }
