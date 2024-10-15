@@ -62,8 +62,12 @@ public class DialogueManager : MonoBehaviour
         {"흑화 교주", 10},
         {"인카니지 경비원", 11},
         {"아기 좀비", 12},
-        {"기본 여자", 13},
         {"멀쩡한 좀비", 14},
+        {"잭", 15},
+        {"K", 16},
+        {"베릴", 17},
+        {"마야", 18},
+        {"원장", 19},
     };
     public Sprite[] illustImages;
 
