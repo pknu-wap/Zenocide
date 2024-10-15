@@ -545,8 +545,6 @@ public class DialogueManager : MonoBehaviour
 
         // 현재 이벤트의 대화 기록을 삭제한다.
         LogManager.Instance.ResetLogs();
-
-        Debug.Log(delayDictionary.Count());
     }
 
     // 선택지를 띄운다.
