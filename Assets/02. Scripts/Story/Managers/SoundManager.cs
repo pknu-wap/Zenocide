@@ -101,73 +101,85 @@ public class SoundManager : MonoBehaviour
     // 뮤트 토글 변경 시 호출
     private void OnMasterMuteToggleChanged(bool isMuted)
     {
-        if (isMuted)
+        isMasterVolumeMuted = isMuted;
+
+        // 마스터가 뮤트 상태일 때 BGM과 SFX 오디오 소스도 뮤트로 설정
+        if (isMasterVolumeMuted)
         {
-            lastAppliedMasterVolume = masterVolumeSlider.value;
-            masterVolumeSlider.value = 0f; // 뮤트 시 슬라이더 값 0
-            masterVolumeSlider.interactable = false; // 슬라이더 비활성화
+            bgmSource.mute = true;
+            foreach (var sfxSource in sfxSources)
+            {
+                sfxSource.mute = true;
+            }
         }
         else
         {
-            masterVolumeSlider.value = lastAppliedMasterVolume; // 뮤트 해제 시 이전 값 복원
-            masterVolumeSlider.interactable = true; // 슬라이더 활성화
+            // 마스터가 켜지면 BGM과 SFX 상태를 토글에 맞게 설정
+            if (!isBgmVolumeMuted) bgmSource.mute = false;
+            if (!isSfxVolumeMuted)
+            {
+                foreach (var sfxSource in sfxSources)
+                {
+                    sfxSource.mute = false;
+                }
+            }
         }
     }
 
     private void OnBGMMuteToggleChanged(bool isMuted)
     {
-        if (isMuted)
+        isBgmVolumeMuted = isMuted;
+
+        // BGM의 상태에 맞게 오디오 뮤트 처리
+        if (isBgmVolumeMuted)
         {
-            lastAppliedBgmVolume = bgmVolumeSlider.value;
-            bgmVolumeSlider.value = 0f;
-            bgmVolumeSlider.interactable = false;
+            bgmSource.mute = true;
         }
         else
         {
-            bgmVolumeSlider.value = lastAppliedBgmVolume;
-            bgmVolumeSlider.interactable = true;
+            // 마스터가 뮤트 상태가 아니면 BGM을 언뮤트
+            if (!isMasterVolumeMuted)
+            {
+                bgmSource.mute = false;
+            }
         }
     }
 
     private void OnSFXMuteToggleChanged(bool isMuted)
     {
+        isSfxVolumeMuted = isMuted;
+
+        // SFX의 상태에 맞게 오디오 뮤트 처리
         if (isMuted)
         {
-            lastAppliedSfxVolume = sfxVolumeSlider.value;
-            sfxVolumeSlider.value = 0f;
-            sfxVolumeSlider.interactable = false;
+            foreach (var sfxSource in sfxSources)
+            {
+                sfxSource.mute = true;
+            }
         }
         else
         {
-            sfxVolumeSlider.value = lastAppliedSfxVolume;
-            sfxVolumeSlider.interactable = true;
+            // 마스터가 뮤트 상태가 아니면 SFX를 언뮤트
+            if (!isMasterVolumeMuted)
+            {
+                foreach (var sfxSource in sfxSources)
+                {
+                    sfxSource.mute = false;
+                }
+            }
         }
     }
     // 오디오 소스의 볼륨을 업데이트
     private void UpdateAudioSources()
     {
-        // 전체 음량이 0일 경우 다른 음량도 0으로 설정
-        if (masterVolume <= 0f)
+        if (!masterMuteToggle.isOn)
         {
-            // bgm 음량 변경
-            bgmSource.volume = 0f;
-
-            // 효과음 음량 변경
-            for(int i = 0; i < sfxAudioCount; ++i)
+            // 뮤트가 아닌 경우 마스터 볼륨 적용
+            bgmSource.volume = bgmVolume * masterVolume;
+            for (int i = 0; i < sfxSources.Length; ++i)
             {
-                sfxSources[i].volume = 0f;
+                sfxSources[i].volume = sfxVolume * masterVolume;
             }
-
-            return;
-        }
-
-        // 전체 음량이 0이 아닐 경우 전체음량에 비례해서 음량 설정
-        bgmSource.volume = bgmVolume * masterVolume;
-
-        // 효과음 음량 변경
-        for (int i = 0; i < sfxAudioCount; ++i)
-        {
-            sfxSources[i].volume = sfxVolume * masterVolume;
         }
     }
 
