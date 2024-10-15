@@ -110,7 +110,7 @@ public class ItemInfo : MonoBehaviour
         // 없다면 에러
         else
         {
-            Debug.LogError("해당 name을 가진 아이템 정보가 없습니다.");
+            Debug.LogError(name + "이란 이름의 아이템 정보가 없습니다.");
             // 원래 return 안 하고 막는 게 맞다. 임시로 에러만 안 뜨게 하려고 해뒀음.
             return itemDictionary["Error"];
         }
