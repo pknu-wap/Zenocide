@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9329a161b0565444b9bfb0e43ad8ee1e, type: 3}
+  m_Name: Incarnage Guard
+  m_EditorClassIdentifier: 
+  enemyId: Incarnage Guard
+  illust: {fileID: 21300000, guid: 88885986e381e6e438758974c74b72a3, type: 3}
+  maxHp: 40
+  skills:
+  - type: 0
+    target: 0
+    amount: 8
+    turnCount: 0
+    effectPrefeb: {fileID: 0}
+    sound: {fileID: 8300000, guid: 4af9ce1b3eaff1d4c9488ac864f255da, type: 3}
+  - type: 0
+    target: 0
+    amount: 10
+    turnCount: 0
+    effectPrefeb: {fileID: 0}
+    sound: {fileID: 8300000, guid: 4af9ce1b3eaff1d4c9488ac864f255da, type: 3}
+  - type: 1
+    target: 1
+    amount: 8
+    turnCount: 0
+    effectPrefeb: {fileID: 5866499522501904739, guid: e66f604aade7d7440b0c14271fc9b1ba, type: 3}
+    sound: {fileID: 0}
+  - type: 2
+    target: 1
+    amount: 10
+    turnCount: 0
+    effectPrefeb: {fileID: 0}
+    sound: {fileID: 0}
+  - type: 10
+    target: 0
+    amount: 4
+    turnCount: 4
+    effectPrefeb: {fileID: 0}
+    sound: {fileID: 0}
+  - type: 12
+    target: 1
+    amount: 10
+    turnCount: 3
+    effectPrefeb: {fileID: 0}
+    sound: {fileID: 0}

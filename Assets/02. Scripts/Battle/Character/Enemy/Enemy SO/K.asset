@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9329a161b0565444b9bfb0e43ad8ee1e, type: 3}
+  m_Name: K
+  m_EditorClassIdentifier: 
+  enemyId: K
+  illust: {fileID: 21300000, guid: a1a392017f7cb9d46b1781e3956c5fe5, type: 3}
+  maxHp: 200
+  skills:
+  - type: 0
+    target: 0
+    amount: 25
+    turnCount: 0
+    effectPrefeb: {fileID: 0}
+    sound: {fileID: 0}
+  - type: 0
+    target: 0
+    amount: 20
+    turnCount: 1
+    effectPrefeb: {fileID: 0}
+    sound: {fileID: 0}
+  - type: 0
+    target: 0
+    amount: 20
+    turnCount: 0
+    effectPrefeb: {fileID: 0}
+    sound: {fileID: 0}
+  - type: 12
+    target: 1
+    amount: 10
+    turnCount: 0
+    effectPrefeb: {fileID: 0}
+    sound: {fileID: 0}
+  - type: 1
+    target: 1
+    amount: 15
+    turnCount: 1
+    effectPrefeb: {fileID: 0}
+    sound: {fileID: 0}
+  - type: 1
+    target: 1
+    amount: 10
+    turnCount: 1
+    effectPrefeb: {fileID: 0}
+    sound: {fileID: 0}
