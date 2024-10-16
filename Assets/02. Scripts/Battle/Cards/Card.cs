@@ -271,7 +271,19 @@ public class Card : Poolable
         // 애니메이션이 끝났는지 검사하는 변수
         bool isAnimationDone = false;
 
-        LayerMask layer = LayerMask.GetMask("Enemy");
+        LayerMask layer;
+        // 타겟팅 스킬일 때
+        if (isTargetingCard)
+        {
+            // 레이어는 Enemy
+            layer = LayerMask.GetMask("Enemy");
+        }
+
+        else
+        {
+            // 레이어는 Field
+            layer = LayerMask.GetMask("Field");
+        }
 
         // layer가 일치하는, 선택된 오브젝트를 가져온다.
         GameObject selectedObject = GetClickedObject(layer);
