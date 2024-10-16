@@ -19674,7 +19674,7 @@ MonoBehaviour:
   isGameOver: 0
   maxCost: 5
   currentCost: 5
-  costText: {fileID: 0}
+  costText: {fileID: 1076961396}
 --- !u!1 &896647076
 GameObject:
   m_ObjectHideFlags: 0
@@ -29886,11 +29886,11 @@ MonoBehaviour:
   - objectName: Card
     perfab: {fileID: 506362370436929090, guid: f5f89aef295c6f942ba47b056382eaa2, type: 3}
     count: 100
-    group: {fileID: 0}
+    group: {fileID: 552572905}
   - objectName: CardBack
     perfab: {fileID: 1718778536131844245, guid: 4ed7848acc13fc74dae6e8f35b07a235, type: 3}
     count: 100
-    group: {fileID: 0}
+    group: {fileID: 1453823496}
   - objectName: BuffIcon_Player
     perfab: {fileID: 7539638744316109955, guid: f86e37f95fafeec4da72ce8ae0fd0954, type: 3}
     count: 50
@@ -43236,6 +43236,10 @@ PrefabInstance:
     - target: {fileID: 8642091009161287679, guid: f13cf976d1ca6b8419a5f9458e64ae8b, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -18
+      objectReference: {fileID: 0}
+    - target: {fileID: 8801233276247638961, guid: f13cf976d1ca6b8419a5f9458e64ae8b, type: 3}
+      propertyPath: m_ChildControlHeight
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9100191421375463748, guid: f13cf976d1ca6b8419a5f9458e64ae8b, type: 3}
       propertyPath: m_AnchorMax.y
