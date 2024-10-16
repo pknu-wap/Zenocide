@@ -263,6 +263,8 @@ public class Card : Poolable
             // 카드 발동을 취소한다.
             CancelUsingCard();
 
+            Debug.Log("코스트가 부족합니다.");
+
             yield break;
         }
 
@@ -279,6 +281,8 @@ public class Card : Poolable
         {
             // 카드 발동을 취소한다.
             CancelUsingCard();
+
+            Debug.Log("선택된 대상이 없습니다.");
 
             yield break;
         }
