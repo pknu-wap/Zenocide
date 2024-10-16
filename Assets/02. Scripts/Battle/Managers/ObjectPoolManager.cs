@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -11,7 +10,7 @@ public class ObjectPoolManager : MonoBehaviour
         // 오브젝트 이름
         public string objectName;
         // 오브젝트 풀에서 관리할 오브젝트
-        public GameObject perfab;
+        public GameObject prefab;
         // 몇개를 미리 생성 해놓을건지
         public int count;
         // 풀 오브젝트
@@ -65,7 +64,7 @@ public class ObjectPoolManager : MonoBehaviour
                 continue;
             }
 
-            goDic.Add(objectInfos[idx].objectName, objectInfos[idx].perfab);
+            goDic.Add(objectInfos[idx].objectName, objectInfos[idx].prefab);
             objectPoolDic.Add(objectInfos[idx].objectName, pool);
 
             // 미리 오브젝트 생성 해놓기
