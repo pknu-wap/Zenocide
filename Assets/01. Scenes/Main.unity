@@ -5409,7 +5409,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -59.000122}
+  m_AnchoredPosition: {x: 0, y: -59}
   m_SizeDelta: {x: 0, y: -118}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &306433124
@@ -10937,9 +10937,9 @@ MonoBehaviour:
   notification: {fileID: 0}
   processableMainEventList: []
   processableSubEventList: []
-  startEventList: {fileID: 11400000, guid: 30220a4d6185339419d5d5dc91d01130, type: 2}
+  startEventList: {fileID: 11400000, guid: 1a2ac0fbe99b9ec4d9e9a2d19a435e7f, type: 2}
   incarnageSubEventList: {fileID: 11400000, guid: e606635426abfae4088a880d6e9fbd72, type: 2}
-  mainRate: 100
+  mainRate: 0
   IllustsObjects:
   - {fileID: 1319129626}
   - {fileID: 1031547556}
@@ -12732,6 +12732,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Reward Card (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 7988938184466811699, guid: 87e1c6f995156d5449582d513a01c3f5, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -973254085417462611, guid: 2a76bc46b5ecf474c8a8d3d183811e2e, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13285,6 +13289,14 @@ PrefabInstance:
     - target: {fileID: 6528572501806132948, guid: 87e1c6f995156d5449582d513a01c3f5, type: 3}
       propertyPath: m_Name
       value: Reward Card
+      objectReference: {fileID: 0}
+    - target: {fileID: 7988938184466811699, guid: 87e1c6f995156d5449582d513a01c3f5, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 7988938184466811699, guid: 87e1c6f995156d5449582d513a01c3f5, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8013905630276072332, guid: 87e1c6f995156d5449582d513a01c3f5, type: 3}
       propertyPath: m_WasSpriteAssigned
@@ -24914,12 +24926,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1126983174}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1671544931}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1127440985
 GameObject:
@@ -36570,6 +36582,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Reward Card (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7988938184466811699, guid: 87e1c6f995156d5449582d513a01c3f5, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -973254085417462611, guid: 2a76bc46b5ecf474c8a8d3d183811e2e, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -37425,7 +37441,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1126983176}
   - {fileID: 1366757608}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -47995,6 +48010,7 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1126983176}
   - {fileID: 1671544931}
   - {fileID: 303005263}
   - {fileID: 2114527717}

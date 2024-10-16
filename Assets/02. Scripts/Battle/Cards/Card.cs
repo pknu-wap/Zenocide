@@ -50,7 +50,7 @@ public class Card : Poolable
         nameTMP.text = cardData.name;
         costTMP.text = cardData.cost.ToString();
         descriptionTMP.text = cardData.description;
-        SetDamageDiscription();
+        SetDamageDescription();
 
         cardOrder = GetComponent<CardOrder>();
         cardCollider = GetComponent<Collider2D>();
@@ -59,7 +59,7 @@ public class Card : Poolable
         // pool에서 꺼냈을 때 초기화
         isDiscarded = false;
 
-        // CardData 안의 각 skill들의 이펙트 생성
+        // CardData 안의 각 skill들의 이펙트 생성 (리팩터링 필요)
         for(int i = 0; i < item.skills.Length; i++)
         {
             if (item.skills[i].effectPrefeb != null)
@@ -92,7 +92,7 @@ public class Card : Poolable
         }
     }
 
-    public void SetDamageDiscription()
+    public void SetDamageDescription()
     {
         string tempDescription = cardData.description;
 

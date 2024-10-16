@@ -655,7 +655,7 @@ public class CardManager : MonoBehaviour
     {
         for(int i = 0; i < hand.Count; i++)
         {
-            hand[i].SetDamageDiscription();
+            hand[i].SetDamageDescription();
         }
     }
 }
