@@ -1,4 +1,4 @@
-using Unity.VisualScripting;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -43,7 +43,7 @@ public class SoundManager : MonoBehaviour
     [Header("재생")]
     // BGM 재생기 개수
     private const int bgmAudioCount = 1;    // 무조건 하나로 제한하겠습니다.
-    private const int sfxAudioCount = 20;
+    private const int sfxAudioCount = 8;
 
     [SerializeField]
     private AudioSource bgmSource;
@@ -74,6 +74,7 @@ public class SoundManager : MonoBehaviour
         sfxMuteToggle.onValueChanged.AddListener(OnSFXMuteToggleChanged);
 
         AssignAudioComponent();
+        InitializeSfxTimeStamp();
 
         UpdateAudioSources();
     }
@@ -312,25 +313,6 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    // 현재 쉬고 있는 AudioSource를 찾아 반환한다.
-    private AudioSource GetIdleAudioSource(AudioSource[] audioSources)
-    {
-        // 모든 오디오 소스 중에
-        for (int i = 0; i < audioSources.Length; ++i)
-        {
-            // 재생 중이지 않은 오디오 소스를 찾아서
-            if (audioSources[i].isPlaying == false)
-            {
-                // 반환한다.
-                return audioSources[i];
-            }
-        }
-
-        // 모두 재생 중이라면, 에러를 띄우고 null을 반환한다.
-        Debug.LogError("모든 오디오 소스가 재생 중입니다!");
-        return null;
-    }
-
     // 오디오 클립을 재생한다.
     public void Play(AudioClip audioClip, SoundType type = SoundType.Effect, bool isLooping = false)
     {
@@ -355,21 +337,96 @@ public class SoundManager : MonoBehaviour
         {
             // 쉬고 있는 오디오 소스를 찾는다.
             currentSource = GetIdleAudioSource(sfxSources);
+
             // 출력 믹서 변경
             // currentSource.outputAudioMixerGroup = ;
-        }
 
-        // 재생 가능 소스가 없다면 에러 메세지를 띄우고 중단
-        if(currentSource == null)
-        {
-            Debug.LogError("재생에 실패하였습니다.");
-            return;
+            // 재생 가능 소스가 없다면 가장 오래된 소스를 가져온다.
+            if (currentSource == null)
+            {
+                currentSource = GetOldestAudioSource();
+            }
+
+            // 최종 선택된 오디오 소스에 시간을 체크한다.
+            int playedSfxIndex = Array.IndexOf(sfxSources, currentSource);
+            CheckSfxTimeStemp(playedSfxIndex);
         }
 
         currentSource.clip = audioClip;
         currentSource.loop = isLooping;
 
         currentSource.Play();
+    }
+
+    // 효과음별 재생된 시간 기록
+    int[] sfxPlayedTime = new int[sfxAudioCount];
+    // 효과음 재생 시간
+    int sfxTimeStamp = 0;
+    // sfxTimeStamp가 가질 수 있는 최대 값 (오버플로우 방지)
+    int sfxMaxTimeStamp = 2000000000;
+
+    private void InitializeSfxTimeStamp()
+    {
+        Array.Clear(sfxPlayedTime, 0, sfxAudioCount);
+    }
+
+    // 현재 쉬고 있는 AudioSource를 찾아 반환한다.
+    private AudioSource GetIdleAudioSource(AudioSource[] audioSources)
+    {
+        // 모든 오디오 소스 중에
+        for (int i = 0; i < audioSources.Length; ++i)
+        {
+            // 재생 중이지 않은 오디오 소스를 찾아서
+            if (audioSources[i].isPlaying == false)
+            {
+                // 반환한다.
+                return audioSources[i];
+            }
+        }
+
+        // 모두 재생 중이라면 null을 반환한다.
+        return null;
+    }
+
+    private AudioSource GetOldestAudioSource()
+    {
+        int oldestIndex = GetIndexOfMin(sfxPlayedTime);
+
+        return sfxSources[oldestIndex];
+    }
+
+
+    private void CheckSfxTimeStemp(int playedSfxIndex)
+    {
+        sfxPlayedTime[playedSfxIndex] = ++sfxTimeStamp;
+
+        if(sfxTimeStamp > sfxMaxTimeStamp)
+        {
+            for(int i = 0; i < sfxPlayedTime.Length; ++i)
+            {
+                sfxPlayedTime[i] -= sfxMaxTimeStamp;
+            }
+        }
+    }
+
+    private int GetIndexOfMin(int[] array)
+    {
+        if(array.Length == 1)
+        {
+            return 0;
+        }
+
+        int minIndex = 0;
+
+        for(int i = 1; i < array.Length; ++i)
+        {
+            if (array[i] < array[minIndex])
+            {
+                minIndex = i;
+            }
+        }
+
+        return minIndex;
     }
     #endregion 오디오 재생
 }
