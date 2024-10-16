@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
 
 public class BuffEffect
 {
@@ -216,6 +215,9 @@ public class Character : MonoBehaviour
         BuffIcon buffIcon = ObjectPoolManager.Instance.GetGo("BuffIcon_"+this.name).GetComponent<BuffIcon>();
         BuffInfoPanel BuffInfoPanel = ObjectPoolManager.Instance.GetGo("BuffInfoPanel_"+this.name).GetComponent<BuffInfoPanel>();
 
+        buffIcon.transform.SetAsLastSibling();
+        BuffInfoPanel.transform.SetAsLastSibling();
+
         // 리스트에 등록한다.
         buffIcons.Add(buffIcon);
         buffInfoPanels.Add(BuffInfoPanel);
@@ -228,6 +230,15 @@ public class Character : MonoBehaviour
     public void CleanseDebuff()
     {
         buffs.Clear();
+
+        for(int i = 0; i < buffIcons.Count; ++i)
+        {
+            buffIcons[i].ReleaseObject();
+            buffInfoPanels[i].ReleaseObject();
+        }
+
+        buffIcons.Clear();
+        buffInfoPanels.Clear();
 
         UpdateAllBuffIcon();
     }
@@ -260,7 +271,7 @@ public class Character : MonoBehaviour
     public void GetBuffAll()
     {
         // 스탯 초기화
-        ResetStat();
+        //ResetStat();
 
         // 모든 적용 중인 버프에 대해
         for (int i = 0; i < buffs.Count; ++i)
@@ -278,7 +289,9 @@ public class Character : MonoBehaviour
 
                 // 오브젝트 풀의 자원들을 반환한다.
                 buffIcons[i].ReleaseObject();
+                buffIcons.RemoveAt(i);
                 buffInfoPanels[i].ReleaseObject();
+                buffInfoPanels.RemoveAt(i);
 
                 // 뒤의 디버프들이 1칸씩 앞으로 땡겨졌으니, 인덱스도 1 앞으로 조정
                 --i;
