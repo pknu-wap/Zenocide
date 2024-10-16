@@ -359,7 +359,7 @@ public class SoundManager : MonoBehaviour
     }
 
     // 효과음별 재생된 시간 기록
-    [SerializeField] int[] sfxPlayedTime = new int[sfxAudioCount];
+    int[] sfxPlayedTime = new int[sfxAudioCount];
     // 효과음 재생 시간
     int sfxTimeStamp = 0;
     // sfxTimeStamp가 가질 수 있는 최대 값 (오버플로우 방지)
