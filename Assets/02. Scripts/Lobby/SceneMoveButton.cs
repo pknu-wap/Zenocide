@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class SceneMoveButton : MonoBehaviour
 {
-    string dataFileName = "Data.json";
     // 경고창 (진짜로 할 것임?)
     [SerializeField] GameObject alertPanel;
     [SerializeField] bool isLoadButton = false;

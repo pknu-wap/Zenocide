@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using System.Linq;
 
 public class TutorialManager : MonoBehaviour
 {
@@ -12,7 +11,6 @@ public class TutorialManager : MonoBehaviour
 
     [Header("진행 중인 이벤트")]
     public EventData currentEvent = null;
-    private Coroutine processEvent = null;
 
     [Header("CSV 데이터")]
     public List<Dictionary<string, object>> dataCSV;
@@ -21,8 +19,6 @@ public class TutorialManager : MonoBehaviour
     [Header("상수 값")]
     private const string emptyString = "";
     private const float typeTime = 0.03f;
-    // 이벤트 SO 데이터 폴더 경로
-    private string EventPath = "Assets/02. Scripts/Story/EventData SO/Events";
 
     [Header("상태 체크")]
     // 클릭됐는지 확인한다.
