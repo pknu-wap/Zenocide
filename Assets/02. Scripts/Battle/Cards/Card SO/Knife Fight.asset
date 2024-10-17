@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Knife Fight
   m_EditorClassIdentifier: 
   name: "\uB2E8\uAC80\uC220"
-  description: "\uC801\uC5D0\uAC8C damage0\uC758 \uD53C\uD574\uB97C 2\uBC88 \uC785\uD799\uB2C8\uB2E4"
+  description: "\uC801\uC5D0\uAC8C damage0\uC758 \uD53C\uD574\uB97C 2\uBC88 \uC90D\uB2C8\uB2E4."
   sprite: {fileID: 0}
   skills:
   - type: 0
@@ -21,9 +21,11 @@ MonoBehaviour:
     amount: 6
     turnCount: 0
     effectPrefeb: {fileID: 6898238570730899697, guid: 3c6884803ff0c444d8aa3a83e11a109e, type: 3}
+    sound: {fileID: 0}
   - type: 0
     target: 1
     amount: 6
     turnCount: 0
     effectPrefeb: {fileID: 6898238570730899697, guid: 4f62aa7f6574fc9468d1100cba3643f1, type: 3}
+    sound: {fileID: 0}
   cost: 2
