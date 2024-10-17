@@ -18777,7 +18777,7 @@ MonoBehaviour:
   soundManager: {fileID: 919981846}
   deckButton: {fileID: 8300000, guid: 3217d1c27cad1864a8d903ff000487bd, type: 3}
   backpackButton: {fileID: 8300000, guid: c614917cdb162544f913cd321936017c, type: 3}
-  optionButton: {fileID: 8300000, guid: 6ac98de43ebeab945b8a89faff814d84, type: 3}
+  optionButton: {fileID: 8300000, guid: fe66d3467cbbbdb45b46eea81594a9f5, type: 3}
 --- !u!1 &856975884
 GameObject:
   m_ObjectHideFlags: 0
@@ -27781,10 +27781,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 913799894}
     m_Modifications:
-    - target: {fileID: 919534035195295911, guid: 329aa7e5c1d569142a561f1c789673e8, type: 3}
-      propertyPath: m_spriteAsset
-      value: 
-      objectReference: {fileID: 11400000, guid: 96e090ce1c7cfff48954cf6f2b880a80, type: 2}
     - target: {fileID: 6563893624584578663, guid: 329aa7e5c1d569142a561f1c789673e8, type: 3}
       propertyPath: m_Name
       value: Page (10)
