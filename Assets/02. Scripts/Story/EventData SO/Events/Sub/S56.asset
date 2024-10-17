@@ -16,6 +16,8 @@ MonoBehaviour:
   delay: 12
   startIndex: 793
   endIndex: 808
-  relationEvent: []
+  relationEvent:
+  - {fileID: 11400000, guid: a9e53a31bb58d6043814af42cd50391c, type: 2}
+  - {fileID: 11400000, guid: 3c8b1eb20c34dd34aa2fbea56ae088f4, type: 2}
   nextEvent: {fileID: 0}
   addEvent: []
