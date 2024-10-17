@@ -21,8 +21,6 @@ public class DialogueManager : MonoBehaviour
     [Header("상수 값")]
     private const string emptyString = "";
     private const float typeTime = 0.03f;
-    // 이벤트 SO 데이터 폴더 경로
-    private string EventPath = "Assets/02. Scripts/Story/EventData SO/Events";
 
     [Header("상태 체크")]
     // 클릭됐는지 확인한다.
@@ -31,8 +29,6 @@ public class DialogueManager : MonoBehaviour
     public bool isBattleDone = false;
     // 게임이 엔딩에 다다랐는지 검사한다.
     private bool isGameCleared = false;
-    // 첫 이벤트인지 확인한다.
-    private bool isFirstEvent = true;
 
     [Header("스토리 CSV")]
     // 메인 CSV 파일을 읽어올 리스트

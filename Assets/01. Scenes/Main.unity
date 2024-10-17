@@ -5409,7 +5409,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -59.000122}
+  m_AnchoredPosition: {x: 0, y: -59}
   m_SizeDelta: {x: 0, y: -118}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &306433124
@@ -10939,7 +10939,7 @@ MonoBehaviour:
   processableSubEventList: []
   startEventList: {fileID: 11400000, guid: 30220a4d6185339419d5d5dc91d01130, type: 2}
   incarnageSubEventList: {fileID: 11400000, guid: e606635426abfae4088a880d6e9fbd72, type: 2}
-  mainRate: 100
+  mainRate: 30
   IllustsObjects:
   - {fileID: 1319129626}
   - {fileID: 1031547556}
@@ -12732,6 +12732,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Reward Card (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 7988938184466811699, guid: 87e1c6f995156d5449582d513a01c3f5, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -973254085417462611, guid: 2a76bc46b5ecf474c8a8d3d183811e2e, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13285,6 +13289,14 @@ PrefabInstance:
     - target: {fileID: 6528572501806132948, guid: 87e1c6f995156d5449582d513a01c3f5, type: 3}
       propertyPath: m_Name
       value: Reward Card
+      objectReference: {fileID: 0}
+    - target: {fileID: 7988938184466811699, guid: 87e1c6f995156d5449582d513a01c3f5, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 7988938184466811699, guid: 87e1c6f995156d5449582d513a01c3f5, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8013905630276072332, guid: 87e1c6f995156d5449582d513a01c3f5, type: 3}
       propertyPath: m_WasSpriteAssigned
@@ -24914,12 +24926,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1126983174}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1671544931}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1127440985
 GameObject:
@@ -29884,51 +29896,51 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectInfos:
   - objectName: Card
-    perfab: {fileID: 506362370436929090, guid: f5f89aef295c6f942ba47b056382eaa2, type: 3}
+    prefab: {fileID: 506362370436929090, guid: f5f89aef295c6f942ba47b056382eaa2, type: 3}
     count: 100
     group: {fileID: 552572905}
   - objectName: CardBack
-    perfab: {fileID: 1718778536131844245, guid: 4ed7848acc13fc74dae6e8f35b07a235, type: 3}
+    prefab: {fileID: 1718778536131844245, guid: 4ed7848acc13fc74dae6e8f35b07a235, type: 3}
     count: 100
     group: {fileID: 1453823496}
   - objectName: BuffIcon_Player
-    perfab: {fileID: 7539638744316109955, guid: f86e37f95fafeec4da72ce8ae0fd0954, type: 3}
+    prefab: {fileID: 7539638744316109955, guid: f86e37f95fafeec4da72ce8ae0fd0954, type: 3}
     count: 50
     group: {fileID: 1998124570}
   - objectName: BuffIcon_Enemy
-    perfab: {fileID: 7539638744316109955, guid: f86e37f95fafeec4da72ce8ae0fd0954, type: 3}
+    prefab: {fileID: 7539638744316109955, guid: f86e37f95fafeec4da72ce8ae0fd0954, type: 3}
     count: 50
     group: {fileID: 2313871753571010259}
   - objectName: BuffIcon_Enemy (1)
-    perfab: {fileID: 7539638744316109955, guid: f86e37f95fafeec4da72ce8ae0fd0954, type: 3}
+    prefab: {fileID: 7539638744316109955, guid: f86e37f95fafeec4da72ce8ae0fd0954, type: 3}
     count: 50
     group: {fileID: 1521872360}
   - objectName: BuffIcon_Enemy (2)
-    perfab: {fileID: 7539638744316109955, guid: f86e37f95fafeec4da72ce8ae0fd0954, type: 3}
+    prefab: {fileID: 7539638744316109955, guid: f86e37f95fafeec4da72ce8ae0fd0954, type: 3}
     count: 50
     group: {fileID: 541139014}
   - objectName: BuffIcon_Enemy (3)
-    perfab: {fileID: 7539638744316109955, guid: f86e37f95fafeec4da72ce8ae0fd0954, type: 3}
+    prefab: {fileID: 7539638744316109955, guid: f86e37f95fafeec4da72ce8ae0fd0954, type: 3}
     count: 50
     group: {fileID: 816927580}
   - objectName: BuffInfoPanel_Player
-    perfab: {fileID: 5285969350530789879, guid: b3cad58a8e47468459e5ffae00bbd974, type: 3}
+    prefab: {fileID: 5285969350530789879, guid: 8dca9053b9159154fa9c85973722baef, type: 3}
     count: 50
     group: {fileID: 1998124569}
   - objectName: BuffInfoPanel_Enemy
-    perfab: {fileID: 5285969350530789879, guid: b3cad58a8e47468459e5ffae00bbd974, type: 3}
+    prefab: {fileID: 5285969350530789879, guid: b3cad58a8e47468459e5ffae00bbd974, type: 3}
     count: 50
     group: {fileID: 2313871753571010258}
   - objectName: BuffInfoPanel_Enemy (1)
-    perfab: {fileID: 5285969350530789879, guid: b3cad58a8e47468459e5ffae00bbd974, type: 3}
+    prefab: {fileID: 5285969350530789879, guid: b3cad58a8e47468459e5ffae00bbd974, type: 3}
     count: 50
     group: {fileID: 1521872359}
   - objectName: BuffInfoPanel_Enemy (2)
-    perfab: {fileID: 5285969350530789879, guid: b3cad58a8e47468459e5ffae00bbd974, type: 3}
+    prefab: {fileID: 5285969350530789879, guid: b3cad58a8e47468459e5ffae00bbd974, type: 3}
     count: 50
     group: {fileID: 541139013}
   - objectName: BuffInfoPanel_Enemy (3)
-    perfab: {fileID: 5285969350530789879, guid: b3cad58a8e47468459e5ffae00bbd974, type: 3}
+    prefab: {fileID: 5285969350530789879, guid: b3cad58a8e47468459e5ffae00bbd974, type: 3}
     count: 50
     group: {fileID: 816927579}
 --- !u!1 &1403562153
@@ -36570,6 +36582,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Reward Card (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7988938184466811699, guid: 87e1c6f995156d5449582d513a01c3f5, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -973254085417462611, guid: 2a76bc46b5ecf474c8a8d3d183811e2e, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -37425,7 +37441,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1126983176}
   - {fileID: 1366757608}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -43237,10 +43252,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -18
       objectReference: {fileID: 0}
-    - target: {fileID: 8801233276247638961, guid: f13cf976d1ca6b8419a5f9458e64ae8b, type: 3}
-      propertyPath: m_ChildControlHeight
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 9100191421375463748, guid: f13cf976d1ca6b8419a5f9458e64ae8b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -47146,6 +47157,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 156.25
       objectReference: {fileID: 0}
+    - target: {fileID: 978717875404537221, guid: 75fdabc16d41bc04fa3893ed0b15e77a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1210073625012795827, guid: 75fdabc16d41bc04fa3893ed0b15e77a, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -47995,6 +48010,7 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1126983176}
   - {fileID: 1671544931}
   - {fileID: 303005263}
   - {fileID: 2114527717}

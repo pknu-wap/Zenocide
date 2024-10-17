@@ -26,7 +26,7 @@ public class Enemy : Character
     Image effectMask;
 
     // 콜라이더
-    Collider2D collider;
+    Collider2D enemyCollider;
 
     [Header("상수")]
     float fadeDelay = 2f;
@@ -54,7 +54,7 @@ public class Enemy : Character
         effectMask = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Image>();
 
         // 콜라이더
-        collider = GetComponent<Collider2D>();
+        enemyCollider = GetComponent<Collider2D>();
     }
 
     // 적을 등록한다.
@@ -88,7 +88,7 @@ public class Enemy : Character
         ResetState();
         
         // 콜라이더를 켜 상호작용을 시작하고
-        collider.enabled = true;
+        enemyCollider.enabled = true;
 
         // 활성화한다.
         gameObject.SetActive(true);
@@ -264,7 +264,7 @@ public class Enemy : Character
     public override void Die()
     {
         // 카드 대상이 되지 않게 콜라이더를 비활성화한다.
-        collider.enabled = false;
+        enemyCollider.enabled = false;
 
         // TurnManager에서 자기 자신의 이벤트를 제거
         TurnManager.Instance.onStartPlayerTurn.RemoveListener(ReadySkill);

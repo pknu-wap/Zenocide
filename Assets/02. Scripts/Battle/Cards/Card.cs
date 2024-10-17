@@ -50,7 +50,7 @@ public class Card : Poolable
         nameTMP.text = cardData.name;
         costTMP.text = cardData.cost.ToString();
         descriptionTMP.text = cardData.description;
-        SetDamageDiscription();
+        SetDamageDescription();
 
         cardOrder = GetComponent<CardOrder>();
         cardCollider = GetComponent<Collider2D>();
@@ -59,7 +59,7 @@ public class Card : Poolable
         // pool에서 꺼냈을 때 초기화
         isDiscarded = false;
 
-        // CardData 안의 각 skill들의 이펙트 생성
+        // CardData 안의 각 skill들의 이펙트 생성 (리팩터링 필요)
         for(int i = 0; i < item.skills.Length; i++)
         {
             if (item.skills[i].effectPrefeb != null)
@@ -92,7 +92,7 @@ public class Card : Poolable
         }
     }
 
-    public void SetDamageDiscription()
+    public void SetDamageDescription()
     {
         string tempDescription = cardData.description;
 
@@ -263,13 +263,27 @@ public class Card : Poolable
             // 카드 발동을 취소한다.
             CancelUsingCard();
 
+            Debug.Log("코스트가 부족합니다.");
+
             yield break;
         }
 
         // 애니메이션이 끝났는지 검사하는 변수
         bool isAnimationDone = false;
 
-        LayerMask layer = LayerMask.GetMask("Enemy");
+        LayerMask layer;
+        // 타겟팅 스킬일 때
+        if (isTargetingCard)
+        {
+            // 레이어는 Enemy
+            layer = LayerMask.GetMask("Enemy");
+        }
+
+        else
+        {
+            // 레이어는 Field
+            layer = LayerMask.GetMask("Field");
+        }
 
         // layer가 일치하는, 선택된 오브젝트를 가져온다.
         GameObject selectedObject = GetClickedObject(layer);
@@ -279,6 +293,8 @@ public class Card : Poolable
         {
             // 카드 발동을 취소한다.
             CancelUsingCard();
+
+            Debug.Log("선택된 대상이 없습니다.");
 
             yield break;
         }
