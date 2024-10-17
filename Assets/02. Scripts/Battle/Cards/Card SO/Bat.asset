@@ -12,21 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee4e1de6682e5bb448d13b0b62311c21, type: 3}
   m_Name: Bat
   m_EditorClassIdentifier: 
-  name: "\uC57C\uAD6C\uBC29\uB9DD\uC774"
-  description: "\uC801\uC5D0\uAC8C \uD53C\uD574\uB97C damage0 \uC785\uD788\uACE0
-    3\uD134 \uAC04 \uCD9C\uD608\uC744 \uBD80\uC5EC\uD569\uB2C8\uB2E4."
+  name: "\uC57C\uAD6C \uBC29\uB9DD\uC774"
+  description: "2\uD134 \uB3D9\uC548 \uACF5\uACA9\uB825\uC774 2 \uC99D\uAC00\uD558\uACE0
+    \uC801\uC5D0\uAC8C damage1\uC758 \uD53C\uD574\uB97C \uC90D\uB2C8\uB2E4."
   sprite: {fileID: 21300000, guid: a5507f2c6306af042bb67f480bffb3a5, type: 3}
   skills:
+  - type: 12
+    target: 0
+    amount: 2
+    turnCount: 2
+    effectPrefeb: {fileID: 0}
+    sound: {fileID: 0}
   - type: 0
     target: 1
-    amount: 10
+    amount: 8
     turnCount: 0
     effectPrefeb: {fileID: 2022655609410639260, guid: 77ea7d364b7273341a070bbbc89626a2, type: 3}
     sound: {fileID: 8300000, guid: f6b53edc268c44e479b6323c104a9afb, type: 3}
-  - type: 10
-    target: 1
-    amount: 2
-    turnCount: 3
-    effectPrefeb: {fileID: 0}
-    sound: {fileID: 0}
-  cost: 4
+  cost: 3

@@ -18,7 +18,7 @@ MonoBehaviour:
   skills:
   - type: 12
     target: 0
-    amount: 2
+    amount: 3
     turnCount: 4
     effectPrefeb: {fileID: 3675006101537835259, guid: 2e5ad2beaf55e9f4b9c3ebc4a7a2d823, type: 3}
     sound: {fileID: 8300000, guid: df5631dd526110d498a66f70635c5a24, type: 3}
