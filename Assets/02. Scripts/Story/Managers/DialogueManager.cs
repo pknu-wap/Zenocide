@@ -71,12 +71,14 @@ public class DialogueManager : MonoBehaviour
     public Dictionary<string, int> backgroundTable = new Dictionary<string, int>()
     {
         {"지하실", 0},
-        {"좀비 마을", 1},
-        {"콘크리트 지하실", 2},
-        {"집과 초원 낮", 3},
-        {"초원 낮", 4},
-        {"초원 밤", 5},
-        {"예배당", 6},
+        {"좀비 마을 낮", 1},
+        {"좀비 마을 밤", 2},
+        {"콘크리트 지하실", 3},
+        {"집과 초원 낮", 4},
+        {"초원 낮", 5},
+        {"초원 밤", 6},
+        {"예배당", 7},
+        {"어두운 숲", 8},
     };
     public Sprite[] backgroundImages;
 
