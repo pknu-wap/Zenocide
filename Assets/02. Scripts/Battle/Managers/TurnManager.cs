@@ -184,8 +184,6 @@ public class TurnManager : MonoBehaviour
             }
             #endregion 적 공격
 
-            onStartPlayerTurn.Invoke();
-
             // 플레이어 턴으로 변경
             myTurn = true;
         }

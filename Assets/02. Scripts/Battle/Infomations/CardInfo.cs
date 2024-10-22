@@ -178,6 +178,7 @@ public class CardInfo : MonoBehaviour
         effects[(int)SkillType.ExtraBleedDamage] += ExtraBleedDamage;
         effects[(int)SkillType.LingeringExtraBleedDamage] += LingeringExtraBleedDamage;
         effects[(int)SkillType.Silence] += Silence;
+        effects[(int)SkillType.SilenceStack] += SilenceStack;
     }
 
 
@@ -328,10 +329,34 @@ public class CardInfo : MonoBehaviour
         target.GetBonusBleedDamage(amount);
     }
 
-    // 침묵, 적에게만 적용 가능
+    // 침묵
     public void Silence(int amount, int turnCount, Character target, Character caller)
     {
         
+    }
+
+    public void SilenceStack(int amount, int turnCount, Character target, Character caller)
+    {
+        int stackIdx = target.GetBuffIndex(SkillType.SilenceStack);
+
+        // 침묵 스택이 없다면
+        if(stackIdx == -1) {
+            // 등록
+            target.EnrollBuff(new BuffEffect(SkillType.SilenceStack, 0, turnCount, target, caller));
+        }
+        // 침묵 스택이 있다면
+        else
+        {   
+            // 해당 스택을 수정
+            target.ModifyBuff(stackIdx, 0, turnCount);
+            target.UpdateAllBuffIcon();
+        }
+
+        // 스스로 침묵을 건 경우엔 턴 종료시 적용
+        if(target != caller)
+        {
+            target.GetSilence();
+        }
     }
     #endregion 카드 효과
 }

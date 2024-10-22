@@ -280,7 +280,11 @@ public class Character : MonoBehaviour
             CardInfo.Instance.ActivateSkill(buffs[i], this, buffs[i].caller);
 
             // 남은 턴 1 감소
-            --buffs[i].remainingTurns;
+            if (buffs[i].type != SkillType.SilenceStack)
+            {
+                --buffs[i].remainingTurns;
+            }
+
             // 남은 턴이 0 이하라면
             if (buffs[i].remainingTurns <= 0)
             {
@@ -305,9 +309,36 @@ public class Character : MonoBehaviour
             // 0.1초 딜레이
             // yield return new WaitForSeconds(0.1f);
         }
-
+        
         // 아이콘 최신화
         UpdateAllBuffIcon();
+    }
+
+    // buffs의 매개변수에 해당하는 첫 버프의 인덱스를 반환한다
+    // 해당 타입의 버프가 없다면 -1을 반환한다
+    public int GetBuffIndex(SkillType type)
+    {
+        for(int i = 0;i < buffs.Count; ++i)
+        {
+            if (buffs[i].type == type)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    // 버프의 amount와 remainingTurns를 수정
+    public void ModifyBuff(int idx, int amount, int turnCount)
+    {
+        buffs[idx].amount += amount;
+        buffs[idx].remainingTurns += turnCount;
+    }
+
+    virtual public void GetSilence()
+    {
+
     }
     #endregion 디버프
 

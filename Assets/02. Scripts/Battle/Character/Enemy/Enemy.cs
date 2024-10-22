@@ -140,6 +140,8 @@ public class Enemy : Character
         SkillText skillText = CardInfo.Instance.GetSkillText(currentSkill);
         behaviorName.text = skillText.name;
         behaviorDescription.text = skillText.description;
+
+        GetSilence();
     }
 
     // 스킬을 사용한다.
@@ -283,5 +285,66 @@ public class Enemy : Character
 
         // 오브젝트 비활성화
         gameObject.SetActive(false);
+    }
+
+    override public void GetSilence()
+    {
+        // 침묵 스택
+        int idxStack = GetBuffIndex(SkillType.SilenceStack);
+
+        // 침묵 스택이 없다면 return
+        if (idxStack == -1)
+        {
+            return;
+        }
+
+        // 침묵 조건이 충족되지 않으면 return
+        if (buffs[idxStack].remainingTurns < 2)
+        {
+            return;
+        }
+
+        // 다음 행동이 침묵이면 침묵 스택을 차감하지 않음
+        if(currentSkill.type == SkillType.Silence)
+        {
+            UpdateAllBuffIcon();
+            return;
+        }
+
+        // 스택을 차감한다
+        ModifyBuff(idxStack, 0, -2);
+
+        // 남은 스택이 0 이하라면
+        if (buffs[idxStack].remainingTurns <= 0)
+        {
+            // 효과를 삭제한다.
+            buffs.RemoveAt(idxStack);
+
+            // 오브젝트 풀의 자원들을 반환한다.
+            buffIcons[idxStack].ReleaseObject();
+            buffIcons.RemoveAt(idxStack);
+            buffInfoPanels[idxStack].ReleaseObject();
+            buffInfoPanels.RemoveAt(idxStack);
+        }
+
+        // 아이콘 최신화
+        UpdateAllBuffIcon();
+
+        // currentSkill을 침묵으로 바꾼다
+        Skill silence = new Skill();
+        silence.type = SkillType.Silence;
+        silence.target = new SkillTarget();
+
+        currentSkill = silence;
+
+        // 2.UI를 갱신한다.
+        // 2-1. 자신이 고른 스킬을 체력바 위에 표시한다.
+        behaviorIcon.sprite = CardInfo.Instance.skillIcons[(int)currentSkill.type];
+        behaviorAmount.text = "";
+
+        // 2-2. 상세정보창을 스킬의 설명으로 갱신한다.
+        SkillText skillText = CardInfo.Instance.GetSkillText(currentSkill);
+        behaviorName.text = skillText.name;
+        behaviorDescription.text = skillText.description;
     }
 }

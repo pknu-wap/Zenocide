@@ -34,6 +34,7 @@ public class Player : Character
     public void EndPlayerTurn()
     {
         GetBuffAll();
+        GetSilence();
     }
 
     public override void DecreaseHP(int damage)
@@ -109,5 +110,60 @@ public class Player : Character
         UpdateHPUI();
 
         job = DataManager.Instance.data.Job;
+    }
+
+    override public void GetSilence()
+    {
+        // 침묵 스택
+        int idxStack = GetBuffIndex(SkillType.SilenceStack);
+        // 침묵 디버프
+        int idxSilence = GetBuffIndex(SkillType.Silence);
+
+        // 침묵 스택이 없다면 return
+        if (idxStack == -1)
+        {
+            return;
+        }
+
+        int stack = buffs[idxStack].remainingTurns;
+
+        // 침묵 조건이 충족되지 않으면 return
+        if (buffs[idxStack].remainingTurns < 2)
+        {
+            return;
+        }
+
+        // 침묵이 걸려있지 않다면
+        if (idxSilence == -1)
+        {
+            // 스택만큼 침묵을 적용
+            EnrollBuff(new BuffEffect(SkillType.Silence, 0, stack / 2, this, this));
+            // 스택을 차감
+            ModifyBuff(idxStack, 0, -(stack - stack % 2));
+        }
+        else
+        // 침묵이 걸려있다면
+        {
+            // 스택만큼 침묵을 추가
+            ModifyBuff(idxSilence, 0, stack / 2);
+            // 스택을 차감
+            ModifyBuff(idxStack, 0, -(stack - stack % 2));
+        }
+
+        // 남은 스택이 0 이하라면
+        if (buffs[idxStack].remainingTurns <= 0)
+        {
+            // 효과를 삭제한다.
+            buffs.RemoveAt(idxStack);
+
+            // 오브젝트 풀의 자원들을 반환한다.
+            buffIcons[idxStack].ReleaseObject();
+            buffIcons.RemoveAt(idxStack);
+            buffInfoPanels[idxStack].ReleaseObject();
+            buffInfoPanels.RemoveAt(idxStack);
+        }
+
+        // 아이콘 최신화
+        UpdateAllBuffIcon();
     }
 }

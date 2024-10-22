@@ -257,6 +257,15 @@ public class Card : Poolable
     // 카드를 사용한다. (마우스가 놓아지는 시점에 호출)
     private IEnumerator UseCard()
     {
+        // 침묵에 걸린 경우
+        if(Player.Instance.GetBuffIndex(SkillType.Silence) != -1)
+        {
+            // 카드 발동을 취소한다.
+            CancelUsingCard();
+
+            yield break;
+        }
+
         // 코스트가 모자란 경우
         if (BattleInfo.Instance.CanUseCost(cost) == false)
         {
