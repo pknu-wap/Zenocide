@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee4e1de6682e5bb448d13b0b62311c21, type: 3}
+  m_Name: Silence!
+  m_EditorClassIdentifier: 
+  name: "\uC27F!"
+  description: "\uC801\uC5D0\uAC8C \uCE68\uBB35 \uC2A4\uD0DD\uC744 1 \uC90D\uB2C8\uB2E4"
+  sprite: {fileID: 21300000, guid: a1b8ea294c55f074e8bcda367ef52906, type: 3}
+  skills:
+  - type: 18
+    target: 1
+    amount: 0
+    turnCount: 1
+    effectPrefeb: {fileID: 0}
+    sound: {fileID: 0}
+  cost: 0
