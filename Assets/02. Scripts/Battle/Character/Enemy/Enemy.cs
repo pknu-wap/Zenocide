@@ -74,6 +74,7 @@ public class Enemy : Character
         TurnManager.Instance.onEndEnemyTurn.AddListener(EndEnemyTurn);
 
         TurnManager.Instance.onStartPlayerTurn.AddListener(ReadySkill);
+        TurnManager.Instance.onStartPlayerTurn.AddListener(ConsumeSilenceStack);
 
         // 데이터를 넣고
         enemyData = data;
@@ -107,7 +108,7 @@ public class Enemy : Character
     public void EndEnemyTurn()
     {
         // 디버프(출혈 등)가 전부 적용된다.
-        GetBuffAll();
+        GainBuffAll();
 
         // 죽고 나서 스킬 사용하는 걸 방지
         if(currentHp <= 0)
@@ -140,8 +141,6 @@ public class Enemy : Character
         SkillText skillText = CardInfo.Instance.GetSkillText(currentSkill);
         behaviorName.text = skillText.name;
         behaviorDescription.text = skillText.description;
-
-        GetSilence();
     }
 
     // 스킬을 사용한다.
@@ -287,49 +286,36 @@ public class Enemy : Character
         gameObject.SetActive(false);
     }
 
-    override public void GetSilence()
+    override public void ConsumeSilenceStack()
     {
         // 침묵 스택
         int idxStack = GetBuffIndex(SkillType.SilenceStack);
 
-        // 침묵 스택이 없다면 return
-        if (idxStack == -1)
+        // 침묵 스택이 없거나 스택이 모자라면 return
+        if (idxStack == -1 || buffs[idxStack].remainingTurns < 2)
         {
             return;
         }
 
-        // 침묵 조건이 충족되지 않으면 return
-        if (buffs[idxStack].remainingTurns < 2)
-        {
-            return;
-        }
-
-        // 다음 행동이 침묵이면 침묵 스택을 차감하지 않음
-        if(currentSkill.type == SkillType.Silence)
+        // 이미 행동이 침묵이면 침묵 스택을 차감하지 않음
+        if (currentSkill.type == SkillType.Silence)
         {
             UpdateAllBuffIcon();
             return;
         }
 
+        // 스택을 소모해 침묵을 얻는다.
+        GetSilence(1);
         // 스택을 차감한다
         ModifyBuff(idxStack, 0, -2);
 
-        // 남은 스택이 0 이하라면
-        if (buffs[idxStack].remainingTurns <= 0)
-        {
-            // 효과를 삭제한다.
-            buffs.RemoveAt(idxStack);
-
-            // 오브젝트 풀의 자원들을 반환한다.
-            buffIcons[idxStack].ReleaseObject();
-            buffIcons.RemoveAt(idxStack);
-            buffInfoPanels[idxStack].ReleaseObject();
-            buffInfoPanels.RemoveAt(idxStack);
-        }
-
         // 아이콘 최신화
         UpdateAllBuffIcon();
+    }
 
+    // 현재 스택과 관계없이 행동 스킬만 변경한다.
+    public override void GetSilence(int stack)
+    {
         // currentSkill을 침묵으로 바꾼다
         Skill silence = new Skill();
         silence.type = SkillType.Silence;
@@ -346,5 +332,8 @@ public class Enemy : Character
         SkillText skillText = CardInfo.Instance.GetSkillText(currentSkill);
         behaviorName.text = skillText.name;
         behaviorDescription.text = skillText.description;
+
+        // 아이콘 최신화
+        UpdateAllBuffIcon();
     }
 }

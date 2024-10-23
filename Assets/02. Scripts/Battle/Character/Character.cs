@@ -268,7 +268,7 @@ public class Character : MonoBehaviour
         }
     }
 
-    public void GetBuffAll()
+    public void GainBuffAll()
     {
         // 스탯 초기화
         //ResetStat();
@@ -279,7 +279,7 @@ public class Character : MonoBehaviour
             // 스킬 발동
             CardInfo.Instance.ActivateSkill(buffs[i], this, buffs[i].caller);
 
-            // 남은 턴 1 감소
+            // 스택을 제외한 디버프들은 남은 턴 1 감소
             if (buffs[i].type != SkillType.SilenceStack)
             {
                 --buffs[i].remainingTurns;
@@ -329,14 +329,37 @@ public class Character : MonoBehaviour
         return -1;
     }
 
+    public BuffEffect GetBuff(int index)
+    {
+        return buffs[index];
+    }
+
     // 버프의 amount와 remainingTurns를 수정
     public void ModifyBuff(int idx, int amount, int turnCount)
     {
         buffs[idx].amount += amount;
         buffs[idx].remainingTurns += turnCount;
+
+        // 남은 스택이 0 이하라면
+        if (buffs[idx].remainingTurns <= 0)
+        {
+            // 효과를 삭제한다.
+            buffs.RemoveAt(idx);
+
+            // 오브젝트 풀의 자원들을 반환한다.
+            buffIcons[idx].ReleaseObject();
+            buffIcons.RemoveAt(idx);
+            buffInfoPanels[idx].ReleaseObject();
+            buffInfoPanels.RemoveAt(idx);
+        }
     }
 
-    virtual public void GetSilence()
+    virtual public void ConsumeSilenceStack()
+    {
+
+    }
+
+    public virtual void GetSilence(int stack)
     {
 
     }

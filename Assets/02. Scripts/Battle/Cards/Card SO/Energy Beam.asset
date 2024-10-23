@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee4e1de6682e5bb448d13b0b62311c21, type: 3}
   m_Name: Energy Beam
   m_EditorClassIdentifier: 
-  name: "\uC5D0\uB108\uC9C0 \uD30C"
+  name: "\uC5D0\uB108\uC9C0\uD30C"
   description: "\uC801\uC5D0\uAC8C damage0\uC758 \uD53C\uD574\uB97C \uC90D\uB2C8\uB2E4.
-    \uBC18\uB3D9\uC73C\uB85C \uB2E4\uC74C \uD134\uC5D0 \uCE74\uB4DC\uB97C \uB0BC
+    \uBC18\uB3D9\uC73C\uB85C \uB2E4\uC74C \uD134\uAE4C\uC9C0 \uCE74\uB4DC\uB97C \uB0BC
     \uC218 \uC5C6\uC2B5\uB2C8\uB2E4."
   sprite: {fileID: 21300000, guid: ab266d2a3020f544facf3291341e5e1b, type: 3}
   skills:
@@ -24,10 +24,10 @@ MonoBehaviour:
     turnCount: 0
     effectPrefeb: {fileID: 0}
     sound: {fileID: 8300000, guid: 54543fb1763ed974a958dec588ef5ab6, type: 3}
-  - type: 18
+  - type: 17
     target: 0
     amount: 0
     turnCount: 2
     effectPrefeb: {fileID: 0}
     sound: {fileID: 0}
-  cost: 0
+  cost: 5
