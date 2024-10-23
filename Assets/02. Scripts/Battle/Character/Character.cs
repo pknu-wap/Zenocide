@@ -208,6 +208,13 @@ public class Character : MonoBehaviour
     // 버프 효과를 턴 시작 이벤트에 등록한다.
     public void EnrollBuff(BuffEffect buff)
     {
+        // 턴 수가 0이면 취소한다.
+        if(buff.remainingTurns <= 0)
+        {
+            Debug.LogError("0턴 디버프를 등록하려 합니다.");
+            return;
+        }
+
         // 버프 리스트에 추가
         buffs.Add(buff);
 
