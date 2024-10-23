@@ -20,7 +20,7 @@ public class DebuffInfo
         { SkillType.Heal, "체력을 회복합니다." },
         { SkillType.ExtraDamage, "추가 데미지를 입힙니다." },
         { SkillType.ExtraBleedDamage, "추가 출혈 데미지를 입힙니다." },
-        { SkillType.Silence, "..." },
+        { SkillType.Silence, "...행동하지 않습니다." },
         { SkillType.SilenceStack, "2 이상인 경우 다음 턴에 침묵됩니다." },
     };
 
