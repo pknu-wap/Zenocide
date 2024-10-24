@@ -40,6 +40,15 @@ public class DialogueManager : MonoBehaviour
     // 연계 CSV 파일을 읽어올 리스트
     private List<Dictionary<string, object>> dataRelationCSV;
     [SerializeField] private TextAsset RelationCSV;
+    // 메인 CSV 파일을 읽어올 리스트
+    private List<Dictionary<string, object>> dataMainIncarnageCSV;
+    [SerializeField] private TextAsset MainIncarnageCSV;
+    // 서브 CSV 파일을 읽어올 리스트
+    private List<Dictionary<string, object>> dataSubIncarnageCSV;
+    [SerializeField] private TextAsset SubIncarnageCSV;
+    // 연계 CSV 파일을 읽어올 리스트
+    private List<Dictionary<string, object>> dataRelationIncarnageCSV;
+    [SerializeField] private TextAsset RelationIncarnageCSV;
 
     [Header("일러스트 데이터")]
     // 이름 - 이미지 딕셔너리
@@ -143,6 +152,9 @@ public class DialogueManager : MonoBehaviour
         dataMainCSV = CSVReader.Read(MainCSV);
         dataSubCSV = CSVReader.Read(SubCSV);
         dataRelationCSV = CSVReader.Read(RelationCSV);
+        dataMainIncarnageCSV = CSVReader.Read(MainIncarnageCSV);
+        dataSubIncarnageCSV = CSVReader.Read(SubIncarnageCSV);
+        dataRelationIncarnageCSV = CSVReader.Read(RelationIncarnageCSV);
     }
 
     void Start()
@@ -164,12 +176,12 @@ public class DialogueManager : MonoBehaviour
     {
         for(int i = 0; i < startEventList.list.Length; ++i)
         {
-            if (startEventList.list[i].eventID == EventType.Main)
+            if (startEventList.list[i].eventID == EventType.Main || startEventList.list[i].eventID == EventType.MainIncarnage)
             {
                 processableMainEventList.Add(startEventList.list[i]);
             }
 
-            else if (startEventList.list[i].eventID == EventType.Sub)
+            else if (startEventList.list[i].eventID == EventType.Sub || startEventList.list[i].eventID == EventType.SubIncarnage)
             {
                 processableSubEventList.Add(startEventList.list[i]);
             }
@@ -262,6 +274,15 @@ public class DialogueManager : MonoBehaviour
                 break;
             case EventType.Relation:
                 dataCSV = dataRelationCSV;
+                break;
+            case EventType.MainIncarnage:
+                dataCSV = dataMainIncarnageCSV;
+                break;
+            case EventType.SubIncarnage:
+                dataCSV = dataSubIncarnageCSV;
+                break;
+            case EventType.RelationIncarnage:
+                dataCSV = dataRelationIncarnageCSV;
                 break;
         }
 
@@ -375,7 +396,16 @@ public class DialogueManager : MonoBehaviour
                 string rewardCardList = dataCSV[i]["Reward Card List"].ToString();
 
                 // 전투를 시작한다.
-                yield return StartCoroutine(StartBattle(enemies, rewardCardList));
+                yield return StartCoroutine(StartBattle(enemies, rewardCardList, dataCSV[i]["BGM"].ToString()));
+            }
+            // 전투가 없을 때
+            else
+            {
+                // BGM이 있다면 바로 재생한다.
+                if (dataCSV[i]["BGM"].ToString() is not emptyString)
+                {
+                    SoundManager.Instance.Play(dataCSV[i]["BGM"].ToString(), SoundType.Bgm, true);
+                }
             }
 
             // 플레이어 체력을 변경한다.
@@ -434,9 +464,9 @@ public class DialogueManager : MonoBehaviour
             string[] temp = csvData["ShakeEffect"].ToString().Split("//");
 
             // 흔들림 지속 시간 변수
-            int duration = int.Parse(temp[0]);
+            float duration = float.Parse(temp[0]);
             // 흔들림 정도 변수
-            int magnitude = int.Parse(temp[1]);
+            float magnitude = float.Parse(temp[1]);
             // 흔들림 효과를 주기 위해 함수를 호출한다.
             CamShake.Instance.Shake(duration,magnitude,CamShake.Scene.Story);
         }
@@ -623,7 +653,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 전투를 시작하고, 끝날 때까지 기다린다.
-    private IEnumerator StartBattle(string[] enemies, string rewardCardList)
+    private IEnumerator StartBattle(string[] enemies, string rewardCardList, string bgmName = "")
     {
         // 배틀이 끝나지 않았음을 체크
         isBattleDone = false;
@@ -635,6 +665,12 @@ public class DialogueManager : MonoBehaviour
             yield return null;
         }
         isClicked = false;
+
+        // 음악을 변경한다. (있을 때만)
+        if(bgmName is not emptyString)
+        {
+            SoundManager.Instance.Play(bgmName, SoundType.Bgm, true);
+        }
 
         //클릭되면 배틀을 시작한다.
         GameManager.Instance.StartBattle(enemies, rewardCardList);

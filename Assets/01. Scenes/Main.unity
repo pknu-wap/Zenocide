@@ -10901,6 +10901,9 @@ MonoBehaviour:
   MainCSV: {fileID: 4900000, guid: 683f3fdfa65e993439834fab4b233e77, type: 3}
   SubCSV: {fileID: 4900000, guid: 37278d9ea232c544abf7972ed7ae236a, type: 3}
   RelationCSV: {fileID: 4900000, guid: b488200edabffc141b6da693cdee6629, type: 3}
+  MainIncarnageCSV: {fileID: 4900000, guid: f49a87fa326d69042baaf33d58b1a197, type: 3}
+  SubIncarnageCSV: {fileID: 4900000, guid: 937ac14c68b15eb4888dcd8966fc9268, type: 3}
+  RelationIncarnageCSV: {fileID: 4900000, guid: fff518f1e29a03b4cac1903f671ba675, type: 3}
   illustImages:
   - {fileID: 21300000, guid: 1fe1bd7a2fc2fed44854369623eb395a, type: 3}
   - {fileID: 21300000, guid: 69d4aaa51bb7d854398fbaaef7394210, type: 3}
@@ -10939,7 +10942,7 @@ MonoBehaviour:
   notification: {fileID: 0}
   processableMainEventList: []
   processableSubEventList: []
-  startEventList: {fileID: 11400000, guid: 30220a4d6185339419d5d5dc91d01130, type: 2}
+  startEventList: {fileID: 11400000, guid: 1a2ac0fbe99b9ec4d9e9a2d19a435e7f, type: 2}
   incarnageSubEventList: {fileID: 11400000, guid: e606635426abfae4088a880d6e9fbd72, type: 2}
   mainRate: 30
   IllustsObjects:
@@ -19631,13 +19634,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemies:
-  - {fileID: 11400000, guid: d00a3edd6e332fd4fbee6e79382db468, type: 2}
-  - {fileID: 11400000, guid: 575479e4bff6c03498f8137ba8bcf71d, type: 2}
   - {fileID: 11400000, guid: c6c53a2e88f26e947a5518ef830a7fe1, type: 2}
-  - {fileID: 11400000, guid: 59f928363fa3cd84e9fff2ec9bcd735c, type: 2}
-  - {fileID: 11400000, guid: 6690813b70bf5ac4db73f4ce4ec200fa, type: 2}
-  - {fileID: 11400000, guid: a5c3e835d3f525f419bbc18f341ceeff, type: 2}
   - {fileID: 11400000, guid: 872371c2296c0a34ba1bba2a3d721f5a, type: 2}
+  - {fileID: 11400000, guid: a5c3e835d3f525f419bbc18f341ceeff, type: 2}
+  - {fileID: 11400000, guid: 59f928363fa3cd84e9fff2ec9bcd735c, type: 2}
+  - {fileID: 11400000, guid: 575479e4bff6c03498f8137ba8bcf71d, type: 2}
+  - {fileID: 11400000, guid: b981553fba7023b4ba5ce8e6d958dc41, type: 2}
+  - {fileID: 11400000, guid: 1cf6f09aa470235419e88707fec627c3, type: 2}
+  - {fileID: 11400000, guid: d85a1942bf79d904388efb8d479bf428, type: 2}
+  - {fileID: 11400000, guid: d00a3edd6e332fd4fbee6e79382db468, type: 2}
+  - {fileID: 11400000, guid: 6690813b70bf5ac4db73f4ce4ec200fa, type: 2}
+  - {fileID: 11400000, guid: acbe67ac7b09856428086c2a78675f84, type: 2}
+  - {fileID: 11400000, guid: c7be67cfef8c0584ab5c3dfd7b2d4313, type: 2}
+  - {fileID: 11400000, guid: 0ce6dd2f27b4e2d4e90b08b932d60c74, type: 2}
+  - {fileID: 11400000, guid: f78eb2a89fc0f0a4bb267f2d0c0d32fd, type: 2}
 --- !u!114 &890113756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20213,6 +20223,24 @@ MonoBehaviour:
   applyCount: 0
   bgmSource: {fileID: 0}
   sfxSources: []
+  bgmNames:
+  - Zombie Town
+  - Zombie Battle
+  - Incarnage Main
+  - Incarnage Battle
+  - Incarnage Boss
+  - Rescue Sophia
+  - Ending
+  - Epilogue
+  bgmArray:
+  - {fileID: 8300000, guid: 8ec74fc6097edb448b6d5e4b9101cc83, type: 3}
+  - {fileID: 8300000, guid: 9fad8d9a5d8fdc741bde027afa4bbbc0, type: 3}
+  - {fileID: 8300000, guid: 08afbd21d1e788240a292211fad33e62, type: 3}
+  - {fileID: 0}
+  - {fileID: 8300000, guid: a2458dd3fe7111545a5ced4a0aa37223, type: 3}
+  - {fileID: 8300000, guid: ad03ba0edee918044a7544763b2ae473, type: 3}
+  - {fileID: 8300000, guid: 9573f2aaf9f8a5e43bfd884fcffbce2b, type: 3}
+  - {fileID: 8300000, guid: 9573f2aaf9f8a5e43bfd884fcffbce2b, type: 3}
 --- !u!82 &919981847
 AudioSource:
   m_ObjectHideFlags: 0
@@ -20227,7 +20255,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

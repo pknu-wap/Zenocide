@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -75,6 +76,8 @@ public class SoundManager : MonoBehaviour
 
         AssignAudioComponent();
         InitializeSfxTimeStamp();
+
+        CreateBGMDictionary();
 
         UpdateAudioSources();
     }
@@ -283,6 +286,19 @@ public class SoundManager : MonoBehaviour
     }
 
     #region 오디오 재생
+    private Dictionary<string, AudioClip> bgmDictionary = new Dictionary<string, AudioClip>();
+    public string[] bgmNames;
+    public AudioClip[] bgmArray;
+
+    // BGM 이름 - 오디오 딕셔너리를 생성한다.
+    private void CreateBGMDictionary()
+    {
+        for (int i = 0; i < bgmArray.Length; ++i)
+        {
+            bgmDictionary[bgmNames[i]] = bgmArray[i];
+        }
+    }
+
     private void AssignAudioComponent()
     {
         // 모든 컴포넌트를 가져온다.
@@ -311,6 +327,19 @@ public class SoundManager : MonoBehaviour
         {
             sfxSources[i] = audioSources[i + bgmAudioCount];
         }
+    }
+
+    // 문자열로 재생한다.
+    public void Play(string audioName, SoundType type = SoundType.Effect, bool isLooping = false)
+    {
+        if (bgmDictionary.ContainsKey(audioName) == false)
+        {
+            Debug.LogError(audioName + "이란 이름의 BGM이 없습니다.");
+            return;
+        }
+
+        AudioClip clip = bgmDictionary[audioName];
+        Play(clip, type, isLooping);
     }
 
     // 오디오 클립을 재생한다.
