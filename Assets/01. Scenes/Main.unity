@@ -19662,6 +19662,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rewardCardListArray:
   - {fileID: 11400000, guid: 96b5d5f3f108e0943a004c55a54c71ad, type: 2}
+  - {fileID: 11400000, guid: a9f6b58227b5a0e4bb97c884545f4146, type: 2}
+  - {fileID: 11400000, guid: 9844c53f531144a49881128b55c150a0, type: 2}
+  - {fileID: 11400000, guid: fbd16af257ce1cd4b803f1a1ed3d843a, type: 2}
   skillIcons:
   - {fileID: 21300000, guid: 6d767137b2dd3d04b8310adefba2ca94, type: 3}
   - {fileID: 21300000, guid: 34273ec967b3ebf45becce336daea30f, type: 3}
@@ -20239,7 +20242,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 8300000, guid: a2458dd3fe7111545a5ced4a0aa37223, type: 3}
   - {fileID: 8300000, guid: ad03ba0edee918044a7544763b2ae473, type: 3}
-  - {fileID: 8300000, guid: 9573f2aaf9f8a5e43bfd884fcffbce2b, type: 3}
+  - {fileID: 8300000, guid: 3670824af5b394044a07a44d7390931a, type: 3}
   - {fileID: 8300000, guid: 9573f2aaf9f8a5e43bfd884fcffbce2b, type: 3}
 --- !u!82 &919981847
 AudioSource:

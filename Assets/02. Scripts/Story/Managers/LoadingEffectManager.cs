@@ -107,8 +107,12 @@ public class LoadingEffectManager : MonoBehaviour
 
         isFading = true;
 
-        // 효과음 재생
-        SoundManager.Instance.Play(fadeOutClip);
+        // 효과를 재생하는 순간에만 효과음 재생
+        if(layers[0].gameObject.transform.localScale != Vector3.zero)
+        {
+            // 효과음 재생
+            SoundManager.Instance.Play(fadeOutClip);
+        }
 
         for (int i = 0; i < layerCount * 4; i++)
         {

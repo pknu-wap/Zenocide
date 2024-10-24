@@ -800,6 +800,8 @@ public class DialogueManager : MonoBehaviour
     {
         // 서브스토리를 비우고
         processableSubEventList.Clear();
+        // 대기 중이던 스토리도 모두 비우고
+        delayDictionary.Clear();
 
         // 인카니지 서브 스토리로 새로 써넣는다.
         for (int i = 0; i < incarnageSubEventList.list.Length; ++i)
