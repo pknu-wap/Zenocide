@@ -201,6 +201,12 @@ public class DialogueManager : MonoBehaviour
         else
         {
             processableEventList = processableSubEventList;
+
+            // 서브 스토리가 없으면 메인만 등록
+            if (processableSubEventList.Count() == 0)
+            {
+                processableEventList = processableMainEventList;
+            }
         }
 
         // 랜덤한 숫자 하나를 고르고
@@ -309,7 +315,13 @@ public class DialogueManager : MonoBehaviour
                 // 현재 이벤트를 종료한다. (ProcessRandomEvent로 이동)
                 yield break;
             }
-            
+
+            // BGM을 변경한다. 전투가 있다면 돌입 후 변경하므로 변경하지 않는다.
+            if (dataCSV[i]["BGM"].ToString() is not emptyString && dataCSV[i]["Enemy1"].ToString() is emptyString)
+            {
+                SoundManager.Instance.Play(dataCSV[i]["BGM"].ToString(), SoundType.Bgm, true);
+            }
+
             // 대화창을 갱신한다. 이 이후의 조건문은, 대화창을 변경한 후 실행되는 애들이다.
             yield return StartCoroutine(DisplayDialogue(dataCSV[i]));
 
@@ -389,15 +401,6 @@ public class DialogueManager : MonoBehaviour
 
                 // 전투를 시작한다.
                 yield return StartCoroutine(StartBattle(enemies, rewardCardList, dataCSV[i]["BGM"].ToString()));
-            }
-            // 전투가 없을 때
-            else
-            {
-                // BGM이 있다면 바로 재생한다.
-                if (dataCSV[i]["BGM"].ToString() is not emptyString)
-                {
-                    SoundManager.Instance.Play(dataCSV[i]["BGM"].ToString(), SoundType.Bgm, true);
-                }
             }
 
             // 플레이어 체력을 변경한다.
