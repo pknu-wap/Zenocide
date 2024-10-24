@@ -22,6 +22,8 @@ public enum SkillType
     ExtraBleedDamage = 15,   // 출혈 추가데미지 (한 턴)
     LingeringExtraBleedDamage = 16,   // 출혈 추가데미지 (지속)
     Silence = 17,                // 침묵, 아무 행동도 하지 않음
+    SilenceStack = 18,          // 침묵 스택, 2스택이 되면 대상을 침묵시킨다
+    EndPlayerTurn = 19,          // (플레이어에게만 사용 가능) 턴을 종료시킨다.
 }
 
 public enum SkillTarget

@@ -208,6 +208,13 @@ public class Character : MonoBehaviour
     // 버프 효과를 턴 시작 이벤트에 등록한다.
     public void EnrollBuff(BuffEffect buff)
     {
+        // 턴 수가 0이면 취소한다.
+        if(buff.remainingTurns <= 0)
+        {
+            Debug.LogError("0턴 디버프를 등록하려 합니다.");
+            return;
+        }
+
         // 버프 리스트에 추가
         buffs.Add(buff);
 
@@ -268,7 +275,7 @@ public class Character : MonoBehaviour
         }
     }
 
-    public void GetBuffAll()
+    public void GainBuffAll()
     {
         // 스탯 초기화
         //ResetStat();
@@ -279,8 +286,12 @@ public class Character : MonoBehaviour
             // 스킬 발동
             CardInfo.Instance.ActivateSkill(buffs[i], this, buffs[i].caller);
 
-            // 남은 턴 1 감소
-            --buffs[i].remainingTurns;
+            // 스택을 제외한 디버프들은 남은 턴 1 감소
+            if (buffs[i].type != SkillType.SilenceStack)
+            {
+                --buffs[i].remainingTurns;
+            }
+
             // 남은 턴이 0 이하라면
             if (buffs[i].remainingTurns <= 0)
             {
@@ -305,9 +316,59 @@ public class Character : MonoBehaviour
             // 0.1초 딜레이
             // yield return new WaitForSeconds(0.1f);
         }
-
+        
         // 아이콘 최신화
         UpdateAllBuffIcon();
+    }
+
+    // buffs의 매개변수에 해당하는 첫 버프의 인덱스를 반환한다
+    // 해당 타입의 버프가 없다면 -1을 반환한다
+    public int GetBuffIndex(SkillType type)
+    {
+        for(int i = 0;i < buffs.Count; ++i)
+        {
+            if (buffs[i].type == type)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public BuffEffect GetBuff(int index)
+    {
+        return buffs[index];
+    }
+
+    // 버프의 amount와 remainingTurns를 수정
+    public void ModifyBuff(int idx, int amount, int turnCount)
+    {
+        buffs[idx].amount += amount;
+        buffs[idx].remainingTurns += turnCount;
+
+        // 남은 스택이 0 이하라면
+        if (buffs[idx].remainingTurns <= 0)
+        {
+            // 효과를 삭제한다.
+            buffs.RemoveAt(idx);
+
+            // 오브젝트 풀의 자원들을 반환한다.
+            buffIcons[idx].ReleaseObject();
+            buffIcons.RemoveAt(idx);
+            buffInfoPanels[idx].ReleaseObject();
+            buffInfoPanels.RemoveAt(idx);
+        }
+    }
+
+    virtual public void ConsumeSilenceStack()
+    {
+
+    }
+
+    public virtual void GetSilence(int stack)
+    {
+
     }
     #endregion 디버프
 

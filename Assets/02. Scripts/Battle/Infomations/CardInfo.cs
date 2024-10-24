@@ -178,6 +178,8 @@ public class CardInfo : MonoBehaviour
         effects[(int)SkillType.ExtraBleedDamage] += ExtraBleedDamage;
         effects[(int)SkillType.LingeringExtraBleedDamage] += LingeringExtraBleedDamage;
         effects[(int)SkillType.Silence] += Silence;
+        effects[(int)SkillType.SilenceStack] += SilenceStack;
+        effects[(int)SkillType.EndPlayerTurn] += EndPlayerTurn;
     }
 
 
@@ -328,10 +330,42 @@ public class CardInfo : MonoBehaviour
         target.GetBonusBleedDamage(amount);
     }
 
-    // 침묵, 적에게만 적용 가능
+    // 침묵
     public void Silence(int amount, int turnCount, Character target, Character caller)
     {
-        
+        // 침묵 조건 확인 (함수 내부에서 조건 분석)
+        target.GetSilence(turnCount);
+    }
+
+    public void SilenceStack(int amount, int turnCount, Character target, Character caller)
+    {
+        int stackIdx = target.GetBuffIndex(SkillType.SilenceStack);
+
+        // 침묵 스택이 없다면
+        if(stackIdx == -1) {
+            // 등록
+            target.EnrollBuff(new BuffEffect(SkillType.SilenceStack, 0, turnCount, target, caller));
+        }
+        // 침묵 스택이 있다면
+        else
+        {   
+            // 해당 스택을 수정
+            target.ModifyBuff(stackIdx, 0, turnCount);
+            target.UpdateAllBuffIcon();
+        }
+
+        // 침묵 조건 확인 (함수 내부에서 조건 분석)
+        target.ConsumeSilenceStack();
+    }
+
+    // 강제 턴 종료
+    public void EndPlayerTurn(int amount, int turnCount, Character target, Character caller)
+    {
+        if(target.GetType() != typeof(Player))
+        {
+            return;
+        }
+        TurnManager.Instance.EndTurn();
     }
     #endregion 카드 효과
 }

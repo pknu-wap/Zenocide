@@ -1,10 +1,7 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class TurnManager : MonoBehaviour
@@ -183,8 +180,6 @@ public class TurnManager : MonoBehaviour
                 //enemyIndex = Random.Range(0, 4);
             }
             #endregion 적 공격
-
-            onStartPlayerTurn.Invoke();
 
             // 플레이어 턴으로 변경
             myTurn = true;
