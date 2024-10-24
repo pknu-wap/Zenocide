@@ -809,7 +809,7 @@ public class DialogueManager : MonoBehaviour
         // 인카니지 서브 스토리로 새로 써넣는다.
         for (int i = 0; i < incarnageSubEventList.list.Length; ++i)
         {
-            processableSubEventList.Add(startEventList.list[i]);
+            processableSubEventList.Add(incarnageSubEventList.list[i]);
         }
     }
 
