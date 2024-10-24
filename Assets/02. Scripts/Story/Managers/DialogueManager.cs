@@ -176,15 +176,7 @@ public class DialogueManager : MonoBehaviour
     {
         for(int i = 0; i < startEventList.list.Length; ++i)
         {
-            if (startEventList.list[i].eventID == EventType.Main || startEventList.list[i].eventID == EventType.MainIncarnage)
-            {
-                processableMainEventList.Add(startEventList.list[i]);
-            }
-
-            else if (startEventList.list[i].eventID == EventType.Sub || startEventList.list[i].eventID == EventType.SubIncarnage)
-            {
-                processableSubEventList.Add(startEventList.list[i]);
-            }
+            AddEventToList(startEventList.list[i]);
         }
     }
 
@@ -689,11 +681,11 @@ public class DialogueManager : MonoBehaviour
     private void AddEventToList(EventData eventData)
     {
         // 딜레이 딕셔너리에 추가한다.
-        if (eventData.eventID == EventType.Main)
+        if (eventData.eventID == EventType.Main || eventData.eventID == EventType.MainIncarnage)
         {
             processableMainEventList.Add(eventData);
         }
-        else if (eventData.eventID == EventType.Sub)
+        else if (eventData.eventID == EventType.Sub || eventData.eventID == EventType.SubIncarnage)
         {
             processableSubEventList.Add(eventData);
         }
