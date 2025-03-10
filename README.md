@@ -35,7 +35,7 @@ _제노사이드 티저 영상 (클릭 시 이동합니다.)_
     <tr>
     <td align="center"><a href="https://github.com/miniron-v" title="Code">김민철</a></td>
     <td align="center"><a href="https://github.com/Kkumteulyi" title="Code">차동근</a></td>
-    <td align="center"><a href="https://github.com/ThisIsTAEWON" title="Code">김동건</a></td>
+    <td align="center"><a href="https://github.com/Danny-Caesar" title="Code">김동건</a></td>
     <td align="center"><a href="https://github.com/WooMH" title="Code">우민호</a></td>
     <td align="center"><a href="https://github.com/tpdud1212" title="Code">최세영</a></td>
   </tr>
